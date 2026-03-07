@@ -34,8 +34,6 @@ class Mock implements AdapterInterface
 {
     /**
      * List of mocked responses.
-     *
-     * @var array
      */
     protected array $responses = [];
 
@@ -49,7 +47,6 @@ class Mock implements AdapterInterface
      * @param \Psr\Http\Message\RequestInterface $request A partial request to use for matching.
      * @param \Cake\Http\Client\Response $response The response that matches the request.
      * @param array<string, mixed> $options See above.
-     * @return void
      */
     public function addResponse(RequestInterface $request, Response $response, array $options): void
     {
@@ -120,7 +117,6 @@ class Mock implements AdapterInterface
      *
      * @param string $requestUri The request being sent.
      * @param \Psr\Http\Message\RequestInterface $mock The request being mocked.
-     * @return bool
      */
     protected function urlMatches(string $requestUri, RequestInterface $mock): bool
     {

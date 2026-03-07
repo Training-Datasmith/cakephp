@@ -60,7 +60,6 @@ class SqlserverCompiler extends QueryCompiler
      * @param array<\Cake\Database\Expression\CommonTableExpression> $parts List of CTEs to be transformed to string
      * @param \Cake\Database\Query $query The query that is being compiled
      * @param \Cake\Database\ValueBinder $binder Value binder used to generate parameter placeholder
-     * @return string
      */
     protected function _buildWithPart(array $parts, Query $query, ValueBinder $binder): string
     {
@@ -82,7 +81,6 @@ class SqlserverCompiler extends QueryCompiler
      * @param array $parts The parts to build
      * @param \Cake\Database\Query $query The query that is being compiled
      * @param \Cake\Database\ValueBinder $binder Value binder used to generate parameter placeholder
-     * @return string
      */
     protected function _buildInsertPart(array $parts, Query $query, ValueBinder $binder): string
     {
@@ -109,7 +107,6 @@ class SqlserverCompiler extends QueryCompiler
      *
      * @param int $limit the limit clause
      * @param \Cake\Database\Query $query The query that is being compiled
-     * @return string
      */
     protected function _buildLimitPart(int $limit, Query $query): string
     {
@@ -128,7 +125,6 @@ class SqlserverCompiler extends QueryCompiler
      * @param array $parts list of fields to be transformed to string
      * @param \Cake\Database\Query $query The query that is being compiled
      * @param \Cake\Database\ValueBinder $binder Value binder used to generate parameter placeholder
-     * @return string
      */
     protected function _buildHavingPart(array $parts, Query $query, ValueBinder $binder): string
     {
@@ -143,7 +139,7 @@ class SqlserverCompiler extends QueryCompiler
                     continue;
                 }
                 preg_match_all(
-                    '/\b' . trim($selectKey, '[]') . '\b/i',
+                    '/\b' . trim((string) $selectKey, '[]') . '\b/i',
                     $p,
                     $matches,
                 );
@@ -153,7 +149,7 @@ class SqlserverCompiler extends QueryCompiler
                 }
 
                 $parts[$k] = preg_replace(
-                    ['/\[|\]/', '/\b' . trim($selectKey, '[]') . '\b/i'],
+                    ['/\[|\]/', '/\b' . trim((string) $selectKey, '[]') . '\b/i'],
                     ['', $selectPart->sql($binder)],
                     $p,
                 );

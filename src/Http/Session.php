@@ -42,29 +42,21 @@ class Session
 {
     /**
      * The Session handler instance used as an engine for persisting the session data.
-     *
-     * @var \SessionHandlerInterface|null
      */
     protected ?SessionHandlerInterface $_engine = null;
 
     /**
      * Indicates whether the sessions has already started
-     *
-     * @var bool
      */
     protected bool $_started = false;
 
     /**
      * The time in seconds the session will be valid for
-     *
-     * @var int
      */
     protected int $_lifetime = 0;
 
     /**
      * Whether this session is running under a CLI environment
-     *
-     * @var bool
      */
     protected bool $_isCLI = false;
 
@@ -100,7 +92,6 @@ class Session
      *   minutes the session will be regenerated.
      *
      * @param array $sessionConfig Session config.
-     * @return static
      * @see \Cake\Http\Session::__construct()
      */
     public static function create(array $sessionConfig = []): static
@@ -139,7 +130,6 @@ class Session
      * Get one of the pre-baked default session configurations.
      *
      * @param string $name Config name.
-     * @return array
      * @throws \Cake\Core\Exception\CakeException When an invalid name is used.
      */
     protected static function _defaultConfig(string $name): array
@@ -264,7 +254,6 @@ class Session
      *
      * @param \SessionHandlerInterface|string|null $class The session handler to use
      * @param array<string, mixed> $options the options to pass to the SessionHandler constructor
-     * @return \SessionHandlerInterface|null
      * @throws \InvalidArgumentException
      */
     public function engine(
@@ -293,7 +282,6 @@ class Session
      * Set the engine property and update the session handler in PHP.
      *
      * @param \SessionHandlerInterface $handler The handler to set
-     * @return \SessionHandlerInterface
      */
     protected function setEngine(SessionHandlerInterface $handler): SessionHandlerInterface
     {
@@ -315,7 +303,6 @@ class Session
      * ```
      *
      * @param array<string, mixed> $options Ini options to set.
-     * @return void
      * @throws \Cake\Core\Exception\CakeException if any directive could not be set
      */
     public function options(array $options): void
@@ -503,7 +490,6 @@ class Session
      *
      * @param array|string $name Name of variable
      * @param mixed $value Value to write
-     * @return void
      */
     public function write(array|string $name, mixed $value = null): void
     {
@@ -560,7 +546,6 @@ class Session
      * Removes a variable from session.
      *
      * @param string $name Session variable to remove
-     * @return void
      */
     public function delete(string $name): void
     {
@@ -574,7 +559,6 @@ class Session
      *
      * @param array $old Set of old variables => values
      * @param array $new New set of variable => value
-     * @return void
      */
     protected function _overwrite(array &$old, array $new): void
     {
@@ -591,8 +575,6 @@ class Session
 
     /**
      * Helper method to destroy invalid sessions.
-     *
-     * @return void
      */
     public function destroy(): void
     {
@@ -614,7 +596,6 @@ class Session
      * Optionally it also clears the session id and renews the session.
      *
      * @param bool $renew If session should be renewed, as well. Defaults to false.
-     * @return void
      */
     public function clear(bool $renew = false): void
     {
@@ -626,8 +607,6 @@ class Session
 
     /**
      * Returns whether a session exists
-     *
-     * @return bool
      */
     protected function _hasSession(): bool
     {
@@ -639,8 +618,6 @@ class Session
 
     /**
      * Restarts this session.
-     *
-     * @return void
      */
     public function renew(): void
     {
@@ -666,8 +643,6 @@ class Session
     /**
      * Returns true if the session is no longer valid because the last time it was
      * accessed was after the configured timeout.
-     *
-     * @return bool
      */
     protected function _timedOut(): bool
     {
@@ -690,7 +665,6 @@ class Session
      * If set to `0`, no server side timeout will be applied.
      *
      * @param int $lifetime in seconds
-     * @return void
      * @throws \Cake\Core\Exception\CakeException
      */
     public function setSessionLifetime(int $lifetime): void
@@ -704,9 +678,6 @@ class Session
 
     /**
      * Configure session lifetime
-     *
-     * @param int $lifetime
-     * @return void
      */
     protected function configureSessionLifetime(int $lifetime): void
     {

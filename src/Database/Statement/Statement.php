@@ -37,11 +37,6 @@ class Statement implements StatementInterface
     ];
 
     /**
-     * @var \Cake\Database\Driver
-     */
-    protected Driver $_driver;
-
-    /**
      * Cached bound parameters used for logging
      *
      * @var array<mixed>
@@ -50,15 +45,11 @@ class Statement implements StatementInterface
 
     /**
      * @param \PDOStatement $statement PDO statement
-     * @param \Cake\Database\Driver $driver Database driver
+     * @param \Cake\Database\Driver $_driver Database driver
      * @param array<\Closure> $resultDecorators Results decorators
      */
-    public function __construct(
-        protected PDOStatement $statement,
-        Driver $driver,
-        protected array $resultDecorators = [],
-    ) {
-        $this->_driver = $driver;
+    public function __construct(protected PDOStatement $statement, protected Driver $_driver, protected array $resultDecorators = [])
+    {
     }
 
     /**
@@ -125,12 +116,6 @@ class Statement implements StatementInterface
         return $this->params;
     }
 
-    /**
-     * @param string|int $column
-     * @param mixed $value
-     * @param int $type
-     * @return void
-     */
     protected function performBind(string|int $column, mixed $value, int $type): void
     {
         $this->statement->bindValue($column, $value, $type);
@@ -202,7 +187,6 @@ class Statement implements StatementInterface
      * Converts mode name to PDO constant.
      *
      * @param string|int $mode Mode name or PDO constant
-     * @return int
      * @throws \InvalidArgumentException
      */
     protected function convertMode(string|int $mode): int
@@ -275,8 +259,6 @@ class Statement implements StatementInterface
 
     /**
      * Returns prepared query string stored in PDOStatement.
-     *
-     * @return string
      */
     public function queryString(): string
     {
@@ -285,8 +267,6 @@ class Statement implements StatementInterface
 
     /**
      * Get the inner iterator
-     *
-     * @return \Generator
      */
     public function getIterator(): Generator
     {

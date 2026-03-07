@@ -31,43 +31,31 @@ interface PaginatedInterface extends Countable, Traversable
 {
     /**
      * Get current page number.
-     *
-     * @return int
      */
     public function currentPage(): int;
 
     /**
      * Get items per page.
-     *
-     * @return int
      */
     public function perPage(): int;
 
     /**
      * Get Total items counts.
-     *
-     * @return int|null
      */
     public function totalCount(): ?int;
 
     /**
      * Get total page count.
-     *
-     * @return int|null
      */
     public function pageCount(): ?int;
 
     /**
      * Get whether there's a previous page.
-     *
-     * @return bool
      */
     public function hasPrevPage(): bool;
 
     /**
      * Get whether there's a next page.
-     *
-     * @return bool
      */
     public function hasNextPage(): bool;
 
@@ -80,16 +68,11 @@ interface PaginatedInterface extends Countable, Traversable
 
     /**
      * Get paging param.
-     *
-     * @param string $name
-     * @return mixed
      */
     public function pagingParam(string $name): mixed;
 
     /**
      * Get all paging params.
-     *
-     * @return array
      */
     public function pagingParams(): array;
 }

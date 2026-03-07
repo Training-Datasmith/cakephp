@@ -29,7 +29,6 @@ class MailSubjectContains extends MailConstraintBase
      * Checks constraint
      *
      * @param mixed $other Constraint check
-     * @return bool
      */
     public function matches(mixed $other): bool
     {
@@ -52,8 +51,6 @@ class MailSubjectContains extends MailConstraintBase
     /**
      * Returns the subjects of all messages
      * respects $this->at
-     *
-     * @return string
      */
     protected function getAssertedMessages(): string
     {
@@ -72,8 +69,6 @@ class MailSubjectContains extends MailConstraintBase
 
     /**
      * Assertion message string
-     *
-     * @return string
      */
     public function toString(): string
     {

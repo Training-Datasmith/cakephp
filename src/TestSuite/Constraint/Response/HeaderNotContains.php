@@ -26,7 +26,6 @@ class HeaderNotContains extends HeaderContains
      * Checks assertion
      *
      * @param mixed $other Expected content
-     * @return bool
      */
     public function matches(mixed $other): bool
     {
@@ -35,8 +34,6 @@ class HeaderNotContains extends HeaderContains
 
     /**
      * Assertion message
-     *
-     * @return string
      */
     public function toString(): string
     {

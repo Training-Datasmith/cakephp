@@ -33,8 +33,6 @@ class BreadcrumbsHelper extends Helper
 
     /**
      * Other helpers used by BreadcrumbsHelper.
-     *
-     * @var array
      */
     protected array $helpers = ['Url'];
 
@@ -54,8 +52,6 @@ class BreadcrumbsHelper extends Helper
 
     /**
      * The crumb list.
-     *
-     * @var array
      */
     protected array $crumbs = [];
 
@@ -110,7 +106,7 @@ class BreadcrumbsHelper extends Helper
      * - *templateVars*: Specific template vars in case you override the templates provided.
      * @return $this
      */
-    public function addMany(array $crumbs, array $options = [])
+    public function addMany(array $crumbs, array $options = []): static
     {
         foreach ($crumbs as $crumb) {
             $crumb += ['title' => '', 'url' => null, 'options' => []];
@@ -172,7 +168,7 @@ class BreadcrumbsHelper extends Helper
      * - *templateVars*: Specific template vars in case you override the templates provided.
      * @return $this
      */
-    public function prependMany(array $crumbs, array $options = [])
+    public function prependMany(array $crumbs, array $options = []): static
     {
         $prepend = [];
         foreach ($crumbs as $crumb) {
@@ -208,7 +204,7 @@ class BreadcrumbsHelper extends Helper
      * @return $this
      * @throws \LogicException In case the index is out of bound
      */
-    public function insertAt(int $index, string $title, array|string|null $url = null, array $options = [])
+    public function insertAt(int $index, string $title, array|string|null $url = null, array $options = []): static
     {
         if (!isset($this->crumbs[$index]) && $index !== count($this->crumbs)) {
             throw new LogicException(sprintf('No crumb could be found at index `%s`.', $index));
@@ -289,8 +285,6 @@ class BreadcrumbsHelper extends Helper
 
     /**
      * Returns the crumb list.
-     *
-     * @return array
      */
     public function getCrumbs(): array
     {
@@ -302,7 +296,7 @@ class BreadcrumbsHelper extends Helper
      *
      * @return $this
      */
-    public function reset()
+    public function reset(): static
     {
         $this->crumbs = [];
 

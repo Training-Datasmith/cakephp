@@ -27,7 +27,6 @@ class MailCount extends MailConstraintBase
      * Checks constraint
      *
      * @param mixed $other Constraint check
-     * @return bool
      */
     public function matches(mixed $other): bool
     {
@@ -36,8 +35,6 @@ class MailCount extends MailConstraintBase
 
     /**
      * Assertion message string
-     *
-     * @return string
      */
     public function toString(): string
     {

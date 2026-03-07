@@ -26,17 +26,14 @@ class HeaderContains extends HeaderEquals
      * Checks assertion
      *
      * @param mixed $other Expected content
-     * @return bool
      */
     public function matches(mixed $other): bool
     {
-        return mb_strpos($this->response->getHeaderLine($this->headerName), $other) !== false;
+        return mb_strpos($this->response->getHeaderLine($this->headerName), (string) $other) !== false;
     }
 
     /**
      * Assertion message
-     *
-     * @return string
      */
     public function toString(): string
     {

@@ -56,31 +56,19 @@ class Digest
         self::ALGO_SHA_256_SESS => 'sha256',
         self::ALGO_SHA_512_256_SESS => 'sha512/256',
     ];
-    /**
-     * Instance of Cake\Http\Client
-     *
-     * @var \Cake\Http\Client
-     */
-    protected Client $_client;
 
     /**
      * Algorithm
-     *
-     * @var string
      */
     protected string $algorithm;
 
     /**
      * Hash type
-     *
-     * @var string
      */
     protected string $hashType;
 
     /**
      * Is Sess algorithm
-     *
-     * @var bool
      */
     protected bool $isSessAlgorithm = false;
 
@@ -89,19 +77,21 @@ class Digest
      *
      * Deprecated: $options list is unused and will be removed in 6.0.
      *
-     * @param \Cake\Http\Client $client Http client object.
-     * @param array|null $options Options list.
+     * @param \Cake\Http\Client $_client Http client object.
      */
-    public function __construct(Client $client, ?array $options = null)
+    public function __construct(
+        /**
+         * Instance of Cake\Http\Client
+         */
+        protected Client $_client
+    )
     {
-        $this->_client = $client;
     }
 
     /**
      * Set algorithm based on credentials
      *
      * @param array $credentials authentication params
-     * @return void
      */
     protected function setAlgorithm(array $credentials): void
     {
@@ -174,9 +164,6 @@ class Digest
         return $credentials;
     }
 
-    /**
-     * @return string
-     */
     protected function generateCnonce(): string
     {
         return uniqid();
@@ -187,7 +174,6 @@ class Digest
      *
      * @param \Cake\Http\Client\Request $request The request object.
      * @param array<string, mixed> $credentials Authentication credentials.
-     * @return string
      */
     protected function _generateHeader(Request $request, array $credentials): string
     {

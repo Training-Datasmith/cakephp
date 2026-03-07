@@ -37,8 +37,6 @@ class HelpCommand extends BaseCommand implements CommandCollectionAwareInterface
 {
     /**
      * The command collection to get help on.
-     *
-     * @var \Cake\Console\CommandCollection
      */
     protected CommandCollection $commands;
 
@@ -55,7 +53,6 @@ class HelpCommand extends BaseCommand implements CommandCollectionAwareInterface
      *
      * @param \Cake\Console\Arguments $args The command arguments.
      * @param \Cake\Console\ConsoleIo $io The console io
-     * @return int|null
      */
     public function execute(Arguments $args, ConsoleIo $io): ?int
     {
@@ -107,7 +104,6 @@ class HelpCommand extends BaseCommand implements CommandCollectionAwareInterface
      * @param \Cake\Console\ConsoleIo $io The console io
      * @param iterable<string, string|object> $commands The command collection to output.
      * @param bool $verbose Whether to show verbose output with descriptions.
-     * @return void
      */
     protected function asText(ConsoleIo $io, iterable $commands, bool $verbose = false): void
     {
@@ -169,7 +165,6 @@ class HelpCommand extends BaseCommand implements CommandCollectionAwareInterface
      *
      * @param \Cake\Console\ConsoleIo $io The console io
      * @param array<string, array<string>> $invert Inverted command map (class => names).
-     * @return void
      */
     protected function outputGrouped(ConsoleIo $io, array $invert): void
     {
@@ -177,7 +172,10 @@ class HelpCommand extends BaseCommand implements CommandCollectionAwareInterface
         $plugins = Plugin::loaded();
         foreach ($invert as $class => $names) {
             preg_match('/^(.+)\\\\Command\\\\/', $class, $matches);
-            if (!$matches || $names === []) {
+            if (!$matches) {
+                continue;
+            }
+            if ($names === []) {
                 continue;
             }
             $namespace = str_replace('\\', '/', $matches[1]);
@@ -226,7 +224,6 @@ class HelpCommand extends BaseCommand implements CommandCollectionAwareInterface
      *
      * @param \Cake\Console\ConsoleIo $io The console io
      * @param array<array{name: string, description: string}> $commands List of commands with names and descriptions.
-     * @return void
      */
     protected function outputCompactCommands(ConsoleIo $io, array $commands): void
     {
@@ -317,7 +314,6 @@ class HelpCommand extends BaseCommand implements CommandCollectionAwareInterface
      * @param string $description The description text
      * @param int $maxWidth Maximum terminal width
      * @param int $maxChars Maximum total description characters (0 = unlimited)
-     * @return void
      */
     protected function outputWrappedLine(
         ConsoleIo $io,
@@ -407,18 +403,17 @@ class HelpCommand extends BaseCommand implements CommandCollectionAwareInterface
      * Output relevant paths if defined
      *
      * @param \Cake\Console\ConsoleIo $io IO object.
-     * @return void
      */
     protected function outputPaths(ConsoleIo $io): void
     {
         $paths = [];
         if (Configure::check('App.dir')) {
-            $appPath = rtrim(Configure::read('App.dir'), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+            $appPath = rtrim((string) Configure::read('App.dir'), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
             // Extra space is to align output
             $paths['app'] = ' ' . $appPath;
         }
         if (defined('ROOT')) {
-            $paths['root'] = rtrim(ROOT, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+            $paths['root'] = rtrim((string) ROOT, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
         }
         if (defined('CORE_PATH')) {
             $paths['core'] = rtrim(CORE_PATH, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
@@ -435,14 +430,11 @@ class HelpCommand extends BaseCommand implements CommandCollectionAwareInterface
 
     /**
      * @param array<string> $names Names
-     * @return string
      * @phpstan-param non-empty-array<string> $names
      */
     protected function getShortestName(array $names): string
     {
-        usort($names, function ($a, $b) {
-            return strlen($a) - strlen($b);
-        });
+        usort($names, fn($a, $b) => strlen((string) $a) - strlen((string) $b));
 
         return array_shift($names);
     }
@@ -463,7 +455,6 @@ class HelpCommand extends BaseCommand implements CommandCollectionAwareInterface
      *
      * @param \Cake\Console\ConsoleIo $io The console io
      * @param iterable<string, string|object> $commands The command collection to output
-     * @return void
      */
     protected function asXml(ConsoleIo $io, iterable $commands): void
     {
@@ -490,7 +481,6 @@ class HelpCommand extends BaseCommand implements CommandCollectionAwareInterface
      * Gets the option parser instance and configures it.
      *
      * @param \Cake\Console\ConsoleOptionParser $parser The parser to build
-     * @return \Cake\Console\ConsoleOptionParser
      */
     protected function buildOptionParser(ConsoleOptionParser $parser): ConsoleOptionParser
     {

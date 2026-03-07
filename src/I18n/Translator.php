@@ -29,34 +29,6 @@ class Translator
     public const PLURAL_PREFIX = 'p:';
 
     /**
-     * A fallback translator.
-     *
-     * @var \Cake\I18n\Translator|null
-     */
-    protected ?Translator $fallback = null;
-
-    /**
-     * The formatter to use when translating messages.
-     *
-     * @var \Cake\I18n\FormatterInterface
-     */
-    protected FormatterInterface $formatter;
-
-    /**
-     * The locale being used for translations.
-     *
-     * @var string
-     */
-    protected string $locale;
-
-    /**
-     * The Package containing keys and translations.
-     *
-     * @var \Cake\I18n\Package
-     */
-    protected Package $package;
-
-    /**
      * Constructor
      *
      * @param string $locale The locale being used.
@@ -65,15 +37,24 @@ class Translator
      * @param \Cake\I18n\Translator|null $fallback A fallback translator.
      */
     public function __construct(
-        string $locale,
-        Package $package,
-        FormatterInterface $formatter,
-        ?Translator $fallback = null,
-    ) {
-        $this->locale = $locale;
-        $this->package = $package;
-        $this->formatter = $formatter;
-        $this->fallback = $fallback;
+        /**
+         * The locale being used for translations.
+         */
+        protected string $locale,
+        /**
+         * The Package containing keys and translations.
+         */
+        protected Package $package,
+        /**
+         * The formatter to use when translating messages.
+         */
+        protected FormatterInterface $formatter,
+        /**
+         * A fallback translator.
+         */
+        protected ?Translator $fallback = null
+    )
+    {
     }
 
     /**
@@ -175,7 +156,6 @@ class Translator
      * @param string $key The message key being handled.
      * @param array $message The message content.
      * @param array $vars The variables containing the `_context` key.
-     * @return array|string
      */
     protected function resolveContext(string $key, array $message, array $vars): array|string
     {
@@ -201,8 +181,6 @@ class Translator
 
     /**
      * Returns the translator package
-     *
-     * @return \Cake\I18n\Package
      */
     public function getPackage(): Package
     {

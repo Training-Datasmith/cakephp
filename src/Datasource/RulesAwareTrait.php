@@ -33,8 +33,6 @@ trait RulesAwareTrait
 {
     /**
      * The domain rules to be applied to entities saved by this table
-     *
-     * @var \Cake\Datasource\RulesChecker|null
      */
     protected ?RulesChecker $_rulesChecker = null;
 
@@ -45,7 +43,6 @@ trait RulesAwareTrait
      * @param \Cake\Datasource\EntityInterface $entity The entity to check for validity.
      * @param string $operation The operation being run. Either 'create', 'update' or 'delete'.
      * @param \ArrayObject<string, mixed>|array|null $options The options To be passed to the rules.
-     * @return bool
      */
     public function checkRules(
         EntityInterface $entity,
@@ -91,7 +88,6 @@ trait RulesAwareTrait
      * needs to be fetched from relevant datasources.
      *
      * @see \Cake\Datasource\RulesChecker
-     * @return \Cake\Datasource\RulesChecker
      */
     public function rulesChecker(): RulesChecker
     {
@@ -116,7 +112,6 @@ trait RulesAwareTrait
      * entities saved by this instance.
      *
      * @param \Cake\Datasource\RulesChecker $rules The rules object to be modified.
-     * @return \Cake\Datasource\RulesChecker
      */
     public function buildRules(RulesChecker $rules): RulesChecker
     {

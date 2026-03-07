@@ -32,29 +32,21 @@ class EventManager implements EventManagerInterface
 {
     /**
      * The default priority queue value for new, attached listeners
-     *
-     * @var int
      */
     public static int $defaultPriority = 10;
 
     /**
      * The globally available instance, used for dispatching events attached from any scope
-     *
-     * @var \Cake\Event\EventManager|null
      */
     protected static ?EventManager $_generalManager = null;
 
     /**
      * List of listener callbacks associated to
-     *
-     * @var array
      */
     protected array $_listeners = [];
 
     /**
      * Internal flag to distinguish a common manager from the singleton
-     *
-     * @var bool
      */
     protected bool $_isGlobal = false;
 
@@ -67,8 +59,6 @@ class EventManager implements EventManagerInterface
 
     /**
      * Enables automatic adding of events to the event list object if it is present.
-     *
-     * @var bool
      */
     protected bool $_trackEvents = false;
 
@@ -105,7 +95,7 @@ class EventManager implements EventManagerInterface
         EventListenerInterface|string $eventKey,
         callable|array $options = [],
         ?callable $callable = null,
-    ) {
+    ): static {
         if ($eventKey instanceof EventListenerInterface) {
             $this->_attachSubscriber($eventKey);
 
@@ -141,7 +131,6 @@ class EventManager implements EventManagerInterface
      * as individual methods on this manager
      *
      * @param \Cake\Event\EventListenerInterface $subscriber Event listener.
-     * @return void
      */
     protected function _attachSubscriber(EventListenerInterface $subscriber): void
     {
@@ -158,7 +147,7 @@ class EventManager implements EventManagerInterface
     public function off(
         EventListenerInterface|callable|string $eventKey,
         EventListenerInterface|callable|null $callable = null,
-    ) {
+    ): static {
         if ($eventKey instanceof EventListenerInterface) {
             $this->_detachSubscriber($eventKey);
 
@@ -207,7 +196,6 @@ class EventManager implements EventManagerInterface
      *
      * @param \Cake\Event\EventListenerInterface $subscriber the subscriber to be detached
      * @param string|null $eventKey optional event key name to unsubscribe the listener from
-     * @return void
      */
     protected function _detachSubscriber(EventListenerInterface $subscriber, ?string $eventKey = null): void
     {
@@ -235,7 +223,6 @@ class EventManager implements EventManagerInterface
      *
      * @param \Cake\Event\EventListenerInterface $subscriber Event subscriber
      * @param callable|array|string $handlers Event handlers
-     * @return array
      */
     protected function normalizeHandlers(
         EventListenerInterface $subscriber,
@@ -263,7 +250,6 @@ class EventManager implements EventManagerInterface
      *
      * @param \Cake\Event\EventListenerInterface $subscriber Event subscriber
      * @param callable|array|string $handler Event handler
-     * @return array
      */
     protected function normalizeHandler(
         EventListenerInterface $subscriber,
@@ -325,7 +311,6 @@ class EventManager implements EventManagerInterface
      * @template TSubject of object
      * @param callable $listener The listener to trigger.
      * @param \Cake\Event\EventInterface<TSubject> $event Event instance.
-     * @return void
      */
     protected function _callListener(callable $listener, EventInterface $event): void
     {
@@ -333,7 +318,7 @@ class EventManager implements EventManagerInterface
 
         if ($result !== null) {
             try {
-                $class = get_class($event->getSubject());
+                $class = $event->getSubject()::class;
             } catch (CakeException) {
                 $class = 'unknown subject';
             }
@@ -392,7 +377,6 @@ class EventManager implements EventManagerInterface
      * Returns the listeners for the specified event key indexed by priority
      *
      * @param string $eventKey Event key.
-     * @return array
      */
     public function prioritisedListeners(string $eventKey): array
     {
@@ -407,7 +391,6 @@ class EventManager implements EventManagerInterface
      * Returns the listeners matching a specified pattern
      *
      * @param string $eventKeyPattern Pattern to match.
-     * @return array
      */
     public function matchingListeners(string $eventKeyPattern): array
     {
@@ -438,7 +421,7 @@ class EventManager implements EventManagerInterface
      * @param \Cake\Event\EventInterface<TSubject> $event An event to add to the list.
      * @return $this
      */
-    public function addEventToList(EventInterface $event)
+    public function addEventToList(EventInterface $event): static
     {
         $this->_eventList?->add($event);
 
@@ -451,7 +434,7 @@ class EventManager implements EventManagerInterface
      * @param bool $enabled True or false to enable / disable it.
      * @return $this
      */
-    public function trackEvents(bool $enabled)
+    public function trackEvents(bool $enabled): static
     {
         $this->_trackEvents = $enabled;
 
@@ -460,8 +443,6 @@ class EventManager implements EventManagerInterface
 
     /**
      * Returns whether this manager is set up to track events
-     *
-     * @return bool
      */
     public function isTrackingEvents(): bool
     {
@@ -474,7 +455,7 @@ class EventManager implements EventManagerInterface
      * @param \Cake\Event\EventList<object> $eventList The event list object to use.
      * @return $this
      */
-    public function setEventList(EventList $eventList)
+    public function setEventList(EventList $eventList): static
     {
         $this->_eventList = $eventList;
         $this->_trackEvents = true;
@@ -487,7 +468,7 @@ class EventManager implements EventManagerInterface
      *
      * @return $this
      */
-    public function unsetEventList()
+    public function unsetEventList(): static
     {
         $this->_eventList = null;
         $this->_trackEvents = false;

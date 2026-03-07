@@ -25,28 +25,20 @@ use Psr\Http\Message\ResponseInterface;
 class HeaderEquals extends ResponseBase
 {
     /**
-     * @var string
-     */
-    protected string $headerName;
-
-    /**
      * Constructor.
      *
      * @param \Psr\Http\Message\ResponseInterface $response A response instance.
      * @param string $headerName Header name
      */
-    public function __construct(ResponseInterface $response, string $headerName)
+    public function __construct(ResponseInterface $response, protected string $headerName)
     {
         parent::__construct($response);
-
-        $this->headerName = $headerName;
     }
 
     /**
      * Checks assertion
      *
      * @param mixed $other Expected content
-     * @return bool
      */
     public function matches(mixed $other): bool
     {
@@ -55,8 +47,6 @@ class HeaderEquals extends ResponseBase
 
     /**
      * Assertion message
-     *
-     * @return string
      */
     public function toString(): string
     {

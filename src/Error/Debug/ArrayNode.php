@@ -42,7 +42,6 @@ class ArrayNode implements NodeInterface
      * Add an item
      *
      * @param \Cake\Error\Debug\ArrayItemNode $node The item to add.
-     * @return void
      */
     public function add(ArrayItemNode $node): void
     {

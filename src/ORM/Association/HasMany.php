@@ -49,15 +49,11 @@ class HasMany extends Association
 
     /**
      * The type of join to be used when adding the association to a query
-     *
-     * @var string
      */
     protected string $_joinType = SelectQuery::JOIN_TYPE_INNER;
 
     /**
      * The strategy name to be used to fetch associated records.
-     *
-     * @var string
      */
     protected string $_strategy = self::STRATEGY_SELECT;
 
@@ -87,8 +83,6 @@ class HasMany extends Association
 
     /**
      * Saving strategy to be used by this association
-     *
-     * @var string
      */
     protected string $_saveStrategy = self::SAVE_APPEND;
 
@@ -98,7 +92,6 @@ class HasMany extends Association
      * or required information if the row in 'source' did not exist.
      *
      * @param \Cake\ORM\Table $side The potential Table with ownership
-     * @return bool
      */
     public function isOwningSide(Table $side): bool
     {
@@ -112,7 +105,7 @@ class HasMany extends Association
      * @throws \InvalidArgumentException if an invalid strategy name is passed
      * @return $this
      */
-    public function setSaveStrategy(string $strategy)
+    public function setSaveStrategy(string $strategy): static
     {
         if (!in_array($strategy, [self::SAVE_APPEND, self::SAVE_REPLACE], true)) {
             $msg = sprintf('Invalid save strategy `%s`', $strategy);
@@ -298,7 +291,7 @@ class HasMany extends Association
             /** @var array<\Cake\Datasource\EntityInterface> $currentEntities */
             $targetEntities = (new Collection($targetEntities))
                 ->reject(
-                    function (EntityInterface $entity) use ($currentEntities, $pkFields) {
+                    function (EntityInterface $entity) use ($currentEntities, $pkFields): bool {
                         if ($entity->isNew()) {
                             return false;
                         }
@@ -319,7 +312,7 @@ class HasMany extends Association
 
         $sourceEntity->set($property, $currentEntities);
 
-        $savedEntity = $this->getConnection()->transactional(fn() => $this->saveAssociated($sourceEntity, $options));
+        $savedEntity = $this->getConnection()->transactional(fn(): \Cake\Datasource\EntityInterface|false => $this->saveAssociated($sourceEntity, $options));
         $ok = ($savedEntity instanceof EntityInterface);
 
         $this->setSaveStrategy($saveStrategy);
@@ -370,7 +363,6 @@ class HasMany extends Association
      *   If boolean it will be used a value for "cleanProperty" option.
      * @throws \InvalidArgumentException if non persisted entities are passed or if
      * any of them is lacking a primary key value
-     * @return bool
      */
     public function unlink(EntityInterface $sourceEntity, array $targetEntities, array|bool $options = []): bool
     {
@@ -392,7 +384,7 @@ class HasMany extends Association
 
         $conditions = [
             'OR' => (new Collection($targetEntities))
-                ->map(function (EntityInterface $entity) use ($targetPrimaryKey) {
+                ->map(function (EntityInterface $entity) use ($targetPrimaryKey): array {
                     /** @var array<string> $targetPrimaryKey */
                     return $entity->extract($targetPrimaryKey);
                 })
@@ -410,9 +402,7 @@ class HasMany extends Association
                 $property,
                 (new Collection($sourceEntity->get($property)))
                 ->reject(
-                    function ($assoc) use ($targetEntities) {
-                        return in_array($assoc, $targetEntities, true);
-                    },
+                    fn($assoc) => in_array($assoc, $targetEntities, true),
                 )
                 ->toList(),
             );
@@ -506,14 +496,10 @@ class HasMany extends Association
         $primaryKey = (array)$target->getPrimaryKey();
         $exclusions = new Collection($remainingEntities);
         $exclusions = $exclusions->map(
-            function (EntityInterface $ent) use ($primaryKey) {
-                return $ent->extract($primaryKey);
-            },
+            fn(EntityInterface $ent) => $ent->extract($primaryKey),
         )
         ->filter(
-            function ($v) {
-                return !in_array(null, $v, true);
-            },
+            fn($v) => !in_array(null, $v, true),
         )
         ->toList();
 
@@ -585,7 +571,6 @@ class HasMany extends Association
      *
      * @param \Cake\ORM\Table $table the table containing the foreign key
      * @param array $properties the list of fields that compose the foreign key
-     * @return bool
      */
     protected function _foreignKeyAcceptsNull(Table $table, array $properties): bool
     {
@@ -601,8 +586,6 @@ class HasMany extends Association
 
     /**
      * Get the relationship type.
-     *
-     * @return string
      */
     public function type(): string
     {
@@ -635,7 +618,7 @@ class HasMany extends Association
      * @param \Cake\Database\ExpressionInterface|\Closure|array<\Cake\Database\ExpressionInterface|string>|string $sort A find() compatible order clause
      * @return $this
      */
-    public function setSort(ExpressionInterface|Closure|array|string $sort)
+    public function setSort(ExpressionInterface|Closure|array|string $sort): static
     {
         $this->_sort = $sort;
 
@@ -669,7 +652,6 @@ class HasMany extends Association
      * Parse extra options passed in the constructor.
      *
      * @param array<string, mixed> $options original list of options passed in constructor
-     * @return void
      */
     protected function _options(array $options): void
     {

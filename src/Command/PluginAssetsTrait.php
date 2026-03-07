@@ -33,15 +33,11 @@ trait PluginAssetsTrait
 {
     /**
      * Arguments
-     *
-     * @var \Cake\Console\Arguments
      */
     protected Arguments $args;
 
     /**
      * Console IO
-     *
-     * @var \Cake\Console\ConsoleIo
      */
     protected ConsoleIo $io;
 
@@ -102,7 +98,6 @@ trait PluginAssetsTrait
      * @param bool $copy Force copy mode. Default false.
      * @param bool $overwrite Overwrite existing files.
      * @param bool $relative Relative. Default false.
-     * @return void
      */
     protected function _process(
         array $plugins,
@@ -168,7 +163,6 @@ trait PluginAssetsTrait
      * Remove folder/symlink.
      *
      * @param array<string, mixed> $config Plugin config.
-     * @return bool
      */
     protected function _remove(array $config): bool
     {
@@ -211,7 +205,6 @@ trait PluginAssetsTrait
      * Create directory
      *
      * @param string $dir Directory name
-     * @return bool
      */
     protected function _createDirectory(string $dir): bool
     {
@@ -236,7 +229,6 @@ trait PluginAssetsTrait
      * @param string $target Target directory
      * @param string $link Link name
      * @param bool $relative Relative (true) or Absolute (false)
-     * @return bool
      */
     protected function _createSymlink(string $target, string $link, bool $relative = false): bool
     {
@@ -293,10 +285,6 @@ trait PluginAssetsTrait
 
     /**
      * Checks if symlink exist and points to the correct target.
-     *
-     * @param string $target
-     * @param string $link
-     * @return bool
      */
     protected function _isSymlinkValid(string $target, string $link): bool
     {
@@ -317,7 +305,6 @@ trait PluginAssetsTrait
      *
      * @param string $source Source directory
      * @param string $destination Destination directory
-     * @return bool
      */
     protected function _copyDirectory(string $source, string $destination): bool
     {

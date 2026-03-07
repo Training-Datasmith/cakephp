@@ -32,7 +32,6 @@ use RuntimeException;
  * ```
  *
  * @param string|null $configPath The path to the config directory. Defaults to CONFIG.
- * @return void
  * @throws \RuntimeException When the plugins.php file returns invalid data
  * @since 5.3.0
  */

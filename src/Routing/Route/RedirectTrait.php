@@ -35,8 +35,6 @@ trait RedirectTrait
 {
     /**
      * The location to redirect to.
-     *
-     * @var array
      */
     public array $redirect;
 

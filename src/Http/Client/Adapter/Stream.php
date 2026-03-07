@@ -61,8 +61,6 @@ class Stream implements AdapterInterface
 
     /**
      * Connection error list.
-     *
-     * @var array
      */
     protected array $_connectionErrors = [];
 
@@ -117,7 +115,6 @@ class Stream implements AdapterInterface
      *
      * @param \Psr\Http\Message\RequestInterface $request The request to build context from.
      * @param array<string, mixed> $options Additional request options.
-     * @return void
      */
     protected function _buildContext(RequestInterface $request, array $options): void
     {
@@ -143,7 +140,6 @@ class Stream implements AdapterInterface
      *
      * @param \Psr\Http\Message\RequestInterface $request The request being sent.
      * @param array<string, mixed> $options Array of options to use.
-     * @return void
      */
     protected function _buildHeaders(RequestInterface $request, array $options): void
     {
@@ -162,7 +158,6 @@ class Stream implements AdapterInterface
      *
      * @param \Psr\Http\Message\RequestInterface $request The request being sent.
      * @param array<string, mixed> $options Array of options to use.
-     * @return void
      */
     protected function _buildContent(RequestInterface $request, array $options): void
     {
@@ -176,7 +171,6 @@ class Stream implements AdapterInterface
      *
      * @param \Psr\Http\Message\RequestInterface $request The request being sent.
      * @param array<string, mixed> $options Array of options to use.
-     * @return void
      */
     protected function _buildOptions(RequestInterface $request, array $options): void
     {
@@ -201,7 +195,6 @@ class Stream implements AdapterInterface
      *
      * @param \Psr\Http\Message\RequestInterface $request The request being sent.
      * @param array<string, mixed> $options Array of options to use.
-     * @return void
      */
     protected function _buildSslContext(RequestInterface $request, array $options): void
     {
@@ -287,7 +280,6 @@ class Stream implements AdapterInterface
      *
      * @param array<string> $headers Unparsed headers.
      * @param string $body The response body.
-     * @return \Cake\Http\Client\Response
      */
     protected function _buildResponse(array $headers, string $body): Response
     {
@@ -299,7 +291,6 @@ class Stream implements AdapterInterface
      *
      * @param string $url The url to connect to.
      * @param \Psr\Http\Message\RequestInterface $request The request object.
-     * @return void
      * @throws \Psr\Http\Client\RequestExceptionInterface
      */
     protected function _open(string $url, RequestInterface $request): void

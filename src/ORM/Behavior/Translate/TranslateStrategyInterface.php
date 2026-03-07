@@ -32,8 +32,6 @@ interface TranslateStrategyInterface extends PropertyMarshalInterface
 {
     /**
      * Return translation table instance.
-     *
-     * @return \Cake\ORM\Table
      */
     public function getTranslationTable(): Table;
 
@@ -59,8 +57,6 @@ interface TranslateStrategyInterface extends PropertyMarshalInterface
      *
      * If no locale has been explicitly set via `setLocale()`, this method will
      * return the currently configured global locale.
-     *
-     * @return string
      */
     public function getLocale(): string;
 
@@ -72,7 +68,6 @@ interface TranslateStrategyInterface extends PropertyMarshalInterface
      * field name is returned for all other fields.
      *
      * @param string $field Field name to be aliased.
-     * @return string
      */
     public function translationField(string $field): string;
 
@@ -93,7 +88,6 @@ interface TranslateStrategyInterface extends PropertyMarshalInterface
      * @param \Cake\Event\EventInterface<\Cake\ORM\Table> $event The beforeFind event that was fired.
      * @param \Cake\ORM\Query\SelectQuery<\Cake\Datasource\EntityInterface|array> $query Query
      * @param \ArrayObject<string, mixed> $options The options for the query
-     * @return void
      */
     public function beforeFind(EventInterface $event, SelectQuery $query, ArrayObject $options): void;
 
@@ -104,7 +98,6 @@ interface TranslateStrategyInterface extends PropertyMarshalInterface
      * @param \Cake\Event\EventInterface<\Cake\ORM\Table> $event The beforeSave event that was fired
      * @param \Cake\Datasource\EntityInterface $entity The entity that is going to be saved
      * @param \ArrayObject<string, mixed> $options the options passed to the save method
-     * @return void
      */
     public function beforeSave(EventInterface $event, EntityInterface $entity, ArrayObject $options): void;
 
@@ -113,7 +106,6 @@ interface TranslateStrategyInterface extends PropertyMarshalInterface
      *
      * @param \Cake\Event\EventInterface<\Cake\ORM\Table> $event The beforeSave event that was fired
      * @param \Cake\Datasource\EntityInterface $entity The entity that is going to be saved
-     * @return void
      */
     public function afterSave(EventInterface $event, EntityInterface $entity): void;
 }

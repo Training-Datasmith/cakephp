@@ -128,7 +128,6 @@ abstract class ObjectRegistry implements Countable, IteratorAggregate
      *
      * @param string $name The name of the alias in the registry.
      * @param array<string, mixed> $config The config data for the new instance.
-     * @return void
      * @throws \Cake\Core\Exception\CakeException When a duplicate is found.
      */
     protected function _checkDuplicate(string $name, array $config): void
@@ -179,7 +178,6 @@ abstract class ObjectRegistry implements Countable, IteratorAggregate
      *
      * @param string $class The class that is missing.
      * @param string|null $plugin The plugin $class is missing from.
-     * @return void
      * @throws \Exception
      */
     abstract protected function _throwMissingClassError(string $class, ?string $plugin): void;
@@ -249,7 +247,6 @@ abstract class ObjectRegistry implements Countable, IteratorAggregate
      * Provide isset access to _loaded
      *
      * @param string $name Name of object being checked.
-     * @return bool
      */
     public function __isset(string $name): bool
     {
@@ -261,7 +258,6 @@ abstract class ObjectRegistry implements Countable, IteratorAggregate
      *
      * @param string $name Name of a property to set.
      * @param TObject $object Object to set.
-     * @return void
      */
     public function __set(string $name, object $object): void
     {
@@ -272,7 +268,6 @@ abstract class ObjectRegistry implements Countable, IteratorAggregate
      * Unsets an object.
      *
      * @param string $name Name of a property to unset.
-     * @return void
      */
     public function __unset(string $name): void
     {
@@ -381,8 +376,6 @@ abstract class ObjectRegistry implements Countable, IteratorAggregate
 
     /**
      * Returns the number of loaded objects.
-     *
-     * @return int
      */
     public function count(): int
     {

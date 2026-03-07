@@ -56,8 +56,6 @@ class CacheBeforeDecrementEvent extends Event
 
     /**
      * Get the cache key.
-     *
-     * @return string
      */
     public function getKey(): string
     {
@@ -66,8 +64,6 @@ class CacheBeforeDecrementEvent extends Event
 
     /**
      * Get the decrement offset.
-     *
-     * @return int
      */
     public function getOffset(): int
     {

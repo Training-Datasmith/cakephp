@@ -52,7 +52,6 @@ class RulesChecker extends BaseRulesChecker
      * @param array<string> $fields The list of fields to check for uniqueness.
      * @param array<string, mixed>|string|null $message The error message to show in case the rule does not pass. Can
      *   also be an array of options. When an array, the 'message' key can be used to provide a message.
-     * @return \Cake\Datasource\RuleInvoker
      */
     public function isUnique(array $fields, array|string|null $message = null): RuleInvoker
     {
@@ -97,7 +96,6 @@ class RulesChecker extends BaseRulesChecker
      *   where the fields existence will be checked.
      * @param array<string, mixed>|string|null $message The error message to show in case the rule does not pass. Can
      *   also be an array of options. When an array, the 'message' key can be used to provide a message.
-     * @return \Cake\Datasource\RuleInvoker
      */
     public function existsIn(
         array|string $field,
@@ -148,7 +146,6 @@ class RulesChecker extends BaseRulesChecker
      *   where the fields existence will be checked.
      * @param array<string, mixed>|string|null $message The error message to show in case the rule does not pass. Can
      *   also be an array of options. When an array, the 'message' key can be used to provide a message.
-     * @return \Cake\Datasource\RuleInvoker
      * @since 5.3.0
      */
     public function existsInNullable(
@@ -196,7 +193,6 @@ class RulesChecker extends BaseRulesChecker
      * @param string|null $field The name of the association property. When supplied, this is the name used to set
      *  possible errors. When absent, the name is inferred from `$association`.
      * @param string|null $message The error message to show in case the rule does not pass.
-     * @return \Cake\Datasource\RuleInvoker
      * @since 4.0.0
      */
     public function isLinkedTo(
@@ -229,7 +225,6 @@ class RulesChecker extends BaseRulesChecker
      * @param string|null $field The name of the association property. When supplied, this is the name used to set
      *  possible errors. When absent, the name is inferred from `$association`.
      * @param string|null $message The error message to show in case the rule does not pass.
-     * @return \Cake\Datasource\RuleInvoker
      * @since 4.0.0
      */
     public function isNotLinkedTo(
@@ -255,7 +250,6 @@ class RulesChecker extends BaseRulesChecker
      * @param string|null $message The error message to show in case the rule does not pass.
      * @param string $linkStatus The link status required for the check to pass.
      * @param string $ruleName The alias/name of the rule.
-     * @return \Cake\Datasource\RuleInvoker
      * @throws \InvalidArgumentException In case the `$association` argument is of an invalid type.
      * @since 4.0.0
      * @see \Cake\ORM\RulesChecker::isLinkedTo()
@@ -317,7 +311,6 @@ class RulesChecker extends BaseRulesChecker
      * @param int $count The expected count.
      * @param string $operator The operator for the count comparison.
      * @param string|null $message The error message to show in case the rule does not pass.
-     * @return \Cake\Datasource\RuleInvoker
      */
     public function validCount(
         string $field,

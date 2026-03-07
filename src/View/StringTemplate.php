@@ -96,8 +96,6 @@ class StringTemplate
 
     /**
      * A stack of template sets that have been stashed temporarily.
-     *
-     * @var array
      */
     protected array $_configStack = [];
 
@@ -120,8 +118,6 @@ class StringTemplate
 
     /**
      * Push the current templates into the template stack.
-     *
-     * @return void
      */
     public function push(): void
     {
@@ -133,8 +129,6 @@ class StringTemplate
 
     /**
      * Restore the most recently pushed set of templates.
-     *
-     * @return void
      */
     public function pop(): void
     {
@@ -159,7 +153,7 @@ class StringTemplate
      * @param array<string, string> $templates An associative list of named templates.
      * @return $this
      */
-    public function add(array $templates)
+    public function add(array $templates): static
     {
         $this->setConfig($templates);
         $this->_compileTemplates(array_keys($templates));
@@ -171,7 +165,6 @@ class StringTemplate
      * Compile templates into a more efficient printf() compatible format.
      *
      * @param array<string> $templates The template names to compile. If empty all templates will be compiled.
-     * @return void
      */
     protected function _compileTemplates(array $templates = []): void
     {
@@ -206,7 +199,6 @@ class StringTemplate
      * templates.
      *
      * @param string $file The file to load
-     * @return void
      */
     public function load(string $file): void
     {
@@ -223,7 +215,6 @@ class StringTemplate
      * Remove the named template.
      *
      * @param string $name The template to remove.
-     * @return void
      */
     public function remove(string $name): void
     {

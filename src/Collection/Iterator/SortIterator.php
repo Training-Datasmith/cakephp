@@ -102,8 +102,6 @@ class SortIterator extends Collection
 
     /**
      * {@inheritDoc}
-     *
-     * @return \Iterator
      */
     public function unwrap(): Iterator
     {

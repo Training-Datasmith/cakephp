@@ -37,17 +37,8 @@ class EnumType extends BaseType
 {
     /**
      * The type of the enum which is either string or int
-     *
-     * @var string
      */
     protected string $backingType;
-
-    /**
-     * The enum classname which is associated to the type instance
-     *
-     * @var class-string<\BackedEnum>
-     */
-    protected string $enumClassName;
 
     /**
      * @param string $name The name identifying this type
@@ -55,17 +46,19 @@ class EnumType extends BaseType
      */
     public function __construct(
         string $name,
-        string $enumClassName,
+        /**
+         * The enum classname which is associated to the type instance
+         */
+        protected string $enumClassName,
     ) {
         parent::__construct($name);
-        $this->enumClassName = $enumClassName;
 
         try {
-            $reflectionEnum = new ReflectionEnum($enumClassName);
+            $reflectionEnum = new ReflectionEnum($this->enumClassName);
         } catch (ReflectionException $e) {
             throw new DatabaseException(sprintf(
                 'Unable to use `%s` for type `%s`. %s.',
-                $enumClassName,
+                $this->enumClassName,
                 $name,
                 $e->getMessage(),
             ));
@@ -74,7 +67,7 @@ class EnumType extends BaseType
         $namedType = $reflectionEnum->getBackingType();
         if ($namedType === null) {
             throw new DatabaseException(
-                sprintf('Unable to use enum `%s` for type `%s`, must be a backed enum.', $enumClassName, $name),
+                sprintf('Unable to use enum `%s` for type `%s`, must be a backed enum.', $this->enumClassName, $name),
             );
         }
 
@@ -86,7 +79,6 @@ class EnumType extends BaseType
      *
      * @param mixed $value The value to convert.
      * @param \Cake\Database\Driver $driver The driver instance to convert with.
-     * @return string|int|null
      * @throws \InvalidArgumentException When the given value is not a valid value for the associated enum
      */
     public function toDatabase(mixed $value, Driver $driver): string|int|null
@@ -132,7 +124,6 @@ class EnumType extends BaseType
      *
      * @param mixed $value The value to convert.
      * @param \Cake\Database\Driver $driver The driver instance to convert with.
-     * @return \BackedEnum|null
      */
     public function toPHP(mixed $value, Driver $driver): ?BackedEnum
     {
@@ -206,7 +197,6 @@ class EnumType extends BaseType
      * ```
      *
      * @param class-string<\BackedEnum> $enumClassName The enum class name
-     * @return string
      */
     public static function from(string $enumClassName): string
     {

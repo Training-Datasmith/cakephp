@@ -315,7 +315,6 @@ class SqlserverSchemaDialect extends SchemaDialect
      *
      * @param string $type The schema type
      * @param string|null $default The default value.
-     * @return string|int|null
      */
     protected function _defaultValue(string $type, ?string $default): string|int|null
     {
@@ -358,8 +357,6 @@ class SqlserverSchemaDialect extends SchemaDialect
 
     /**
      * Get the query to describe indexes
-     *
-     * @return string
      */
     private function describeIndexQuery(): string
     {
@@ -464,8 +461,6 @@ class SqlserverSchemaDialect extends SchemaDialect
 
     /**
      * Get the query to describe foreign keys
-     *
-     * @return string
      */
     private function describeForeignKeyQuery(): string
     {
@@ -709,7 +704,7 @@ class SqlserverSchemaDialect extends SchemaDialect
             $foundType = true;
         }
         if (!$foundType) {
-            $out .= ' ' . strtoupper($column['type']);
+            $out .= ' ' . strtoupper((string) $column['type']);
             $hasLength[] = $column['type'];
         }
         if (in_array($column['type'], $hasLength, true) && isset($column['length'])) {
@@ -873,7 +868,6 @@ class SqlserverSchemaDialect extends SchemaDialect
      *
      * @param string $prefix The key prefix
      * @param array $data Key data.
-     * @return string
      */
     protected function _keySql(string $prefix, array $data): string
     {
@@ -925,7 +919,6 @@ class SqlserverSchemaDialect extends SchemaDialect
      * @param \Cake\Database\Schema\TableSchema $schema The table schema.
      * @param string $name The column name.
      * @param string $comment The column comment.
-     * @return string
      */
     protected function columnCommentSql(TableSchema $schema, string $name, string $comment): string
     {

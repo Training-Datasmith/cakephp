@@ -28,8 +28,6 @@ class CommonTableExpression implements ExpressionInterface
 {
     /**
      * The CTE name.
-     *
-     * @var \Cake\Database\Expression\IdentifierExpression
      */
     protected IdentifierExpression $name;
 
@@ -42,22 +40,16 @@ class CommonTableExpression implements ExpressionInterface
 
     /**
      * The CTE query definition.
-     *
-     * @var \Cake\Database\ExpressionInterface|null
      */
     protected ?ExpressionInterface $query = null;
 
     /**
      * Whether the CTE is materialized or not materialized.
-     *
-     * @var string|null
      */
     protected ?string $materialized = null;
 
     /**
      * Whether the CTE is recursive.
-     *
-     * @var bool
      */
     protected bool $recursive = false;
 
@@ -84,7 +76,7 @@ class CommonTableExpression implements ExpressionInterface
      * @param string $name The CTE name.
      * @return $this
      */
-    public function name(string $name)
+    public function name(string $name): static
     {
         $this->name = new IdentifierExpression($name);
 
@@ -97,7 +89,7 @@ class CommonTableExpression implements ExpressionInterface
      * @param \Cake\Database\ExpressionInterface|\Closure $query CTE query
      * @return $this
      */
-    public function query(ExpressionInterface|Closure $query)
+    public function query(ExpressionInterface|Closure $query): static
     {
         if ($query instanceof Closure) {
             $query = $query();
@@ -118,7 +110,7 @@ class CommonTableExpression implements ExpressionInterface
      * @param \Cake\Database\Expression\IdentifierExpression|array<string>|array<\Cake\Database\Expression\IdentifierExpression>|string $fields Field names
      * @return $this
      */
-    public function field(IdentifierExpression|array|string $fields)
+    public function field(IdentifierExpression|array|string $fields): static
     {
         $fields = (array)$fields;
         /** @var array<string|\Cake\Database\Expression\IdentifierExpression> $fields */
@@ -139,7 +131,7 @@ class CommonTableExpression implements ExpressionInterface
      *
      * @return $this
      */
-    public function materialized()
+    public function materialized(): static
     {
         $this->materialized = 'MATERIALIZED';
 
@@ -151,7 +143,7 @@ class CommonTableExpression implements ExpressionInterface
      *
      * @return $this
      */
-    public function notMaterialized()
+    public function notMaterialized(): static
     {
         $this->materialized = 'NOT MATERIALIZED';
 
@@ -160,8 +152,6 @@ class CommonTableExpression implements ExpressionInterface
 
     /**
      * Gets whether this CTE is recursive.
-     *
-     * @return bool
      */
     public function isRecursive(): bool
     {
@@ -173,7 +163,7 @@ class CommonTableExpression implements ExpressionInterface
      *
      * @return $this
      */
-    public function recursive()
+    public function recursive(): static
     {
         $this->recursive = true;
 
@@ -187,7 +177,7 @@ class CommonTableExpression implements ExpressionInterface
     {
         $fields = '';
         if ($this->fields) {
-            $expressions = array_map(fn(IdentifierExpression $e) => $e->sql($binder), $this->fields);
+            $expressions = array_map(fn(IdentifierExpression $e): string => $e->sql($binder), $this->fields);
             $fields = sprintf('(%s)', implode(', ', $expressions));
         }
 
@@ -205,7 +195,7 @@ class CommonTableExpression implements ExpressionInterface
     /**
      * @inheritDoc
      */
-    public function traverse(Closure $callback)
+    public function traverse(Closure $callback): static
     {
         $callback($this->name);
         foreach ($this->fields as $field) {

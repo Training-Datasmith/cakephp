@@ -23,7 +23,6 @@ trait PHPUnitConsecutiveTrait
     /**
      * @param array $firstCallArguments The call arguments
      * @param array ...$consecutiveCallsArguments Additional arguments
-     * @return iterable
      */
     public static function withConsecutive(array $firstCallArguments, array ...$consecutiveCallsArguments): iterable
     {

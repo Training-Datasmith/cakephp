@@ -26,9 +26,6 @@ use function Cake\Core\deprecationWarning;
  */
 class WindowExpression implements ExpressionInterface, WindowInterface
 {
-    /**
-     * @var \Cake\Database\Expression\IdentifierExpression
-     */
     protected IdentifierExpression $name;
 
     /**
@@ -36,19 +33,10 @@ class WindowExpression implements ExpressionInterface, WindowInterface
      */
     protected array $partitions = [];
 
-    /**
-     * @var \Cake\Database\Expression\OrderByExpression|null
-     */
     protected ?OrderByExpression $order = null;
 
-    /**
-     * @var array|null
-     */
     protected ?array $frame = null;
 
-    /**
-     * @var string|null
-     */
     protected ?string $exclusion = null;
 
     /**
@@ -64,8 +52,6 @@ class WindowExpression implements ExpressionInterface, WindowInterface
      *
      * These window expressions only specify a named window and do not
      * specify their own partitions, frame or order.
-     *
-     * @return bool
      */
     public function isNamedOnly(): bool
     {
@@ -78,7 +64,7 @@ class WindowExpression implements ExpressionInterface, WindowInterface
      * @param string $name Window name
      * @return $this
      */
-    public function name(string $name)
+    public function name(string $name): static
     {
         $this->name = new IdentifierExpression($name);
 
@@ -88,7 +74,7 @@ class WindowExpression implements ExpressionInterface, WindowInterface
     /**
      * @inheritDoc
      */
-    public function partition(ExpressionInterface|Closure|array|string $partitions)
+    public function partition(ExpressionInterface|Closure|array|string $partitions): static
     {
         if (!$partitions) {
             return $this;
@@ -129,7 +115,7 @@ class WindowExpression implements ExpressionInterface, WindowInterface
     /**
      * @inheritDoc
      */
-    public function orderBy(ExpressionInterface|Closure|array|string $fields)
+    public function orderBy(ExpressionInterface|Closure|array|string $fields): static
     {
         if (!$fields) {
             return $this;
@@ -179,7 +165,7 @@ class WindowExpression implements ExpressionInterface, WindowInterface
         string $startDirection,
         ExpressionInterface|string|int|null $endOffset,
         string $endDirection,
-    ) {
+    ): static {
         $this->frame = [
             'type' => $type,
             'start' => [
@@ -198,7 +184,7 @@ class WindowExpression implements ExpressionInterface, WindowInterface
     /**
      * @inheritDoc
      */
-    public function excludeCurrent()
+    public function excludeCurrent(): static
     {
         $this->exclusion = 'CURRENT ROW';
 
@@ -208,7 +194,7 @@ class WindowExpression implements ExpressionInterface, WindowInterface
     /**
      * @inheritDoc
      */
-    public function excludeGroup()
+    public function excludeGroup(): static
     {
         $this->exclusion = 'GROUP';
 
@@ -218,7 +204,7 @@ class WindowExpression implements ExpressionInterface, WindowInterface
     /**
      * @inheritDoc
      */
-    public function excludeTies()
+    public function excludeTies(): static
     {
         $this->exclusion = 'TIES';
 
@@ -275,7 +261,7 @@ class WindowExpression implements ExpressionInterface, WindowInterface
     /**
      * @inheritDoc
      */
-    public function traverse(Closure $callback)
+    public function traverse(Closure $callback): static
     {
         $callback($this->name);
         foreach ($this->partitions as $partition) {
@@ -310,7 +296,6 @@ class WindowExpression implements ExpressionInterface, WindowInterface
      * @param \Cake\Database\ValueBinder $binder Value binder
      * @param \Cake\Database\ExpressionInterface|string|int|null $offset Frame offset
      * @param string $direction Frame offset direction
-     * @return string
      */
     protected function buildOffsetSql(
         ValueBinder $binder,

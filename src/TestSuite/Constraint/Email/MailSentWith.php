@@ -23,9 +23,6 @@ namespace Cake\TestSuite\Constraint\Email;
  */
 class MailSentWith extends MailConstraintBase
 {
-    /**
-     * @var string
-     */
     protected string $method;
 
     /**
@@ -47,7 +44,6 @@ class MailSentWith extends MailConstraintBase
      * Checks constraint
      *
      * @param mixed $other Constraint check
-     * @return bool
      */
     public function matches(mixed $other): bool
     {
@@ -71,8 +67,6 @@ class MailSentWith extends MailConstraintBase
 
     /**
      * Assertion message string
-     *
-     * @return string
      */
     public function toString(): string
     {

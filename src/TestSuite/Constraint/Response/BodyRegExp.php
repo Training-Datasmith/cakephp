@@ -26,7 +26,6 @@ class BodyRegExp extends ResponseBase
      * Checks assertion
      *
      * @param mixed $other Expected pattern
-     * @return bool
      */
     public function matches(mixed $other): bool
     {
@@ -35,8 +34,6 @@ class BodyRegExp extends ResponseBase
 
     /**
      * Assertion message
-     *
-     * @return string
      */
     public function toString(): string
     {
@@ -45,7 +42,6 @@ class BodyRegExp extends ResponseBase
 
     /**
      * @param mixed $other Expected
-     * @return string
      */
     public function failureDescription(mixed $other): string
     {

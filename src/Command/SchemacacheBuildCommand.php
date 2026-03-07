@@ -31,8 +31,6 @@ class SchemacacheBuildCommand extends Command
 {
     /**
      * Get the command name.
-     *
-     * @return string
      */
     public static function defaultName(): string
     {
@@ -81,7 +79,6 @@ class SchemacacheBuildCommand extends Command
      * Get the option parser.
      *
      * @param \Cake\Console\ConsoleOptionParser $parser The option parser to update
-     * @return \Cake\Console\ConsoleOptionParser
      */
     public function buildOptionParser(ConsoleOptionParser $parser): ConsoleOptionParser
     {

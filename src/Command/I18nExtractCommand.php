@@ -48,15 +48,11 @@ class I18nExtractCommand extends Command
 
     /**
      * Merge all domain strings into the default.pot file
-     *
-     * @var bool
      */
     protected bool $_merge = false;
 
     /**
      * Current file being processed
-     *
-     * @var string
      */
     protected string $_file = '';
 
@@ -69,8 +65,6 @@ class I18nExtractCommand extends Command
 
     /**
      * Extracted tokens
-     *
-     * @var array
      */
     protected array $_tokens = [];
 
@@ -83,8 +77,6 @@ class I18nExtractCommand extends Command
 
     /**
      * Destination path
-     *
-     * @var string
      */
     protected string $_output = '';
 
@@ -97,22 +89,16 @@ class I18nExtractCommand extends Command
 
     /**
      * Holds whether this call should extract the CakePHP Lib messages
-     *
-     * @var bool
      */
     protected bool $_extractCore = false;
 
     /**
      * Displays marker error(s) if true
-     *
-     * @var bool
      */
     protected bool $_markerError = false;
 
     /**
      * Count number of marker errors found
-     *
-     * @var int
      */
     protected int $_countMarkerError = 0;
 
@@ -136,7 +122,6 @@ class I18nExtractCommand extends Command
      * Method to interact with the user and get path selections.
      *
      * @param \Cake\Console\ConsoleIo $io The io instance.
-     * @return void
      */
     protected function _getPaths(ConsoleIo $io): void
     {
@@ -297,7 +282,6 @@ class I18nExtractCommand extends Command
      * @param string $domain The domain
      * @param string $msgid The message string
      * @param array<string, mixed> $details Context and plural form if any, file and line references
-     * @return void
      */
     protected function _addTranslation(string $domain, string $msgid, array $details = []): void
     {
@@ -324,7 +308,6 @@ class I18nExtractCommand extends Command
      *
      * @param \Cake\Console\Arguments $args The Arguments instance
      * @param \Cake\Console\ConsoleIo $io The io instance
-     * @return void
      */
     protected function _extract(Arguments $args, ConsoleIo $io): void
     {
@@ -359,7 +342,6 @@ class I18nExtractCommand extends Command
      * Gets the option parser instance and configures it.
      *
      * @param \Cake\Console\ConsoleOptionParser $parser The parser to configure
-     * @return \Cake\Console\ConsoleOptionParser
      */
     public function buildOptionParser(ConsoleOptionParser $parser): ConsoleOptionParser
     {
@@ -415,7 +397,6 @@ class I18nExtractCommand extends Command
      *
      * @param \Cake\Console\Arguments $args The io instance
      * @param \Cake\Console\ConsoleIo $io The io instance
-     * @return void
      */
     protected function _extractTokens(Arguments $args, ConsoleIo $io): void
     {
@@ -473,7 +454,6 @@ class I18nExtractCommand extends Command
      * @param \Cake\Console\ConsoleIo $io The io instance
      * @param string $functionName Function name that indicates translatable string (e.g: '__')
      * @param array $map Array containing what variables it will find (e.g: domain, singular, plural)
-     * @return void
      */
     protected function _parse(ConsoleIo $io, string $functionName, array $map): void
     {
@@ -534,16 +514,13 @@ class I18nExtractCommand extends Command
      * Build the translate template file contents out of obtained strings
      *
      * @param \Cake\Console\Arguments $args Console arguments
-     * @return void
      */
     protected function _buildFiles(Arguments $args): void
     {
         $paths = $this->_paths;
         $paths[] = realpath(APP) . DIRECTORY_SEPARATOR;
 
-        usort($paths, function (string $a, string $b) {
-            return strlen($a) - strlen($b);
-        });
+        usort($paths, fn(string $a, string $b) => strlen($a) - strlen($b));
 
         foreach ($this->_translations as $domain => $translations) {
             foreach ($translations as $msgid => $contexts) {
@@ -597,7 +574,6 @@ class I18nExtractCommand extends Command
      * @param string $domain The domain
      * @param string $header The header content.
      * @param string $sentence The sentence to store.
-     * @return void
      */
     protected function _store(string $domain, string $header, string $sentence): void
     {
@@ -615,7 +591,6 @@ class I18nExtractCommand extends Command
      *
      * @param \Cake\Console\Arguments $args The command arguments.
      * @param \Cake\Console\ConsoleIo $io The console io
-     * @return void
      */
     protected function _writeFiles(Arguments $args, ConsoleIo $io): void
     {
@@ -686,9 +661,8 @@ class I18nExtractCommand extends Command
         $output .= "\"MIME-Version: 1.0\\n\"\n";
         $output .= "\"Content-Type: text/plain; charset=utf-8\\n\"\n";
         $output .= "\"Content-Transfer-Encoding: 8bit\\n\"\n";
-        $output .= "\"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\\n\"\n\n";
 
-        return $output;
+        return $output . "\"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\\n\"\n\n";
     }
 
     /**
@@ -787,7 +761,6 @@ class I18nExtractCommand extends Command
      * @param int $line Line number
      * @param string $marker Marker found
      * @param int $count Count
-     * @return void
      */
     protected function _markerError(ConsoleIo $io, string $file, int $line, string $marker, int $count): void
     {
@@ -824,8 +797,6 @@ class I18nExtractCommand extends Command
 
     /**
      * Search files that may contain translatable strings
-     *
-     * @return void
      */
     protected function _searchFiles(): void
     {
@@ -863,8 +834,6 @@ class I18nExtractCommand extends Command
     /**
      * Returns whether this execution is meant to extract string only from directories in folder represented by the
      * APP constant, i.e. this task is extracting strings from same application.
-     *
-     * @return bool
      */
     protected function _isExtractingApp(): bool
     {

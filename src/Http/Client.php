@@ -140,22 +140,16 @@ class Client implements EventDispatcherInterface, ClientInterface
      *
      * Cookies are indexed by the cookie's domain or
      * request host name.
-     *
-     * @var \Cake\Http\Cookie\CookieCollection
      */
     protected CookieCollection $_cookies;
 
     /**
      * Mock adapter for stubbing requests in tests.
-     *
-     * @var \Cake\Http\Client\Adapter\Mock|null
      */
     protected static ?MockAdapter $_mockAdapter = null;
 
     /**
      * Adapter for sending requests.
-     *
-     * @var \Cake\Http\Client\AdapterInterface
      */
     protected AdapterInterface $_adapter;
 
@@ -228,7 +222,6 @@ class Client implements EventDispatcherInterface, ClientInterface
      * Other parts of the url string are ignored.
      *
      * @param string $url A string URL e.g. https://example.com
-     * @return static
      * @throws \InvalidArgumentException
      */
     public static function createFromUrl(string $url): static
@@ -258,8 +251,6 @@ class Client implements EventDispatcherInterface, ClientInterface
 
     /**
      * Get the cookies stored in the Client.
-     *
-     * @return \Cake\Http\Cookie\CookieCollection
      */
     public function cookies(): CookieCollection
     {
@@ -273,7 +264,7 @@ class Client implements EventDispatcherInterface, ClientInterface
      * @return $this
      * @throws \InvalidArgumentException
      */
-    public function addCookie(CookieInterface $cookie)
+    public function addCookie(CookieInterface $cookie): static
     {
         if (!$cookie->getDomain() || !$cookie->getPath()) {
             throw new InvalidArgumentException('Cookie must have a domain and a path set.');
@@ -294,7 +285,6 @@ class Client implements EventDispatcherInterface, ClientInterface
      * @param string $url The url or path you want to request.
      * @param array|string $data The query data you want to send.
      * @param array<string, mixed> $options Additional options for the request.
-     * @return \Cake\Http\Client\Response
      */
     public function get(string $url, array|string $data = [], array $options = []): Response
     {
@@ -320,7 +310,6 @@ class Client implements EventDispatcherInterface, ClientInterface
      * @param string $url The url or path you want to request.
      * @param mixed $data The post data you want to send.
      * @param array<string, mixed> $options Additional options for the request.
-     * @return \Cake\Http\Client\Response
      */
     public function post(string $url, mixed $data = [], array $options = []): Response
     {
@@ -336,7 +325,6 @@ class Client implements EventDispatcherInterface, ClientInterface
      * @param string $url The url or path you want to request.
      * @param mixed $data The request data you want to send.
      * @param array<string, mixed> $options Additional options for the request.
-     * @return \Cake\Http\Client\Response
      */
     public function put(string $url, mixed $data = [], array $options = []): Response
     {
@@ -352,7 +340,6 @@ class Client implements EventDispatcherInterface, ClientInterface
      * @param string $url The url or path you want to request.
      * @param mixed $data The request data you want to send.
      * @param array<string, mixed> $options Additional options for the request.
-     * @return \Cake\Http\Client\Response
      */
     public function patch(string $url, mixed $data = [], array $options = []): Response
     {
@@ -368,7 +355,6 @@ class Client implements EventDispatcherInterface, ClientInterface
      * @param string $url The url or path you want to request.
      * @param mixed $data The request data you want to send.
      * @param array<string, mixed> $options Additional options for the request.
-     * @return \Cake\Http\Client\Response
      */
     public function options(string $url, mixed $data = [], array $options = []): Response
     {
@@ -384,7 +370,6 @@ class Client implements EventDispatcherInterface, ClientInterface
      * @param string $url The url or path you want to request.
      * @param mixed $data The request data you want to send.
      * @param array<string, mixed> $options Additional options for the request.
-     * @return \Cake\Http\Client\Response
      */
     public function trace(string $url, mixed $data = [], array $options = []): Response
     {
@@ -400,7 +385,6 @@ class Client implements EventDispatcherInterface, ClientInterface
      * @param string $url The url or path you want to request.
      * @param mixed $data The request data you want to send.
      * @param array<string, mixed> $options Additional options for the request.
-     * @return \Cake\Http\Client\Response
      */
     public function delete(string $url, mixed $data = [], array $options = []): Response
     {
@@ -416,7 +400,6 @@ class Client implements EventDispatcherInterface, ClientInterface
      * @param string $url The url or path you want to request.
      * @param array $data The query string data you want to send.
      * @param array<string, mixed> $options Additional options for the request.
-     * @return \Cake\Http\Client\Response
      */
     public function head(string $url, array $data = [], array $options = []): Response
     {
@@ -433,7 +416,6 @@ class Client implements EventDispatcherInterface, ClientInterface
      * @param string $url URL to request.
      * @param mixed $data The request body.
      * @param array<string, mixed> $options The options to use. Contains auth, proxy, etc.
-     * @return \Cake\Http\Client\Response
      */
     protected function _doRequest(string $method, string $url, mixed $data, array $options): Response
     {
@@ -478,7 +460,6 @@ class Client implements EventDispatcherInterface, ClientInterface
      *
      * @param \Psr\Http\Message\RequestInterface $request The request to send.
      * @param array<string, mixed> $options Additional options to use.
-     * @return \Cake\Http\Client\Response
      */
     public function send(RequestInterface $request, array $options = []): Response
     {
@@ -538,8 +519,6 @@ class Client implements EventDispatcherInterface, ClientInterface
 
     /**
      * Clear all mocked responses
-     *
-     * @return void
      */
     public static function clearMockResponses(): void
     {
@@ -574,7 +553,6 @@ class Client implements EventDispatcherInterface, ClientInterface
      * @param string $url The URL being matched. See above for examples.
      * @param \Cake\Http\Client\Response $response The response that matches the request.
      * @param array<string, mixed> $options See above.
-     * @return void
      */
     public static function addMockResponse(string $method, string $url, Response $response, array $options = []): void
     {
@@ -590,7 +568,6 @@ class Client implements EventDispatcherInterface, ClientInterface
      *
      * @param \Psr\Http\Message\RequestInterface $request The request to send.
      * @param array<string, mixed> $options Additional options to use.
-     * @return \Cake\Http\Client\Response
      */
     protected function _sendRequest(RequestInterface $request, array $options): Response
     {
@@ -653,11 +630,10 @@ class Client implements EventDispatcherInterface, ClientInterface
             $out .= ':' . $options['port'];
         }
         if (!empty($options['basePath'])) {
-            $out .= '/' . trim($options['basePath'], '/');
+            $out .= '/' . trim((string) $options['basePath'], '/');
         }
-        $out .= '/' . ltrim($url, '/');
 
-        return $out;
+        return $out . ('/' . ltrim($url, '/'));
     }
 
     /**
@@ -667,7 +643,6 @@ class Client implements EventDispatcherInterface, ClientInterface
      * @param string $url The url including query string.
      * @param mixed $data The request body.
      * @param array<string, mixed> $options The options to use. Contains auth, proxy, etc.
-     * @return \Cake\Http\Client\Request
      */
     protected function _createRequest(string $method, string $url, mixed $data, array $options): Request
     {
@@ -784,7 +759,7 @@ class Client implements EventDispatcherInterface, ClientInterface
         if (empty($auth['type'])) {
             $auth['type'] = 'basic';
         }
-        $name = ucfirst($auth['type']);
+        $name = ucfirst((string) $auth['type']);
         $class = App::className($name, 'Http/Client/Auth');
         if (!$class) {
             throw new CakeException(

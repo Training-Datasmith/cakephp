@@ -56,7 +56,6 @@ class Socket
     /**
      * This boolean contains the current state of the Socket class
      *
-     * @var bool
      * @deprecated 5.2.9 Use isConnected() instead.
      */
     protected bool $connected = false;
@@ -70,8 +69,6 @@ class Socket
 
     /**
      * True if the socket stream is encrypted after a {@link \Cake\Network\Socket::enableCrypto()} call
-     *
-     * @var bool
      */
     protected bool $encrypted = false;
 
@@ -124,8 +121,8 @@ class Socket
             $this->disconnect();
         }
 
-        if (str_contains($this->_config['host'], '://')) {
-            [$this->_config['protocol'], $this->_config['host']] = explode('://', $this->_config['host']);
+        if (str_contains((string) $this->_config['host'], '://')) {
+            [$this->_config['protocol'], $this->_config['host']] = explode('://', (string) $this->_config['host']);
         }
         $scheme = null;
         if (!empty($this->_config['protocol'])) {
@@ -189,8 +186,6 @@ class Socket
 
     /**
      * Check the connection status after calling `connect()`.
-     *
-     * @return bool
      */
     public function isConnected(): bool
     {
@@ -236,7 +231,6 @@ class Socket
      * Configure the SSL context options.
      *
      * @param string $host The host name being connected to.
-     * @return void
      */
     protected function _setSslContext(string $host): void
     {
@@ -272,7 +266,6 @@ class Socket
      *
      * @param int $code Code number.
      * @param string $message Message.
-     * @return void
      */
     protected function _connectionErrorHandler(int $code, string $message): void
     {
@@ -354,7 +347,6 @@ class Socket
      *
      * @param int|null $errNum Error code
      * @param string $errStr Error string
-     * @return void
      */
     public function setLastError(?int $errNum, string $errStr): void
     {
@@ -453,7 +445,6 @@ class Socket
      * Resets the state of this Socket instance to its initial state (before __construct() got executed)
      *
      * @param array|null $state Array with key and values to reset
-     * @return void
      */
     public function reset(?array $state = null): void
     {
@@ -476,7 +467,6 @@ class Socket
      * @param string $type can be one of 'ssl2', 'ssl3', 'ssl23' or 'tls'
      * @param string $clientOrServer can be one of 'client', 'server'. Default is 'client'
      * @param bool $enable enable or disable encryption. Default is true (enable)
-     * @return void
      * @throws \InvalidArgumentException When an invalid encryption scheme is chosen.
      * @throws \Cake\Network\Exception\SocketException When attempting to enable SSL/TLS fails
      * @see stream_socket_enable_crypto
@@ -518,8 +508,6 @@ class Socket
 
     /**
      * Check the encryption status after calling `enableCrypto()`.
-     *
-     * @return bool
      */
     public function isEncrypted(): bool
     {

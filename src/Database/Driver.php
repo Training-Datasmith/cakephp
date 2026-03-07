@@ -69,8 +69,6 @@ abstract class Driver implements LoggerAwareInterface
 
     /**
      * Instance of PDO.
-     *
-     * @var \PDO|null
      */
     protected ?PDO $pdo = null;
 
@@ -92,57 +90,41 @@ abstract class Driver implements LoggerAwareInterface
     /**
      * Indicates whether the driver is doing automatic identifier quoting
      * for all queries
-     *
-     * @var bool
      */
     protected bool $_autoQuoting = false;
 
     /**
      * String used to start a database identifier quoting to make it safe
-     *
-     * @var string
      */
     protected string $_startQuote = '';
 
     /**
      * String used to end a database identifier quoting to make it safe
-     *
-     * @var string
      */
     protected string $_endQuote = '';
 
     /**
      * Identifier quoter
-     *
-     * @var \Cake\Database\IdentifierQuoter|null
      */
     protected ?IdentifierQuoter $quoter = null;
 
     /**
      * The server version
-     *
-     * @var string|null
      */
     protected ?string $_version = null;
 
     /**
      * Whether to log queries generated during this connection.
-     *
-     * @var bool
      */
     protected bool $logQueries = false;
 
     /**
      * The last number of connection retry attempts.
-     *
-     * @var int
      */
     protected int $connectRetries = 0;
 
     /**
      * The schema dialect for this driver
-     *
-     * @var \Cake\Database\Schema\SchemaDialect
      */
     protected SchemaDialect $_schemaDialect;
 
@@ -185,7 +167,6 @@ abstract class Driver implements LoggerAwareInterface
      *
      * @param string $dsn A Driver-specific PDO-DSN
      * @param array<string, mixed> $config configuration to be used for creating connection
-     * @return \PDO
      */
     protected function createPdo(string $dsn, array $config): PDO
     {
@@ -217,14 +198,11 @@ abstract class Driver implements LoggerAwareInterface
      * Establishes a connection to the database server.
      *
      * @throws \Cake\Database\Exception\MissingConnectionException If database connection could not be established.
-     * @return void
      */
     abstract public function connect(): void;
 
     /**
      * Disconnects from database server.
-     *
-     * @return void
      */
     public function disconnect(): void
     {
@@ -234,8 +212,6 @@ abstract class Driver implements LoggerAwareInterface
 
     /**
      * Returns connected server version.
-     *
-     * @return string
      */
     public function version(): string
     {
@@ -244,8 +220,6 @@ abstract class Driver implements LoggerAwareInterface
 
     /**
      * Get the PDO connection instance.
-     *
-     * @return \PDO
      */
     protected function getPdo(): PDO
     {
@@ -326,7 +300,6 @@ abstract class Driver implements LoggerAwareInterface
      *
      * @param \Cake\Database\StatementInterface $statement Statement to execute.
      * @param array|null $params List of values to be bound to query.
-     * @return void
      */
     protected function executeStatement(StatementInterface $statement, ?array $params = null): void
     {
@@ -369,11 +342,6 @@ abstract class Driver implements LoggerAwareInterface
 
     /**
      * Create a QueryException from a PDOException
-     *
-     * @param \PDOException $exception
-     * @param \Cake\Database\StatementInterface $statement
-     * @param array|null $params
-     * @return \Cake\Database\Exception\QueryException
      */
     protected function createQueryException(
         PDOException $exception,
@@ -394,7 +362,6 @@ abstract class Driver implements LoggerAwareInterface
      * Prepares a sql statement to be executed.
      *
      * @param \Cake\Database\Query|string $query The query to turn into a prepared statement.
-     * @return \Cake\Database\StatementInterface
      */
     public function prepare(Query|string $query): StatementInterface
     {
@@ -407,7 +374,6 @@ abstract class Driver implements LoggerAwareInterface
             );
         }
 
-        /** @var \Cake\Database\StatementInterface */
         return new (static::STATEMENT_CLASS)($statement, $this, $this->getResultSetDecorators($query));
     }
 
@@ -482,8 +448,6 @@ abstract class Driver implements LoggerAwareInterface
 
     /**
      * Returns whether a transaction is active for connection.
-     *
-     * @return bool
      */
     public function inTransaction(): bool
     {
@@ -494,7 +458,6 @@ abstract class Driver implements LoggerAwareInterface
      * Returns a SQL snippet for creating a new transaction savepoint
      *
      * @param string|int $name save point name
-     * @return string
      */
     public function savePointSQL(string|int $name): string
     {
@@ -505,7 +468,6 @@ abstract class Driver implements LoggerAwareInterface
      * Returns a SQL snippet for releasing a previously created save point
      *
      * @param string|int $name save point name
-     * @return string
      */
     public function releaseSavePointSQL(string|int $name): string
     {
@@ -516,7 +478,6 @@ abstract class Driver implements LoggerAwareInterface
      * Returns a SQL snippet for rollbacking a previously created save point
      *
      * @param string|int $name save point name
-     * @return string
      */
     public function rollbackSavePointSQL(string|int $name): string
     {
@@ -525,15 +486,11 @@ abstract class Driver implements LoggerAwareInterface
 
     /**
      * Get the SQL for disabling foreign keys.
-     *
-     * @return string
      */
     abstract public function disableForeignKeySQL(): string;
 
     /**
      * Get the SQL for enabling foreign keys.
-     *
-     * @return string
      */
     abstract public function enableForeignKeySQL(): string;
 
@@ -543,7 +500,6 @@ abstract class Driver implements LoggerAwareInterface
      * It will also quote the identifiers if auto quoting is enabled.
      *
      * @param \Cake\Database\Query $query Query to transform.
-     * @return \Cake\Database\Query
      */
     protected function transformQuery(Query $query): Query
     {
@@ -740,8 +696,6 @@ abstract class Driver implements LoggerAwareInterface
      *
      * If all the tables that use this Driver specify their
      * own schemas, then this may return null.
-     *
-     * @return \Cake\Database\Schema\SchemaDialect
      */
     abstract public function schemaDialect(): SchemaDialect;
 
@@ -750,7 +704,6 @@ abstract class Driver implements LoggerAwareInterface
      * be used safely in queries without the risk of using reserved words
      *
      * @param string $identifier The identifier to quote.
-     * @return string
      */
     public function quoteIdentifier(string $identifier): string
     {
@@ -769,7 +722,6 @@ abstract class Driver implements LoggerAwareInterface
      * This method should only be used for queries that do not support placeholders.
      *
      * @param string $value The value to quote.
-     * @return string
      */
     public function quote(string $value): string
     {
@@ -778,8 +730,6 @@ abstract class Driver implements LoggerAwareInterface
 
     /**
      * Get identifier quoter instance.
-     *
-     * @return \Cake\Database\IdentifierQuoter
      */
     public function quoter(): IdentifierQuoter
     {
@@ -829,8 +779,6 @@ abstract class Driver implements LoggerAwareInterface
 
     /**
      * Returns the schema name that's being used.
-     *
-     * @return string
      */
     public function schema(): string
     {
@@ -841,7 +789,6 @@ abstract class Driver implements LoggerAwareInterface
      * Returns last id generated for a table or sequence in database.
      *
      * @param string|null $table table name or sequence to get last insert value from.
-     * @return string
      */
     public function lastInsertId(?string $table = null): string
     {
@@ -850,8 +797,6 @@ abstract class Driver implements LoggerAwareInterface
 
     /**
      * Checks whether the driver is connected.
-     *
-     * @return bool
      */
     public function isConnected(): bool
     {
@@ -895,8 +840,6 @@ abstract class Driver implements LoggerAwareInterface
     /**
      * Returns whether this driver should automatically quote identifiers
      * in queries.
-     *
-     * @return bool
      */
     public function isAutoQuotingEnabled(): bool
     {
@@ -909,7 +852,6 @@ abstract class Driver implements LoggerAwareInterface
      * Should return false for unknown features.
      *
      * @param \Cake\Database\DriverFeatureEnum $feature Driver feature
-     * @return bool
      */
     abstract public function supports(DriverFeatureEnum $feature): bool;
 
@@ -929,9 +871,6 @@ abstract class Driver implements LoggerAwareInterface
         return $processor->compile($query, $binder);
     }
 
-    /**
-     * @return \Cake\Database\QueryCompiler
-     */
     public function newCompiler(): QueryCompiler
     {
         return new QueryCompiler();
@@ -942,7 +881,6 @@ abstract class Driver implements LoggerAwareInterface
      *
      * @param string $table The table name.
      * @param array<string, mixed> $columns The list of columns for the schema.
-     * @return \Cake\Database\Schema\TableSchemaInterface
      */
     public function newTableSchema(string $table, array $columns = []): TableSchemaInterface
     {
@@ -966,8 +904,6 @@ abstract class Driver implements LoggerAwareInterface
 
     /**
      * Get the logger instance.
-     *
-     * @return \Psr\Log\LoggerInterface|null
      */
     public function getLogger(): ?LoggerInterface
     {
@@ -978,7 +914,6 @@ abstract class Driver implements LoggerAwareInterface
      * Create logger instance.
      *
      * @param string|null $className Logger's class name
-     * @return \Psr\Log\LoggerInterface
      */
     protected function createLogger(?string $className): LoggerInterface
     {
@@ -1020,8 +955,6 @@ abstract class Driver implements LoggerAwareInterface
 
     /**
      * Returns the connection role this driver performs.
-     *
-     * @return string
      */
     public function getRole(): string
     {

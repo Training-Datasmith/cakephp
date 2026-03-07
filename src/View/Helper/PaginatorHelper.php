@@ -47,8 +47,6 @@ class PaginatorHelper extends Helper
 
     /**
      * List of helpers used by this helper
-     *
-     * @var array
      */
     protected array $helpers = ['Url', 'Number', 'Html', 'Form'];
 
@@ -128,7 +126,6 @@ class PaginatorHelper extends Helper
      *
      * @param \Cake\Datasource\Paging\PaginatedInterface<array-key, mixed> $paginated Instance to use.
      * @param array<string, mixed> $options Options array.
-     * @return void
      */
     public function setPaginated(PaginatedInterface $paginated, array $options = []): void
     {
@@ -185,7 +182,6 @@ class PaginatorHelper extends Helper
      *
      * @param array<string, mixed> $options Default options for pagination links.
      *   See PaginatorHelper::$options for list of keys.
-     * @return void
      */
     public function options(array $options = []): void
     {
@@ -426,7 +422,7 @@ class PaginatorHelper extends Helper
             }
         }
 
-        $defaultDir = isset($options['direction']) ? strtolower($options['direction']) : 'asc';
+        $defaultDir = isset($options['direction']) ? strtolower((string) $options['direction']) : 'asc';
         unset($options['direction']);
 
         $locked = $options['lock'] ?? false;
@@ -520,14 +516,14 @@ class PaginatorHelper extends Helper
         if (
             !empty($paging['sort'])
             && !empty($options['sort'])
-            && !str_contains($options['sort'], '.')
+            && !str_contains((string) $options['sort'], '.')
         ) {
             $paging['sort'] = $this->_removeAlias($paging['sort']);
         }
         if (
             !empty($paging['sortDefault'])
             && !empty($options['sort'])
-            && !str_contains($options['sort'], '.')
+            && !str_contains((string) $options['sort'], '.')
         ) {
             $paging['sortDefault'] = $this->_removeAlias($paging['sortDefault'], $this->param('alias'));
         }
@@ -794,7 +790,6 @@ class PaginatorHelper extends Helper
      *
      * @param \Cake\View\StringTemplate $templater StringTemplate instance.
      * @param array<string, mixed> $options Options from the numbers() method.
-     * @return string
      */
     protected function _formatNumber(StringTemplate $templater, array $options): string
     {
@@ -857,9 +852,8 @@ class PaginatorHelper extends Helper
         }
 
         $out .= $options['after'];
-        $out .= $this->_lastNumber($ellipsis, $params, $end, $options);
 
-        return $out;
+        return $out . $this->_lastNumber($ellipsis, $params, $end, $options);
     }
 
     /**
@@ -937,9 +931,8 @@ class PaginatorHelper extends Helper
                 $out .= $templater->format('number', $vars);
             }
         }
-        $out .= $options['after'];
 
-        return $out;
+        return $out . $options['after'];
     }
 
     /**
@@ -1230,9 +1223,7 @@ class PaginatorHelper extends Helper
             'onChange' => 'this.form.requestSubmit()',
         ]);
 
-        $out .= $this->Form->end();
-
-        return $out;
+        return $out . $this->Form->end();
     }
 
     /**
@@ -1275,9 +1266,7 @@ class PaginatorHelper extends Helper
         // Filter out limits that exceed maxLimit
         $maxLimit = $this->param('maxLimit');
         if ($maxLimit !== null) {
-            $limits = array_filter($limits, function ($limit) use ($maxLimit) {
-                return (int)$limit <= $maxLimit;
-            });
+            $limits = array_filter($limits, fn($limit) => (int)$limit <= $maxLimit);
             if (!$limits) {
                 $limits[$maxLimit] = (string)$maxLimit;
             }

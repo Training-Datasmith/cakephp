@@ -28,14 +28,6 @@ use SplObjectStorage;
  */
 class DebugContext
 {
-    /**
-     * @var int
-     */
-    private int $maxDepth = 0;
-
-    /**
-     * @var int
-     */
     private int $depth = 0;
 
     /**
@@ -48,16 +40,13 @@ class DebugContext
      *
      * @param int $maxDepth The desired depth of dump output.
      */
-    public function __construct(int $maxDepth)
+    public function __construct(private int $maxDepth)
     {
-        $this->maxDepth = $maxDepth;
         $this->refs = new SplObjectStorage();
     }
 
     /**
      * Return a clone with increased depth.
-     *
-     * @return static
      */
     public function withAddedDepth(): static
     {
@@ -69,8 +58,6 @@ class DebugContext
 
     /**
      * Get the remaining depth levels
-     *
-     * @return int
      */
     public function remainingDepth(): int
     {
@@ -84,7 +71,6 @@ class DebugContext
      * it will be added and the id will be returned.
      *
      * @param object $object The object to get a reference for.
-     * @return int
      */
     public function getReferenceId(object $object): int
     {
@@ -101,7 +87,6 @@ class DebugContext
      * Check whether an object has been seen before.
      *
      * @param object $object The object to get a reference for.
-     * @return bool
      */
     public function hasReference(object $object): bool
     {

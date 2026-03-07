@@ -55,8 +55,6 @@ class CacheAfterDeleteEvent extends Event
 
     /**
      * The result value of the event listeners
-     *
-     * @return bool|null
      */
     public function getResult(): ?bool
     {
@@ -80,9 +78,6 @@ class CacheAfterDeleteEvent extends Event
         return parent::setResult($value);
     }
 
-    /**
-     * @return string
-     */
     public function getKey(): string
     {
         return $this->key;

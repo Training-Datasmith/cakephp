@@ -23,9 +23,6 @@ class QueryException extends PDOException
 {
     /**
      * Constructor
-     *
-     * @param \Cake\Database\Log\LoggedQuery|string $query
-     * @param \PDOException $previous
      */
     public function __construct(protected LoggedQuery|string $query, PDOException $previous)
     {
@@ -44,8 +41,6 @@ class QueryException extends PDOException
 
     /**
      * Get the connection name that caused this exception.
-     *
-     * @return string
      */
     public function getConnectionName(): string
     {
@@ -58,8 +53,6 @@ class QueryException extends PDOException
 
     /**
      * Get the query string that caused this exception.
-     *
-     * @return string
      */
     public function getQueryString(): string
     {

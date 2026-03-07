@@ -38,7 +38,6 @@ class VersionCommand extends Command
      *
      * @param \Cake\Console\Arguments $args The command arguments.
      * @param \Cake\Console\ConsoleIo $io The console io
-     * @return int|null
      */
     public function execute(Arguments $args, ConsoleIo $io): ?int
     {
@@ -57,7 +56,6 @@ class VersionCommand extends Command
      *
      * @param \Cake\Console\ConsoleIo $io The console io
      * @param string $version The CakePHP version
-     * @return void
      */
     protected function outputVerbose(ConsoleIo $io, string $version): void
     {

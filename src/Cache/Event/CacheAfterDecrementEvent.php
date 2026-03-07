@@ -67,8 +67,6 @@ class CacheAfterDecrementEvent extends Event
 
     /**
      * The result value of the event listeners
-     *
-     * @return bool|null
      */
     public function getResult(): ?bool
     {
@@ -94,8 +92,6 @@ class CacheAfterDecrementEvent extends Event
 
     /**
      * Get the cache key.
-     *
-     * @return string
      */
     public function getKey(): string
     {
@@ -104,8 +100,6 @@ class CacheAfterDecrementEvent extends Event
 
     /**
      * Get the decrement offset.
-     *
-     * @return int
      */
     public function getOffset(): int
     {
@@ -114,8 +108,6 @@ class CacheAfterDecrementEvent extends Event
 
     /**
      * Get the new value after decrement.
-     *
-     * @return mixed
      */
     public function getValue(): mixed
     {

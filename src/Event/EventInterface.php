@@ -27,8 +27,6 @@ interface EventInterface
 {
     /**
      * Returns the name of this event. This is usually used as the event identifier.
-     *
-     * @return string
      */
     public function getName(): string;
 
@@ -41,8 +39,6 @@ interface EventInterface
 
     /**
      * Stops the event from being used anymore.
-     *
-     * @return void
      */
     public function stopPropagation(): void;
 
@@ -55,8 +51,6 @@ interface EventInterface
 
     /**
      * The result value of the event listeners.
-     *
-     * @return mixed
      */
     public function getResult(): mixed;
 

@@ -54,7 +54,6 @@ interface LocatorInterface extends BaseLocatorInterface
      *
      * @param string $alias The alias name you want to get.
      * @param array<string, mixed> $options The options you want to build the table with.
-     * @return \Cake\ORM\Table
      */
     public function get(string $alias, array $options = []): Table;
 
@@ -63,7 +62,6 @@ interface LocatorInterface extends BaseLocatorInterface
      *
      * @param string $alias The alias to set.
      * @param \Cake\ORM\Table $repository The table to set.
-     * @return \Cake\ORM\Table
      */
     public function set(string $alias, RepositoryInterface $repository): Table;
 }

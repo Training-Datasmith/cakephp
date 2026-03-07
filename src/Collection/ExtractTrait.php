@@ -32,7 +32,6 @@ trait ExtractTrait
      * @param callable|string $path A dot separated path of column to follow
      * so that the final one can be returned or a callable that will take care
      * of doing that.
-     * @return \Closure
      */
     protected function _propertyExtractor(callable|string $path): Closure
     {
@@ -62,7 +61,6 @@ trait ExtractTrait
      *
      * @param \ArrayAccess<string|int, mixed>|array $data Data.
      * @param array<string> $parts Path to extract from.
-     * @return mixed
      */
     protected function _extract(ArrayAccess|array $data, array $parts): mixed
     {
@@ -105,7 +103,6 @@ trait ExtractTrait
      *
      * @param \ArrayAccess<string|int, mixed>|array $data Data.
      * @param array<string> $parts Path to extract from.
-     * @return mixed
      */
     protected function _simpleExtract(ArrayAccess|array $data, array $parts): mixed
     {
@@ -128,19 +125,16 @@ trait ExtractTrait
      * @param array $conditions A key-value list of conditions to match where the
      * key is the property path to get from the current item and the value is the
      * value to be compared the item with.
-     * @return \Closure
      */
     protected function _createMatcherFilter(array $conditions): Closure
     {
         $matchers = [];
         foreach ($conditions as $property => $value) {
             $extractor = $this->_propertyExtractor($property);
-            $matchers[] = function ($v) use ($extractor, $value): bool {
-                return $extractor($v) == $value;
-            };
+            $matchers[] = (fn($v): bool => $extractor($v) == $value);
         }
 
-        return function ($value) use ($matchers) {
+        return function ($value) use ($matchers): bool {
             foreach ($matchers as $match) {
                 if (!$match($value)) {
                     return false;

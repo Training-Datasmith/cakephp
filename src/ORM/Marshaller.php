@@ -42,20 +42,17 @@ class Marshaller
     use AssociationsNormalizerTrait;
 
     /**
-     * The table instance this marshaller is for.
-     *
-     * @var \Cake\ORM\Table
-     */
-    protected Table $_table;
-
-    /**
      * Constructor.
      *
-     * @param \Cake\ORM\Table $table The table this marshaller is for.
+     * @param \Cake\ORM\Table $_table The table this marshaller is for.
      */
-    public function __construct(Table $table)
+    public function __construct(
+        /**
+         * The table instance this marshaller is for.
+         */
+        protected Table $_table
+    )
     {
-        $this->_table = $table;
     }
 
     /**
@@ -194,7 +191,6 @@ class Marshaller
      *
      * @param array<string, mixed> $data The data to hydrate.
      * @param array<string, mixed> $options List of options
-     * @return \Cake\Datasource\EntityInterface
      * @see \Cake\ORM\Table::newEntity()
      * @see \Cake\ORM\Entity::$_accessible
      */
@@ -446,7 +442,7 @@ class Marshaller
         if ($conditions !== []) {
             /** @var \Traversable<\Cake\Datasource\EntityInterface> $results */
             $results = $target->find()
-                ->andWhere(fn(QueryExpression $exp) => $exp->or($conditions))
+                ->andWhere(fn(QueryExpression $exp): \Cake\Database\Expression\QueryExpression => $exp->or($conditions))
                 ->all();
 
             $keyFields = array_keys($primaryKey);
@@ -689,7 +685,7 @@ class Marshaller
         $primary = (array)$this->_table->getPrimaryKey();
 
         $indexed = (new Collection($data))
-            ->groupBy(function ($el) use ($primary) {
+            ->groupBy(function (array $el) use ($primary): string {
                 $keys = [];
                 foreach ($primary as $key) {
                     $keys[] = $el[$key] ?? '';
@@ -697,9 +693,7 @@ class Marshaller
 
                 return implode(';', $keys);
             })
-            ->map(function ($element, $key) {
-                return $key === '' ? $element : $element[0];
-            })
+            ->map(fn($element, $key) => $key === '' ? $element : $element[0])
             ->toArray();
 
         $new = $indexed[''] ?? [];
@@ -721,11 +715,9 @@ class Marshaller
         }
 
         $conditions = (new Collection($indexed))
-            ->map(function ($data, $key) {
-                return explode(';', (string)$key);
-            })
-            ->filter(fn($keys) => count(Hash::filter($keys)) === count($primary))
-            ->reduce(function ($conditions, $keys) use ($primary) {
+            ->map(fn($data, $key) => explode(';', (string)$key))
+            ->filter(fn(array $keys): bool => count(Hash::filter($keys)) === count($primary))
+            ->reduce(function (array $conditions, $keys) use ($primary): array {
                 $fields = array_map($this->_table->aliasField(...), $primary);
                 $conditions['OR'][] = array_combine($fields, $keys);
 
@@ -916,7 +908,6 @@ class Marshaller
      * @param \Cake\Datasource\EntityInterface $entity The entity that was marshaled.
      * @param array $data readOnly $data to use.
      * @param array<string, mixed> $options List of options that are readOnly.
-     * @return void
      */
     protected function dispatchAfterMarshal(EntityInterface $entity, array $data, array $options = []): void
     {
@@ -933,7 +924,6 @@ class Marshaller
      *
      * @param \Cake\Datasource\EntityInterface $entity The entity to extract the field from.
      * @param string $field The field to extract.
-     * @return mixed
      */
     protected function fieldValue(EntityInterface $entity, string $field): mixed
     {

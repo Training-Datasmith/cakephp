@@ -31,15 +31,11 @@ class SelectWithPivotLoader extends SelectLoader
 {
     /**
      * The name of the junction association
-     *
-     * @var string
      */
     protected string $junctionAssociationName;
 
     /**
      * The property name for the junction association, where its results should be nested at.
-     *
-     * @var string
      */
     protected string $junctionProperty;
 
@@ -52,8 +48,6 @@ class SelectWithPivotLoader extends SelectLoader
 
     /**
      * Custom conditions for the junction association
-     *
-     * @var \Cake\Database\ExpressionInterface|\Closure|array|string|null
      */
     protected ExpressionInterface|Closure|array|string|null $junctionConditions = null;
 
@@ -138,7 +132,6 @@ class SelectWithPivotLoader extends SelectLoader
     /**
      * @param \Cake\ORM\Query\SelectQuery<\Cake\Datasource\EntityInterface|array> $fetchQuery The association fetching query
      * @param array<string> $key The foreign key fields to check
-     * @return void
      */
     protected function _assertFieldsPresent(SelectQuery $fetchQuery, array $key): void
     {

@@ -66,7 +66,7 @@ class Index
      * @param array<string>|string $columns Columns
      * @return $this
      */
-    public function setColumns(string|array $columns)
+    public function setColumns(string|array $columns): static
     {
         $this->columns = (array)$columns;
 
@@ -89,7 +89,7 @@ class Index
      * @param string $type Type
      * @return $this
      */
-    public function setType(string $type)
+    public function setType(string $type): static
     {
         $this->type = $type;
 
@@ -98,8 +98,6 @@ class Index
 
     /**
      * Gets the index type.
-     *
-     * @return string
      */
     public function getType(): string
     {
@@ -112,7 +110,7 @@ class Index
      * @param string $name Name
      * @return $this
      */
-    public function setName(string $name)
+    public function setName(string $name): static
     {
         $this->name = $name;
 
@@ -121,8 +119,6 @@ class Index
 
     /**
      * Gets the index name.
-     *
-     * @return ?string
      */
     public function getName(): ?string
     {
@@ -138,7 +134,7 @@ class Index
      * @param array<string, int>|int $length length value or array of length value
      * @return $this
      */
-    public function setLength(int|array $length)
+    public function setLength(int|array $length): static
     {
         $this->length = $length;
 
@@ -163,7 +159,7 @@ class Index
      * @param array<string> $order column name sort order key value pair
      * @return $this
      */
-    public function setOrder(array $order)
+    public function setOrder(array $order): static
     {
         $this->order = $order;
 
@@ -191,7 +187,7 @@ class Index
      * @param array<string> $includedColumns Columns
      * @return $this
      */
-    public function setInclude(array $includedColumns)
+    public function setInclude(array $includedColumns): static
     {
         $this->include = $includedColumns;
 
@@ -214,7 +210,7 @@ class Index
      * @param ?string $where The where clause for partial indexes.
      * @return $this
      */
-    public function setWhere(?string $where)
+    public function setWhere(?string $where): static
     {
         $this->where = $where;
 
@@ -223,8 +219,6 @@ class Index
 
     /**
      * Get the where clause for partial indexes.
-     *
-     * @return ?string
      */
     public function getWhere(): ?string
     {
@@ -238,7 +232,7 @@ class Index
      * @throws \RuntimeException
      * @return $this
      */
-    public function setAttributes(array $attributes)
+    public function setAttributes(array $attributes): static
     {
         // Valid Options
         $validOptions = ['columns', 'type', 'name', 'length', 'order', 'include', 'where'];

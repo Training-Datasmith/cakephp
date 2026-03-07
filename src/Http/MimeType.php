@@ -321,7 +321,6 @@ class MimeType
      *
      * @param string $ext The file extension to associate with the mime types.
      * @param array|string $mimeTypes The mime types to associate with the file extension.
-     * @return void
      */
     public static function addMimeTypes(string $ext, array|string $mimeTypes): void
     {
@@ -341,7 +340,6 @@ class MimeType
      *
      * @param string $ext The file extension.
      * @param array|string $mimeTypes The MIME types to associate with the file extension.
-     * @return void
      */
     public static function setMimeTypes(string $ext, array|string $mimeTypes): void
     {

@@ -31,22 +31,16 @@ class FormData implements Countable, Stringable
 {
     /**
      * Boundary marker.
-     *
-     * @var string
      */
     protected string $_boundary = '';
 
     /**
      * Whether this formdata object has attached files.
-     *
-     * @var bool
      */
     protected bool $_hasFile = false;
 
     /**
      * Whether this formdata object has a complex part.
-     *
-     * @var bool
      */
     protected bool $_hasComplexPart = false;
 
@@ -59,8 +53,6 @@ class FormData implements Countable, Stringable
 
     /**
      * Get the boundary marker
-     *
-     * @return string
      */
     public function boundary(): string
     {
@@ -77,7 +69,6 @@ class FormData implements Countable, Stringable
      *
      * @param string $name The name of the part.
      * @param string $value The value to add.
-     * @return \Cake\Http\Client\FormDataPart
      */
     public function newPart(string $name, string $value): FormDataPart
     {
@@ -98,7 +89,7 @@ class FormData implements Countable, Stringable
      * @param mixed $value The value for the part.
      * @return $this
      */
-    public function add(FormDataPart|string $name, mixed $value = null)
+    public function add(FormDataPart|string $name, mixed $value = null): static
     {
         if (is_string($name)) {
             if (is_array($value)) {
@@ -124,7 +115,7 @@ class FormData implements Countable, Stringable
      * @param array $data Array of data to add.
      * @return $this
      */
-    public function addMany(array $data)
+    public function addMany(array $data): static
     {
         foreach ($data as $name => $value) {
             $this->add($name, $value);
@@ -140,7 +131,6 @@ class FormData implements Countable, Stringable
      * @param string $name The name to use.
      * @param \Psr\Http\Message\UploadedFileInterface|resource|string $value Either a string filename, or a filehandle,
      *  or a UploadedFileInterface instance.
-     * @return \Cake\Http\Client\FormDataPart
      */
     public function addFile(string $name, mixed $value): FormDataPart
     {
@@ -192,7 +182,6 @@ class FormData implements Countable, Stringable
      *
      * @param string $name The name to use.
      * @param mixed $value The value to add.
-     * @return void
      */
     public function addRecursive(string $name, mixed $value): void
     {
@@ -204,8 +193,6 @@ class FormData implements Countable, Stringable
 
     /**
      * Returns the count of parts inside this object.
-     *
-     * @return int
      */
     public function count(): int
     {
@@ -234,7 +221,10 @@ class FormData implements Countable, Stringable
      */
     public function isMultipart(): bool
     {
-        return $this->hasFile() || $this->_hasComplexPart;
+        if ($this->hasFile()) {
+            return true;
+        }
+        return $this->_hasComplexPart;
     }
 
     /**
@@ -242,8 +232,6 @@ class FormData implements Countable, Stringable
      *
      * If this object contains files, `multipart/form-data` will be used,
      * otherwise `application/x-www-form-urlencoded` will be used.
-     *
-     * @return string
      */
     public function contentType(): string
     {
@@ -257,8 +245,6 @@ class FormData implements Countable, Stringable
     /**
      * Converts the FormData and its parts into a string suitable
      * for use in an HTTP request.
-     *
-     * @return string
      */
     public function __toString(): string
     {
@@ -270,9 +256,8 @@ class FormData implements Countable, Stringable
                 $out .= (string)$part;
                 $out .= "\r\n";
             }
-            $out .= "--{$boundary}--\r\n";
 
-            return $out;
+            return $out . "--{$boundary}--\r\n";
         }
         $data = [];
         foreach ($this->_parts as $part) {

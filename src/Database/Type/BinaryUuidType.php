@@ -36,7 +36,6 @@ class BinaryUuidType extends BaseType
      *
      * @param mixed $value The value to convert.
      * @param \Cake\Database\Driver $driver The driver instance to convert with.
-     * @return mixed
      */
     public function toDatabase(mixed $value, Driver $driver): mixed
     {
@@ -115,7 +114,7 @@ class BinaryUuidType extends BaseType
      */
     protected function convertBinaryUuidToString(mixed $binary): string
     {
-        $string = unpack('H*', $binary);
+        $string = unpack('H*', (string) $binary);
         assert($string !== false, 'Could not unpack uuid');
 
         /** @var array<int, string> $string */

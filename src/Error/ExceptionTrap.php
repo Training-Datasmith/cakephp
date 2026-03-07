@@ -85,15 +85,11 @@ class ExceptionTrap
      *
      * This is best effort as we can't know if/when another
      * exception handler is registered.
-     *
-     * @var \Cake\Error\ExceptionTrap|null
      */
     protected static ?ExceptionTrap $registeredTrap = null;
 
     /**
      * Track if this trap was removed from the global handler.
-     *
-     * @var bool
      */
     protected bool $disabled = false;
 
@@ -112,7 +108,6 @@ class ExceptionTrap
      *
      * @param \Throwable $exception Exception to render
      * @param \Psr\Http\Message\ServerRequestInterface|null $request The request if possible.
-     * @return \Cake\Error\ExceptionRendererInterface
      */
     public function renderer(Throwable $exception, ?ServerRequestInterface $request = null): ExceptionRendererInterface
     {
@@ -143,14 +138,11 @@ class ExceptionTrap
      */
     protected function chooseRenderer(): string
     {
-        /** @var class-string<\Cake\Error\ExceptionRendererInterface> */
         return PHP_SAPI === 'cli' ? ConsoleExceptionRenderer::class : WebExceptionRenderer::class;
     }
 
     /**
      * Get an instance of the logger.
-     *
-     * @return \Cake\Error\ErrorLoggerInterface
      */
     public function logger(): ErrorLoggerInterface
     {
@@ -165,8 +157,6 @@ class ExceptionTrap
      *
      * This will replace the existing exception handler, and the
      * previous exception handler will be discarded.
-     *
-     * @return void
      */
     public function register(): void
     {
@@ -182,8 +172,6 @@ class ExceptionTrap
      *
      * If this instance is not currently the registered singleton
      * nothing happens.
-     *
-     * @return void
      */
     public function unregister(): void
     {
@@ -215,7 +203,6 @@ class ExceptionTrap
      * environment appropriate way.
      *
      * @param \Throwable $exception Exception instance.
-     * @return void
      * @throws \Exception When renderer class not found
      * @see https://secure.php.net/manual/en/function.set-exception-handler.php
      */
@@ -251,8 +238,6 @@ class ExceptionTrap
      * Shutdown handler
      *
      * Convert fatal errors into exceptions that we can render.
-     *
-     * @return void
      */
     public function handleShutdown(): void
     {
@@ -289,7 +274,6 @@ class ExceptionTrap
      * in kilobytes
      *
      * @param int $additionalKb Number in kilobytes
-     * @return void
      */
     public function increaseMemoryLimit(int $additionalKb): void
     {
@@ -321,7 +305,6 @@ class ExceptionTrap
      * @param string $description Error description
      * @param string $file File on which error occurred
      * @param int $line Line that triggered the error
-     * @return void
      */
     public function handleFatalError(int $code, string $description, string $file, int $line): void
     {
@@ -339,7 +322,6 @@ class ExceptionTrap
      *
      * @param \Throwable $exception The exception to log
      * @param \Psr\Http\Message\ServerRequestInterface|null $request The optional request
-     * @return void
      */
     public function logException(Throwable $exception, ?ServerRequestInterface $request = null): void
     {
@@ -365,7 +347,6 @@ class ExceptionTrap
      * and hopefully render an error page.
      *
      * @param \Throwable $exception Exception to log
-     * @return void
      */
     public function logInternalError(Throwable $exception): void
     {

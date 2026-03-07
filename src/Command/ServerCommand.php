@@ -44,36 +44,26 @@ class ServerCommand extends Command
 
     /**
      * server host
-     *
-     * @var string
      */
     protected string $_host = self::DEFAULT_HOST;
 
     /**
      * listen port
-     *
-     * @var int
      */
     protected int $_port = self::DEFAULT_PORT;
 
     /**
      * document root
-     *
-     * @var string
      */
     protected string $_documentRoot = WWW_ROOT;
 
     /**
      * ini path
-     *
-     * @var string
      */
     protected string $_iniPath = '';
 
     /**
      * The server type.
-     *
-     * @var string
      */
     protected string $server = 'php';
 
@@ -91,7 +81,6 @@ class ServerCommand extends Command
      *
      * @param \Cake\Console\Arguments $args The command arguments.
      * @param \Cake\Console\ConsoleIo $io The console io
-     * @return void
      * @link https://book.cakephp.org/5/en/console-commands/commands.html#lifecycle-callbacks
      */
     protected function startup(Arguments $args, ConsoleIo $io): void
@@ -174,8 +163,6 @@ class ServerCommand extends Command
 
     /**
      * Returns the command to run PHP's built-in server.
-     *
-     * @return string
      */
     protected function phpCommand(): string
     {
@@ -196,8 +183,6 @@ class ServerCommand extends Command
 
     /**
      * Returns the command to run frankenphp's server.
-     *
-     * @return string
      */
     protected function frankenphpCommand(): string
     {
@@ -214,7 +199,6 @@ class ServerCommand extends Command
      * Hook method for defining this command's option parser.
      *
      * @param \Cake\Console\ConsoleOptionParser $parser The option parser to update
-     * @return \Cake\Console\ConsoleOptionParser
      */
     public function buildOptionParser(ConsoleOptionParser $parser): ConsoleOptionParser
     {

@@ -26,27 +26,6 @@ use function Cake\Core\deprecationWarning;
 class Arguments
 {
     /**
-     * Positional argument name map
-     *
-     * @var array<int, string>
-     */
-    protected array $argNames;
-
-    /**
-     * Positional arguments.
-     *
-     * @var array<int, array<string>|string>
-     */
-    protected array $args;
-
-    /**
-     * Named options
-     *
-     * @var array<string, array<string>|string|bool|null>
-     */
-    protected array $options;
-
-    /**
      * Constructor
      *
      * @param array<int, array<string>|string> $args Positional arguments
@@ -54,11 +33,21 @@ class Arguments
      * @param array<int, string> $argNames List of argument names. Order is expected to be
      *  the same as $args.
      */
-    public function __construct(array $args, array $options, array $argNames)
+    public function __construct(
+        /**
+         * Positional arguments.
+         */
+        protected array $args,
+        /**
+         * Named options
+         */
+        protected array $options,
+        /**
+         * Positional argument name map
+         */
+        protected array $argNames
+    )
     {
-        $this->args = $args;
-        $this->options = $options;
-        $this->argNames = $argNames;
     }
 
     /**
@@ -123,7 +112,6 @@ class Arguments
      * Check if a positional argument exists by index
      *
      * @param int $index The argument index to check.
-     * @return bool
      */
     public function hasArgumentAt(int $index): bool
     {
@@ -134,7 +122,6 @@ class Arguments
      * Check if a positional argument exists by name
      *
      * @param string $name The argument name to check.
-     * @return bool
      */
     public function hasArgument(string $name): bool
     {
@@ -150,7 +137,6 @@ class Arguments
      * Returns positional argument value by name or null if doesn't exist
      *
      * @param string $name The argument name to check.
-     * @return string|null
      */
     public function getArgument(string $name): ?string
     {
@@ -206,7 +192,6 @@ class Arguments
      * Get a non-multiple option's value or null if not set.
      *
      * @param string $name The name of the option to check.
-     * @return string|bool|null
      */
     public function getOption(string $name): string|bool|null
     {
@@ -227,7 +212,6 @@ class Arguments
      * Get a boolean option's value or null if not set.
      *
      * @param string $name Option name.
-     * @return bool|null
      */
     public function getBooleanOption(string $name): ?bool
     {
@@ -280,17 +264,12 @@ class Arguments
      * Check if an option is defined and not null.
      *
      * @param string $name The name of the option to check.
-     * @return bool
      */
     public function hasOption(string $name): bool
     {
         return isset($this->options[$name]);
     }
 
-    /**
-     * @param string $name
-     * @return void
-     */
     protected function assertArgumentExists(string $name): void
     {
         if (in_array($name, $this->argNames, true)) {

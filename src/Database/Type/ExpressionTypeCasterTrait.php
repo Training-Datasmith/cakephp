@@ -31,7 +31,6 @@ trait ExpressionTypeCasterTrait
      *
      * @param mixed $value The value to convert to ExpressionInterface
      * @param string|null $type The type name
-     * @return mixed
      */
     protected function _castToExpression(mixed $value, ?string $type = null): mixed
     {
@@ -62,7 +61,6 @@ trait ExpressionTypeCasterTrait
      * passed as parameter.
      *
      * @param array $types List of type names
-     * @return array
      */
     protected function _requiresToExpressionCasting(array $types): array
     {

@@ -40,8 +40,6 @@ class DecimalType extends BaseType implements BatchCastingInterface
     /**
      * Whether numbers should be parsed using a locale aware parser
      * when marshaling string inputs.
-     *
-     * @var bool
      */
     protected bool $_useLocaleParser = false;
 
@@ -50,7 +48,6 @@ class DecimalType extends BaseType implements BatchCastingInterface
      *
      * @param mixed $value The value to convert.
      * @param \Cake\Database\Driver $driver The driver instance to convert with.
-     * @return string|float|int|null
      * @throws \InvalidArgumentException
      */
     public function toDatabase(mixed $value, Driver $driver): string|float|int|null
@@ -83,7 +80,6 @@ class DecimalType extends BaseType implements BatchCastingInterface
      *
      * @param mixed $value The value to convert.
      * @param \Cake\Database\Driver $driver The driver instance to convert with.
-     * @return string|null
      */
     public function toPHP(mixed $value, Driver $driver): ?string
     {
@@ -150,7 +146,7 @@ class DecimalType extends BaseType implements BatchCastingInterface
      * @return $this
      * @throws \Cake\Database\Exception\DatabaseException
      */
-    public function useLocaleParser(bool $enable = true)
+    public function useLocaleParser(bool $enable = true): static
     {
         if ($enable === false) {
             $this->_useLocaleParser = $enable;
@@ -175,7 +171,6 @@ class DecimalType extends BaseType implements BatchCastingInterface
      * the locale aware parser.
      *
      * @param string $value The value to parse and convert to an float.
-     * @return string
      */
     protected function _parseValue(string $value): string
     {

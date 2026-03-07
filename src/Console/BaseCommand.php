@@ -56,21 +56,16 @@ abstract class BaseCommand implements CommandInterface, EventDispatcherInterface
 
     /**
      * The name of this command.
-     *
-     * @var string
      */
     protected string $name = 'cake unknown';
-
-    protected ?CommandFactoryInterface $factory = null;
 
     /**
      * Constructor
      *
      * @param \Cake\Console\CommandFactoryInterface|null $factory Command factory instance.
      */
-    public function __construct(?CommandFactoryInterface $factory = null)
+    public function __construct(protected ?CommandFactoryInterface $factory = null)
     {
-        $this->factory = $factory;
         $this->getEventManager()->on($this);
     }
 
@@ -90,8 +85,6 @@ abstract class BaseCommand implements CommandInterface, EventDispatcherInterface
 
     /**
      * Get the command name.
-     *
-     * @return string
      */
     public function getName(): string
     {
@@ -100,8 +93,6 @@ abstract class BaseCommand implements CommandInterface, EventDispatcherInterface
 
     /**
      * Get the command description.
-     *
-     * @return string
      */
     public static function getDescription(): string
     {
@@ -110,8 +101,6 @@ abstract class BaseCommand implements CommandInterface, EventDispatcherInterface
 
     /**
      * Get the root command name.
-     *
-     * @return string
      */
     public function getRootName(): string
     {
@@ -126,8 +115,6 @@ abstract class BaseCommand implements CommandInterface, EventDispatcherInterface
      * Returns the command name based on class name.
      * For e.g. for a command with class name `UpdateTableCommand` the default
      * name returned would be `'update_table'`.
-     *
-     * @return string
      */
     public static function defaultName(): string
     {
@@ -142,7 +129,6 @@ abstract class BaseCommand implements CommandInterface, EventDispatcherInterface
      *
      * You can override buildOptionParser() to define your options & arguments.
      *
-     * @return \Cake\Console\ConsoleOptionParser
      * @throws \Cake\Core\Exception\CakeException When the parser is invalid
      */
     public function getOptionParser(): ConsoleOptionParser
@@ -172,8 +158,6 @@ abstract class BaseCommand implements CommandInterface, EventDispatcherInterface
      * Override this method and implement expensive/important setup steps that
      * should not run on every command run. This method will be called *before*
      * the options and arguments are validated and processed.
-     *
-     * @return void
      */
     public function initialize(): void
     {
@@ -198,9 +182,6 @@ abstract class BaseCommand implements CommandInterface, EventDispatcherInterface
      * command or perform logic that needs to happen before the command runs.
      *
      * @param \Cake\Event\EventInterface<static> $event An Event instance
-     * @param \Cake\Console\Arguments $args
-     * @param \Cake\Console\ConsoleIo $io
-     * @return void
      * @link https://book.cakephp.org/5/en/console-commands/commands.html#lifecycle-callbacks
      */
     public function beforeExecute(EventInterface $event, Arguments $args, ConsoleIo $io): void
@@ -212,10 +193,6 @@ abstract class BaseCommand implements CommandInterface, EventDispatcherInterface
      * perform logic that needs to happen after the command runs.
      *
      * @param \Cake\Event\EventInterface<static> $event An Event instance
-     * @param \Cake\Console\Arguments $args
-     * @param \Cake\Console\ConsoleIo $io
-     * @param int|null $result
-     * @return void
      * @link https://book.cakephp.org/5/en/console-commands/commands.html#lifecycle-callbacks
      */
     public function afterExecute(EventInterface $event, Arguments $args, ConsoleIo $io, ?int $result): void
@@ -267,7 +244,6 @@ abstract class BaseCommand implements CommandInterface, EventDispatcherInterface
      * @param \Cake\Console\ConsoleOptionParser $parser The option parser.
      * @param \Cake\Console\Arguments $args The command arguments.
      * @param \Cake\Console\ConsoleIo $io The console io
-     * @return void
      */
     protected function displayHelp(ConsoleOptionParser $parser, Arguments $args, ConsoleIo $io): void
     {
@@ -285,7 +261,6 @@ abstract class BaseCommand implements CommandInterface, EventDispatcherInterface
      *
      * @param \Cake\Console\Arguments $args The command arguments.
      * @param \Cake\Console\ConsoleIo $io The console io
-     * @return void
      */
     protected function setOutputLevel(Arguments $args, ConsoleIo $io): void
     {
@@ -314,7 +289,6 @@ abstract class BaseCommand implements CommandInterface, EventDispatcherInterface
      *
      * @param int $code The exit code to use.
      * @throws \Cake\Console\Exception\StopException
-     * @return never
      */
     public function abort(int $code = self::CODE_ERROR): never
     {

@@ -64,15 +64,11 @@ class RouteCollection
 
     /**
      * A map of middleware names and the related objects.
-     *
-     * @var array
      */
     protected array $_middleware = [];
 
     /**
      * A map of middleware group names and the related middleware names.
-     *
-     * @var array
      */
     protected array $_middlewareGroups = [];
 
@@ -89,7 +85,6 @@ class RouteCollection
      * @param \Cake\Routing\Route\Route $route The route object to add.
      * @param array<string, mixed> $options Additional options for the route. Primarily for the
      *   `_name` option, which enables named routes.
-     * @return void
      */
     public function add(Route $route, array $options = []): void
     {
@@ -137,17 +132,17 @@ class RouteCollection
     {
         $uri = $request->getUri();
         $urlPath = $uri->getPath();
-        if (str_contains($urlPath, '%')) {
+        if (str_contains((string) $urlPath, '%')) {
             // decode urlencoded segments, but don't decode %2f aka /
-            $parts = explode('/', $urlPath);
+            $parts = explode('/', (string) $urlPath);
             $parts = array_map(
-                fn(string $part) => str_replace('/', '%2f', urldecode($part)),
+                fn(string $part): string => str_replace('/', '%2f', urldecode($part)),
                 $parts,
             );
             $urlPath = implode('/', $parts);
         }
         if ($urlPath !== '/') {
-            $urlPath = rtrim($urlPath, '/');
+            $urlPath = rtrim((string) $urlPath, '/');
         }
         if (isset($this->staticPaths[$urlPath])) {
             foreach ($this->staticPaths[$urlPath] as $route) {
@@ -156,7 +151,7 @@ class RouteCollection
                     continue;
                 }
                 if ($uri->getQuery()) {
-                    parse_str($uri->getQuery(), $queryParameters);
+                    parse_str((string) $uri->getQuery(), $queryParameters);
                     $r['?'] = array_merge($r['?'] ?? [], $queryParameters);
                 }
 
@@ -178,7 +173,7 @@ class RouteCollection
                     continue;
                 }
                 if ($uri->getQuery()) {
-                    parse_str($uri->getQuery(), $queryParameters);
+                    parse_str((string) $uri->getQuery(), $queryParameters);
                     $r['?'] = $queryParameters;
                 }
 
@@ -199,14 +194,14 @@ class RouteCollection
     {
         $plugin = false;
         if (isset($url['plugin']) && $url['plugin'] !== false) {
-            $plugin = strtolower($url['plugin']);
+            $plugin = strtolower((string) $url['plugin']);
         }
         $prefix = false;
         if (isset($url['prefix']) && $url['prefix'] !== false) {
-            $prefix = strtolower($url['prefix']);
+            $prefix = strtolower((string) $url['prefix']);
         }
         $controller = isset($url['controller']) ? strtolower($url['controller']) : null;
-        $action = strtolower($url['action']);
+        $action = strtolower((string) $url['action']);
 
         $names = [
             "{$controller}:{$action}",
@@ -330,7 +325,7 @@ class RouteCollection
 
         return array_reduce(
             $this->_paths,
-            'array_merge',
+            array_merge(...),
             [],
         );
     }
@@ -363,7 +358,7 @@ class RouteCollection
      *   Defaults to `true`.
      * @return $this
      */
-    public function setExtensions(array $extensions, bool $merge = true)
+    public function setExtensions(array $extensions, bool $merge = true): static
     {
         if ($merge) {
             $extensions = array_unique(array_merge(
@@ -386,7 +381,7 @@ class RouteCollection
      * @param \Psr\Http\Server\MiddlewareInterface|\Closure|string $middleware The middleware to register.
      * @return $this
      */
-    public function registerMiddleware(string $name, MiddlewareInterface|Closure|string $middleware)
+    public function registerMiddleware(string $name, MiddlewareInterface|Closure|string $middleware): static
     {
         $this->_middleware[$name] = $middleware;
 
@@ -401,7 +396,7 @@ class RouteCollection
      * @return $this
      * @throws \InvalidArgumentException
      */
-    public function middlewareGroup(string $name, array $middlewareNames)
+    public function middlewareGroup(string $name, array $middlewareNames): static
     {
         if ($this->hasMiddleware($name)) {
             $message = "Cannot add middleware group '{$name}'. A middleware by this name has already been registered.";
@@ -424,7 +419,6 @@ class RouteCollection
      * Check if the named middleware group has been created.
      *
      * @param string $name The name of the middleware group to check.
-     * @return bool
      */
     public function hasMiddlewareGroup(string $name): bool
     {
@@ -435,7 +429,6 @@ class RouteCollection
      * Check if the named middleware has been registered.
      *
      * @param string $name The name of the middleware to check.
-     * @return bool
      */
     public function hasMiddleware(string $name): bool
     {
@@ -446,11 +439,13 @@ class RouteCollection
      * Check if the named middleware or middleware group has been registered.
      *
      * @param string $name The name of the middleware to check.
-     * @return bool
      */
     public function middlewareExists(string $name): bool
     {
-        return $this->hasMiddleware($name) || $this->hasMiddlewareGroup($name);
+        if ($this->hasMiddleware($name)) {
+            return true;
+        }
+        return $this->hasMiddlewareGroup($name);
     }
 
     /**

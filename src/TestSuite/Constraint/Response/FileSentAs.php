@@ -33,7 +33,6 @@ class FileSentAs extends ResponseBase
      * Checks assertion
      *
      * @param mixed $other Expected type
-     * @return bool
      */
     public function matches(mixed $other): bool
     {
@@ -47,8 +46,6 @@ class FileSentAs extends ResponseBase
 
     /**
      * Assertion message
-     *
-     * @return string
      */
     public function toString(): string
     {

@@ -27,15 +27,11 @@ trait ViewVarsTrait
 {
     /**
      * The view builder instance being used.
-     *
-     * @var \Cake\View\ViewBuilder|null
      */
     protected ?ViewBuilder $_viewBuilder = null;
 
     /**
      * Get the view builder being used.
-     *
-     * @return \Cake\View\ViewBuilder
      */
     public function viewBuilder(): ViewBuilder
     {
@@ -46,7 +42,6 @@ trait ViewVarsTrait
      * Constructs the view class instance based on the current configuration.
      *
      * @param string|null $viewClass Optional namespaced class name of the View class to instantiate.
-     * @return \Cake\View\View
      * @throws \Cake\View\Exception\MissingViewException If view class was not found.
      */
     public function createView(?string $viewClass = null): View

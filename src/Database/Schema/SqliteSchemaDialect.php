@@ -29,8 +29,6 @@ class SqliteSchemaDialect extends SchemaDialect
 {
     /**
      * Whether there is any table in this connection to SQLite containing sequences.
-     *
-     * @var bool
      */
     protected bool $_hasSequences;
 
@@ -308,7 +306,6 @@ class SqliteSchemaDialect extends SchemaDialect
      *
      * @param string|int|null $default The default value.
      * @param string|null $type The column type.
-     * @return string|int|null
      */
     protected function _defaultValue(string|int|null $default, ?string $type = null): string|int|null
     {
@@ -347,7 +344,6 @@ class SqliteSchemaDialect extends SchemaDialect
      * may not be quoted with any of the supported quotes.
      *
      * @param string $identifier The identifier to match.
-     * @return string
      */
     protected function possiblyQuotedIdentifierRegex(string $identifier): string
     {
@@ -365,7 +361,6 @@ class SqliteSchemaDialect extends SchemaDialect
      * identifiers.
      *
      * @param string $value The identifier to normalize.
-     * @return string
      */
     protected function normalizePossiblyQuotedIdentifier(string $value): string
     {
@@ -397,7 +392,6 @@ class SqliteSchemaDialect extends SchemaDialect
      * @param \Cake\Database\Schema\TableSchema $schema The table object to append
      *    an index or constraint to.
      * @param array $row The row data from `describeIndexSql`.
-     * @return void
      * @deprecated 5.2.0 Use `describeIndexes` instead.
      */
     public function convertIndexDescription(TableSchema $schema, array $row): void
@@ -464,7 +458,7 @@ class SqliteSchemaDialect extends SchemaDialect
         $columnsPattern = implode(
             '\s*,\s*',
             array_map(
-                fn($column) => '(?:' . $this->possiblyQuotedIdentifierRegex($column) . ')',
+                fn(string $column): string => '(?:' . $this->possiblyQuotedIdentifierRegex($column) . ')',
                 $columns,
             ),
         );
@@ -489,7 +483,7 @@ class SqliteSchemaDialect extends SchemaDialect
         $columnsPattern = implode(
             '\s*,\s*',
             array_map(
-                fn($column) => '(?:' . $this->possiblyQuotedIdentifierRegex($column) . ')',
+                fn(string $column): string => '(?:' . $this->possiblyQuotedIdentifierRegex($column) . ')',
                 $columns,
             ),
         );
@@ -512,7 +506,6 @@ class SqliteSchemaDialect extends SchemaDialect
      * Get the normalized SQL query used to create a table.
      *
      * @param string $tableName The tablename
-     * @return string
      */
     private function getCreateTableSql(string $tableName): string
     {
@@ -863,7 +856,7 @@ class SqliteSchemaDialect extends SchemaDialect
             $foundType = true;
         }
         if (!$foundType) {
-            $out .= ' ' . strtoupper($column['type']);
+            $out .= ' ' . strtoupper((string) $column['type']);
             $hasLength[] = $column['type'];
         }
 
@@ -1061,8 +1054,6 @@ class SqliteSchemaDialect extends SchemaDialect
     /**
      * Returns whether there is any table in this connection to SQLite containing
      * sequences
-     *
-     * @return bool
      */
     public function hasSequences(): bool
     {

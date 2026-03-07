@@ -24,8 +24,6 @@ class StatusCode extends StatusCodeBase
 {
     /**
      * Assertion message
-     *
-     * @return string
      */
     public function toString(): string
     {
@@ -36,7 +34,6 @@ class StatusCode extends StatusCodeBase
      * Failure description
      *
      * @param mixed $other Expected code
-     * @return string
      */
     public function failureDescription(mixed $other): string
     {

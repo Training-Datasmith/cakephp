@@ -65,15 +65,11 @@ class Postgres extends Driver
 
     /**
      * String used to start a database identifier quoting to make it safe
-     *
-     * @var string
      */
     protected string $_startQuote = '"';
 
     /**
      * String used to end a database identifier quoting to make it safe
-     *
-     * @var string
      */
     protected string $_endQuote = '"';
 
@@ -156,7 +152,6 @@ class Postgres extends Driver
      * Sets connection encoding
      *
      * @param string $encoding The encoding to use.
-     * @return void
      */
     public function setEncoding(string $encoding): void
     {
@@ -169,7 +164,6 @@ class Postgres extends Driver
      * postgres will fallback to looking the relation into defined default schema
      *
      * @param string $schema The schema names to set `search_path` to.
-     * @return void
      */
     public function setSchema(string $schema): void
     {
@@ -179,8 +173,6 @@ class Postgres extends Driver
 
     /**
      * Get the SQL for disabling foreign keys.
-     *
-     * @return string
      */
     public function disableForeignKeySQL(): string
     {
@@ -251,7 +243,6 @@ class Postgres extends Driver
      * Changes identifier expression into postgresql format.
      *
      * @param \Cake\Database\Expression\IdentifierExpression $expression The expression to transform.
-     * @return void
      */
     protected function _transformIdentifierExpression(IdentifierExpression $expression): void
     {
@@ -268,7 +259,6 @@ class Postgres extends Driver
      *
      * @param \Cake\Database\Expression\FunctionExpression $expression The function expression to convert
      *   to postgres SQL.
-     * @return void
      */
     protected function _transformFunctionExpression(FunctionExpression $expression): void
     {
@@ -281,7 +271,7 @@ class Postgres extends Driver
                 $expression
                     ->setName('')
                     ->setConjunction('-')
-                    ->iterateParts(function ($p) {
+                    ->iterateParts(function ($p): \Cake\Database\Expression\FunctionExpression {
                         if (is_string($p)) {
                             $p = ['value' => [$p => 'literal'], 'type' => null];
                         } else {
@@ -309,7 +299,7 @@ class Postgres extends Driver
                 $expression
                     ->setName('')
                     ->setConjunction(' + INTERVAL')
-                    ->iterateParts(function ($p, $key) {
+                    ->iterateParts(function (string $p, $key): string {
                         if ($key === 1) {
                             return sprintf("'%s'", $p);
                         }
@@ -343,7 +333,6 @@ class Postgres extends Driver
      * Changes string expression into postgresql format.
      *
      * @param \Cake\Database\Expression\StringExpression $expression The string expression to transform.
-     * @return void
      */
     protected function _transformStringExpression(StringExpression $expression): void
     {

@@ -23,13 +23,11 @@ interface EventAwareApplicationInterface
      * Register application events.
      *
      * @param \Cake\Event\EventManagerInterface $eventManager The global event manager to register listeners on
-     * @return \Cake\Event\EventManagerInterface
      */
     public function events(EventManagerInterface $eventManager): EventManagerInterface;
 
     /**
      * @param \Cake\Event\EventManagerInterface $eventManager The global event manager to register listeners on
-     * @return \Cake\Event\EventManagerInterface
      */
     public function pluginEvents(EventManagerInterface $eventManager): EventManagerInterface;
 }

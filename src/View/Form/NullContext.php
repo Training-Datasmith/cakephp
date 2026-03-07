@@ -25,15 +25,6 @@ namespace Cake\View\Form;
 class NullContext implements ContextInterface
 {
     /**
-     * Constructor.
-     *
-     * @param array $context Context info.
-     */
-    public function __construct(array $context)
-    {
-    }
-
-    /**
      * @inheritDoc
      */
     public function getPrimaryKey(): array

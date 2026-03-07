@@ -30,9 +30,6 @@ use ReflectionClass;
  */
 class CompletionCommand extends Command implements CommandCollectionAwareInterface
 {
-    /**
-     * @var \Cake\Console\CommandCollection
-     */
     protected CommandCollection $commands;
 
     /**
@@ -47,7 +44,6 @@ class CompletionCommand extends Command implements CommandCollectionAwareInterfa
      * Set the command collection used to get completion data on.
      *
      * @param \Cake\Console\CommandCollection $commands The command collection
-     * @return void
      */
     public function setCommandCollection(CommandCollection $commands): void
     {
@@ -58,7 +54,6 @@ class CompletionCommand extends Command implements CommandCollectionAwareInterfa
      * Gets the option parser instance and configures it.
      *
      * @param \Cake\Console\ConsoleOptionParser $parser The parser to build
-     * @return \Cake\Console\ConsoleOptionParser
      */
     public function buildOptionParser(ConsoleOptionParser $parser): ConsoleOptionParser
     {
@@ -102,7 +97,6 @@ class CompletionCommand extends Command implements CommandCollectionAwareInterfa
      *
      * @param \Cake\Console\Arguments $args The command arguments.
      * @param \Cake\Console\ConsoleIo $io The console io
-     * @return int|null
      */
     public function execute(Arguments $args, ConsoleIo $io): ?int
     {
@@ -119,7 +113,6 @@ class CompletionCommand extends Command implements CommandCollectionAwareInterfa
      *
      * @param \Cake\Console\Arguments $args The command arguments.
      * @param \Cake\Console\ConsoleIo $io The console io
-     * @return int
      */
     protected function getCommands(Arguments $args, ConsoleIo $io): int
     {
@@ -173,7 +166,6 @@ class CompletionCommand extends Command implements CommandCollectionAwareInterfa
      *
      * @param \Cake\Console\Arguments $args The command arguments.
      * @param \Cake\Console\ConsoleIo $io The console io
-     * @return int
      */
     protected function getSubcommands(Arguments $args, ConsoleIo $io): int
     {
@@ -209,7 +201,6 @@ class CompletionCommand extends Command implements CommandCollectionAwareInterfa
      *
      * @param \Cake\Console\Arguments $args The command arguments.
      * @param \Cake\Console\ConsoleIo $io The console io
-     * @return int|null
      */
     protected function getOptions(Arguments $args, ConsoleIo $io): ?int
     {

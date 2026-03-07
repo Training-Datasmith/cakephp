@@ -54,17 +54,11 @@ class CacheBeforeGetEvent extends Event
         parent::__construct($name, $subject, $data);
     }
 
-    /**
-     * @return string
-     */
     public function getKey(): string
     {
         return $this->key;
     }
 
-    /**
-     * @return mixed
-     */
     public function getDefault(): mixed
     {
         return $this->default;

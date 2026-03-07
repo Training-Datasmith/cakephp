@@ -27,15 +27,11 @@ trait LocatorAwareTrait
 {
     /**
      * This object's default table alias.
-     *
-     * @var string|null
      */
     protected ?string $defaultTable = null;
 
     /**
      * Table locator instance
-     *
-     * @var \Cake\ORM\Locator\LocatorInterface|null
      */
     protected ?LocatorInterface $_tableLocator = null;
 
@@ -54,8 +50,6 @@ trait LocatorAwareTrait
 
     /**
      * Gets the table locator.
-     *
-     * @return \Cake\ORM\Locator\LocatorInterface
      */
     public function getTableLocator(): LocatorInterface
     {

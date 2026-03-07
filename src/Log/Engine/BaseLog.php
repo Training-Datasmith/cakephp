@@ -44,9 +44,6 @@ abstract class BaseLog extends AbstractLogger
         'formatter' => DefaultFormatter::class,
     ];
 
-    /**
-     * @var \Cake\Log\Formatter\AbstractFormatter
-     */
     protected AbstractFormatter $formatter;
 
     /**
@@ -115,7 +112,6 @@ abstract class BaseLog extends AbstractLogger
      *
      * @param \Stringable|string $message Formatted message.
      * @param array $context Context for placeholder values.
-     * @return string
      */
     protected function interpolate(Stringable|string $message, array $context = []): string
     {

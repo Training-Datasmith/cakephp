@@ -35,27 +35,23 @@ use function Cake\Core\deprecationWarning;
 class MiddlewareDispatcher
 {
     /**
-     * The application that is being dispatched.
-     *
-     * @var \Cake\Core\HttpApplicationInterface
-     */
-    protected HttpApplicationInterface $app;
-
-    /**
      * Constructor
      *
      * @param \Cake\Core\HttpApplicationInterface $app The test case to run.
      */
-    public function __construct(HttpApplicationInterface $app)
+    public function __construct(
+        /**
+         * The application that is being dispatched.
+         */
+        protected HttpApplicationInterface $app
+    )
     {
-        $this->app = $app;
     }
 
     /**
      * Resolve the provided URL into a string.
      *
      * @param array|string $url The URL array/string to resolve.
-     * @return string
      * @deprecated 5.1.0 Use IntegrationTestTrait::resolveUrl() instead.
      */
     public function resolveUrl(array|string $url): string
@@ -77,7 +73,6 @@ class MiddlewareDispatcher
      * Convert a URL array into a string URL via routing.
      *
      * @param array $url The url to resolve
-     * @return string
      * @deprecated 5.1.0 Use IntegrationTestTrait::resolveRouter() instead.
      */
     protected function resolveRoute(array $url): string
@@ -112,7 +107,6 @@ class MiddlewareDispatcher
      * Create a PSR7 request from the request spec.
      *
      * @param array<string, mixed> $spec The request spec.
-     * @return \Cake\Http\ServerRequest
      */
     protected function _createRequest(array $spec): ServerRequest
     {
@@ -124,7 +118,7 @@ class MiddlewareDispatcher
             array_merge($_SERVER, ['REQUEST_URI' => $spec['url']]),
             $spec['environment'],
         );
-        if (str_contains($environment['PHP_SELF'], 'phpunit')) {
+        if (str_contains((string) $environment['PHP_SELF'], 'phpunit')) {
             $environment['PHP_SELF'] = '/';
         }
         $request = ServerRequestFactory::fromGlobals(

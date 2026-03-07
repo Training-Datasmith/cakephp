@@ -40,8 +40,6 @@ trait ModelAwareTrait
      *
      * Use empty string to not use auto-loading on this object. Null auto-detects based on
      * controller name.
-     *
-     * @var string|null
      */
     protected ?string $modelClass = null;
 
@@ -54,8 +52,6 @@ trait ModelAwareTrait
 
     /**
      * The model type to use.
-     *
-     * @var string
      */
     protected string $_modelType = 'Table';
 
@@ -65,7 +61,6 @@ trait ModelAwareTrait
      * If the property is already set it will not be overwritten
      *
      * @param string $name Class name.
-     * @return void
      */
     protected function _setModelClass(string $name): void
     {
@@ -107,7 +102,7 @@ trait ModelAwareTrait
             $alias = substr(
                 $modelClass,
                 strrpos($modelClass, '\\') + 1,
-                -strlen($modelType),
+                -strlen((string) $modelType),
             );
             $modelClass = $alias;
         }
@@ -130,7 +125,6 @@ trait ModelAwareTrait
      *
      * @param string $type The name of the repository type the factory function is for.
      * @param \Cake\Datasource\Locator\LocatorInterface|callable $factory The factory function used to create instances.
-     * @return void
      */
     public function modelFactory(string $type, LocatorInterface|callable $factory): void
     {
@@ -139,8 +133,6 @@ trait ModelAwareTrait
 
     /**
      * Get the model type to be used by this class
-     *
-     * @return string
      */
     public function getModelType(): string
     {

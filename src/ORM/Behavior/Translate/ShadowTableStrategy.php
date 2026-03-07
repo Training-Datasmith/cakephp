@@ -97,8 +97,6 @@ class ShadowTableStrategy implements TranslateStrategyInterface
      *
      * Don't create a hasOne association here as the join conditions are modified
      * in before find - so create/modify it there.
-     *
-     * @return void
      */
     protected function setupAssociations(): void
     {
@@ -127,7 +125,6 @@ class ShadowTableStrategy implements TranslateStrategyInterface
      * @param \Cake\Event\EventInterface<\Cake\ORM\Table> $event The beforeFind event that was fired.
      * @param \Cake\ORM\Query\SelectQuery<\Cake\Datasource\EntityInterface|array> $query Query.
      * @param \ArrayObject<string, mixed> $options The options for the query.
-     * @return void
      */
     public function beforeFind(EventInterface $event, SelectQuery $query, ArrayObject $options): void
     {
@@ -154,7 +151,7 @@ class ShadowTableStrategy implements TranslateStrategyInterface
         $query->contain([$config['hasOneAlias']]);
 
         $query->formatResults(
-            fn(CollectionInterface $results) => $this->rowMapper($results, $locale),
+            fn(CollectionInterface $results): \Cake\Collection\CollectionInterface => $this->rowMapper($results, $locale),
             SelectQuery::PREPEND,
         );
     }
@@ -164,7 +161,6 @@ class ShadowTableStrategy implements TranslateStrategyInterface
      *
      * @param string $locale Locale
      * @param \ArrayObject<string, mixed> $options Find options
-     * @return void
      */
     protected function setupHasOneAssociation(string $locale, ArrayObject $options): void
     {
@@ -350,7 +346,6 @@ class ShadowTableStrategy implements TranslateStrategyInterface
      * @param \Cake\Event\EventInterface<\Cake\ORM\Table> $event The beforeSave event that was fired.
      * @param \Cake\Datasource\EntityInterface $entity The entity that is going to be saved.
      * @param \ArrayObject<string, mixed> $options the options passed to the save method.
-     * @return void
      */
     public function beforeSave(EventInterface $event, EntityInterface $entity, ArrayObject $options): void
     {
@@ -460,7 +455,6 @@ class ShadowTableStrategy implements TranslateStrategyInterface
      * field name is returned for all other fields.
      *
      * @param string $field Field name to be aliased.
-     * @return string
      */
     public function translationField(string $field): string
     {
@@ -592,7 +586,6 @@ class ShadowTableStrategy implements TranslateStrategyInterface
      * entity. The result will be put into its `_i18n` property.
      *
      * @param \Cake\Datasource\EntityInterface $entity Entity.
-     * @return void
      */
     protected function bundleTranslatedFields(EntityInterface $entity): void
     {

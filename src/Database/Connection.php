@@ -44,64 +44,39 @@ use function Cake\Core\env;
  */
 class Connection implements ConnectionInterface
 {
-    /**
-     * Contains the configuration params for this connection.
-     *
-     * @var array<string, mixed>
-     */
-    protected array $_config;
-
-    /**
-     * @var \Cake\Database\Driver
-     */
     protected Driver $readDriver;
 
-    /**
-     * @var \Cake\Database\Driver
-     */
     protected Driver $writeDriver;
 
     /**
      * Contains how many nested transactions have been started.
-     *
-     * @var int
      */
     protected int $_transactionLevel = 0;
 
     /**
      * Whether a transaction is active in this connection.
-     *
-     * @var bool
      */
     protected bool $_transactionStarted = false;
 
     /**
      * Whether this connection can and should use savepoints for nested
      * transactions.
-     *
-     * @var bool
      */
     protected bool $_useSavePoints = false;
 
     /**
      * Cacher object instance.
-     *
-     * @var \Psr\SimpleCache\CacheInterface|null
      */
     protected ?CacheInterface $cacher = null;
 
     /**
      * The schema collection object
-     *
-     * @var \Cake\Database\Schema\CollectionInterface|null
      */
     protected ?SchemaCollectionInterface $_schemaCollection = null;
 
     /**
      * NestedTransactionRollbackException object instance, will be stored if
      * the rollback method is called in some nested transaction.
-     *
-     * @var \Cake\Database\Exception\NestedTransactionRollbackException|null
      */
     protected ?NestedTransactionRollbackException $nestedTransactionRollbackException = null;
 
@@ -119,14 +94,16 @@ class Connection implements ConnectionInterface
      *    If set to a string it will be used as the name of cache config to use.
      * - `cacheKeyPrefix` Custom prefix to use when generation cache keys. Defaults to connection name.
      *
-     * @param array<string, mixed> $config Configuration array.
+     * @param array<string, mixed> $_config Configuration array.
      * @throws \Cake\Database\Exception\MissingDriverException when the driver class cannot be found
      * @throws \Cake\Database\Exception\MissingExtensionException when the database extension is not enabled
      */
-    public function __construct(array $config)
+    public function __construct(/**
+     * Contains the configuration params for this connection.
+     */
+    protected array $_config)
     {
-        $this->_config = $config;
-        [self::ROLE_READ => $this->readDriver, self::ROLE_WRITE => $this->writeDriver] = $this->createDrivers($config);
+        [self::ROLE_READ => $this->readDriver, self::ROLE_WRITE => $this->writeDriver] = $this->createDrivers($this->_config);
     }
 
     /**
@@ -223,8 +200,6 @@ class Connection implements ConnectionInterface
 
     /**
      * Returns the connection role: read or write.
-     *
-     * @return string
      */
     public function role(): string
     {
@@ -246,7 +221,6 @@ class Connection implements ConnectionInterface
      * Gets the role-specific driver instance.
      *
      * @param string $role Connection role ('read' or 'write')
-     * @return \Cake\Database\Driver
      */
     public function getDriver(string $role = self::ROLE_WRITE): Driver
     {
@@ -257,8 +231,6 @@ class Connection implements ConnectionInterface
 
     /**
      * Gets the read-role driver instance.
-     *
-     * @return \Cake\Database\Driver
      */
     public function getReadDriver(): Driver
     {
@@ -267,8 +239,6 @@ class Connection implements ConnectionInterface
 
     /**
      * Gets the write-role driver instance.
-     *
-     * @return \Cake\Database\Driver
      */
     public function getWriteDriver(): Driver
     {
@@ -286,7 +256,7 @@ class Connection implements ConnectionInterface
      */
     public function execute(string $sql, array $params = [], array $types = []): StatementInterface
     {
-        return $this->getDisconnectRetry()->run(fn() => $this->getWriteDriver()->execute($sql, $params, $types));
+        return $this->getDisconnectRetry()->run(fn(): \Cake\Database\StatementInterface => $this->getWriteDriver()->execute($sql, $params, $types));
     }
 
     /**
@@ -298,13 +268,11 @@ class Connection implements ConnectionInterface
      */
     public function run(Query $query): StatementInterface
     {
-        return $this->getDisconnectRetry()->run(fn() => $this->getDriver($query->getConnectionRole())->run($query));
+        return $this->getDisconnectRetry()->run(fn(): \Cake\Database\StatementInterface => $this->getDriver($query->getConnectionRole())->run($query));
     }
 
     /**
      * Get query factory instance.
-     *
-     * @return \Cake\Database\Query\QueryFactory
      */
     public function queryFactory(): QueryFactory
     {
@@ -333,7 +301,6 @@ class Connection implements ConnectionInterface
      * @param string|null $table The table to insert rows into.
      * @param array $values Associative array of column => value to be inserted.
      * @param array<int|string, string> $types Associative array containing the types to be used for casting.
-     * @return \Cake\Database\Query\InsertQuery
      */
     public function insertQuery(?string $table = null, array $values = [], array $types = []): InsertQuery
     {
@@ -347,7 +314,6 @@ class Connection implements ConnectionInterface
      * @param array $values Values to be updated.
      * @param array $conditions Conditions to be set for the update statement.
      * @param array<string, string> $types Associative array containing the types to be used for casting.
-     * @return \Cake\Database\Query\UpdateQuery
      */
     public function updateQuery(
         ExpressionInterface|string|null $table = null,
@@ -364,7 +330,6 @@ class Connection implements ConnectionInterface
      * @param string|null $table The table to delete rows from.
      * @param array $conditions Conditions to be set for the delete statement.
      * @param array<string, string> $types Associative array containing the types to be used for casting.
-     * @return \Cake\Database\Query\DeleteQuery
      */
     public function deleteQuery(?string $table = null, array $conditions = [], array $types = []): DeleteQuery
     {
@@ -377,7 +342,7 @@ class Connection implements ConnectionInterface
      * @param \Cake\Database\Schema\CollectionInterface $collection The schema collection object
      * @return $this
      */
-    public function setSchemaCollection(SchemaCollectionInterface $collection)
+    public function setSchemaCollection(SchemaCollectionInterface $collection): static
     {
         $this->_schemaCollection = $collection;
 
@@ -386,8 +351,6 @@ class Connection implements ConnectionInterface
 
     /**
      * Gets a Schema\Collection object for this connection.
-     *
-     * @return \Cake\Database\Schema\CollectionInterface
      */
     public function getSchemaCollection(): SchemaCollectionInterface
     {
@@ -412,7 +375,6 @@ class Connection implements ConnectionInterface
      * @param string $table the table to insert values in
      * @param array $values values to be inserted
      * @param array<string, string> $types Array containing the types to be used for casting
-     * @return \Cake\Database\StatementInterface
      */
     public function insert(string $table, array $values, array $types = []): StatementInterface
     {
@@ -426,7 +388,6 @@ class Connection implements ConnectionInterface
      * @param array $values values to be updated
      * @param array $conditions conditions to be set for update statement
      * @param array<string, string> $types list of associative array containing the types to be used for casting
-     * @return \Cake\Database\StatementInterface
      */
     public function update(string $table, array $values, array $conditions = [], array $types = []): StatementInterface
     {
@@ -439,7 +400,6 @@ class Connection implements ConnectionInterface
      * @param string $table the table to delete rows from
      * @param array $conditions conditions to be set for delete statement
      * @param array<string, string> $types list of associative array containing the types to be used for casting
-     * @return \Cake\Database\StatementInterface
      */
     public function delete(string $table, array $conditions = [], array $types = []): StatementInterface
     {
@@ -448,8 +408,6 @@ class Connection implements ConnectionInterface
 
     /**
      * Starts a new transaction.
-     *
-     * @return void
      */
     public function begin(): void
     {
@@ -510,7 +468,6 @@ class Connection implements ConnectionInterface
      *
      * @param bool|null $toBeginning Whether the transaction should be rolled back to the
      * beginning of it. Defaults to false if using savepoints, or true if not.
-     * @return bool
      */
     public function rollback(?bool $toBeginning = null): bool
     {
@@ -548,7 +505,7 @@ class Connection implements ConnectionInterface
      * @param bool $enable Whether save points should be used.
      * @return $this
      */
-    public function enableSavePoints(bool $enable = true)
+    public function enableSavePoints(bool $enable = true): static
     {
         if ($enable === false) {
             $this->_useSavePoints = false;
@@ -564,7 +521,7 @@ class Connection implements ConnectionInterface
      *
      * @return $this
      */
-    public function disableSavePoints()
+    public function disableSavePoints(): static
     {
         $this->_useSavePoints = false;
 
@@ -585,7 +542,6 @@ class Connection implements ConnectionInterface
      * Creates a new save point for nested transactions.
      *
      * @param string|int $name Save point name or id
-     * @return void
      */
     public function createSavePoint(string|int $name): void
     {
@@ -596,7 +552,6 @@ class Connection implements ConnectionInterface
      * Releases a save point by its name.
      *
      * @param string|int $name Save point name or id
-     * @return void
      */
     public function releaseSavePoint(string|int $name): void
     {
@@ -610,7 +565,6 @@ class Connection implements ConnectionInterface
      * Rollback a save point by its name.
      *
      * @param string|int $name Save point name or id
-     * @return void
      */
     public function rollbackSavepoint(string|int $name): void
     {
@@ -619,8 +573,6 @@ class Connection implements ConnectionInterface
 
     /**
      * Run driver specific SQL to disable foreign key checks.
-     *
-     * @return void
      */
     public function disableForeignKeys(): void
     {
@@ -631,8 +583,6 @@ class Connection implements ConnectionInterface
 
     /**
      * Run driver specific SQL to enable foreign key checks.
-     *
-     * @return void
      */
     public function enableForeignKeys(): void
     {
@@ -692,8 +642,6 @@ class Connection implements ConnectionInterface
 
     /**
      * Returns whether some nested transaction has been already rolled back.
-     *
-     * @return bool
      */
     protected function wasNestedTransactionRolledback(): bool
     {
@@ -750,7 +698,6 @@ class Connection implements ConnectionInterface
      *
      * @param string|bool $cache Either boolean false to disable metadata caching, or
      *   true to use `_cake_model_` or the name of the cache config to use.
-     * @return void
      */
     public function cacheMetadata(string|bool $cache): void
     {
@@ -764,7 +711,7 @@ class Connection implements ConnectionInterface
     /**
      * @inheritDoc
      */
-    public function setCacher(CacheInterface $cacher)
+    public function setCacher(CacheInterface $cacher): static
     {
         $this->cacher = $cacher;
 

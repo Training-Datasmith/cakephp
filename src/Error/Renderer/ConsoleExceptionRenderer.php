@@ -32,20 +32,9 @@ use Throwable;
  */
 class ConsoleExceptionRenderer implements ExceptionRendererInterface
 {
-    /**
-     * @var \Throwable
-     */
-    private Throwable $error;
+    private readonly ConsoleOutput $output;
 
-    /**
-     * @var \Cake\Console\ConsoleOutput
-     */
-    private ConsoleOutput $output;
-
-    /**
-     * @var bool
-     */
-    private bool $trace;
+    private readonly bool $trace;
 
     /**
      * Constructor.
@@ -54,17 +43,14 @@ class ConsoleExceptionRenderer implements ExceptionRendererInterface
      * @param \Psr\Http\Message\ServerRequestInterface|null $request Not used.
      * @param array $config Error handling configuration.
      */
-    public function __construct(Throwable $error, ?ServerRequestInterface $request, array $config)
+    public function __construct(private readonly Throwable $error, ?ServerRequestInterface $request, array $config)
     {
-        $this->error = $error;
         $this->output = $config['stderr'] ?? new ConsoleOutput('php://stderr');
         $this->trace = $config['trace'] ?? true;
     }
 
     /**
      * Render an exception into a plain text message.
-     *
-     * @return \Psr\Http\Message\ResponseInterface|string
      */
     public function render(): ResponseInterface|string
     {
@@ -88,7 +74,6 @@ class ConsoleExceptionRenderer implements ExceptionRendererInterface
      *
      * @param \Throwable $exception The exception to render.
      * @param \Throwable|null $parent The Exception index in the chain
-     * @return array
      */
     protected function renderException(Throwable $exception, ?Throwable $parent): array
     {
@@ -130,7 +115,6 @@ class ConsoleExceptionRenderer implements ExceptionRendererInterface
      * Write output to the output stream
      *
      * @param \Psr\Http\Message\ResponseInterface|string $output The output to print.
-     * @return void
      */
     public function write(ResponseInterface|string $output): void
     {

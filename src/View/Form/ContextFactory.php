@@ -52,14 +52,13 @@ class ContextFactory
      *
      * @param array $providers Array of provider callables. Each element should
      *   be of form `['type' => 'a-string', 'callable' => ..]`
-     * @return static
      */
     public static function createWithDefaults(array $providers = []): static
     {
         $providers = [
             [
                 'type' => 'orm',
-                'callable' => function ($request, $data) {
+                'callable' => function ($request, array $data) {
                     if ($data['entity'] instanceof EntityInterface) {
                         return new EntityContext($data);
                     }
@@ -78,7 +77,7 @@ class ContextFactory
             ],
             [
                 'type' => 'form',
-                'callable' => function ($request, $data) {
+                'callable' => function ($request, array $data) {
                     if ($data['entity'] instanceof Form) {
                         return new FormContext($data);
                     }
@@ -86,7 +85,7 @@ class ContextFactory
             ],
             [
                 'type' => 'array',
-                'callable' => function ($request, $data) {
+                'callable' => function ($request, array $data) {
                     if (is_array($data['entity']) && isset($data['entity']['schema'])) {
                         return new ArrayContext($data['entity']);
                     }
@@ -94,7 +93,7 @@ class ContextFactory
             ],
             [
                 'type' => 'null',
-                'callable' => function ($request, $data) {
+                'callable' => function ($request, array $data) {
                     if ($data['entity'] === null) {
                         return new NullContext($data);
                     }
@@ -120,7 +119,7 @@ class ContextFactory
      *   when the form context is the correct type.
      * @return $this
      */
-    public function addProvider(string $type, callable $check)
+    public function addProvider(string $type, callable $check): static
     {
         $this->providers = [$type => ['type' => $type, 'callable' => $check]]
             + $this->providers;

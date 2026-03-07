@@ -116,7 +116,6 @@ class MysqlSchemaDialect extends SchemaDialect
      * - onUpdate : set for datetime/timestamp columns with `ON UPDATE` clauses.
      *
      * @param string $tableName The name of the table to describe columns on.
-     * @return array
      */
     public function describeColumns(string $tableName): array
     {
@@ -800,7 +799,7 @@ SQL;
             TableSchemaInterface::TYPE_BIT,
         ];
         if (!isset($typeMap[$column['type']]) && !isset($specialMap[$column['type']])) {
-            $out .= ' ' . strtoupper($column['type']);
+            $out .= ' ' . strtoupper((string) $column['type']);
             $hasLength[] = $column['type'];
         }
         if (in_array($column['type'], $hasLength, true) && isset($column['length'])) {
@@ -1046,7 +1045,6 @@ SQL;
      *
      * @param string $prefix The key prefix
      * @param array $data Key data.
-     * @return string
      */
     protected function _keySql(string $prefix, array $data): string
     {

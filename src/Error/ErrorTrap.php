@@ -71,7 +71,6 @@ class ErrorTrap
             return $config;
         }
 
-        /** @var class-string<\Cake\Error\ErrorRendererInterface> */
         return PHP_SAPI === 'cli' ? ConsoleErrorRenderer::class : HtmlErrorRenderer::class;
     }
 
@@ -83,8 +82,6 @@ class ErrorTrap
      *
      * This method will also set the global error level
      * via error_reporting().
-     *
-     * @return void
      */
     public function register(): void
     {
@@ -160,7 +157,6 @@ class ErrorTrap
      * Logging helper method.
      *
      * @param \Cake\Error\PhpError $error The error object to log.
-     * @return void
      */
     protected function logError(PhpError $error): void
     {
@@ -172,8 +168,6 @@ class ErrorTrap
 
     /**
      * Get an instance of the renderer.
-     *
-     * @return \Cake\Error\ErrorRendererInterface
      */
     public function renderer(): ErrorRendererInterface
     {
@@ -185,8 +179,6 @@ class ErrorTrap
 
     /**
      * Get an instance of the logger.
-     *
-     * @return \Cake\Error\ErrorLoggerInterface
      */
     public function logger(): ErrorLoggerInterface
     {

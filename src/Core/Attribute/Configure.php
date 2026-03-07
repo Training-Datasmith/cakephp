@@ -44,16 +44,10 @@ use League\Container\Attribute\AttributeInterface;
 #[Attribute(Attribute::TARGET_PARAMETER)]
 class Configure implements AttributeInterface
 {
-    /**
-     * @param string $name
-     */
-    public function __construct(private string $name)
+    public function __construct(private readonly string $name)
     {
     }
 
-    /**
-     * @return mixed
-     */
     public function resolve(): mixed
     {
         return CakeConfigure::read($this->name);

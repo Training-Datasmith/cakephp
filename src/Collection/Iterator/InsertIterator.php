@@ -39,8 +39,6 @@ class InsertIterator extends Collection
 
     /**
      * Holds whether the values collection is still valid. (has more records)
-     *
-     * @var bool
      */
     protected bool $_validValues = true;
 
@@ -54,8 +52,6 @@ class InsertIterator extends Collection
 
     /**
      * The property name to which values will be assigned
-     *
-     * @var string
      */
     protected string $_target;
 
@@ -87,8 +83,6 @@ class InsertIterator extends Collection
 
     /**
      * Advances the cursor to the next record
-     *
-     * @return void
      */
     public function next(): void
     {
@@ -102,8 +96,6 @@ class InsertIterator extends Collection
     /**
      * Returns the current element in the target collection after inserting
      * the value from the source collection into the specified path.
-     *
-     * @return mixed
      */
     public function current(): mixed
     {
@@ -128,8 +120,6 @@ class InsertIterator extends Collection
 
     /**
      * Resets the collection pointer.
-     *
-     * @return void
      */
     public function rewind(): void
     {

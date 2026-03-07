@@ -32,47 +32,37 @@ class HelpFormatter
 {
     /**
      * The maximum number of arguments shown when generating usage.
-     *
-     * @var int
      */
     protected int $_maxArgs = 6;
 
     /**
      * The maximum number of options shown when generating usage.
-     *
-     * @var int
      */
     protected int $_maxOptions = 6;
 
     /**
-     * Option parser.
-     *
-     * @var \Cake\Console\ConsoleOptionParser
-     */
-    protected ConsoleOptionParser $_parser;
-
-    /**
      * Alias to display in the output.
-     *
-     * @var string
      */
     protected string $_alias = 'cake';
 
     /**
      * Build the help formatter for an OptionParser
      *
-     * @param \Cake\Console\ConsoleOptionParser $parser The option parser help is being generated for.
+     * @param \Cake\Console\ConsoleOptionParser $_parser The option parser help is being generated for.
      */
-    public function __construct(ConsoleOptionParser $parser)
+    public function __construct(
+        /**
+         * Option parser.
+         */
+        protected ConsoleOptionParser $_parser
+    )
     {
-        $this->_parser = $parser;
     }
 
     /**
      * Set the alias
      *
      * @param string $alias The alias
-     * @return void
      */
     public function setAlias(string $alias): void
     {
@@ -83,7 +73,6 @@ class HelpFormatter
      * Get the help as formatted text suitable for output on the command line.
      *
      * @param int $width The width of the help output.
-     * @return string
      */
     public function text(int $width = 72): string
     {
@@ -140,8 +129,6 @@ class HelpFormatter
      * Generate the usage for a shell based on its arguments and options.
      * Usage strings favor short options over the long ones. and optional args will
      * be indicated with []
-     *
-     * @return string
      */
     protected function _generateUsage(): string
     {
@@ -170,7 +157,6 @@ class HelpFormatter
      * Iterate over a collection and find the longest named thing.
      *
      * @param array<\Cake\Console\ConsoleInputOption|\Cake\Console\ConsoleInputArgument> $collection The collection to find a max length of.
-     * @return int
      */
     protected function _getMaxLength(array $collection): int
     {

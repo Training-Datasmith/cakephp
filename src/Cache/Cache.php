@@ -86,8 +86,6 @@ class Cache
 
     /**
      * Flag for tracking whether caching is enabled.
-     *
-     * @var bool
      */
     protected static bool $_enabled = true;
 
@@ -121,7 +119,6 @@ class Cache
      * Also allows for injecting of a new registry instance.
      *
      * @param \Cake\Cache\CacheRegistry<\Cake\Cache\CacheEngine<object>> $registry Injectable registry object.
-     * @return void
      */
     public static function setRegistry(CacheRegistry $registry): void
     {
@@ -134,7 +131,6 @@ class Cache
      * @param string $name Name of the config array that needs an engine instance built
      * @throws \Cake\Cache\Exception\InvalidArgumentException When a cache engine cannot be created.
      * @throws \RuntimeException If loading of the engine failed.
-     * @return void
      */
     protected static function _buildEngine(string $name): void
     {
@@ -199,7 +195,6 @@ class Cache
      * Get a SimpleCacheEngine object for the named cache pool.
      *
      * @param string $config The name of the configured cache backend.
-     * @return \Psr\SimpleCache\CacheInterface&\Cake\Cache\CacheEngineInterface
      */
     public static function pool(string $config): CacheInterface&CacheEngineInterface
     {
@@ -508,8 +503,6 @@ class Cache
      * Re-enable caching.
      *
      * If caching has been disabled with Cache::disable() this method will reverse that effect.
-     *
-     * @return void
      */
     public static function enable(): void
     {
@@ -520,8 +513,6 @@ class Cache
      * Disable caching.
      *
      * When disabled all cache operations will return null.
-     *
-     * @return void
      */
     public static function disable(): void
     {
@@ -530,8 +521,6 @@ class Cache
 
     /**
      * Check whether caching is enabled.
-     *
-     * @return bool
      */
     public static function enabled(): bool
     {

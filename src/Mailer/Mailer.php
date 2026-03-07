@@ -138,37 +138,28 @@ class Mailer implements EventListenerInterface
 
     /**
      * Mailer's name.
-     *
-     * @var string
      */
     public static string $name;
 
     /**
      * The transport instance to use for sending mail.
-     *
-     * @var \Cake\Mailer\AbstractTransport|null
      */
     protected ?AbstractTransport $transport = null;
 
     /**
      * Message class name.
      *
-     * @var string
      * @phpstan-var class-string<\Cake\Mailer\Message>
      */
     protected string $messageClass = Message::class;
 
     /**
      * Message instance.
-     *
-     * @var \Cake\Mailer\Message
      */
     protected Message $message;
 
     /**
      * Email Renderer
-     *
-     * @var \Cake\Mailer\Renderer|null
      */
     protected ?Renderer $renderer = null;
 
@@ -192,9 +183,6 @@ class Mailer implements EventListenerInterface
      */
     protected static array $_dsnClassMap = [];
 
-    /**
-     * @var array|null
-     */
     protected ?array $logConfig = null;
 
     /**
@@ -215,8 +203,6 @@ class Mailer implements EventListenerInterface
 
     /**
      * Get the view builder.
-     *
-     * @return \Cake\View\ViewBuilder
      */
     public function viewBuilder(): ViewBuilder
     {
@@ -225,8 +211,6 @@ class Mailer implements EventListenerInterface
 
     /**
      * Get email renderer.
-     *
-     * @return \Cake\Mailer\Renderer
      */
     public function getRenderer(): Renderer
     {
@@ -239,7 +223,7 @@ class Mailer implements EventListenerInterface
      * @param \Cake\Mailer\Renderer $renderer Renderer instance.
      * @return $this
      */
-    public function setRenderer(Renderer $renderer)
+    public function setRenderer(Renderer $renderer): static
     {
         $this->renderer = $renderer;
 
@@ -248,8 +232,6 @@ class Mailer implements EventListenerInterface
 
     /**
      * Get message instance.
-     *
-     * @return \Cake\Mailer\Message
      */
     public function getMessage(): Message
     {
@@ -263,7 +245,7 @@ class Mailer implements EventListenerInterface
      * @return $this
      * @deprecated 5.1.0 Configure the mailer according to the documentation instead of manually setting the Message instance.
      */
-    public function setMessage(Message $message)
+    public function setMessage(Message $message): static
     {
         deprecationWarning(
             '5.1.0',
@@ -298,7 +280,7 @@ class Mailer implements EventListenerInterface
      * @param mixed $value View variable value.
      * @return $this
      */
-    public function setViewVars(array|string $key, mixed $value = null)
+    public function setViewVars(array|string $key, mixed $value = null): static
     {
         $this->getRenderer()->set($key, $value);
 
@@ -357,7 +339,7 @@ class Mailer implements EventListenerInterface
      * @param string $content Content.
      * @return $this
      */
-    public function render(string $content = '')
+    public function render(string $content = ''): static
     {
         $content = $this->getRenderer()->render(
             $content,
@@ -393,7 +375,7 @@ class Mailer implements EventListenerInterface
      *    an array with config.
      * @return $this
      */
-    public function setProfile(array|string $config)
+    public function setProfile(array|string $config): static
     {
         if (is_string($config)) {
             $name = $config;
@@ -463,7 +445,7 @@ class Mailer implements EventListenerInterface
      * @return $this
      * @throws \LogicException When the chosen transport lacks a send method.
      */
-    public function setTransport(AbstractTransport|string $name)
+    public function setTransport(AbstractTransport|string $name): static
     {
         if (is_string($name)) {
             $this->transport = TransportFactory::get($name);
@@ -476,8 +458,6 @@ class Mailer implements EventListenerInterface
 
     /**
      * Gets the transport.
-     *
-     * @return \Cake\Mailer\AbstractTransport
      */
     public function getTransport(): AbstractTransport
     {
@@ -493,8 +473,6 @@ class Mailer implements EventListenerInterface
 
     /**
      * Backup message, renderer, transport instances before an action is run.
-     *
-     * @return void
      */
     protected function backup(): void
     {
@@ -512,7 +490,7 @@ class Mailer implements EventListenerInterface
      *
      * @return $this
      */
-    protected function restore()
+    protected function restore(): static
     {
         foreach (array_keys($this->clonedInstances) as $key) {
             if ($this->clonedInstances[$key] === null) {
@@ -535,7 +513,7 @@ class Mailer implements EventListenerInterface
      *
      * @return $this
      */
-    public function reset()
+    public function reset(): static
     {
         $this->message->reset();
         $this->getRenderer()->reset();
@@ -554,7 +532,6 @@ class Mailer implements EventListenerInterface
      *
      * @param array<string, mixed> $contents The content with 'headers' and 'message' keys.
      * @phpstan-param array{headers: string, message: string, ...} $contents
-     * @return void
      */
     protected function logDelivery(array $contents): void
     {
@@ -573,7 +550,6 @@ class Mailer implements EventListenerInterface
      * Set logging config.
      *
      * @param array<string, mixed>|string|true $log Log config.
-     * @return void
      */
     protected function setLogConfig(array|string|bool $log): void
     {
@@ -595,7 +571,6 @@ class Mailer implements EventListenerInterface
      * Converts given value to string
      *
      * @param array<string>|string $value The value to convert
-     * @return string
      */
     protected function flatten(array|string $value): string
     {

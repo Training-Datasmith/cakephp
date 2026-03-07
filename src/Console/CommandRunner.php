@@ -45,27 +45,6 @@ class CommandRunner implements EventDispatcherInterface
     use EventDispatcherTrait;
 
     /**
-     * The application console commands are being run for.
-     *
-     * @var \Cake\Core\ConsoleApplicationInterface
-     */
-    protected ConsoleApplicationInterface $app;
-
-    /**
-     * The application console commands are being run for.
-     *
-     * @var \Cake\Console\CommandFactoryInterface|null
-     */
-    protected ?CommandFactoryInterface $factory = null;
-
-    /**
-     * The root command name. Defaults to `cake`.
-     *
-     * @var string
-     */
-    protected string $root;
-
-    /**
      * Alias mappings.
      *
      * @var array<string, string>
@@ -86,13 +65,20 @@ class CommandRunner implements EventDispatcherInterface
      * @param \Cake\Console\CommandFactoryInterface|null $factory Command factory instance.
      */
     public function __construct(
-        ConsoleApplicationInterface $app,
-        string $root = 'cake',
-        ?CommandFactoryInterface $factory = null,
-    ) {
-        $this->app = $app;
-        $this->root = $root;
-        $this->factory = $factory;
+        /**
+         * The application console commands are being run for.
+         */
+        protected ConsoleApplicationInterface $app,
+        /**
+         * The root command name. Defaults to `cake`.
+         */
+        protected string $root = 'cake',
+        /**
+         * The application console commands are being run for.
+         */
+        protected ?CommandFactoryInterface $factory = null
+    )
+    {
     }
 
     /**
@@ -111,7 +97,7 @@ class CommandRunner implements EventDispatcherInterface
      * @param array<string, string> $aliases The map of aliases to replace.
      * @return $this
      */
-    public function setAliases(array $aliases)
+    public function setAliases(array $aliases): static
     {
         $this->aliases = $aliases;
 
@@ -207,8 +193,6 @@ class CommandRunner implements EventDispatcherInterface
      *
      * Calls the application's `bootstrap()` hook. After the application the
      * plugins are bootstrapped.
-     *
-     * @return void
      */
     protected function bootstrap(): void
     {
@@ -220,8 +204,6 @@ class CommandRunner implements EventDispatcherInterface
 
     /**
      * Get the application's event manager or the global one.
-     *
-     * @return \Cake\Event\EventManagerInterface
      */
     public function getEventManager(): EventManagerInterface
     {
@@ -238,7 +220,7 @@ class CommandRunner implements EventDispatcherInterface
      * @param \Cake\Event\EventManagerInterface $eventManager The event manager to set.
      * @return $this
      */
-    public function setEventManager(EventManagerInterface $eventManager)
+    public function setEventManager(EventManagerInterface $eventManager): static
     {
         if ($this->app instanceof EventDispatcherInterface) {
             $this->app->setEventManager($eventManager);
@@ -253,7 +235,6 @@ class CommandRunner implements EventDispatcherInterface
      * @param \Cake\Console\ConsoleIo $io The IO wrapper for the created shell class.
      * @param \Cake\Console\CommandCollection $commands The command collection to find the shell in.
      * @param string $name The command name to find
-     * @return \Cake\Console\CommandInterface
      */
     protected function getCommand(ConsoleIo $io, CommandCollection $commands, string $name): CommandInterface
     {
@@ -382,7 +363,6 @@ class CommandRunner implements EventDispatcherInterface
      * The wrapper for creating command instances.
      *
      * @param string $className Command class name.
-     * @return \Cake\Console\CommandInterface
      */
     protected function createCommand(string $className): CommandInterface
     {
@@ -403,8 +383,6 @@ class CommandRunner implements EventDispatcherInterface
      * Ensure that the application's routes are loaded.
      *
      * Console commands and shells often need to generate URLs.
-     *
-     * @return void
      */
     protected function loadRoutes(): void
     {

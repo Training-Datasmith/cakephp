@@ -31,7 +31,6 @@ abstract class StatusCodeBase extends ResponseBase
      * Check assertion
      *
      * @param array<int, int>|int $other Array of min/max status codes, or a single code
-     * @return bool
      */
     public function matches(mixed $other): bool
     {
@@ -51,7 +50,6 @@ abstract class StatusCodeBase extends ResponseBase
      *
      * @param int $min Min status code (inclusive)
      * @param int $max Max status code (inclusive)
-     * @return bool
      */
     protected function statusCodeBetween(int $min, int $max): bool
     {
@@ -62,7 +60,6 @@ abstract class StatusCodeBase extends ResponseBase
      * Overwrites the descriptions so we can remove the automatic "expected" message
      *
      * @param mixed $other Value
-     * @return string
      */
     protected function failureDescription(mixed $other): string
     {

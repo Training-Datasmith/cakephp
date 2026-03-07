@@ -12,7 +12,6 @@ class HeaderUtility
      * Get an array representation of the HTTP Link header values.
      *
      * @param array $linkHeaders An array of Link header strings.
-     * @return array
      */
     public static function parseLinks(array $linkHeaders): array
     {
@@ -109,7 +108,6 @@ class HeaderUtility
 
     /**
      * @param string $value The WWW-Authenticate header
-     * @return array
      */
     public static function parseWwwAuthenticate(string $value): array
     {

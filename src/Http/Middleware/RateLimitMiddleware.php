@@ -144,7 +144,6 @@ class RateLimitMiddleware implements MiddlewareInterface
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request
      * @param \Psr\Http\Server\RequestHandlerInterface $handler The handler
-     * @return \Psr\Http\Message\ResponseInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
@@ -209,7 +208,6 @@ class RateLimitMiddleware implements MiddlewareInterface
      * Check if rate limiting should be skipped for this request
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request
-     * @return bool
      */
     protected function shouldSkip(ServerRequestInterface $request): bool
     {
@@ -225,7 +223,6 @@ class RateLimitMiddleware implements MiddlewareInterface
      * Get the identifier for rate limiting
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request
-     * @return string
      */
     protected function getIdentifier(ServerRequestInterface $request): string
     {
@@ -253,7 +250,6 @@ class RateLimitMiddleware implements MiddlewareInterface
      *
      * @param string $type The identifier type
      * @param \Psr\Http\Message\ServerRequestInterface $request The request
-     * @return string
      */
     protected function getIdentifierByType(string $type, ServerRequestInterface $request): string
     {
@@ -270,7 +266,6 @@ class RateLimitMiddleware implements MiddlewareInterface
      * Get client IP address
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request
-     * @return string
      */
     protected function getClientIp(ServerRequestInterface $request): string
     {
@@ -280,7 +275,7 @@ class RateLimitMiddleware implements MiddlewareInterface
             foreach ($this->config['ipHeader'] as $header) {
                 $headerKey = 'HTTP_' . strtoupper(str_replace('-', '_', $header));
                 if (!empty($params[$headerKey])) {
-                    $ips = explode(',', $params[$headerKey]);
+                    $ips = explode(',', (string) $params[$headerKey]);
 
                     return trim($ips[0]);
                 }
@@ -288,7 +283,7 @@ class RateLimitMiddleware implements MiddlewareInterface
         } elseif (is_string($this->config['ipHeader'])) {
             $headerKey = 'HTTP_' . strtoupper(str_replace('-', '_', $this->config['ipHeader']));
             if (!empty($params[$headerKey])) {
-                $ips = explode(',', $params[$headerKey]);
+                $ips = explode(',', (string) $params[$headerKey]);
 
                 return trim($ips[0]);
             }
@@ -301,7 +296,6 @@ class RateLimitMiddleware implements MiddlewareInterface
      * Get user identifier
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request
-     * @return string
      */
     protected function getUserIdentifier(ServerRequestInterface $request): string
     {
@@ -322,7 +316,6 @@ class RateLimitMiddleware implements MiddlewareInterface
      * Get route identifier
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request
-     * @return string
      */
     protected function getRouteIdentifier(ServerRequestInterface $request): string
     {
@@ -342,7 +335,6 @@ class RateLimitMiddleware implements MiddlewareInterface
      *
      * @param string $identifier The identifier
      * @param \Psr\Http\Message\ServerRequestInterface $request The request
-     * @return string
      */
     protected function generateKey(string $identifier, ServerRequestInterface $request): string
     {
@@ -358,7 +350,6 @@ class RateLimitMiddleware implements MiddlewareInterface
      * Get API key/token identifier
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request
-     * @return string
      */
     protected function getApiKeyIdentifier(ServerRequestInterface $request): string
     {
@@ -387,7 +378,6 @@ class RateLimitMiddleware implements MiddlewareInterface
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request
      * @param string $identifier The identifier
-     * @return int
      */
     protected function getLimit(ServerRequestInterface $request, string $identifier): int
     {
@@ -403,7 +393,6 @@ class RateLimitMiddleware implements MiddlewareInterface
      * Get the cost of the request
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request
-     * @return int
      */
     protected function getCost(ServerRequestInterface $request): int
     {
@@ -419,7 +408,6 @@ class RateLimitMiddleware implements MiddlewareInterface
      * Get rate limiter instance based on strategy
      *
      * @param array<string, mixed> $limiterConfig Optional limiter configuration override
-     * @return \Cake\Http\RateLimit\RateLimiterInterface
      */
     protected function getRateLimiter(array $limiterConfig = []): RateLimiterInterface
     {
@@ -448,7 +436,6 @@ class RateLimitMiddleware implements MiddlewareInterface
      *
      * @param \Psr\Http\Message\ResponseInterface $response The response
      * @param array<string, mixed> $result Rate limit result
-     * @return \Psr\Http\Message\ResponseInterface
      */
     protected function addRateLimitHeaders(ResponseInterface $response, array $result): ResponseInterface
     {

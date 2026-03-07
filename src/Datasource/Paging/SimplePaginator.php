@@ -67,7 +67,6 @@ class SimplePaginator extends NumericPaginator
      * fetched exceeds the limit/per page.
      *
      * @param \Cake\Datasource\ResultSetInterface<int, mixed> $items
-     * @param array $pagingParams
      * @return \Cake\Datasource\Paging\PaginatedInterface<int, mixed>
      */
     protected function buildPaginated(ResultSetInterface $items, array $pagingParams): PaginatedInterface
@@ -84,7 +83,6 @@ class SimplePaginator extends NumericPaginator
      *
      * @param \Cake\Datasource\QueryInterface $query Query instance.
      * @param array $data Pagination data.
-     * @return int|null
      */
     protected function getCount(QueryInterface $query, array $data): ?int
     {

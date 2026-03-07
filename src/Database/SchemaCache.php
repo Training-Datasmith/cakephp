@@ -32,8 +32,6 @@ class SchemaCache
 {
     /**
      * Schema
-     *
-     * @var \Cake\Database\Schema\CachedCollection
      */
     protected CachedCollection $_schema;
 
@@ -96,7 +94,6 @@ class SchemaCache
      * Helper method to get the schema collection.
      *
      * @param \Cake\Database\Connection $connection Connection object
-     * @return \Cake\Database\Schema\CachedCollection
      * @throws \RuntimeException If given connection object is not compatible with schema caching
      */
     public function getSchema(Connection $connection): CachedCollection

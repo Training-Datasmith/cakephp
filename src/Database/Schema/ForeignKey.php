@@ -59,9 +59,6 @@ class ForeignKey extends Constraint
      */
     protected ?string $update = null;
 
-    /**
-     * @var string|null
-     */
     protected ?string $deferrable = null;
 
     /**
@@ -97,7 +94,7 @@ class ForeignKey extends Constraint
      * @param string $table The table this KEY is pointing to
      * @return $this
      */
-    public function setReferencedTable(string $table)
+    public function setReferencedTable(string $table): static
     {
         $this->referencedTable = $table;
 
@@ -106,8 +103,6 @@ class ForeignKey extends Constraint
 
     /**
      * Gets the foreign key referenced table.
-     *
-     * @return ?string
      */
     public function getReferencedTable(): ?string
     {
@@ -120,7 +115,7 @@ class ForeignKey extends Constraint
      * @param array<string>|string $referencedColumns Referenced columns
      * @return $this
      */
-    public function setReferencedColumns(array|string $referencedColumns)
+    public function setReferencedColumns(array|string $referencedColumns): static
     {
         $referencedColumns = is_string($referencedColumns) ? [$referencedColumns] : $referencedColumns;
         $this->referencedColumns = $referencedColumns;
@@ -164,7 +159,7 @@ class ForeignKey extends Constraint
      * @param string $delete On Delete
      * @return $this
      */
-    public function setDelete(string $delete)
+    public function setDelete(string $delete): static
     {
         $this->delete = $this->normalizeAction($delete);
 
@@ -173,8 +168,6 @@ class ForeignKey extends Constraint
 
     /**
      * Gets ON DELETE action for the foreign key.
-     *
-     * @return string|null
      */
     public function getDelete(): ?string
     {
@@ -183,8 +176,6 @@ class ForeignKey extends Constraint
 
     /**
      * Gets ON UPDATE action for the foreign key.
-     *
-     * @return string|null
      */
     public function getUpdate(): ?string
     {
@@ -197,7 +188,7 @@ class ForeignKey extends Constraint
      * @param string $update On Update
      * @return $this
      */
-    public function setUpdate(string $update)
+    public function setUpdate(string $update): static
     {
         $this->update = $this->normalizeAction($update);
 
@@ -209,7 +200,6 @@ class ForeignKey extends Constraint
      *
      * @param string $action Action
      * @throws \InvalidArgumentException
-     * @return string
      */
     protected function normalizeAction(string $action): string
     {
@@ -225,7 +215,7 @@ class ForeignKey extends Constraint
      * @param string $deferrable Constraint
      * @return $this
      */
-    public function setDeferrable(string $deferrable)
+    public function setDeferrable(string $deferrable): static
     {
         $this->deferrable = $this->normalizeDeferrable($deferrable);
 
@@ -245,7 +235,6 @@ class ForeignKey extends Constraint
      *
      * @param string $deferrable Deferrable
      * @throws \InvalidArgumentException
-     * @return string
      */
     protected function normalizeDeferrable(string $deferrable): string
     {

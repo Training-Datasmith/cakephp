@@ -172,8 +172,6 @@ class Inflector
 
     /**
      * The initial state of Inflector so reset() works.
-     *
-     * @var array
      */
     protected static array $_initialState = [];
 
@@ -204,8 +202,6 @@ class Inflector
     /**
      * Clears Inflectors inflected value caches. And resets the inflection
      * rules to the initial values.
-     *
-     * @return void
      */
     public static function reset(): void
     {
@@ -238,7 +234,6 @@ class Inflector
      * @param array $rules Array of rules to be added.
      * @param bool $reset If true, will unset default inflections for all
      *        new rules that are being defined in $rules.
-     * @return void
      */
     public static function rules(string $type, array $rules, bool $reset = false): void
     {
@@ -275,7 +270,7 @@ class Inflector
             $words = array_keys(static::$_irregular);
             static::$_cache['irregular']['pluralize'] = '/(.*?(?:\\b|_))(' . implode('|', $words) . ')$/i';
 
-            $upperWords = array_map('ucfirst', $words);
+            $upperWords = array_map(ucfirst(...), $words);
             static::$_cache['irregular']['upperPluralize'] = '/(.*?(?:\\b|[a-z]))(' . implode('|', $upperWords) . ')$/';
         }
 
@@ -327,7 +322,7 @@ class Inflector
             $wordList = array_values(static::$_irregular);
             static::$_cache['irregular']['singular'] = '/(.*?(?:\\b|_))(' . implode('|', $wordList) . ')$/i';
 
-            $upperWordList = array_map('ucfirst', $wordList);
+            $upperWordList = array_map(ucfirst(...), $wordList);
             static::$_cache['irregular']['singularUpper'] = '/(.*?(?:\\b|[a-z]))(' .
                 implode('|', $upperWordList) .
                 ')$/';

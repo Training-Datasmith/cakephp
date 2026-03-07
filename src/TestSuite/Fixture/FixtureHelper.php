@@ -107,7 +107,6 @@ class FixtureHelper
      *
      * @param \Closure $callback Callback run per connection
      * @param array<\Cake\Datasource\FixtureInterface> $fixtures Test fixtures
-     * @return void
      */
     public function runPerConnection(Closure $callback, array $fixtures): void
     {
@@ -125,7 +124,6 @@ class FixtureHelper
      * Inserts fixture data.
      *
      * @param array<\Cake\Datasource\FixtureInterface> $fixtures Test fixtures
-     * @return void
      * @internal
      */
     public function insert(array $fixtures): void
@@ -152,7 +150,6 @@ class FixtureHelper
      *
      * @param \Cake\Datasource\ConnectionInterface $connection Fixture connection
      * @param array<\Cake\Datasource\FixtureInterface> $fixtures Connection fixtures
-     * @return void
      */
     protected function insertConnection(ConnectionInterface $connection, array $fixtures): void
     {
@@ -175,7 +172,6 @@ class FixtureHelper
      * Truncates fixture tables.
      *
      * @param array<\Cake\Datasource\FixtureInterface> $fixtures Test fixtures
-     * @return void
      * @internal
      */
     public function truncate(array $fixtures): void
@@ -207,7 +203,6 @@ class FixtureHelper
      *
      * @param \Cake\Datasource\ConnectionInterface $connection Fixture connection
      * @param array<\Cake\Datasource\FixtureInterface> $fixtures Connection fixtures
-     * @return void
      */
     protected function truncateConnection(ConnectionInterface $connection, array $fixtures): void
     {
@@ -231,7 +226,6 @@ class FixtureHelper
      *
      * @param \Cake\Database\Connection $connection Database connection
      * @param array<\Cake\Datasource\FixtureInterface> $fixtures Database fixtures
-     * @return array|null
      */
     protected function sortByConstraint(Connection $connection, array $fixtures): ?array
     {

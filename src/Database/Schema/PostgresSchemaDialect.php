@@ -339,7 +339,6 @@ class PostgresSchemaDialect extends SchemaDialect
      * We need to remove those.
      *
      * @param string|int|null $default The default value.
-     * @return string|int|null
      */
     protected function _defaultValue(string|int|null $default): string|int|null
     {
@@ -365,8 +364,6 @@ class PostgresSchemaDialect extends SchemaDialect
 
     /**
      * Get the query to describe indexes
-     *
-     * @return string
      */
     private function describeIndexQuery(): string
     {
@@ -479,7 +476,6 @@ class PostgresSchemaDialect extends SchemaDialect
      * @param string $name The index name.
      * @param string $type The index type.
      * @param array $row The metadata record to update with.
-     * @return void
      */
     protected function _convertConstraint(TableSchema $schema, string $name, string $type, array $row): void
     {
@@ -563,8 +559,6 @@ class PostgresSchemaDialect extends SchemaDialect
 
     /**
      * Get the query to describe foreign keys
-     *
-     * @return string
      */
     private function describeForeignKeyQuery(): string
     {
@@ -612,7 +606,7 @@ class PostgresSchemaDialect extends SchemaDialect
         $results = [];
         $statement = $this->_driver->execute($sql, [$schema, $name]);
         foreach ($statement->fetchAll('assoc') as $row) {
-            $expression = preg_replace('/^CHECK \(\((.*)\)\)$/i', '$1', $row['expression']);
+            $expression = preg_replace('/^CHECK \(\((.*)\)\)$/i', '$1', (string) $row['expression']);
             $results[] = [
                 'name' => $row['name'],
                 'type' => TableSchema::CONSTRAINT_CHECK,
@@ -788,7 +782,7 @@ class PostgresSchemaDialect extends SchemaDialect
         }
 
         if (!$foundType) {
-            $out .= ' ' . strtoupper($column['type']);
+            $out .= ' ' . strtoupper((string) $column['type']);
             $hasLength[] = $column['type'];
         }
 
@@ -959,7 +953,6 @@ class PostgresSchemaDialect extends SchemaDialect
      *
      * @param string $prefix The key prefix
      * @param array<string, mixed> $data Key data.
-     * @return string
      */
     protected function _keySql(string $prefix, array $data): string
     {

@@ -44,8 +44,6 @@ class JsonConfig implements ConfigEngineInterface
 
     /**
      * File extension.
-     *
-     * @var string
      */
     protected string $_extension = '.json';
 

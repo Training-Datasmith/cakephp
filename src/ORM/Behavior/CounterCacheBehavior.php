@@ -120,7 +120,6 @@ class CounterCacheBehavior extends Behavior
      * @param \Cake\Event\EventInterface<\Cake\ORM\Table> $event The beforeSave event that was fired
      * @param \Cake\Datasource\EntityInterface $entity The entity that is going to be saved
      * @param \ArrayObject<string, mixed> $options The options for the query
-     * @return void
      */
     public function beforeSave(EventInterface $event, EntityInterface $entity, ArrayObject $options): void
     {
@@ -161,7 +160,6 @@ class CounterCacheBehavior extends Behavior
      * @param \Cake\Event\EventInterface<\Cake\ORM\Table> $event The afterSave event that was fired.
      * @param \Cake\Datasource\EntityInterface $entity The entity that was saved.
      * @param \ArrayObject<string, mixed> $options The options for the query
-     * @return void
      */
     public function afterSave(EventInterface $event, EntityInterface $entity, ArrayObject $options): void
     {
@@ -181,7 +179,6 @@ class CounterCacheBehavior extends Behavior
      * @param \Cake\Event\EventInterface<\Cake\ORM\Table> $event The afterDelete event that was fired.
      * @param \Cake\Datasource\EntityInterface $entity The entity that was deleted.
      * @param \ArrayObject<string, mixed> $options The options for the query
-     * @return void
      */
     public function afterDelete(EventInterface $event, EntityInterface $entity, ArrayObject $options): void
     {
@@ -202,7 +199,6 @@ class CounterCacheBehavior extends Behavior
      * @param int $limit The number of records to update per page/iteration.
      * @param int|null $page The page/iteration number. If null (default), all
      *   records will be updated one page at a time.
-     * @return void
      * @since 5.2.0
      */
     public function updateCounterCache(?string $assocName = null, int $limit = 100, ?int $page = null): void
@@ -240,7 +236,6 @@ class CounterCacheBehavior extends Behavior
      * @param array $config Config array.
      * @param int $limit Limit.
      * @param int|null $page Page number.
-     * @return void
      */
     protected function updateCountForAssociation(
         BelongsTo $assoc,
@@ -293,7 +288,6 @@ class CounterCacheBehavior extends Behavior
      *
      * @param \Cake\Event\EventInterface<\Cake\ORM\Table> $event Event instance.
      * @param \Cake\Datasource\EntityInterface $entity Entity.
-     * @return void
      */
     protected function _processAssociations(EventInterface $event, EntityInterface $entity): void
     {
@@ -310,7 +304,6 @@ class CounterCacheBehavior extends Behavior
      * @param \Cake\Datasource\EntityInterface $entity Entity
      * @param \Cake\ORM\Association $assoc The association object
      * @param array $settings The settings for counter cache for this association
-     * @return void
      * @throws \RuntimeException If invalid callable is passed.
      */
     protected function _processAssociation(
@@ -384,9 +377,7 @@ class CounterCacheBehavior extends Behavior
      */
     protected function _shouldUpdateCount(array $conditions): bool
     {
-        return !empty(array_filter($conditions, function ($value) {
-            return $value !== null;
-        }));
+        return !empty(array_filter($conditions, fn($value) => $value !== null));
     }
 
     /**

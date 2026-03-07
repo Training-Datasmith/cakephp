@@ -28,13 +28,6 @@ use InvalidArgumentException;
 class TupleComparison extends ComparisonExpression
 {
     /**
-     * The type to be used for casting the value to a database representation
-     *
-     * @var array<string|null>
-     */
-    protected array $types;
-
-    /**
      * Constructor
      *
      * @param \Cake\Database\ExpressionInterface|array|string $fields the fields to use to form a tuple
@@ -46,10 +39,12 @@ class TupleComparison extends ComparisonExpression
     public function __construct(
         ExpressionInterface|array|string $fields,
         ExpressionInterface|array $values,
-        array $types = [],
+        /**
+         * The type to be used for casting the value to a database representation
+         */
+        protected array $types = [],
         string $conjunction = '=',
     ) {
-        $this->types = $types;
         $this->setField($fields);
         $this->_operator = $conjunction;
         $this->setValue($values);
@@ -69,7 +64,6 @@ class TupleComparison extends ComparisonExpression
      * Sets the value
      *
      * @param mixed $value The value to compare
-     * @return void
      */
     public function setValue(mixed $value): void
     {
@@ -117,7 +111,6 @@ class TupleComparison extends ComparisonExpression
      * for the SQL version of this expression
      *
      * @param \Cake\Database\ValueBinder $binder The value binder to convert expressions with.
-     * @return string
      */
     protected function _stringifyValues(ValueBinder $binder): string
     {
@@ -174,7 +167,7 @@ class TupleComparison extends ComparisonExpression
     /**
      * @inheritDoc
      */
-    public function traverse(Closure $callback)
+    public function traverse(Closure $callback): static
     {
         $fields = (array)$this->getField();
         foreach ($fields as $field) {
@@ -208,7 +201,6 @@ class TupleComparison extends ComparisonExpression
      *
      * @param mixed $value The value to traverse
      * @param \Closure $callback The callback to use when traversing
-     * @return void
      */
     protected function _traverseValue(mixed $value, Closure $callback): void
     {
@@ -221,8 +213,6 @@ class TupleComparison extends ComparisonExpression
     /**
      * Determines if each of the values in this expressions is a tuple in
      * itself
-     *
-     * @return bool
      */
     public function isMulti(): bool
     {

@@ -60,22 +60,16 @@ class Sqlite extends Driver
 
     /**
      * Whether the connected server supports window functions.
-     *
-     * @var bool|null
      */
     protected ?bool $_supportsWindowFunctions = null;
 
     /**
      * String used to start a database identifier quoting to make it safe
-     *
-     * @var string
      */
     protected string $_startQuote = '"';
 
     /**
      * String used to end a database identifier quoting to make it safe
-     *
-     * @var string
      */
     protected string $_endQuote = '"';
 
@@ -170,8 +164,6 @@ class Sqlite extends Driver
 
     /**
      * Get the SQL for disabling foreign keys.
-     *
-     * @return string
      */
     public function disableForeignKeySQL(): string
     {
@@ -236,7 +228,6 @@ class Sqlite extends Driver
      * SQL dialect.
      *
      * @param \Cake\Database\Expression\FunctionExpression $expression The function expression to convert to TSQL.
-     * @return void
      */
     protected function _transformFunctionExpression(FunctionExpression $expression): void
     {
@@ -249,9 +240,7 @@ class Sqlite extends Driver
                 $expression
                     ->setName('ROUND')
                     ->setConjunction('-')
-                    ->iterateParts(function ($p) {
-                        return new FunctionExpression('JULIANDAY', [$p['value']], [$p['type']]);
-                    });
+                    ->iterateParts(fn($p) => new FunctionExpression('JULIANDAY', [$p['value']], [$p['type']]));
                 break;
             case 'NOW':
                 $expression->setName('DATETIME')->add(["'now'" => 'literal']);

@@ -31,8 +31,6 @@ class RulesProvider
 {
     /**
      * The class/object to proxy.
-     *
-     * @var object|string
      */
     protected object|string $_class;
 
@@ -57,7 +55,7 @@ class RulesProvider
             sprintf(
                 'The class Cake\Validation\RulesProvider is deprecated. '
                 . 'Directly set %s as a validation provider.',
-                (is_string($class) ? $class : get_class($class)),
+                (is_string($class) ? $class : $class::class),
             ),
         );
 

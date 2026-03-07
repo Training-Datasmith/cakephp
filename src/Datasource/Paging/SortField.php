@@ -54,7 +54,6 @@ class SortField
      *
      * @param string $field The field name to sort by
      * @param bool $locked Whether the sort direction is locked
-     * @return self
      */
     public static function asc(string $field, bool $locked = false): self
     {
@@ -66,7 +65,6 @@ class SortField
      *
      * @param string $field The field name to sort by
      * @param bool $locked Whether the sort direction is locked
-     * @return self
      */
     public static function desc(string $field, bool $locked = false): self
     {
@@ -75,8 +73,6 @@ class SortField
 
     /**
      * Get the field name.
-     *
-     * @return string
      */
     public function getField(): string
     {
@@ -88,7 +84,6 @@ class SortField
      *
      * @param string $requestedDirection The direction requested by the user
      * @param bool $directionSpecified Whether a direction was explicitly specified
-     * @return string
      */
     public function getDirection(string $requestedDirection, bool $directionSpecified): string
     {
@@ -109,8 +104,6 @@ class SortField
 
     /**
      * Check if the sort direction is locked.
-     *
-     * @return bool
      */
     public function isLocked(): bool
     {

@@ -38,8 +38,6 @@ class DateTimeWidget extends BasicWidget
 {
     /**
      * Template instance.
-     *
-     * @var \Cake\View\StringTemplate
      */
     protected StringTemplate $_templates;
 
@@ -179,7 +177,6 @@ class DateTimeWidget extends BasicWidget
      *
      * @param \Cake\Chronos\ChronosDate|\Cake\Chronos\ChronosTime|\DateTimeInterface|string|int|null $value Value to deconstruct.
      * @param array<string, mixed> $options Options for conversion.
-     * @return string
      * @throws \InvalidArgumentException If invalid input type is passed.
      */
     protected function formatDateTime(

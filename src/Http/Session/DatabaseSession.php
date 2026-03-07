@@ -31,15 +31,11 @@ class DatabaseSession implements SessionHandlerInterface
 
     /**
      * Reference to the table handling the session data
-     *
-     * @var \Cake\ORM\Table
      */
     protected Table $_table;
 
     /**
      * Number of seconds to mark the session as expired
-     *
-     * @var int
      */
     protected int $_timeout;
 
@@ -75,7 +71,7 @@ class DatabaseSession implements SessionHandlerInterface
      * @param int $timeout The timeout duration.
      * @return $this
      */
-    public function setTimeout(int $timeout)
+    public function setTimeout(int $timeout): static
     {
         $this->_timeout = $timeout;
 

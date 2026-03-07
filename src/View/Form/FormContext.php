@@ -29,15 +29,11 @@ class FormContext implements ContextInterface
 {
     /**
      * The form object.
-     *
-     * @var \Cake\Form\Form
      */
     protected Form $_form;
 
     /**
      * Validator name.
-     *
-     * @var string|null
      */
     protected ?string $_validator = null;
 
@@ -112,7 +108,6 @@ class FormContext implements ContextInterface
      * Get default value from form schema for given field.
      *
      * @param string $field Field name.
-     * @return mixed
      */
     protected function _schemaDefault(string $field): mixed
     {

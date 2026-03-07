@@ -89,15 +89,11 @@ class Sqlserver extends Driver
 
     /**
      * String used to start a database identifier quoting to make it safe
-     *
-     * @var string
      */
     protected string $_startQuote = '[';
 
     /**
      * String used to end a database identifier quoting to make it safe
-     *
-     * @var string
      */
     protected string $_endQuote = ']';
 
@@ -110,7 +106,6 @@ class Sqlserver extends Driver
      * information see: https://github.com/Microsoft/msphpsql/issues/65).
      *
      * @throws \InvalidArgumentException if an unsupported setting is in the driver config
-     * @return void
      */
     public function connect(): void
     {
@@ -228,7 +223,6 @@ class Sqlserver extends Driver
             $options,
         );
 
-        /** @var \Cake\Database\StatementInterface */
         return new (static::STATEMENT_CLASS)($statement, $this, $this->getResultSetDecorators($query));
     }
 
@@ -398,7 +392,7 @@ class Sqlserver extends Driver
 
         // Decorate the original query as that is what the
         // end developer will be calling execute() on originally.
-        $original->decorateResults(function ($row) {
+        $original->decorateResults(function (array $row): array {
             if (isset($row['_cake_page_rownum_'])) {
                 unset($row['_cake_page_rownum_']);
             }
@@ -426,7 +420,7 @@ class Sqlserver extends Driver
 
         $order = new OrderByExpression($distinct);
         $query
-            ->select(function (Query $q) use ($distinct, $order) {
+            ->select(function (Query $q) use ($distinct, $order): array {
                 $over = $q->expr('ROW_NUMBER() OVER')
                     ->add('(PARTITION BY')
                     ->add($q->expr()->add($distinct)->setConjunction(','))
@@ -449,7 +443,7 @@ class Sqlserver extends Driver
 
         // Decorate the original query as that is what the
         // end developer will be calling execute() on originally.
-        $original->decorateResults(function ($row) {
+        $original->decorateResults(function (array $row): array {
             if (isset($row['_cake_distinct_pivot_'])) {
                 unset($row['_cake_distinct_pivot_']);
             }
@@ -476,7 +470,6 @@ class Sqlserver extends Driver
      * SQL dialect.
      *
      * @param \Cake\Database\Expression\FunctionExpression $expression The function expression to convert to TSQL.
-     * @return void
      */
     protected function _transformFunctionExpression(FunctionExpression $expression): void
     {

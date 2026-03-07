@@ -51,7 +51,6 @@ class Filesystem
      * @param \Closure|string|null $filter If string will be used as regex for filtering using
      *   `RegexIterator`, if callable will be as callback for `CallbackFilterIterator`.
      * @param int|null $flags Flags for FilesystemIterator::__construct();
-     * @return \Iterator
      */
     public function find(string $path, Closure|string|null $filter = null, ?int $flags = null): Iterator
     {
@@ -75,7 +74,6 @@ class Filesystem
      *   `RegexIterator`, if callable will be as callback for `CallbackFilterIterator`.
      *   Hidden directories (starting with dot e.g. .git) are always skipped.
      * @param int|null $flags Flags for FilesystemIterator::__construct();
-     * @return \Iterator
      */
     public function findRecursive(string $path, Closure|string|null $filter = null, ?int $flags = null): Iterator
     {
@@ -86,7 +84,7 @@ class Filesystem
 
         $dirFilter = new RecursiveCallbackFilterIterator(
             $directory,
-            function (SplFileInfo $current) {
+            function (SplFileInfo $current): bool {
                 if (str_starts_with($current->getFilename(), '.') && $current->isDir()) {
                     return false;
                 }
@@ -112,7 +110,6 @@ class Filesystem
      *
      * @param \Iterator $iterator Iterator
      * @param \Closure|string $filter Regex string or callback.
-     * @return \Iterator
      */
     protected function filterIterator(Iterator $iterator, Closure|string $filter): Iterator
     {
@@ -128,7 +125,6 @@ class Filesystem
      *
      * @param string $filename File path.
      * @param string $content Content to dump.
-     * @return void
      * @throws \Cake\Core\Exception\CakeException When dumping fails.
      */
     public function dumpFile(string $filename, string $content): void
@@ -162,7 +158,6 @@ class Filesystem
      *
      * @param string $dir Directory path.
      * @param int $mode Octal mode passed to mkdir(). Defaults to 0777.
-     * @return void
      * @throws \Cake\Core\Exception\CakeException When directory creation fails.
      */
     public function mkdir(string $dir, int $mode = 0777): void
@@ -185,7 +180,6 @@ class Filesystem
      * Delete directory along with all its contents.
      *
      * @param string $path Directory path.
-     * @return bool
      * @throws \Cake\Core\Exception\CakeException If path is not a directory.
      */
     public function deleteDir(string $path): bool
@@ -233,7 +227,6 @@ class Filesystem
      *
      * @param string $source Source path.
      * @param string $destination Destination path.
-     * @return bool
      */
     public function copyDir(string $source, string $destination): bool
     {
@@ -269,7 +262,6 @@ class Filesystem
      * Check whether the given path is a stream path.
      *
      * @param string $path Path.
-     * @return bool
      */
     public function isStream(string $path): bool
     {

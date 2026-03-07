@@ -36,8 +36,6 @@ class Collection extends IteratorIterator implements CollectionInterface
 
     /**
      * Whether or not the items in this collection are an array.
-     *
-     * @var bool
      */
     protected bool $innerIsArray = false;
 
@@ -60,8 +58,6 @@ class Collection extends IteratorIterator implements CollectionInterface
 
     /**
      * Returns an array for serializing this object.
-     *
-     * @return array
      */
     public function __serialize(): array
     {
@@ -72,7 +68,6 @@ class Collection extends IteratorIterator implements CollectionInterface
      * Rebuilds the Collection instance.
      *
      * @param array $data Data array.
-     * @return void
      */
     public function __unserialize(array $data): void
     {

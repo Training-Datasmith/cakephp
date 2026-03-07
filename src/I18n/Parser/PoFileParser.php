@@ -69,7 +69,6 @@ class PoFileParser
      * Items with an empty id are ignored.
      *
      * @param string $resource The file name to parse
-     * @return array
      */
     public function parse(string $resource): array
     {
@@ -144,7 +143,6 @@ class PoFileParser
      *
      * @param array $messages The messages array being collected from the file
      * @param array $item The current item being inspected
-     * @return void
      */
     protected function _addMessage(array &$messages, array $item): void
     {
@@ -152,7 +150,7 @@ class PoFileParser
             return;
         }
 
-        $singular = stripcslashes($item['ids']['singular']);
+        $singular = stripcslashes((string) $item['ids']['singular']);
         $context = $item['context'] ?? null;
         $translation = $item['translated'];
 
@@ -181,7 +179,7 @@ class PoFileParser
             $plurals += $empties;
             ksort($plurals);
 
-            $plurals = array_map('stripcslashes', $plurals);
+            $plurals = array_map(stripcslashes(...), $plurals);
             $key = stripcslashes($item['ids']['plural']);
 
             if ($context !== null) {

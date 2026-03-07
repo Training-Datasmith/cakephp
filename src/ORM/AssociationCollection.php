@@ -93,7 +93,6 @@ class AssociationCollection implements IteratorAggregate
      * @param string $className The name of association class.
      * @param string $associated The alias for the target table.
      * @param array<string, mixed> $options List of options to configure the association definition.
-     * @return \Cake\ORM\Association
      * @throws \InvalidArgumentException
      * @template T of \Cake\ORM\Association
      * @phpstan-param class-string<T> $className
@@ -169,9 +168,9 @@ class AssociationCollection implements IteratorAggregate
      */
     public function getByType(array|string $class): array
     {
-        $class = array_map('strtolower', (array)$class);
+        $class = array_map(strtolower(...), (array)$class);
 
-        $out = array_filter($this->_items, function (Association $assoc) use ($class) {
+        $out = array_filter($this->_items, function (Association $assoc) use ($class): bool {
             [, $name] = namespaceSplit($assoc::class);
 
             return in_array(strtolower($name), $class, true);
@@ -186,7 +185,6 @@ class AssociationCollection implements IteratorAggregate
      * Once removed the association will no longer be reachable
      *
      * @param string $alias The alias name.
-     * @return void
      */
     public function remove(string $alias): void
     {
@@ -197,8 +195,6 @@ class AssociationCollection implements IteratorAggregate
      * Remove all registered associations.
      *
      * Once removed associations will no longer be reachable
-     *
-     * @return void
      */
     public function removeAll(): void
     {
@@ -327,7 +323,6 @@ class AssociationCollection implements IteratorAggregate
      *
      * @param \Cake\Datasource\EntityInterface $entity The entity to delete associations for.
      * @param array<string, mixed> $options The options used in the delete operation.
-     * @return bool
      */
     public function cascadeDelete(EntityInterface $entity, array $options): bool
     {
@@ -359,7 +354,6 @@ class AssociationCollection implements IteratorAggregate
      * in this collection.
      *
      * @param array|string|bool $keys the list of association names to normalize
-     * @return array
      */
     public function normalizeKeys(array|string|bool $keys): array
     {

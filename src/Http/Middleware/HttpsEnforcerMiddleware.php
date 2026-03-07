@@ -123,7 +123,6 @@ class HttpsEnforcerMiddleware implements MiddlewareInterface
      * Adds Strict-Transport-Security header to response.
      *
      * @param \Psr\Http\Message\ResponseInterface $response Response
-     * @return \Psr\Http\Message\ResponseInterface
      */
     protected function addHsts(ResponseInterface $response): ResponseInterface
     {

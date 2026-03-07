@@ -74,7 +74,6 @@ class TypeFactory
      * Returns a Type object capable of converting a type identified by name.
      *
      * @param string $name type identifier
-     * @return \Cake\Database\TypeInterface
      */
     public static function build(string $name): TypeInterface
     {
@@ -107,7 +106,6 @@ class TypeFactory
      *
      * @param string $name The type identifier you want to set.
      * @param \Cake\Database\TypeInterface $instance The type instance you want to set.
-     * @return void
      */
     public static function set(string $name, TypeInterface $instance): void
     {
@@ -119,7 +117,6 @@ class TypeFactory
      *
      * @param string $type Name of type to map.
      * @param string $className The classname to register.
-     * @return void
      * @phpstan-param class-string<\Cake\Database\TypeInterface> $className
      */
     public static function map(string $type, string $className): void
@@ -132,7 +129,6 @@ class TypeFactory
      * Set type to classname mapping.
      *
      * @param array<string, string> $map List of types to be mapped.
-     * @return void
      * @phpstan-param array<string, class-string<\Cake\Database\TypeInterface>> $map
      */
     public static function setMap(array $map): void
@@ -178,8 +174,6 @@ class TypeFactory
 
     /**
      * Clears out all created instances and mapped types classes, useful for testing
-     *
-     * @return void
      */
     public static function clear(): void
     {

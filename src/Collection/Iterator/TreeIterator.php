@@ -38,7 +38,6 @@ class TreeIterator extends RecursiveIteratorIterator implements CollectionInterf
     /**
      * The iteration mode
      *
-     * @var int
      * @phpstan-var \RecursiveIteratorIterator::LEAVES_ONLY|\RecursiveIteratorIterator::SELF_FIRST|\RecursiveIteratorIterator::CHILD_FIRST
      */
     protected int $_mode;

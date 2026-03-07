@@ -71,7 +71,6 @@ trait StaticConfigTrait
      * @param mixed $config Configuration value. Generally an array of name => configuration data for adapter.
      * @throws \BadMethodCallException When trying to modify an existing config.
      * @throws \LogicException When trying to store an invalid structured config array.
-     * @return void
      */
     public static function setConfig(array|string $key, mixed $config = null): void
     {
@@ -175,9 +174,7 @@ trait StaticConfigTrait
     {
         $configurations = array_keys(static::$_config);
 
-        return array_map(function (int|string $key) {
-            return (string)$key;
-        }, $configurations);
+        return array_map(fn(int|string $key) => (string)$key, $configurations);
     }
 
     /**
@@ -313,7 +310,6 @@ REGEXP;
      * Updates the DSN class map for this class.
      *
      * @param array<string, string> $map Additions/edits to the class map to apply.
-     * @return void
      * @phpstan-param array<string, class-string> $map
      */
     public static function setDsnClassMap(array $map): void

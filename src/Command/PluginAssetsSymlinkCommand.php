@@ -71,7 +71,6 @@ class PluginAssetsSymlinkCommand extends Command
      * Get the option parser.
      *
      * @param \Cake\Console\ConsoleOptionParser $parser The option parser to update
-     * @return \Cake\Console\ConsoleOptionParser
      */
     public function buildOptionParser(ConsoleOptionParser $parser): ConsoleOptionParser
     {

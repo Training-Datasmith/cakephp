@@ -41,7 +41,6 @@ if (!function_exists('Cake\Core\pathCombine')) {
      *  - If true, ensures a trailing forward-slash is added if one doesn't exist
      *  - If false, ensures any trailing slash is removed
      *  - if null, ignores trailing slashes
-     * @return string
      */
     function pathCombine(array $parts, ?bool $trailing = null): string
     {
@@ -128,7 +127,7 @@ if (!function_exists('Cake\Core\h')) {
             $defaultCharset = mb_internal_encoding() ?: 'UTF-8';
         }
 
-        return htmlspecialchars($text, ENT_QUOTES | ENT_SUBSTITUTE, $charset ?: $defaultCharset, $double);
+        return htmlspecialchars((string) $text, ENT_QUOTES | ENT_SUBSTITUTE, $charset ?: $defaultCharset, $double);
     }
 }
 
@@ -308,7 +307,6 @@ if (!function_exists('Cake\Core\triggerWarning')) {
      * Triggers an E_USER_WARNING.
      *
      * @param string $message The warning message.
-     * @return void
      */
     function triggerWarning(string $message): void
     {
@@ -324,7 +322,6 @@ if (!function_exists('Cake\Core\deprecationWarning')) {
      * @param string $message The message to output as a deprecation warning.
      * @param int $stackFrame The stack frame to include in the error. Defaults to 1
      *   as that should point to application/plugin code.
-     * @return void
      */
     function deprecationWarning(string $version, string $message, int $stackFrame = 1): void
     {
@@ -342,7 +339,7 @@ if (!function_exists('Cake\Core\deprecationWarning')) {
             if (defined('ROOT')) {
                 $root = ROOT;
             }
-            $relative = str_replace(DIRECTORY_SEPARATOR, '/', substr($frame['file'], strlen($root) + 1));
+            $relative = str_replace(DIRECTORY_SEPARATOR, '/', substr($frame['file'], strlen((string) $root) + 1));
             $patterns = (array)Configure::read('Error.ignoredDeprecationPaths');
             foreach ($patterns as $pattern) {
                 $pattern = str_replace(DIRECTORY_SEPARATOR, '/', $pattern);

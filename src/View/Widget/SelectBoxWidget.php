@@ -312,7 +312,6 @@ class SelectBoxWidget extends BasicWidget
      *
      * @param string $key The key to test.
      * @param mixed $selected The selected values.
-     * @return bool
      */
     protected function _isSelected(string $key, mixed $selected): bool
     {
@@ -334,7 +333,6 @@ class SelectBoxWidget extends BasicWidget
      *
      * @param string $key The key to test.
      * @param array<string>|null $disabled The disabled values.
-     * @return bool
      */
     protected function _isDisabled(string $key, ?array $disabled): bool
     {

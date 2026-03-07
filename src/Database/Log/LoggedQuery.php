@@ -32,51 +32,37 @@ class LoggedQuery implements JsonSerializable, Stringable
 {
     /**
      * Driver executing the query
-     *
-     * @var \Cake\Database\Driver|null
      */
     protected ?Driver $driver = null;
 
     /**
      * Query string that was executed
-     *
-     * @var string
      */
     protected string $query = '';
 
     /**
      * Number of milliseconds this query took to complete
-     *
-     * @var float
      */
     protected float $took = 0;
 
     /**
      * Associative array with the params bound to the query string
-     *
-     * @var array
      */
     protected array $params = [];
 
     /**
      * Number of rows affected or returned by the query execution
-     *
-     * @var int
      */
     protected int $numRows = 0;
 
     /**
      * The exception that was thrown by the execution of this query
-     *
-     * @var \Exception|null
      */
     protected ?Exception $error = null;
 
     /**
      * Helper function used to replace query placeholders by the real
      * params used to execute the query
-     *
-     * @return string
      */
     protected function interpolate(): string
     {
@@ -147,8 +133,6 @@ class LoggedQuery implements JsonSerializable, Stringable
 
     /**
      * Get the connection name from the driver config.
-     *
-     * @return string
      */
     public function getConnectionName(): string
     {
@@ -163,7 +147,6 @@ class LoggedQuery implements JsonSerializable, Stringable
      * Set logging context for this query.
      *
      * @param array<string, mixed> $context Context data.
-     * @return void
      */
     public function setContext(array $context): void
     {
@@ -201,8 +184,6 @@ class LoggedQuery implements JsonSerializable, Stringable
 
     /**
      * Returns the string representation of this logged query
-     *
-     * @return string
      */
     public function __toString(): string
     {

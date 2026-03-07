@@ -108,8 +108,6 @@ class Controller implements EventListenerInterface, EventDispatcherInterface
      * The name of this controller. Controller names are plural, named after the model they manipulate.
      *
      * Set automatically using conventions in Controller::__construct().
-     *
-     * @var string
      */
     protected string $name;
 
@@ -118,7 +116,6 @@ class Controller implements EventListenerInterface, EventDispatcherInterface
      * This object contains all the information about a request and several methods for reading
      * additional information about the request.
      *
-     * @var \Cake\Http\ServerRequest
      * @link https://book.cakephp.org/5/en/controllers/request-response.html#request
      */
     protected ServerRequest $request;
@@ -126,7 +123,6 @@ class Controller implements EventListenerInterface, EventDispatcherInterface
     /**
      * An instance of a Response object that contains information about the impending response
      *
-     * @var \Cake\Http\Response
      * @link https://book.cakephp.org/5/en/controllers/request-response.html#response
      */
     protected Response $response;
@@ -153,8 +149,6 @@ class Controller implements EventListenerInterface, EventDispatcherInterface
     /**
      * Set to true to automatically render the view
      * after action logic.
-     *
-     * @var bool
      */
     protected bool $autoRender = true;
 
@@ -167,15 +161,12 @@ class Controller implements EventListenerInterface, EventDispatcherInterface
 
     /**
      * Automatically set to the name of a plugin.
-     *
-     * @var string|null
      */
     protected ?string $plugin = null;
 
     /**
      * Middlewares list.
      *
-     * @var array
      * @phpstan-var array<int, array{middleware:\Psr\Http\Server\MiddlewareInterface|\Closure|string, options:array{only?: array|string, except?: array|string}}>
      */
     protected array $middlewares = [];
@@ -245,8 +236,6 @@ class Controller implements EventListenerInterface, EventDispatcherInterface
      *
      * Implement this method to avoid having to overwrite
      * the constructor and call parent.
-     *
-     * @return void
      */
     public function initialize(): void
     {
@@ -276,7 +265,6 @@ class Controller implements EventListenerInterface, EventDispatcherInterface
      *
      * @param string $name The name of the component to load.
      * @param array<string, mixed> $config The config for the component.
-     * @return \Cake\Controller\Component
      * @throws \Exception
      * @link https://book.cakephp.org/5/en/controllers.html#configuring-components-to-load
      */
@@ -328,7 +316,6 @@ class Controller implements EventListenerInterface, EventDispatcherInterface
     /**
      * Returns the controller name.
      *
-     * @return string
      * @since 3.6.0
      */
     public function getName(): string
@@ -343,7 +330,7 @@ class Controller implements EventListenerInterface, EventDispatcherInterface
      * @return $this
      * @since 3.6.0
      */
-    public function setName(string $name)
+    public function setName(string $name): static
     {
         $this->name = $name;
 
@@ -353,7 +340,6 @@ class Controller implements EventListenerInterface, EventDispatcherInterface
     /**
      * Returns the plugin name.
      *
-     * @return string|null
      * @since 3.6.0
      */
     public function getPlugin(): ?string
@@ -368,7 +354,7 @@ class Controller implements EventListenerInterface, EventDispatcherInterface
      * @return $this
      * @since 3.6.0
      */
-    public function setPlugin(?string $name)
+    public function setPlugin(?string $name): static
     {
         $this->plugin = $name;
 
@@ -378,7 +364,6 @@ class Controller implements EventListenerInterface, EventDispatcherInterface
     /**
      * Returns true if an action should be rendered automatically.
      *
-     * @return bool
      * @since 3.6.0
      */
     public function isAutoRenderEnabled(): bool
@@ -392,7 +377,7 @@ class Controller implements EventListenerInterface, EventDispatcherInterface
      * @return $this
      * @since 3.6.0
      */
-    public function enableAutoRender()
+    public function enableAutoRender(): static
     {
         $this->autoRender = true;
 
@@ -405,7 +390,7 @@ class Controller implements EventListenerInterface, EventDispatcherInterface
      * @return $this
      * @since 3.6.0
      */
-    public function disableAutoRender()
+    public function disableAutoRender(): static
     {
         $this->autoRender = false;
 
@@ -415,7 +400,6 @@ class Controller implements EventListenerInterface, EventDispatcherInterface
     /**
      * Gets the request instance.
      *
-     * @return \Cake\Http\ServerRequest
      * @since 3.6.0
      */
     public function getRequest(): ServerRequest
@@ -433,7 +417,7 @@ class Controller implements EventListenerInterface, EventDispatcherInterface
      * @param \Cake\Http\ServerRequest $request Request instance.
      * @return $this
      */
-    public function setRequest(ServerRequest $request)
+    public function setRequest(ServerRequest $request): static
     {
         $this->request = $request;
         $this->plugin = $request->getParam('plugin');
@@ -444,7 +428,6 @@ class Controller implements EventListenerInterface, EventDispatcherInterface
     /**
      * Gets the response instance.
      *
-     * @return \Cake\Http\Response
      * @since 3.6.0
      */
     public function getResponse(): Response
@@ -459,7 +442,7 @@ class Controller implements EventListenerInterface, EventDispatcherInterface
      * @return $this
      * @since 3.6.0
      */
-    public function setResponse(Response $response)
+    public function setResponse(Response $response): static
     {
         $this->response = $response;
 
@@ -469,7 +452,6 @@ class Controller implements EventListenerInterface, EventDispatcherInterface
     /**
      * Get the closure for action to be invoked by ControllerFactory.
      *
-     * @return \Closure
      * @throws \Cake\Controller\Exception\MissingActionException
      */
     public function getAction(): Closure
@@ -496,7 +478,6 @@ class Controller implements EventListenerInterface, EventDispatcherInterface
      *
      * @param \Closure $action The action closure.
      * @param array $args The arguments to be passed when invoking action.
-     * @return void
      */
     public function invokeAction(Closure $action, array $args): void
     {
@@ -525,7 +506,6 @@ class Controller implements EventListenerInterface, EventDispatcherInterface
      * @param array<string, mixed> $options Valid options:
      *  - `only`: (array|string) Only run the middleware for specified actions.
      *  - `except`: (array|string) Run the middleware for all actions except the specified ones.
-     * @return void
      * @since 4.3.0
      * @phpstan-param array{only?: array|string, except?: array|string} $options
      */
@@ -540,7 +520,6 @@ class Controller implements EventListenerInterface, EventDispatcherInterface
     /**
      * Get middleware to be applied for this controller.
      *
-     * @return array
      * @since 4.3.0
      */
     public function getMiddleware(): array
@@ -594,8 +573,6 @@ class Controller implements EventListenerInterface, EventDispatcherInterface
      * - Initializes components, which fires their `initialize` callback
      * - Calls the controller `beforeFilter`.
      * - triggers Component `startup` methods.
-     *
-     * @return \Psr\Http\Message\ResponseInterface|null
      */
     public function startupProcess(): ?ResponseInterface
     {
@@ -618,8 +595,6 @@ class Controller implements EventListenerInterface, EventDispatcherInterface
      *
      * - triggers the component `shutdown` callback.
      * - calls the Controller's `afterFilter` method.
-     *
-     * @return \Psr\Http\Message\ResponseInterface|null
      */
     public function shutdownProcess(): ?ResponseInterface
     {
@@ -636,7 +611,6 @@ class Controller implements EventListenerInterface, EventDispatcherInterface
      *
      * @param \Psr\Http\Message\UriInterface|array|string $url A string, array-based URL or UriInterface instance.
      * @param int $status HTTP status code. Defaults to `302`.
-     * @return \Cake\Http\Response|null
      * @link https://book.cakephp.org/5/en/controllers.html#redirecting-to-other-pages
      */
     public function redirect(UriInterface|array|string $url, int $status = 302): ?Response
@@ -738,7 +712,7 @@ class Controller implements EventListenerInterface, EventDispatcherInterface
      * @see \Cake\Http\ContentTypeNegotiation
      * @since 4.5.0
      */
-    public function addViewClasses(array $viewClasses)
+    public function addViewClasses(array $viewClasses): static
     {
         $this->viewClasses = array_merge($this->viewClasses, $viewClasses);
 
@@ -799,16 +773,14 @@ class Controller implements EventListenerInterface, EventDispatcherInterface
 
     /**
      * Get the templatePath based on controller name and request prefix.
-     *
-     * @return string
      */
     protected function _templatePath(): string
     {
         $templatePath = $this->name;
         if ($this->request->getParam('prefix')) {
             $prefixes = array_map(
-                'Cake\Utility\Inflector::camelize',
-                explode('/', $this->request->getParam('prefix')),
+                Cake\Utility\Inflector::camelize(...),
+                explode('/', (string) $this->request->getParam('prefix')),
             );
             $templatePath = implode(DIRECTORY_SEPARATOR, $prefixes) . DIRECTORY_SEPARATOR . $templatePath;
         }
@@ -833,8 +805,8 @@ class Controller implements EventListenerInterface, EventDispatcherInterface
 
         $url = Router::url($default, !$local);
         $base = $this->request->getAttribute('base');
-        if ($local && $base && str_starts_with($url, $base)) {
-            $url = substr($url, strlen($base));
+        if ($local && $base && str_starts_with($url, (string) $base)) {
+            $url = substr($url, strlen((string) $base));
             if (!str_starts_with($url, '/')) {
                 return '/' . $url;
             }

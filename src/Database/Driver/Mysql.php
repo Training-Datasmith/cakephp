@@ -70,15 +70,11 @@ class Mysql extends Driver
 
     /**
      * String used to start a database identifier quoting to make it safe
-     *
-     * @var string
      */
     protected string $_startQuote = '`';
 
     /**
      * String used to end a database identifier quoting to make it safe
-     *
-     * @var string
      */
     protected string $_endQuote = '`';
 
@@ -87,8 +83,6 @@ class Mysql extends Driver
      *
      * If the underlying server is MariaDB, its value will get set to `'mariadb'`
      * after `version()` method is called.
-     *
-     * @var string
      */
     protected string $serverType = self::SERVER_TYPE_MYSQL;
 
@@ -217,8 +211,6 @@ class Mysql extends Driver
 
     /**
      * Get the SQL for disabling foreign keys.
-     *
-     * @return string
      */
     public function disableForeignKeySQL(): string
     {
@@ -238,13 +230,11 @@ class Mysql extends Driver
      */
     public function supports(DriverFeatureEnum $feature): bool
     {
-        $versionCompare = function () use ($feature) {
-            return version_compare(
-                $this->version(),
-                $this->featureVersions[$this->serverType][$feature->value],
-                '>=',
-            );
-        };
+        $versionCompare = (fn() => version_compare(
+            $this->version(),
+            $this->featureVersions[$this->serverType][$feature->value],
+            '>=',
+        ));
 
         return match ($feature) {
             DriverFeatureEnum::DISABLE_CONSTRAINT_WITHOUT_TRANSACTION,
@@ -265,8 +255,6 @@ class Mysql extends Driver
 
     /**
      * Returns true if the connected server is MariaDB.
-     *
-     * @return bool
      */
     public function isMariadb(): bool
     {
@@ -277,8 +265,6 @@ class Mysql extends Driver
 
     /**
      * Returns connected server version.
-     *
-     * @return string
      */
     public function version(): string
     {
@@ -297,8 +283,6 @@ class Mysql extends Driver
 
     /**
      * Get PDO ATTR_SSL_KEY id.
-     *
-     * @return int
      */
     private function attrSslKeyId(): int
     {
@@ -307,8 +291,6 @@ class Mysql extends Driver
 
     /**
      * Get PDO ATTR_SSL_CERT id.
-     *
-     * @return int
      */
     private function attrSslCertId(): int
     {
@@ -317,8 +299,6 @@ class Mysql extends Driver
 
     /**
      * Get PDO ATTR_SSL_CA id.
-     *
-     * @return int
      */
     private function attrSslCaId(): int
     {
@@ -327,8 +307,6 @@ class Mysql extends Driver
 
     /**
      * Get PDO ATTR_USE_BUFFERED_QUERY id.
-     *
-     * @return int
      */
     private function attrUseBufferedQueryId(): int
     {

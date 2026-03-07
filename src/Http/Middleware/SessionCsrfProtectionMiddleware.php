@@ -143,7 +143,7 @@ class SessionCsrfProtectionMiddleware implements MiddlewareInterface
      * @param callable $callback A callable.
      * @return $this
      */
-    public function skipCheckCallback(callable $callback)
+    public function skipCheckCallback(callable $callback): static
     {
         $this->skipCheckCallback = $callback;
 
@@ -208,7 +208,6 @@ class SessionCsrfProtectionMiddleware implements MiddlewareInterface
      * form tampering protection.
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request object.
-     * @return \Psr\Http\Message\ServerRequestInterface
      */
     protected function unsetTokenField(ServerRequestInterface $request): ServerRequestInterface
     {
@@ -226,8 +225,6 @@ class SessionCsrfProtectionMiddleware implements MiddlewareInterface
      *
      * This token is a simple unique random value as the compare
      * value is stored in the session where it cannot be tampered with.
-     *
-     * @return string
      */
     public function createToken(): string
     {
@@ -239,7 +236,6 @@ class SessionCsrfProtectionMiddleware implements MiddlewareInterface
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request to validate against.
      * @param \Cake\Http\Session $session The session instance.
-     * @return void
      * @throws \Cake\Http\Exception\InvalidCsrfTokenException When the CSRF token is invalid or missing.
      */
     protected function validateToken(ServerRequestInterface $request, Session $session): void

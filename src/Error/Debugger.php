@@ -86,8 +86,6 @@ class Debugger
 
     /**
      * Holds current output data when outputFormat is false.
-     *
-     * @var array
      */
     protected array $_data = [];
 
@@ -112,7 +110,6 @@ class Debugger
      * Returns a reference to the Debugger singleton object instance.
      *
      * @param class-string<\Cake\Error\Debugger>|null $class Class name.
-     * @return static
      */
     public static function getInstance(?string $class = null): static
     {
@@ -125,7 +122,6 @@ class Debugger
             $instance[0] = new Debugger();
         }
 
-        /** @var static */
         return $instance[0];
     }
 
@@ -170,7 +166,6 @@ class Debugger
      *
      * @param array<string, string> $value An array where keys are replaced by their values in output.
      * @param bool $merge Whether to recursively merge or overwrite existing config, defaults to true.
-     * @return void
      */
     public static function setOutputMask(array $value, bool $merge = true): void
     {
@@ -186,7 +181,6 @@ class Debugger
      *
      * @param string $name The name of the editor.
      * @param \Closure|string $template The string template or closure
-     * @return void
      */
     public static function addEditor(string $name, Closure|string $template): void
     {
@@ -198,7 +192,6 @@ class Debugger
      * Choose the editor link style you want to use.
      *
      * @param string $name The editor name.
-     * @return void
      */
     public static function setEditor(string $name): void
     {
@@ -250,7 +243,6 @@ class Debugger
      *
      * @param mixed $var The variable to dump.
      * @param int $maxDepth The depth to output to. Defaults to 3.
-     * @return void
      * @see \Cake\Error\Debugger::exportVar()
      * @link https://book.cakephp.org/5/en/development/debugging.html#outputting-values
      */
@@ -266,7 +258,6 @@ class Debugger
      * @param mixed $var Variable or content to log.
      * @param string|int $level Type of log to use. Defaults to 'debug'.
      * @param int $maxDepth The depth to output to. Defaults to 3.
-     * @return void
      */
     public static function log(mixed $var, string|int $level = 'debug', int $maxDepth = 3): void
     {
@@ -454,10 +445,10 @@ class Debugger
         if (defined('APP') && str_starts_with($path, APP)) {
             return str_replace(APP, 'APP/', $path);
         }
-        if (defined('CAKE_CORE_INCLUDE_PATH') && str_starts_with($path, CAKE_CORE_INCLUDE_PATH)) {
+        if (defined('CAKE_CORE_INCLUDE_PATH') && str_starts_with($path, (string) CAKE_CORE_INCLUDE_PATH)) {
             return str_replace(CAKE_CORE_INCLUDE_PATH, 'CORE', $path);
         }
-        if (defined('ROOT') && str_starts_with($path, ROOT)) {
+        if (defined('ROOT') && str_starts_with($path, (string) ROOT)) {
             return str_replace(ROOT, 'ROOT', $path);
         }
 
@@ -522,7 +513,6 @@ class Debugger
      * implement the function as it is the case of the HipHop interpreter
      *
      * @param string $str The string to convert.
-     * @return string
      */
     protected static function _highlight(string $str): string
     {
@@ -546,7 +536,6 @@ class Debugger
     /**
      * Get the configured export formatter or infer one based on the environment.
      *
-     * @return \Cake\Error\Debug\FormatterInterface
      * @unstable This method is not stable and may change in the future.
      * @since 4.1.0
      */
@@ -709,7 +698,6 @@ class Debugger
      *
      * @param object $var Object to convert.
      * @param \Cake\Error\Debug\DebugContext $context The dump context.
-     * @return \Cake\Error\Debug\NodeInterface
      * @see \Cake\Error\Debugger::exportVar()
      */
     protected static function exportObject(object $var, DebugContext $context): NodeInterface
@@ -811,7 +799,6 @@ class Debugger
      *    data encoded as HTML. If false, plain text formatting will be used.
      *    If null, the format will be chosen based on the configured exportFormatter, or
      *    environment conditions.
-     * @return void
      */
     public static function printVar(mixed $var, array $location = [], ?bool $showHtml = null): void
     {
@@ -850,15 +837,13 @@ class Debugger
     public static function formatHtmlMessage(string $message): string
     {
         $message = h($message);
-        $message = (string)preg_replace('/`([^`]+)`/', '<code>$0</code>', $message);
+        $message = (string)preg_replace('/`([^`]+)`/', '<code>$0</code>', (string) $message);
 
         return nl2br($message);
     }
 
     /**
      * Verifies that the application's salt and cipher seed value has been changed from the default value.
-     *
-     * @return void
      */
     public static function checkSecurityKeys(): void
     {

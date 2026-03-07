@@ -67,7 +67,6 @@ class App
             $base = str_replace('/', '\\', rtrim($base, '\\'));
 
             if (static::_classExistsInBase($fullname, $base)) {
-                /** @var class-string */
                 return $base . $fullname;
             }
         }
@@ -76,7 +75,6 @@ class App
             return null;
         }
 
-        /** @var class-string */
         return 'Cake' . $fullname;
     }
 
@@ -155,7 +153,6 @@ class App
      *
      * @param string $name Class name.
      * @param string $namespace Namespace.
-     * @return bool
      */
     protected static function _classExistsInBase(string $name, string $namespace): bool
     {

@@ -61,8 +61,6 @@ class CacheAfterGetEvent extends Event
 
     /**
      * The result value of the event listeners
-     *
-     * @return bool|null
      */
     public function getResult(): ?bool
     {
@@ -86,17 +84,11 @@ class CacheAfterGetEvent extends Event
         return parent::setResult($value);
     }
 
-    /**
-     * @return string
-     */
     public function getKey(): string
     {
         return $this->key;
     }
 
-    /**
-     * @return mixed
-     */
     public function getValue(): mixed
     {
         return $this->value;

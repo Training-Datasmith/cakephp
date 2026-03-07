@@ -34,43 +34,31 @@ class SelectLoader
 {
     /**
      * The alias of the association loading the results
-     *
-     * @var string
      */
     protected string $alias;
 
     /**
      * The alias of the source association
-     *
-     * @var string
      */
     protected string $sourceAlias;
 
     /**
      * The alias of the target association
-     *
-     * @var string
      */
     protected string $targetAlias;
 
     /**
      * The foreignKey to the target association
-     *
-     * @var array|string
      */
     protected array|string $foreignKey;
 
     /**
      * The strategy to use for loading, either select or subquery
-     *
-     * @var string
      */
     protected string $strategy;
 
     /**
      * The binding key for the source association.
-     *
-     * @var array|string
      */
     protected array|string $bindingKey;
 
@@ -83,15 +71,11 @@ class SelectLoader
 
     /**
      * The type of the association triggering the load
-     *
-     * @var string
      */
     protected string $associationType;
 
     /**
      * The sorting options for loading the association
-     *
-     * @var \Cake\Database\ExpressionInterface|\Closure|array|string|null
      */
     protected ExpressionInterface|Closure|array|string|null $sort = null;
 
@@ -119,7 +103,6 @@ class SelectLoader
      * iterator. The options accepted by this method are the same as `Association::eagerLoader()`
      *
      * @param array<string, mixed> $options Same options as `Association::eagerLoader()`
-     * @return \Closure
      */
     public function buildEagerLoader(array $options): Closure
     {
@@ -229,7 +212,6 @@ class SelectLoader
      *
      * @param array|string $finderData The finder name or an array having the name as key
      * and options as value.
-     * @return array
      */
     protected function _extractFinder(array|string $finderData): array
     {
@@ -250,7 +232,6 @@ class SelectLoader
      *
      * @param \Cake\ORM\Query\SelectQuery<\Cake\Datasource\EntityInterface|array> $fetchQuery The association fetching query
      * @param array<string> $key The foreign key fields to check
-     * @return void
      * @throws \InvalidArgumentException
      */
     protected function _assertFieldsPresent(SelectQuery $fetchQuery, array $key): void
@@ -346,7 +327,6 @@ class SelectLoader
      * @param array<string> $keys the fields that should be used for filtering
      * @param mixed $filter the value that should be used to match for $key
      * @param string $operator The operator for comparing the tuples
-     * @return \Cake\Database\Expression\TupleComparison
      */
     protected function _createTupleCondition(
         SelectQuery $query,
@@ -522,7 +502,6 @@ class SelectLoader
      * @param array<string, mixed> $resultMap an array with the foreignKey as keys and
      * the corresponding target table results as value.
      * @param array<string, mixed> $options The options passed to the eagerLoader method
-     * @return \Closure
      */
     protected function _resultInjector(SelectQuery $fetchQuery, array $resultMap, array $options): Closure
     {
@@ -543,7 +522,7 @@ class SelectLoader
 
         $sourceKey = $sourceKeys[0];
 
-        return function ($row) use ($resultMap, $sourceKey, $nestKey) {
+        return function (array $row) use ($resultMap, $sourceKey, $nestKey): array {
             if (isset($row[$sourceKey], $resultMap[$row[$sourceKey]])) {
                 $row[$nestKey] = $resultMap[$row[$sourceKey]];
             }
@@ -560,11 +539,10 @@ class SelectLoader
      * @param array<string, mixed> $resultMap A keyed arrays containing the target table
      * @param array<string> $sourceKeys An array with aliased keys to match
      * @param string $nestKey The key under which results should be nested
-     * @return \Closure
      */
     protected function _multiKeysInjector(array $resultMap, array $sourceKeys, string $nestKey): Closure
     {
-        return function ($row) use ($resultMap, $sourceKeys, $nestKey) {
+        return function (array $row) use ($resultMap, $sourceKeys, $nestKey): array {
             $values = [];
             foreach ($sourceKeys as $key) {
                 $values[] = $row[$key];

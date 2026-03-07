@@ -27,8 +27,6 @@ trait LogTestTrait
 {
     /**
      * Reset log configs
-     *
-     * @return void
      */
     #[After]
     public function cleanupLog(): void
@@ -38,7 +36,6 @@ trait LogTestTrait
 
     /**
      * @param array|string $levels The levels(s) which should receive a log message
-     * @return void
      */
     public function setupLog(array|string $levels): void
     {
@@ -67,7 +64,6 @@ trait LogTestTrait
      *
      * @param string $level The level of the expected message
      * @param string $failMsg The error message if the message was not in the log engine
-     * @return void
      */
     public function assertLogAbsent(string $level, string $failMsg = ''): void
     {
@@ -89,7 +85,6 @@ trait LogTestTrait
      * @param string|null $scope The scope of the expected message. If a message has
      *   multiple scopes, the provided scope must be within the message's set.
      * @param string $failMsg The error message if the message was not in the log engine
-     * @return void
      */
     public function assertLogMessage(
         string $level,
@@ -106,7 +101,6 @@ trait LogTestTrait
      * @param string|null $scope The scope of the expected message. If a message has
      *   multiple scopes, the provided scope must be within the message's set.
      * @param string $failMsg The error message if the message was not in the log engine
-     * @return void
      */
     public function assertLogMessageContains(
         string $level,
@@ -124,7 +118,6 @@ trait LogTestTrait
      *   multiple scopes, the provided scope must be within the message's set.
      * @param string $failMsg The error message if the message was not in the log engine
      * @param bool $contains Flag to decide if the expectedMessage can only be part of the logged message
-     * @return void
      */
     protected function _expectLogMessage(
         string $level,

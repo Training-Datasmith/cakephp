@@ -27,8 +27,6 @@ trait FileConfigTrait
 {
     /**
      * The path this engine finds files on.
-     *
-     * @var string
      */
     protected string $_path = '';
 

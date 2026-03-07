@@ -29,8 +29,6 @@ class PluginUnloadCommand extends Command
 {
     /**
      * Config file
-     *
-     * @var string
      */
     protected string $configFile = CONFIG . 'plugins.php';
 
@@ -77,7 +75,6 @@ class PluginUnloadCommand extends Command
      * Modify the plugins config file.
      *
      * @param string $plugin Plugin name.
-     * @return string|null
      */
     protected function modifyConfigFile(string $plugin): ?string
     {
@@ -112,7 +109,6 @@ class PluginUnloadCommand extends Command
      * Get the option parser.
      *
      * @param \Cake\Console\ConsoleOptionParser $parser The option parser to update
-     * @return \Cake\Console\ConsoleOptionParser
      */
     public function buildOptionParser(ConsoleOptionParser $parser): ConsoleOptionParser
     {

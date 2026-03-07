@@ -41,8 +41,6 @@ class SelectQuery extends Query implements IteratorAggregate
 {
     /**
      * Type of this query.
-     *
-     * @var string
      */
     protected string $_type = self::TYPE_SELECT;
 
@@ -83,30 +81,22 @@ class SelectQuery extends Query implements IteratorAggregate
 
     /**
      * Result set from executed SELECT query.
-     *
-     * @var iterable|null
      */
     protected ?iterable $_results = null;
 
     /**
      * Boolean for tracking whether buffered results
      * are enabled.
-     *
-     * @var bool
      */
     protected bool $bufferedResults = true;
 
     /**
      * The Type map for fields in the select clause
-     *
-     * @var \Cake\Database\TypeMap|null
      */
     protected ?TypeMap $_selectTypeMap = null;
 
     /**
      * Tracking flag to disable casting
-     *
-     * @var bool
      */
     protected bool $typeCastEnabled = true;
 
@@ -115,7 +105,6 @@ class SelectQuery extends Query implements IteratorAggregate
      *
      * The results are cached until the query is modified and marked dirty.
      *
-     * @return iterable
      * @throws \Cake\Core\Exception\CakeException When query is not a SELECT query.
      */
     public function all(): iterable
@@ -162,7 +151,7 @@ class SelectQuery extends Query implements IteratorAggregate
      * @param bool $overwrite whether to reset fields with passed list or not
      * @return $this
      */
-    public function select(ExpressionInterface|Closure|array|string|float|int $fields = [], bool $overwrite = false)
+    public function select(ExpressionInterface|Closure|array|string|float|int $fields = [], bool $overwrite = false): static
     {
         if (!is_string($fields) && $fields instanceof Closure) {
             $fields = $fields($this);
@@ -211,7 +200,7 @@ class SelectQuery extends Query implements IteratorAggregate
      * @param bool $overwrite whether to reset fields with passed list or not
      * @return $this
      */
-    public function distinct(ExpressionInterface|array|string|bool $on = [], bool $overwrite = false)
+    public function distinct(ExpressionInterface|array|string|bool $on = [], bool $overwrite = false): static
     {
         if ($on === []) {
             $on = true;
@@ -291,7 +280,7 @@ class SelectQuery extends Query implements IteratorAggregate
      * @param bool $overwrite whether to reset fields with passed list or not
      * @return $this
      */
-    public function groupBy(ExpressionInterface|array|string $fields, bool $overwrite = false)
+    public function groupBy(ExpressionInterface|array|string $fields, bool $overwrite = false): static
     {
         if ($overwrite) {
             $this->_parts['group'] = [];
@@ -326,7 +315,7 @@ class SelectQuery extends Query implements IteratorAggregate
         ExpressionInterface|Closure|array|string|null $conditions = null,
         array $types = [],
         bool $overwrite = false,
-    ) {
+    ): static {
         if ($overwrite) {
             $this->_parts['having'] = $this->expr();
         }
@@ -349,7 +338,7 @@ class SelectQuery extends Query implements IteratorAggregate
      * @see \Cake\Database\Query::andWhere()
      * @return $this
      */
-    public function andHaving(ExpressionInterface|Closure|array|string $conditions, array $types = [])
+    public function andHaving(ExpressionInterface|Closure|array|string $conditions, array $types = []): static
     {
         $this->_conjugate('having', $conditions, 'AND', $types);
 
@@ -366,7 +355,7 @@ class SelectQuery extends Query implements IteratorAggregate
      * @param bool $overwrite Clear all previous query window expressions
      * @return $this
      */
-    public function window(string $name, WindowExpression|Closure $window, bool $overwrite = false)
+    public function window(string $name, WindowExpression|Closure $window, bool $overwrite = false): static
     {
         if ($overwrite) {
             $this->_parts['window'] = [];
@@ -400,7 +389,7 @@ class SelectQuery extends Query implements IteratorAggregate
      * @return $this
      * @throws \InvalidArgumentException If page number < 1.
      */
-    public function page(int $num, ?int $limit = null)
+    public function page(int $num, ?int $limit = null): static
     {
         if ($num < 1) {
             throw new InvalidArgumentException('Pages must start at 1.');
@@ -446,7 +435,7 @@ class SelectQuery extends Query implements IteratorAggregate
      * @param bool $overwrite whether to reset the list of queries to be operated or not
      * @return $this
      */
-    public function union(Query|string $query, bool $overwrite = false)
+    public function union(Query|string $query, bool $overwrite = false): static
     {
         if ($overwrite) {
             $this->_parts['union'] = [];
@@ -481,7 +470,7 @@ class SelectQuery extends Query implements IteratorAggregate
      * @param bool $overwrite whether to reset the list of queries to be operated or not
      * @return $this
      */
-    public function unionAll(Query|string $query, bool $overwrite = false)
+    public function unionAll(Query|string $query, bool $overwrite = false): static
     {
         if ($overwrite) {
             $this->_parts['union'] = [];
@@ -519,7 +508,7 @@ class SelectQuery extends Query implements IteratorAggregate
      * @param bool $overwrite whether to reset the list of queries to be operated or not
      * @return $this
      */
-    public function intersect(Query|string $query, bool $overwrite = false)
+    public function intersect(Query|string $query, bool $overwrite = false): static
     {
         if ($overwrite) {
             $this->_parts['intersect'] = [];
@@ -554,7 +543,7 @@ class SelectQuery extends Query implements IteratorAggregate
      * @param bool $overwrite whether to reset the list of queries to be operated or not
      * @return $this
      */
-    public function intersectAll(Query|string $query, bool $overwrite = false)
+    public function intersectAll(Query|string $query, bool $overwrite = false): static
     {
         if ($overwrite) {
             $this->_parts['intersect'] = [];
@@ -573,8 +562,6 @@ class SelectQuery extends Query implements IteratorAggregate
      * for implementing the IteratorAggregate interface and allows the query to be
      * iterated without having to call all() manually, thus making it look like
      * a result set instead of the query itself.
-     *
-     * @return \Traversable
      */
     public function getIterator(): Traversable
     {
@@ -619,7 +606,7 @@ class SelectQuery extends Query implements IteratorAggregate
      * @param bool $overwrite Whether this should append or replace all existing decorators.
      * @return $this
      */
-    public function decorateResults(?Closure $callback, bool $overwrite = false)
+    public function decorateResults(?Closure $callback, bool $overwrite = false): static
     {
         $this->_dirty();
         if ($overwrite) {
@@ -635,8 +622,6 @@ class SelectQuery extends Query implements IteratorAggregate
 
     /**
      * Get result decorators.
-     *
-     * @return array
      */
     public function getResultDecorators(): array
     {
@@ -655,7 +640,7 @@ class SelectQuery extends Query implements IteratorAggregate
      *
      * @return $this
      */
-    public function enableBufferedResults()
+    public function enableBufferedResults(): static
     {
         $this->_dirty();
         $this->bufferedResults = true;
@@ -671,7 +656,7 @@ class SelectQuery extends Query implements IteratorAggregate
      *
      * @return $this
      */
-    public function disableBufferedResults()
+    public function disableBufferedResults(): static
     {
         $this->_dirty();
         $this->bufferedResults = false;
@@ -688,8 +673,6 @@ class SelectQuery extends Query implements IteratorAggregate
      *
      * When disabled it will consume less memory as fetched results are not
      * remembered for future iterations.
-     *
-     * @return bool
      */
     public function isBufferedResultsEnabled(): bool
     {
@@ -703,7 +686,7 @@ class SelectQuery extends Query implements IteratorAggregate
      * @param \Cake\Database\TypeMap|array $typeMap Creates a TypeMap if array, otherwise sets the given TypeMap.
      * @return $this
      */
-    public function setSelectTypeMap(TypeMap|array $typeMap)
+    public function setSelectTypeMap(TypeMap|array $typeMap): static
     {
         $this->_selectTypeMap = is_array($typeMap) ? new TypeMap($typeMap) : $typeMap;
         $this->_dirty();
@@ -714,8 +697,6 @@ class SelectQuery extends Query implements IteratorAggregate
     /**
      * Gets the TypeMap class where the types for each of the fields in the
      * select clause are stored.
-     *
-     * @return \Cake\Database\TypeMap
      */
     public function getSelectTypeMap(): TypeMap
     {
@@ -731,7 +712,7 @@ class SelectQuery extends Query implements IteratorAggregate
      *
      * @return $this
      */
-    public function disableResultsCasting()
+    public function disableResultsCasting(): static
     {
         $this->typeCastEnabled = false;
 
@@ -746,7 +727,7 @@ class SelectQuery extends Query implements IteratorAggregate
      *
      * @return $this
      */
-    public function enableResultsCasting()
+    public function enableResultsCasting(): static
     {
         $this->typeCastEnabled = true;
 
@@ -762,8 +743,6 @@ class SelectQuery extends Query implements IteratorAggregate
      * When disabled, the fields will be returned as received from the database
      * driver (which in most environments means they are being returned as
      * strings), which can improve performance with larger datasets.
-     *
-     * @return bool
      */
     public function isResultsCastingEnabled(): bool
     {
@@ -803,7 +782,7 @@ class SelectQuery extends Query implements IteratorAggregate
      * @param string $role Connection role ('read' or 'write')
      * @return $this
      */
-    public function setConnectionRole(string $role)
+    public function setConnectionRole(string $role): static
     {
         assert($role === Connection::ROLE_READ || $role === Connection::ROLE_WRITE);
         $this->connectionRole = $role;

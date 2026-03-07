@@ -64,16 +64,12 @@ class EntityContext implements ContextInterface
 
     /**
      * The name of the top level entity/table object.
-     *
-     * @var string
      */
     protected string $_rootName;
 
     /**
      * Boolean to track whether the entity is a
      * collection.
-     *
-     * @var bool
      */
     protected bool $_isCollection = false;
 
@@ -119,7 +115,6 @@ class EntityContext implements ContextInterface
      * naming conventions. This inference will work with a number of common objects
      * like arrays, Collection objects and ResultSets.
      *
-     * @return void
      * @throws \Cake\Core\Exception\CakeException When a table object cannot be located/inferred.
      */
     protected function _prepare(): void
@@ -194,8 +189,6 @@ class EntityContext implements ContextInterface
      *
      * If the context is for a collection or array the first object in the
      * collection will be used.
-     *
-     * @return bool
      */
     public function isCreate(): bool
     {
@@ -281,7 +274,6 @@ class EntityContext implements ContextInterface
      * Get default value from table schema for given entity field.
      *
      * @param array<string> $parts Each one of the parts in a path for a field name
-     * @return mixed
      */
     protected function _schemaDefault(array $parts): mixed
     {
@@ -304,7 +296,6 @@ class EntityContext implements ContextInterface
      *
      * @param mixed $values The list from which to extract primary keys from
      * @param array<string> $path Each one of the parts in a path for a field name
-     * @return array|null
      */
     protected function _extractMultiple(mixed $values, array $path): ?array
     {
@@ -327,7 +318,6 @@ class EntityContext implements ContextInterface
      *
      * @param array<string>|null $path Each one of the parts in a path for a field name
      *  or null to get the entity passed in constructor context.
-     * @return \Cake\Datasource\EntityInterface|iterable|null
      * @throws \Cake\Core\Exception\CakeException When properties cannot be read.
      */
     public function entity(?array $path = null): EntityInterface|iterable|null
@@ -448,7 +438,6 @@ class EntityContext implements ContextInterface
      *
      * @param mixed $target The entity/array/collection to fetch $field from.
      * @param string $field The next field to fetch.
-     * @return mixed
      */
     protected function _getProp(mixed $target, string $field): mixed
     {
@@ -475,7 +464,6 @@ class EntityContext implements ContextInterface
      * Check if a field should be marked as required.
      *
      * @param string $field The dot separated path to the field you want to check.
-     * @return bool|null
      */
     public function isRequired(string $field): ?bool
     {
@@ -531,7 +519,6 @@ class EntityContext implements ContextInterface
      * Get field length from validation
      *
      * @param string $field The dot separated path to the field you want to check.
-     * @return int|null
      */
     public function getMaxLength(string $field): ?int
     {
@@ -577,14 +564,11 @@ class EntityContext implements ContextInterface
      * conventions.
      *
      * @param array<string> $parts Each one of the parts in a path for a field name
-     * @return \Cake\Validation\Validator
      * @throws \Cake\Core\Exception\CakeException If validator cannot be retrieved based on the parts.
      */
     protected function _getValidator(array $parts): Validator
     {
-        $keyParts = array_filter(array_slice($parts, 0, -1), function (string $part) {
-            return !is_numeric($part);
-        });
+        $keyParts = array_filter(array_slice($parts, 0, -1), fn(string $part) => !is_numeric($part));
         $key = implode('.', $keyParts);
         $entity = $this->entity($parts);
 
@@ -632,9 +616,7 @@ class EntityContext implements ContextInterface
             return $this->_tables[$this->_rootName];
         }
 
-        $normalized = array_slice(array_filter($parts, function (string $part) {
-            return !is_numeric($part);
-        }), 0, -1);
+        $normalized = array_slice(array_filter($parts, fn(string $part) => !is_numeric($part)), 0, -1);
 
         $path = implode('.', $normalized);
         if (isset($this->_tables[$path])) {

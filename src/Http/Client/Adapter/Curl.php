@@ -71,9 +71,7 @@ class Curl implements AdapterInterface
             throw new NetworkException($message, $request);
         }
 
-        $responses = $this->createResponse($ch, $body);
-
-        return $responses;
+        return $this->createResponse($ch, $body);
     }
 
     /**
@@ -81,7 +79,6 @@ class Curl implements AdapterInterface
      *
      * @param \Psr\Http\Message\RequestInterface $request The request.
      * @param array<string, mixed> $options The client options
-     * @return array
      */
     public function buildOptions(RequestInterface $request, array $options): array
     {
@@ -168,7 +165,6 @@ class Curl implements AdapterInterface
      * Convert HTTP version number into curl value.
      *
      * @param \Psr\Http\Message\RequestInterface $request The request to get a protocol version for.
-     * @return int
      */
     protected function getProtocolVersion(RequestInterface $request): int
     {
@@ -206,7 +202,6 @@ class Curl implements AdapterInterface
      * Execute the curl handle.
      *
      * @param \CurlHandle $ch Curl Resource handle
-     * @return string|bool
      */
     protected function exec(CurlHandle $ch): string|bool
     {

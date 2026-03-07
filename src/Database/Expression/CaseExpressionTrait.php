@@ -75,7 +75,6 @@ trait CaseExpressionTrait
      * @param \Cake\Database\ValueBinder $binder The value binder to use.
      * @param \Cake\Database\ExpressionInterface|object|scalar|null $value The value to compile.
      * @param string|null $type The value type.
-     * @return string
      */
     protected function compileNullableValue(ValueBinder $binder, mixed $value, ?string $type = null): string
     {

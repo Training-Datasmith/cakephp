@@ -52,9 +52,6 @@ class ZipIterator implements CollectionInterface
     /** @use \Cake\Collection\CollectionTrait<TKey, TValue> */
     use CollectionTrait;
 
-    /**
-     * @var \MultipleIterator
-     */
     protected MultipleIterator $multipleIterator;
 
     /**
@@ -66,8 +63,6 @@ class ZipIterator implements CollectionInterface
 
     /**
      * Contains the original iterator objects that were attached
-     *
-     * @var array
      */
     protected array $_iterators = [];
 
@@ -96,8 +91,6 @@ class ZipIterator implements CollectionInterface
     /**
      * Returns the value resulting out of zipping all the elements for all the
      * iterators with the same positional index.
-     *
-     * @return mixed
      */
     public function current(): mixed
     {
@@ -111,8 +104,6 @@ class ZipIterator implements CollectionInterface
 
     /**
      * Implements Iterator::key().
-     *
-     * @return mixed
      */
     public function key(): mixed
     {
@@ -121,8 +112,6 @@ class ZipIterator implements CollectionInterface
 
     /**
      * Implements Iterator::next().
-     *
-     * @return void
      */
     public function next(): void
     {
@@ -131,8 +120,6 @@ class ZipIterator implements CollectionInterface
 
     /**
      * Implements Iterator::rewind().
-     *
-     * @return void
      */
     public function rewind(): void
     {
@@ -141,8 +128,6 @@ class ZipIterator implements CollectionInterface
 
     /**
      * Implements Iterator::valid().
-     *
-     * @return bool
      */
     public function valid(): bool
     {
@@ -151,8 +136,6 @@ class ZipIterator implements CollectionInterface
 
     /**
      * Magic method used for serializing the iterator instance.
-     *
-     * @return array
      */
     public function __serialize(): array
     {
@@ -163,7 +146,6 @@ class ZipIterator implements CollectionInterface
      * Magic method used to rebuild the iterator instance.
      *
      * @param array $data Data array.
-     * @return void
      */
     public function __unserialize(array $data): void
     {

@@ -37,8 +37,6 @@ class ConsoleInput
      * 1. Readline support must be enabled.
      * 2. Handle we are attached to must be stdin.
      * Allows rich editing with arrow keys and history when inputting a string.
-     *
-     * @var bool
      */
     protected bool $_canReadline;
 
@@ -108,7 +106,7 @@ class ConsoleInput
 
         /** @var string|null $error */
         $error = null;
-        set_error_handler(function (int $code, string $message) use (&$error) {
+        set_error_handler(function (int $code, string $message) use (&$error): true {
             $error = "stream_select failed with code={$code} message={$message}.";
 
             return true;

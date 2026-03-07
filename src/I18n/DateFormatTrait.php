@@ -43,7 +43,6 @@ trait DateFormatTrait
      * @param \DateTimeInterface $date Date.
      * @param array<int>|string $format Format.
      * @param string|null $locale The locale name in which the date should be displayed.
-     * @return string
      */
     protected function _formatObject(
         DateTimeInterface $date,
@@ -128,7 +127,6 @@ trait DateFormatTrait
      * @param string $time The time string to parse.
      * @param array<int>|string $format Any format accepted by IntlDateFormatter.
      * @param \DateTimeZone|string|null $tz The timezone for the instance
-     * @return static|null
      */
     protected static function _parseDateTime(
         string $time,

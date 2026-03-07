@@ -26,15 +26,10 @@ use function Cake\Core\h;
  */
 class HtmlFormatter implements FormatterInterface
 {
-    /**
-     * @var bool
-     */
     protected static bool $outputHeader = false;
 
     /**
      * Random id so that HTML ids are not shared between dump outputs.
-     *
-     * @var string
      */
     protected string $id;
 
@@ -48,8 +43,6 @@ class HtmlFormatter implements FormatterInterface
 
     /**
      * Check if the current environment is not a CLI context
-     *
-     * @return bool
      */
     public static function environmentMatches(): bool
     {
@@ -87,8 +80,6 @@ class HtmlFormatter implements FormatterInterface
      * Generate the CSS and Javascript for dumps
      *
      * Only output once per process as we don't need it more than once.
-     *
-     * @return string
      */
     protected function dumpHeader(): string
     {
@@ -102,7 +93,6 @@ class HtmlFormatter implements FormatterInterface
      * Convert a tree of NodeInterface objects into HTML
      *
      * @param \Cake\Error\Debug\NodeInterface $node The node tree to dump.
-     * @return string
      */
     public function dump(NodeInterface $node): string
     {
@@ -121,7 +111,6 @@ class HtmlFormatter implements FormatterInterface
      *
      * @param \Cake\Error\Debug\NodeInterface $var The node tree to dump.
      * @param int $indent The current indentation level.
-     * @return string
      */
     protected function export(NodeInterface $var, int $indent): string
     {
@@ -185,7 +174,6 @@ class HtmlFormatter implements FormatterInterface
      *
      * @param \Cake\Error\Debug\ClassNode|\Cake\Error\Debug\ReferenceNode $var Object to convert.
      * @param int $indent The current indentation level.
-     * @return string
      * @see \Cake\Error\Debugger::exportVar()
      */
     protected function exportObject(ClassNode|ReferenceNode $var, int $indent): string

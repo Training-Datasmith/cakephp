@@ -27,9 +27,6 @@ use Cake\Chronos\ChronosPeriod;
  */
 class DateTimePeriod extends ChronosPeriod
 {
-    /**
-     * @return \Cake\I18n\DateTime
-     */
     public function current(): DateTime
     {
         return new DateTime($this->iterator->current());

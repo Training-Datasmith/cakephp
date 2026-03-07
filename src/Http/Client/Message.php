@@ -154,7 +154,6 @@ class Message
     /**
      * The array of cookies in the response.
      *
-     * @var array
      * @deprecated 5.3.0 Use getCookies() instead.
      */
     protected array $_cookies = [];
@@ -162,7 +161,6 @@ class Message
     /**
      * Get all cookies
      *
-     * @return array
      * @deprecated 5.3.0 Use getCookies() instead.
      */
     public function cookies(): array

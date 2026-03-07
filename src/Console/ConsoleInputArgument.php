@@ -30,22 +30,16 @@ class ConsoleInputArgument
 {
     /**
      * Name of the argument.
-     *
-     * @var string
      */
     protected string $_name;
 
     /**
      * Help string
-     *
-     * @var string
      */
     protected string $_help;
 
     /**
      * Is this option required?
-     *
-     * @var bool
      */
     protected bool $_required;
 
@@ -58,15 +52,11 @@ class ConsoleInputArgument
 
     /**
      * Default value for this argument.
-     *
-     * @var string|null
      */
     protected ?string $_default = null;
 
     /**
      * The multiple separator.
-     *
-     * @var string|null
      */
     protected ?string $_separator = null;
 
@@ -128,7 +118,6 @@ class ConsoleInputArgument
      * Checks if this argument is equal to another argument.
      *
      * @param \Cake\Console\ConsoleInputArgument $argument ConsoleInputArgument to compare to.
-     * @return bool
      */
     public function isEqualTo(ConsoleInputArgument $argument): bool
     {
@@ -140,7 +129,6 @@ class ConsoleInputArgument
      * Generate the help for this argument.
      *
      * @param int $width The width to make the name of the option.
-     * @return string
      */
     public function help(int $width = 0): string
     {
@@ -167,8 +155,6 @@ class ConsoleInputArgument
 
     /**
      * Get the usage value for this argument
-     *
-     * @return string
      */
     public function usage(): string
     {
@@ -186,8 +172,6 @@ class ConsoleInputArgument
 
     /**
      * Get the default value for this argument
-     *
-     * @return string|null
      */
     public function defaultValue(): ?string
     {
@@ -196,8 +180,6 @@ class ConsoleInputArgument
 
     /**
      * Check if this argument is a required argument
-     *
-     * @return bool
      */
     public function isRequired(): bool
     {
@@ -232,7 +214,7 @@ class ConsoleInputArgument
             $values = [$value];
         }
 
-        $unwanted = array_filter($values, fn(string $value) => !in_array($value, $this->_choices, true));
+        $unwanted = array_filter($values, fn(string $value): bool => !in_array($value, $this->_choices, true));
         if ($unwanted) {
             throw new ConsoleException(
                 sprintf(

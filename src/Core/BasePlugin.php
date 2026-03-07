@@ -33,78 +33,56 @@ class BasePlugin implements PluginInterface
 {
     /**
      * Do bootstrapping or not
-     *
-     * @var bool
      */
     protected bool $bootstrapEnabled = true;
 
     /**
      * Console middleware
-     *
-     * @var bool
      */
     protected bool $consoleEnabled = true;
 
     /**
      * Enable middleware
-     *
-     * @var bool
      */
     protected bool $middlewareEnabled = true;
 
     /**
      * Register container services
-     *
-     * @var bool
      */
     protected bool $servicesEnabled = true;
 
     /**
      * Load routes or not
-     *
-     * @var bool
      */
     protected bool $routesEnabled = true;
 
     /**
      * Load events or not
-     *
-     * @var bool
      */
     protected bool $eventsEnabled = true;
 
     /**
      * The path to this plugin.
-     *
-     * @var string|null
      */
     protected ?string $path = null;
 
     /**
      * The class path for this plugin.
-     *
-     * @var string|null
      */
     protected ?string $classPath = null;
 
     /**
      * The config path for this plugin.
-     *
-     * @var string|null
      */
     protected ?string $configPath = null;
 
     /**
      * The templates path for this plugin.
-     *
-     * @var string|null
      */
     protected ?string $templatePath = null;
 
     /**
      * The name of this plugin
-     *
-     * @var string|null
      */
     protected ?string $name = null;
 
@@ -131,8 +109,6 @@ class BasePlugin implements PluginInterface
 
     /**
      * Initialization hook called from constructor.
-     *
-     * @return void
      */
     public function initialize(): void
     {
@@ -213,7 +189,7 @@ class BasePlugin implements PluginInterface
     /**
      * @inheritDoc
      */
-    public function enable(string $hook)
+    public function enable(string $hook): static
     {
         $this->checkHook($hook);
         $this->{"{$hook}Enabled"} = true;
@@ -224,7 +200,7 @@ class BasePlugin implements PluginInterface
     /**
      * @inheritDoc
      */
-    public function disable(string $hook)
+    public function disable(string $hook): static
     {
         $this->checkHook($hook);
         $this->{"{$hook}Enabled"} = false;
@@ -247,7 +223,6 @@ class BasePlugin implements PluginInterface
      *
      * @param string $hook The hook name to check
      * @throws \InvalidArgumentException on invalid hooks
-     * @return void
      */
     protected function checkHook(string $hook): void
     {
@@ -307,7 +282,6 @@ class BasePlugin implements PluginInterface
      * Register container services for this plugin.
      *
      * @param \Cake\Core\ContainerInterface $container The container to add services to.
-     * @return void
      */
     public function services(ContainerInterface $container): void
     {
@@ -317,7 +291,6 @@ class BasePlugin implements PluginInterface
      * Register application events.
      *
      * @param \Cake\Event\EventManagerInterface $eventManager The global event manager to register listeners on
-     * @return \Cake\Event\EventManagerInterface
      */
     public function events(EventManagerInterface $eventManager): EventManagerInterface
     {

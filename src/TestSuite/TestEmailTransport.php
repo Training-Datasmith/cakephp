@@ -29,9 +29,6 @@ use Cake\Mailer\TransportFactory;
  */
 class TestEmailTransport extends DebugTransport
 {
-    /**
-     * @var array
-     */
     protected static array $messages = [];
 
     /**
@@ -50,8 +47,6 @@ class TestEmailTransport extends DebugTransport
 
     /**
      * Replaces all currently configured transports with this one
-     *
-     * @return void
      */
     public static function replaceAllTransports(): void
     {
@@ -77,8 +72,6 @@ class TestEmailTransport extends DebugTransport
 
     /**
      * Clears list of emails that have been sent
-     *
-     * @return void
      */
     public static function clearMessages(): void
     {

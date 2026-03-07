@@ -62,8 +62,6 @@ class TimestampBehavior extends Behavior
 
     /**
      * Current timestamp
-     *
-     * @var \Cake\I18n\DateTime|null
      */
     protected ?DateTime $_ts = null;
 
@@ -74,7 +72,6 @@ class TimestampBehavior extends Behavior
      * overwrite the events to listen on
      *
      * @param array<string, mixed> $config The config for this behavior.
-     * @return void
      */
     public function initialize(array $config): void
     {
@@ -90,7 +87,6 @@ class TimestampBehavior extends Behavior
      * @param \Cake\Datasource\EntityInterface $entity Entity instance.
      * @throws \UnexpectedValueException If a field's value is misdefined.
      * @throws \UnexpectedValueException When the value for an event is not 'always', 'new' or 'existing'.
-     * @return void
      */
     public function handleEvent(EventInterface $event, EntityInterface $entity): void
     {
@@ -145,7 +141,6 @@ class TimestampBehavior extends Behavior
      *
      * @param \DateTimeInterface|null $ts Timestamp
      * @param bool $refreshTimestamp If true timestamp is refreshed.
-     * @return \Cake\I18n\DateTime
      */
     public function timestamp(?DateTimeInterface $ts = null, bool $refreshTimestamp = false): DateTime
     {
@@ -199,7 +194,6 @@ class TimestampBehavior extends Behavior
      * @param \Cake\Datasource\EntityInterface $entity Entity instance.
      * @param string $field Field name
      * @param bool $refreshTimestamp Whether to refresh timestamp.
-     * @return void
      */
     protected function _updateField(EntityInterface $entity, string $field, bool $refreshTimestamp): void
     {

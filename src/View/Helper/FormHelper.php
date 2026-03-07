@@ -65,8 +65,6 @@ class FormHelper extends Helper
 
     /**
      * Other helpers used by FormHelper
-     *
-     * @var array
      */
     protected array $helpers = ['Url', 'Html'];
 
@@ -214,37 +212,27 @@ class FormHelper extends Helper
 
     /**
      * Defines the type of form being created. Set by FormHelper::create().
-     *
-     * @var string|null
      */
     public ?string $requestType = null;
 
     /**
      * Locator for input widgets.
-     *
-     * @var \Cake\View\Widget\WidgetLocator
      */
     protected WidgetLocator $_locator;
 
     /**
      * Context for the current form.
-     *
-     * @var \Cake\View\Form\ContextInterface|null
      */
     protected ?ContextInterface $_context = null;
 
     /**
      * Context factory.
-     *
-     * @var \Cake\View\Form\ContextFactory|null
      */
     protected ?ContextFactory $_contextFactory = null;
 
     /**
      * The action attribute value of the last created form.
      * Used to make form/request specific hashes for form tampering protection.
-     *
-     * @var string
      */
     protected string $_lastAction = '';
 
@@ -276,8 +264,6 @@ class FormHelper extends Helper
 
     /**
      * Form protector
-     *
-     * @var \Cake\Form\FormProtector|null
      */
     protected ?FormProtector $formProtector = null;
 
@@ -335,7 +321,7 @@ class FormHelper extends Helper
      * @return $this
      * @since 3.6.0
      */
-    public function setWidgetLocator(WidgetLocator $instance)
+    public function setWidgetLocator(WidgetLocator $instance): static
     {
         $this->_locator = $instance;
 
@@ -347,7 +333,6 @@ class FormHelper extends Helper
      *
      * @param \Cake\View\Form\ContextFactory|null $instance The context factory instance to set.
      * @param array $contexts An array of context providers.
-     * @return \Cake\View\Form\ContextFactory
      */
     public function contextFactory(?ContextFactory $instance = null, array $contexts = []): ContextFactory
     {
@@ -411,7 +396,7 @@ class FormHelper extends Helper
         $options += [
             'type' => $isCreate ? 'post' : 'put',
             'url' => null,
-            'encoding' => strtolower(Configure::read('App.encoding')),
+            'encoding' => strtolower((string) Configure::read('App.encoding')),
             'templates' => null,
             'idPrefix' => null,
             'valueSources' => null,
@@ -446,7 +431,7 @@ class FormHelper extends Helper
         unset($options['url'], $options['idPrefix']);
 
         $htmlAttributes = [];
-        switch (strtolower($options['type'])) {
+        switch (strtolower((string) $options['type'])) {
             case 'get':
                 $htmlAttributes['method'] = 'get';
                 break;
@@ -462,7 +447,7 @@ class FormHelper extends Helper
             case 'patch':
                 $append .= $this->hidden('_method', [
                     'name' => '_method',
-                    'value' => strtoupper($options['type']),
+                    'value' => strtoupper((string) $options['type']),
                     'secure' => static::SECURE_SKIP,
                 ]);
             // Default to post method
@@ -470,10 +455,10 @@ class FormHelper extends Helper
                 $htmlAttributes['method'] = 'post';
         }
         if (isset($options['enctype'])) {
-            $htmlAttributes['enctype'] = strtolower($options['enctype']);
+            $htmlAttributes['enctype'] = strtolower((string) $options['enctype']);
         }
 
-        $this->requestType = strtolower($options['type']);
+        $this->requestType = strtolower((string) $options['type']);
 
         if (!empty($options['encoding'])) {
             $htmlAttributes['accept-charset'] = $options['encoding'];
@@ -541,7 +526,6 @@ class FormHelper extends Helper
      * Correctly store the last created form action URL.
      *
      * @param array|string|null $url The URL of the last form.
-     * @return void
      */
     protected function _lastAction(array|string|null $url = null): void
     {
@@ -556,8 +540,6 @@ class FormHelper extends Helper
     /**
      * Return a CSRF input if the request data is present.
      * Used to secure forms in conjunction with CsrfMiddleware.
-     *
-     * @return string
      */
     protected function _csrfField(): string
     {
@@ -666,7 +648,6 @@ class FormHelper extends Helper
      * Wrap the given content in a hidden div.
      *
      * @param string $content Content to wrap.
-     * @return string
      */
     protected function wrapInHiddenBlock(string $content): string
     {
@@ -684,8 +665,6 @@ class FormHelper extends Helper
     /**
      * Get Session id for FormProtector
      * Must be the same as in FormProtectionComponent
-     *
-     * @return string
      */
     protected function _getFormProtectorSessionId(): string
     {
@@ -701,7 +680,7 @@ class FormHelper extends Helper
      * @param string $name The dot separated name for the field.
      * @return $this
      */
-    public function unlockField(string $name)
+    public function unlockField(string $name): static
     {
         $this->getFormProtector()?->unlockField($name);
 
@@ -712,7 +691,6 @@ class FormHelper extends Helper
      * Create FormProtector instance.
      *
      * @param array<string, mixed> $formTokenData Token data.
-     * @return \Cake\Form\FormProtector
      */
     protected function createFormProtector(array $formTokenData): FormProtector
     {
@@ -726,8 +704,6 @@ class FormHelper extends Helper
 
     /**
      * Get form protector instance.
-     *
-     * @return \Cake\Form\FormProtector|null
      */
     public function getFormProtector(): ?FormProtector
     {
@@ -1118,8 +1094,8 @@ class FormHelper extends Helper
             // Don't include aria-describedby unless we have a good chance of
             // having error message show up.
             if (
-                str_contains($templater->get('error'), '{{id}}') &&
-                str_contains($templater->get('inputContainerError'), '{{error}}')
+                str_contains((string) $templater->get('error'), '{{id}}') &&
+                str_contains((string) $templater->get('inputContainerError'), '{{error}}')
             ) {
                 $options += [
                    'aria-describedby' => $isFieldError ? $this->_domId($fieldName) . '-error' : null,
@@ -1254,7 +1230,7 @@ class FormHelper extends Helper
     {
         $label = $options['labelOptions'];
         unset($options['labelOptions']);
-        switch (strtolower($options['type'])) {
+        switch (strtolower((string) $options['type'])) {
             case 'select':
             case 'radio':
             case 'multicheckbox':
@@ -1301,7 +1277,6 @@ class FormHelper extends Helper
      *
      * @param string $fieldName the name of the field to guess a type for
      * @param array<string, mixed> $options the options passed to the input method
-     * @return string
      */
     protected function _inputType(string $fieldName, array $options): string
     {
@@ -1866,9 +1841,8 @@ class FormHelper extends Helper
             unset($options['data']);
         }
         $out .= $this->button($title, $options);
-        $out .= $this->end();
 
-        return $out;
+        return $out . $this->end();
     }
 
     /**
@@ -1906,7 +1880,7 @@ class FormHelper extends Helper
 
         $requestMethod = 'POST';
         if (!empty($options['method'])) {
-            $requestMethod = strtoupper($options['method']);
+            $requestMethod = strtoupper((string) $options['method']);
             unset($options['method']);
         }
 
@@ -2004,9 +1978,7 @@ class FormHelper extends Helper
 
         unset($options['block']);
 
-        $out .= $this->Html->link($title, $url, $options) . $script;
-
-        return $out;
+        return $out . ($this->Html->link($title, $url, $options) . $script);
     }
 
     /**
@@ -2323,7 +2295,6 @@ class FormHelper extends Helper
      *
      * @param string $fieldName The field name.
      * @param array<string, mixed> $options Array of options or HTML attributes.
-     * @return string
      */
     public function month(string $fieldName, array $options = []): string
     {
@@ -2347,7 +2318,6 @@ class FormHelper extends Helper
      *
      * @param string $fieldName The field name.
      * @param array<string, mixed> $options Array of options or HTML attributes.
-     * @return string
      */
     public function dateTime(string $fieldName, array $options = []): string
     {
@@ -2370,7 +2340,6 @@ class FormHelper extends Helper
      *
      * @param string $fieldName The field name.
      * @param array<string, mixed> $options Array of options or HTML attributes.
-     * @return string
      */
     public function time(string $fieldName, array $options = []): string
     {
@@ -2392,7 +2361,6 @@ class FormHelper extends Helper
      *
      * @param string $fieldName The field name.
      * @param array<string, mixed> $options Array of options or HTML attributes.
-     * @return string
      */
     public function date(string $fieldName, array $options = []): string
     {
@@ -2520,7 +2488,7 @@ class FormHelper extends Helper
             if (is_array($first)) {
                 $disabled = array_filter(
                     $options['options'],
-                    fn(array $i) => in_array($i['value'], $options['disabled'], true),
+                    fn(array $i): bool => in_array($i['value'], $options['disabled'], true),
                 );
 
                 return $disabled !== [];
@@ -2543,7 +2511,6 @@ class FormHelper extends Helper
      *   can be used to overwrite existing providers.
      * @param callable $check A callable that returns an object
      *   when the form context is the correct type.
-     * @return void
      */
     public function addContextProvider(string $type, callable $check): void
     {
@@ -2596,7 +2563,6 @@ class FormHelper extends Helper
      * @param string $name The name of the widget. e.g. 'text'.
      * @param \Cake\View\Widget\WidgetInterface|array|string $spec Either a string class
      *   name or an object implementing the WidgetInterface.
-     * @return void
      */
     public function addWidget(string $name, WidgetInterface|array|string $spec): void
     {
@@ -2613,7 +2579,6 @@ class FormHelper extends Helper
      *
      * @param string $name The name of the widget. e.g. 'text'.
      * @param array $data The data to render.
-     * @return string
      */
     public function widget(string $name, array $data = []): string
     {
@@ -2642,8 +2607,6 @@ class FormHelper extends Helper
      * Restores the default values built into FormHelper.
      *
      * This method will not reset any templates set in custom widgets.
-     *
-     * @return void
      */
     public function resetTemplates(): void
     {
@@ -2676,7 +2639,6 @@ class FormHelper extends Helper
      * Validate value sources.
      *
      * @param array<string> $sources A list of strings identifying a source.
-     * @return void
      * @throws \InvalidArgumentException If sources list contains invalid value.
      */
     protected function validateValueSources(array $sources): void
@@ -2684,8 +2646,8 @@ class FormHelper extends Helper
         $diff = array_diff($sources, $this->supportedValueSources);
 
         if ($diff) {
-            array_walk($diff, fn(string &$x) => $x = "`{$x}`");
-            array_walk($this->supportedValueSources, fn(string &$x) => $x = "`{$x}`");
+            array_walk($diff, fn(string &$x): string => $x = "`{$x}`");
+            array_walk($this->supportedValueSources, fn(string &$x): string => $x = "`{$x}`");
             throw new InvalidArgumentException(sprintf(
                 'Invalid value source(s): %s. Valid values are: %s.',
                 implode(', ', $diff),
@@ -2705,7 +2667,7 @@ class FormHelper extends Helper
      * @return $this
      * @throws \InvalidArgumentException If sources list contains invalid value.
      */
-    public function setValueSources(array|string $sources)
+    public function setValueSources(array|string $sources): static
     {
         $sources = (array)$sources;
 

@@ -77,22 +77,11 @@ abstract class BaseApplication implements
 
     /**
      * Plugin Collection
-     *
-     * @var \Cake\Core\PluginCollection
      */
     protected PluginCollection $plugins;
 
     /**
-     * Controller factory
-     *
-     * @var \Cake\Http\ControllerFactoryInterface<\Cake\Controller\Controller>|null
-     */
-    protected ?ControllerFactoryInterface $controllerFactory = null;
-
-    /**
      * Container
-     *
-     * @var \Cake\Core\ContainerInterface|null
      */
     protected ?ContainerInterface $container = null;
 
@@ -106,18 +95,19 @@ abstract class BaseApplication implements
     public function __construct(
         string $configDir,
         ?EventManagerInterface $eventManager = null,
-        ?ControllerFactoryInterface $controllerFactory = null,
+        /**
+         * Controller factory
+         */
+        protected ?ControllerFactoryInterface $controllerFactory = null,
     ) {
         $this->configDir = rtrim($configDir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
         $this->plugins = new PluginCollection();
         $this->_eventManager = $eventManager ?: EventManager::instance();
-        $this->controllerFactory = $controllerFactory;
         Plugin::setCollection($this->plugins);
     }
 
     /**
      * @param \Cake\Http\MiddlewareQueue $middlewareQueue The middleware queue to set in your App Class
-     * @return \Cake\Http\MiddlewareQueue
      */
     abstract public function middleware(MiddlewareQueue $middlewareQueue): MiddlewareQueue;
 
@@ -170,8 +160,6 @@ abstract class BaseApplication implements
 
     /**
      * Get the plugin collection in use.
-     *
-     * @return \Cake\Core\PluginCollection
      */
     public function getPlugins(): PluginCollection
     {
@@ -208,7 +196,6 @@ abstract class BaseApplication implements
      * By default, this will load `config/routes.php` for ease of use and backwards compatibility.
      *
      * @param \Cake\Routing\RouteBuilder $routes A route builder to add routes into.
-     * @return void
      */
     public function routes(RouteBuilder $routes): void
     {
@@ -261,7 +248,6 @@ abstract class BaseApplication implements
 
     /**
      * @param \Cake\Event\EventManagerInterface $eventManager The global event manager to register listeners on
-     * @return \Cake\Event\EventManagerInterface
      */
     public function pluginEvents(EventManagerInterface $eventManager): EventManagerInterface
     {
@@ -277,8 +263,6 @@ abstract class BaseApplication implements
      *
      * The first time the container is fetched it will be constructed
      * and stored for future calls.
-     *
-     * @return \Cake\Core\ContainerInterface
      */
     public function getContainer(): ContainerInterface
     {
@@ -290,8 +274,6 @@ abstract class BaseApplication implements
      *
      * Override this method if you need to use a custom container or
      * want to change how the container is built.
-     *
-     * @return \Cake\Core\ContainerInterface
      */
     protected function buildContainer(): ContainerInterface
     {
@@ -313,7 +295,6 @@ abstract class BaseApplication implements
      * Register application container services.
      *
      * @param \Cake\Core\ContainerInterface $container The Container to update.
-     * @return void
      */
     public function services(ContainerInterface $container): void
     {
@@ -323,7 +304,6 @@ abstract class BaseApplication implements
      * Register application events.
      *
      * @param \Cake\Event\EventManagerInterface $eventManager The global event manager to register listeners on
-     * @return \Cake\Event\EventManagerInterface
      */
     public function events(EventManagerInterface $eventManager): EventManagerInterface
     {
@@ -338,7 +318,6 @@ abstract class BaseApplication implements
      * - Invoke the controller.
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request
-     * @return \Psr\Http\Message\ResponseInterface
      */
     public function handle(
         ServerRequestInterface $request,

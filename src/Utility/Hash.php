@@ -206,7 +206,6 @@ class Hash
      *
      * @param mixed $key The key in the array being searched.
      * @param string $token The token being matched.
-     * @return bool
      */
     protected static function _matchToken(mixed $key, string $token): bool
     {
@@ -266,7 +265,7 @@ class Hash
 
             // Pattern matches and other operators.
             if ($op === '=' && $val && $val[0] === '/') {
-                if (!preg_match($val, $prop)) {
+                if (!preg_match($val, (string) $prop)) {
                     return false;
                 }
                 // phpcs:disable
@@ -677,7 +676,6 @@ class Hash
      * Callback function for filtering.
      *
      * @param mixed $var Array to filter.
-     * @return bool
      */
     protected static function _filter(mixed $var): bool
     {
@@ -690,7 +688,6 @@ class Hash
      *
      * @param array $data Array to flatten
      * @param string $separator String used to separate array key elements in a path, defaults to '.'
-     * @return array
      * @link https://book.cakephp.org/5/en/core-libraries/hash.html#hash-flatten
      */
     public static function flatten(array $data, string $separator = '.'): array
@@ -734,7 +731,6 @@ class Hash
      * @phpstan-param non-empty-string $separator
      * @param array $data Flattened array
      * @param string $separator The delimiter used
-     * @return array
      * @link https://book.cakephp.org/5/en/core-libraries/hash.html#hash-expand
      */
     public static function expand(array $data, string $separator = '.'): array
@@ -797,7 +793,6 @@ class Hash
      *
      * @param array $stack The stack of operations to work with.
      * @param array $return The return value to operate on.
-     * @return void
      */
     protected static function _merge(array $stack, array &$return): void
     {
@@ -840,7 +835,7 @@ class Hash
             return false;
         }
 
-        return $data === array_filter($data, 'is_numeric');
+        return $data === array_filter($data, is_numeric(...));
     }
 
     /**
@@ -1043,7 +1038,7 @@ class Hash
             $ignoreCase = $type['ignoreCase'];
             $type = $type['type'];
         }
-        $type = strtolower($type);
+        $type = strtolower((string) $type);
 
         if ($type === 'numeric') {
             $type = SORT_NUMERIC;
@@ -1057,7 +1052,7 @@ class Hash
             $type = SORT_REGULAR;
         }
         if ($ignoreCase) {
-            $values = array_map('mb_strtolower', $values);
+            $values = array_map(mb_strtolower(...), $values);
         }
         array_multisort($values, $dir, $type, $keys, $dir, $type);
         $sorted = [];
@@ -1084,7 +1079,6 @@ class Hash
      *
      * @param array $data The data to squash.
      * @param string|int|null $key The key for the data.
-     * @return array
      */
     protected static function _squash(array $data, string|int|null $key = null): array
     {
@@ -1167,7 +1161,6 @@ class Hash
      * @param array $data List to normalize
      * @param bool $assoc If true, $data will be converted to an associative array.
      * @param mixed $default The default value to use when a top level numeric key is converted to associative form.
-     * @return array
      * @link https://book.cakephp.org/5/en/core-libraries/hash.html#hash-normalize
      */
     public static function normalize(array $data, bool $assoc = true, mixed $default = null): array

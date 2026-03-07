@@ -104,9 +104,7 @@ class ErrorLogger implements ErrorLoggerInterface
             return $message;
         }
 
-        $message .= "\nTrace:\n" . $error->getTraceAsString() . "\n";
-
-        return $message;
+        return $message . ("\nTrace:\n" . $error->getTraceAsString() . "\n");
     }
 
     /**
@@ -180,7 +178,6 @@ class ErrorLogger implements ErrorLoggerInterface
      * Get the request context for an error/exception trace.
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request to read from.
-     * @return string
      */
     public function getRequestContext(ServerRequestInterface $request): string
     {

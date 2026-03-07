@@ -278,8 +278,6 @@ interface TableSchemaInterface extends SchemaInterface
 
     /**
      * Check whether a table has an autoIncrement column defined.
-     *
-     * @return bool
      */
     public function hasAutoincrement(): bool;
 

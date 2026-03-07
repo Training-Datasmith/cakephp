@@ -37,16 +37,12 @@ class Router
 {
     /**
      * Default route class.
-     *
-     * @var string
      */
     protected static string $_defaultRouteClass = Route::class;
 
     /**
      * Contains the base string that will be applied to all generated URLs
      * For example `https://example.com`
-     *
-     * @var string|null
      */
     protected static ?string $_fullBaseUrl = null;
 
@@ -94,8 +90,6 @@ class Router
 
     /**
      * The route collection routes would be added to.
-     *
-     * @var \Cake\Routing\RouteCollection
      */
     protected static RouteCollection $_collection;
 
@@ -122,8 +116,6 @@ class Router
 
     /**
      * Maintains the request object reference.
-     *
-     * @var \Cake\Http\ServerRequest|null
      */
     protected static ?ServerRequest $_request = null;
 
@@ -131,8 +123,6 @@ class Router
      * Initial state is populated the first time reload() is called which is at the bottom
      * of this file. This is a cheat as get_class_vars() returns the value of static vars even if they
      * have changed.
-     *
-     * @var array
      */
     protected static array $_initialState = [];
 
@@ -162,7 +152,6 @@ class Router
      * Get or set default route class.
      *
      * @param string|null $routeClass Class name.
-     * @return string|null
      */
     public static function defaultRouteClass(?string $routeClass = null): ?string
     {
@@ -201,7 +190,6 @@ class Router
      * Set current request instance.
      *
      * @param \Cake\Http\ServerRequest $request request object.
-     * @return void
      */
     public static function setRequest(ServerRequest $request): void
     {
@@ -217,8 +205,6 @@ class Router
 
     /**
      * Get the current request object.
-     *
-     * @return \Cake\Http\ServerRequest|null
      */
     public static function getRequest(): ?ServerRequest
     {
@@ -228,8 +214,6 @@ class Router
     /**
      * Reloads default Router settings. Resets all class variables and
      * removes all connected routes.
-     *
-     * @return void
      */
     public static function reload(): void
     {
@@ -263,7 +247,6 @@ class Router
      * Extensions and default route classes will not be modified
      *
      * @internal
-     * @return void
      */
     public static function resetRoutes(): void
     {
@@ -298,7 +281,6 @@ class Router
      * ```
      *
      * @param \Closure $function The function to add
-     * @return void
      */
     public static function addUrlFilter(Closure $function): void
     {
@@ -516,7 +498,6 @@ class Router
      *   string.
      * @param bool $full If true, the full base URL will be prepended to the result.
      *   Default is false.
-     * @return bool
      */
     public static function routeExists(array|string|null $url = null, bool $full = false): bool
     {
@@ -542,7 +523,6 @@ class Router
      *
      * @param string|null $base the prefix for URLs generated containing the domain.
      * For example: `http://example.com`
-     * @return string
      */
     public static function fullBaseUrl(?string $base = null): string
     {
@@ -676,8 +656,8 @@ class Router
 
         if ($request) {
             $base = $request->getAttribute('base', '');
-            if ($base !== '' && stristr($url, $base)) {
-                $url = (string)preg_replace('/^' . preg_quote($base, '/') . '/', '', $url, 1);
+            if ($base !== '' && stristr($url, (string) $base)) {
+                $url = (string)preg_replace('/^' . preg_quote((string) $base, '/') . '/', '', $url, 1);
             }
         }
         $url = '/' . $url;
@@ -734,7 +714,6 @@ class Router
      *
      * @param string $path The path to set the builder to.
      * @param array<string, mixed> $options The options for the builder
-     * @return \Cake\Routing\RouteBuilder
      */
     public static function createRouteBuilder(string $path, array $options = []): RouteBuilder
     {
@@ -762,8 +741,6 @@ class Router
 
     /**
      * Get the RouteCollection inside the Router
-     *
-     * @return \Cake\Routing\RouteCollection
      */
     public static function getRouteCollection(): RouteCollection
     {
@@ -774,7 +751,6 @@ class Router
      * Set the RouteCollection inside the Router
      *
      * @param \Cake\Routing\RouteCollection $routeCollection route collection
-     * @return void
      */
     public static function setRouteCollection(RouteCollection $routeCollection): void
     {
@@ -785,7 +761,6 @@ class Router
      * Inject route defaults from `_path` key
      *
      * @param array $url Route array with `_path` key
-     * @return array
      */
     protected static function unwrapShortString(array $url): array
     {

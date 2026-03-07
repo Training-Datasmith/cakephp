@@ -61,28 +61,18 @@ abstract class TestCase extends BaseTestCase
      */
     protected array $fixtures = [];
 
-    /**
-     * @var \Cake\TestSuite\Fixture\FixtureStrategyInterface|null
-     */
     protected ?FixtureStrategyInterface $fixtureStrategy = null;
 
     /**
      * Configure values to restore at end of test.
-     *
-     * @var array
      */
     protected array $_configure = [];
 
     /**
      * Plugins to be loaded after app instance is created ContainerStubTrait::creatApp()
-     *
-     * @var array
      */
     protected array $appPluginsToLoad = [];
 
-    /**
-     * @var \Cake\Error\PhpError|null
-     */
     private ?PhpError $_capturedError = null;
 
     /**
@@ -90,7 +80,6 @@ abstract class TestCase extends BaseTestCase
      *
      * @param bool $shouldSkip Whether the test should be skipped.
      * @param string $message The message to display.
-     * @return bool
      */
     public function skipIf(bool $shouldSkip, string $message = ''): bool
     {
@@ -106,7 +95,6 @@ abstract class TestCase extends BaseTestCase
      *
      * @param int $errorLevel value of error_reporting() that needs to use
      * @param callable $callable callable function that will receive asserts
-     * @return void
      */
     public function withErrorReporting(int $errorLevel, callable $callable): void
     {
@@ -135,7 +123,7 @@ abstract class TestCase extends BaseTestCase
 
         $this->_capturedError = null;
         set_error_handler(
-            function (int $code, string $description, string $file, int $line) {
+            function (int $code, string $description, string $file, int $line): true {
                 $trace = Debugger::trace(['start' => 1, 'format' => 'points']);
                 assert(is_array($trace));
                 $this->_capturedError = new PhpError($code, $description, $file, $line, $trace);
@@ -164,7 +152,6 @@ abstract class TestCase extends BaseTestCase
      * @param \Closure $callable callable function that will receive asserts.
      * @param int $type Error level to expect, E_DEPRECATED or E_USER_DEPRECATED.
      * @param string|null $phpVersion If set, only applies to this version forward, e.g. `8.4`.
-     * @return void
      */
     public function deprecated(Closure $callable, int $type = E_USER_DEPRECATED, ?string $phpVersion = null): void
     {
@@ -218,13 +205,9 @@ abstract class TestCase extends BaseTestCase
      * This method is called between test and tearDown().
      *
      * Gets the count of expectations on the mocks produced through Mockery.
-     *
-     * @return void
      */
     protected function assertPostConditions(): void
     {
-        parent::assertPostConditions();
-
         if (class_exists(Mockery::class)) {
             // @phpstan-ignore method.internal, argument.type
             $this->addToAssertionCount(Mockery::getContainer()->mockery_getExpectationCount());
@@ -235,12 +218,9 @@ abstract class TestCase extends BaseTestCase
      * Setup the test case, backup the static object values so they can be restored.
      * Specifically backs up the contents of Configure and paths in App if they have
      * not already been backed up.
-     *
-     * @return void
      */
     protected function setUp(): void
     {
-        parent::setUp();
         $this->setupFixtures();
 
         if (!$this->_configure) {
@@ -261,12 +241,9 @@ abstract class TestCase extends BaseTestCase
 
     /**
      * teardown any static object changes and restore them.
-     *
-     * @return void
      */
     protected function tearDown(): void
     {
-        parent::tearDown();
         $this->teardownFixtures();
 
         if ($this->_configure) {
@@ -283,8 +260,6 @@ abstract class TestCase extends BaseTestCase
 
     /**
      * Initialized and loads any use fixtures.
-     *
-     * @return void
      */
     protected function setupFixtures(): void
     {
@@ -296,8 +271,6 @@ abstract class TestCase extends BaseTestCase
 
     /**
      * Unloads any use fixtures.
-     *
-     * @return void
      */
     protected function teardownFixtures(): void
     {
@@ -309,8 +282,6 @@ abstract class TestCase extends BaseTestCase
 
     /**
      * Returns fixture strategy used by these tests.
-     *
-     * @return \Cake\TestSuite\Fixture\FixtureStrategyInterface
      */
     protected function getFixtureStrategy(): FixtureStrategyInterface
     {
@@ -329,7 +300,6 @@ abstract class TestCase extends BaseTestCase
      * and plugins being loaded.
      *
      * @param array|null $appArgs Constructor parameters for the application class.
-     * @return void
      * @since 4.0.1
      */
     public function loadRoutes(?array $appArgs = null): void
@@ -363,10 +333,6 @@ abstract class TestCase extends BaseTestCase
 
         $app = new class ('') extends BaseApplication
         {
-            /**
-             * @param \Cake\Http\MiddlewareQueue $middlewareQueue
-             * @return \Cake\Http\MiddlewareQueue
-             */
             public function middleware(MiddlewareQueue $middlewareQueue): MiddlewareQueue
             {
                 return $middlewareQueue;
@@ -463,7 +429,6 @@ abstract class TestCase extends BaseTestCase
      * Useful in test case teardown methods.
      *
      * @param array<string> $names A list of plugins you want to remove.
-     * @return void
      */
     public function removePlugins(array $names = []): void
     {
@@ -477,8 +442,6 @@ abstract class TestCase extends BaseTestCase
      * Clear all plugins from the global plugin collection.
      *
      * Useful in test case teardown methods.
-     *
-     * @return void
      */
     public function clearPlugins(): void
     {
@@ -491,7 +454,6 @@ abstract class TestCase extends BaseTestCase
      * @param string $name Event name
      * @param \Cake\Event\EventManager|null $eventManager Event manager to check, defaults to global event manager
      * @param string $message Assertion failure message
-     * @return void
      */
     public function assertEventFired(string $name, ?EventManager $eventManager = null, string $message = ''): void
     {
@@ -511,7 +473,6 @@ abstract class TestCase extends BaseTestCase
      * @param mixed $dataValue Data value
      * @param \Cake\Event\EventManager|null $eventManager Event manager to check, defaults to global event manager
      * @param string $message Assertion failure message
-     * @return void
      */
     public function assertEventFiredWith(
         string $name,
@@ -533,7 +494,6 @@ abstract class TestCase extends BaseTestCase
      * @param string $expected The expected value.
      * @param string $result The actual value.
      * @param string $message The message to use for failure.
-     * @return void
      */
     public function assertTextNotEquals(string $expected, string $result, string $message = ''): void
     {
@@ -549,7 +509,6 @@ abstract class TestCase extends BaseTestCase
      * @param string $expected The expected value.
      * @param string $result The actual value.
      * @param string $message The message to use for failure.
-     * @return void
      */
     public function assertTextEquals(string $expected, string $result, string $message = ''): void
     {
@@ -565,7 +524,6 @@ abstract class TestCase extends BaseTestCase
      * @param string $prefix The prefix to check for.
      * @param string $string The string to search in.
      * @param string $message The message to use for failure.
-     * @return void
      * @phpstan-param non-empty-string $prefix
      */
     public function assertTextStartsWith(string $prefix, string $string, string $message = ''): void
@@ -583,7 +541,6 @@ abstract class TestCase extends BaseTestCase
      * @param string $prefix The prefix to not find.
      * @param string $string The string to search.
      * @param string $message The message to use for failure.
-     * @return void
      * @phpstan-param non-empty-string $prefix
      */
     public function assertTextStartsNotWith(string $prefix, string $string, string $message = ''): void
@@ -601,7 +558,6 @@ abstract class TestCase extends BaseTestCase
      * @param string $suffix The suffix to find.
      * @param string $string The string to search.
      * @param string $message The message to use for failure.
-     * @return void
      * @phpstan-param non-empty-string $suffix
      */
     public function assertTextEndsWith(string $suffix, string $string, string $message = ''): void
@@ -619,7 +575,6 @@ abstract class TestCase extends BaseTestCase
      * @param string $suffix The suffix to not find.
      * @param string $string The string to search.
      * @param string $message The message to use for failure.
-     * @return void
      * @phpstan-param non-empty-string $suffix
      */
     public function assertTextEndsNotWith(string $suffix, string $string, string $message = ''): void
@@ -638,7 +593,6 @@ abstract class TestCase extends BaseTestCase
      * @param string $haystack The string to search through.
      * @param string $message The message to display on failure.
      * @param bool $ignoreCase Whether the search should be case-sensitive.
-     * @return void
      */
     public function assertTextContains(
         string $needle,
@@ -664,7 +618,6 @@ abstract class TestCase extends BaseTestCase
      * @param string $haystack The string to search through.
      * @param string $message The message to display on failure.
      * @param bool $ignoreCase Whether the search should be case-sensitive.
-     * @return void
      */
     public function assertTextNotContains(
         string $needle,
@@ -688,7 +641,6 @@ abstract class TestCase extends BaseTestCase
      * @param string $expected The expected sql
      * @param string $actual The sql to compare
      * @param string $message The message to display on failure
-     * @return void
      */
     public function assertEqualsSql(
         string $expected,
@@ -707,7 +659,6 @@ abstract class TestCase extends BaseTestCase
      * @param string $pattern The expected sql pattern
      * @param string $actual The sql to compare
      * @param bool $optional Whether quote characters (marked with <>) are optional
-     * @return void
      */
     public function assertRegExpSql(string $pattern, string $actual, bool $optional = false): void
     {
@@ -759,7 +710,6 @@ abstract class TestCase extends BaseTestCase
      * @param array $expected An array, see above
      * @param string $string An HTML/XHTML/XML string
      * @param bool $fullDebug Whether more verbose output should be used.
-     * @return bool
      */
     public function assertHtml(array $expected, string $string, bool $fullDebug = false): bool
     {
@@ -813,7 +763,7 @@ abstract class TestCase extends BaseTestCase
             foreach ($tags as $tag => $attributes) {
                 $regex[] = [
                     sprintf('Open %s tag', $tag),
-                    sprintf('[\s]*<%s', preg_quote($tag, '/')),
+                    sprintf('[\s]*<%s', preg_quote((string) $tag, '/')),
                     $i,
                 ];
                 if ($attributes === true) {
@@ -848,7 +798,7 @@ abstract class TestCase extends BaseTestCase
                         $explanations[] = sprintf('Attribute `%s` == `%s`', $attr, $val);
                         $val = preg_quote($val, '/');
                     }
-                    $attrs[] = '[\s]+' . preg_quote($attr, '/') . '=' . $quotes . $val . $quotes;
+                    $attrs[] = '[\s]+' . preg_quote((string) $attr, '/') . '=' . $quotes . $val . $quotes;
                     $i++;
                 }
                 if ($attrs) {
@@ -1033,7 +983,6 @@ abstract class TestCase extends BaseTestCase
     }
 
 // phpcs:enable
-
     /**
      * Mock a model, maintain fixtures and table association
      *
@@ -1041,7 +990,6 @@ abstract class TestCase extends BaseTestCase
      * @param array<string> $methods The list of methods to mock
      * @param array<string, mixed> $options The config data for the mock's constructor.
      * @throws \Cake\ORM\Exception\MissingTableClassException
-     * @return \Cake\ORM\Table|\PHPUnit\Framework\MockObject\MockObject
      */
     public function getMockForModel(string $alias, array $methods = [], array $options = []): Table|MockObject
     {
@@ -1055,9 +1003,7 @@ abstract class TestCase extends BaseTestCase
         $options += ['alias' => $baseClass, 'connection' => $connection];
         $options += $locator->getConfig($alias);
         $reflection = new ReflectionClass($className);
-        $classMethods = array_map(function (ReflectionMethod $method) {
-            return $method->name;
-        }, $reflection->getMethods());
+        $classMethods = array_map(fn(ReflectionMethod $method) => $method->name, $reflection->getMethods());
 
         $existingMethods = array_intersect($classMethods, $methods);
         /** @var list<non-empty-string> $nonExistingMethods */
@@ -1176,7 +1122,6 @@ abstract class TestCase extends BaseTestCase
     /**
      * @param string $regex A regex to match against the warning message
      * @param \Closure $callable Callable which should trigger the warning
-     * @return void
      * @throws \Exception
      */
     public function expectNoticeMessageMatches(string $regex, Closure $callable): void
@@ -1187,7 +1132,6 @@ abstract class TestCase extends BaseTestCase
     /**
      * @param string $regex A regex to match against the deprecation message
      * @param \Closure $callable Callable which should trigger the warning
-     * @return void
      * @throws \Exception
      */
     public function expectDeprecationMessageMatches(string $regex, Closure $callable): void
@@ -1198,7 +1142,6 @@ abstract class TestCase extends BaseTestCase
     /**
      * @param string $regex A regex to match against the warning message
      * @param \Closure $callable Callable which should trigger the warning
-     * @return void
      * @throws \Exception
      */
     public function expectWarningMessageMatches(string $regex, Closure $callable): void
@@ -1209,7 +1152,6 @@ abstract class TestCase extends BaseTestCase
     /**
      * @param string $regex A regex to match against the error message
      * @param \Closure $callable Callable which should trigger the warning
-     * @return void
      * @throws \Exception
      */
     public function expectErrorMessageMatches(string $regex, Closure $callable): void
@@ -1221,7 +1163,6 @@ abstract class TestCase extends BaseTestCase
      * @param string $regex A regex to match against the warning message
      * @param \Closure $callable Callable which should trigger the warning
      * @param int $errorLevel The error level to listen to
-     * @return void
      * @throws \Exception
      */
     protected function expectErrorHandlerMessageMatches(string $regex, Closure $callable, int $errorLevel): void

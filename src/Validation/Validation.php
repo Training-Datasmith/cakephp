@@ -133,8 +133,6 @@ class Validation
     /**
      * Holds an array of errors messages set in this class.
      * These are used for debugging purposes
-     *
-     * @var array
      */
     public static array $errors = [];
 
@@ -376,7 +374,6 @@ class Validation
      * @param mixed $check The value to find in $field.
      * @param string $field The field to check $check against. This field must be present in $context.
      * @param array<string, mixed> $context The validation context.
-     * @return bool
      */
     public static function compareWith(mixed $check, string $field, array $context): bool
     {
@@ -392,7 +389,6 @@ class Validation
      * @param string $field The field to check $check against. This field must be present in $context.
      * @param string $operator Comparison operator. See Validation::comparison().
      * @param array<string, mixed> $context The validation context.
-     * @return bool
      * @since 3.6.0
      */
     public static function compareFields(mixed $check, string $field, string $operator, array $context): bool
@@ -885,10 +881,8 @@ class Validation
     }
 
     /**
-     * @param mixed $check
      * @param class-string $enumClassName
      * @param array<string, mixed> $options
-     * @return bool
      */
     protected static function checkEnum(mixed $check, string $enumClassName, array $options = []): bool
     {
@@ -903,7 +897,6 @@ class Validation
         try {
             $reflectionEnum = new ReflectionEnum($enumClassName);
 
-            /** @var \ReflectionNamedType|null $reflectionBackingType */
             $reflectionBackingType = $reflectionEnum->getBackingType();
             if ($reflectionBackingType) {
                 if (method_exists($reflectionBackingType, 'getName')) {
@@ -951,9 +944,7 @@ class Validation
     }
 
     /**
-     * @param \BackedEnum $enum
      * @param array<string, mixed> $options
-     * @return bool
      */
     protected static function isValidEnum(BackedEnum $enum, array $options): bool
     {
@@ -1186,9 +1177,7 @@ class Validation
         $defaults = ['in' => null, 'max' => null, 'min' => null];
         $options += $defaults;
 
-        $check = array_filter((array)$check, function ($value) {
-            return $value || is_numeric($value);
-        });
+        $check = array_filter((array)$check, fn($value) => $value || is_numeric($value));
         if (!$check) {
             return false;
         }
@@ -1200,7 +1189,7 @@ class Validation
         }
         if ($options['in'] && is_array($options['in'])) {
             if ($caseInsensitive) {
-                $options['in'] = array_map('mb_strtolower', $options['in']);
+                $options['in'] = array_map(mb_strtolower(...), $options['in']);
             }
             foreach ($check as $val) {
                 $strict = !is_numeric($val);
@@ -1326,10 +1315,10 @@ class Validation
             return false;
         }
         if ($caseInsensitive) {
-            $list = array_map('mb_strtolower', $list);
+            $list = array_map(mb_strtolower(...), $list);
             $check = mb_strtolower((string)$check);
         } else {
-            $list = array_map('strval', $list);
+            $list = array_map(strval(...), $list);
         }
 
         return in_array((string)$check, $list, true);
@@ -1427,7 +1416,7 @@ class Validation
         }
 
         foreach ($mimeTypes as $key => $val) {
-            $mimeTypes[$key] = strtolower($val);
+            $mimeTypes[$key] = strtolower((string) $val);
         }
 
         return in_array(strtolower($mime), $mimeTypes, true);
@@ -1497,7 +1486,6 @@ class Validation
      *
      * @param mixed $check Value to check.
      * @param bool $allowNoFile Set to true to allow UPLOAD_ERR_NO_FILE as a pass.
-     * @return bool
      * @see https://secure.php.net/manual/en/features.file-upload.errors.php
      */
     public static function uploadError(mixed $check, bool $allowNoFile = false): bool
@@ -1538,7 +1526,6 @@ class Validation
      *
      * @param mixed $file The uploaded file data from PHP.
      * @param array<string, mixed> $options An array of options for the validation.
-     * @return bool
      */
     public static function uploadedFile(mixed $file, array $options = []): bool
     {
@@ -1587,7 +1574,6 @@ class Validation
      *
      * @param mixed $file The uploaded file data from PHP.
      * @param array<string, mixed> $options Options to validate width and height.
-     * @return bool
      * @throws \InvalidArgumentException
      */
     public static function imageSize(mixed $file, array $options): bool
@@ -1636,7 +1622,6 @@ class Validation
      * @param mixed $file The uploaded file data from PHP.
      * @param string $operator Comparison operator.
      * @param int $width Min or max width.
-     * @return bool
      */
     public static function imageWidth(mixed $file, string $operator, int $width): bool
     {
@@ -1654,7 +1639,6 @@ class Validation
      * @param mixed $file The uploaded file data from PHP.
      * @param string $operator Comparison operator.
      * @param int $height Min or max height.
-     * @return bool
      */
     public static function imageHeight(mixed $file, string $operator, int $height): bool
     {
@@ -1681,7 +1665,6 @@ class Validation
      *
      * @param mixed $value Geographic location as string
      * @param array<string, mixed> $options Options for the validation logic.
-     * @return bool
      */
     public static function geoCoordinate(mixed $value, array $options = []): bool
     {
@@ -1715,7 +1698,6 @@ class Validation
      *
      * @param mixed $value Latitude as string
      * @param array<string, mixed> $options Options for the validation logic.
-     * @return bool
      * @link https://en.wikipedia.org/wiki/Latitude
      * @see \Cake\Validation\Validation::geoCoordinate()
      */
@@ -1731,7 +1713,6 @@ class Validation
      *
      * @param mixed $value Longitude as string
      * @param array<string, mixed> $options Options for the validation logic.
-     * @return bool
      * @link https://en.wikipedia.org/wiki/Longitude
      * @see \Cake\Validation\Validation::geoCoordinate()
      */
@@ -1748,7 +1729,6 @@ class Validation
      * This method will reject all non-string values.
      *
      * @param mixed $value The value to check
-     * @return bool
      */
     public static function ascii(mixed $value): bool
     {
@@ -1772,7 +1752,6 @@ class Validation
      *
      * @param mixed $value The value to check
      * @param array<string, mixed> $options An array of options. See above for the supported options.
-     * @return bool
      */
     public static function utf8(mixed $value, array $options = []): bool
     {
@@ -1794,7 +1773,6 @@ class Validation
      * as well.
      *
      * @param mixed $value The value to check
-     * @return bool
      */
     public static function isInteger(mixed $value): bool
     {
@@ -1813,7 +1791,6 @@ class Validation
      * Check that the input value is an array.
      *
      * @param mixed $value The value to check
-     * @return bool
      */
     public static function isArray(mixed $value): bool
     {
@@ -1827,7 +1804,6 @@ class Validation
      * not accept arrays, objects, resources and nulls.
      *
      * @param mixed $value The value to check
-     * @return bool
      */
     public static function isScalar(mixed $value): bool
     {
@@ -1888,7 +1864,6 @@ class Validation
      * the CakePHP FormHelper.
      *
      * @param array<string, mixed> $value The array representing a date or datetime.
-     * @return string
      */
     protected static function _getDateString(array $value): string
     {
@@ -1909,7 +1884,7 @@ class Validation
                 $value['hour'] = 0;
             }
             if (isset($value['meridian'])) {
-                $value['hour'] = strtolower($value['meridian']) === 'am' ? $value['hour'] : $value['hour'] + 12;
+                $value['hour'] = strtolower((string) $value['meridian']) === 'am' ? $value['hour'] : $value['hour'] + 12;
             }
             $value += ['minute' => 0, 'second' => 0, 'microsecond' => 0];
             if (
@@ -1933,8 +1908,6 @@ class Validation
 
     /**
      * Lazily populate the IP address patterns used for validations
-     *
-     * @return void
      */
     protected static function _populateIp(): void
     {
@@ -1966,8 +1939,6 @@ class Validation
 
     /**
      * Reset internal variables for another validation run.
-     *
-     * @return void
      */
     protected static function _reset(): void
     {

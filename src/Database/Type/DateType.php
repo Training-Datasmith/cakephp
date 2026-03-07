@@ -29,9 +29,6 @@ use InvalidArgumentException;
  */
 class DateType extends BaseType implements BatchCastingInterface
 {
-    /**
-     * @var string
-     */
     protected string $_format = 'Y-m-d';
 
     /**
@@ -43,8 +40,6 @@ class DateType extends BaseType implements BatchCastingInterface
 
     /**
      * Whether `marshal()` should use locale-aware parser with `_localeMarshalFormat`.
-     *
-     * @var bool
      */
     protected bool $_useLocaleMarshal = false;
 
@@ -52,8 +47,6 @@ class DateType extends BaseType implements BatchCastingInterface
      * The locale-aware format `marshal()` uses when `_useLocaleParser` is true.
      *
      * See `Cake\I18n\Date::parseDate()` for accepted formats.
-     *
-     * @var string|int|null
      */
     protected string|int|null $_localeMarshalFormat = null;
 
@@ -79,7 +72,6 @@ class DateType extends BaseType implements BatchCastingInterface
      *
      * @param mixed $value The value to convert.
      * @param \Cake\Database\Driver $driver The driver instance to convert with.
-     * @return string|null
      */
     public function toDatabase(mixed $value, Driver $driver): ?string
     {
@@ -101,7 +93,6 @@ class DateType extends BaseType implements BatchCastingInterface
      *
      * @param mixed $value Value to be converted to PHP equivalent
      * @param \Cake\Database\Driver $driver Object from which database preferences and configuration will be extracted
-     * @return \Cake\Chronos\ChronosDate|null
      */
     public function toPHP(mixed $value, Driver $driver): ?ChronosDate
     {
@@ -112,7 +103,7 @@ class DateType extends BaseType implements BatchCastingInterface
         $class = $this->_className;
         if (is_int($value)) {
             $instance = new $class('@' . $value);
-        } elseif (str_starts_with($value, '0000-00-00')) {
+        } elseif (str_starts_with((string) $value, '0000-00-00')) {
             return null;
         } else {
             $instance = new $class($value);
@@ -136,7 +127,7 @@ class DateType extends BaseType implements BatchCastingInterface
             $class = $this->_className;
             if (is_int($value)) {
                 $instance = new $class('@' . $value);
-            } elseif (str_starts_with($value, '0000-00-00')) {
+            } elseif (str_starts_with((string) $value, '0000-00-00')) {
                 $values[$field] = null;
                 continue;
             } else {
@@ -153,7 +144,6 @@ class DateType extends BaseType implements BatchCastingInterface
      * Convert request data into a datetime object.
      *
      * @param mixed $value Request data
-     * @return \Cake\Chronos\ChronosDate|null
      */
     public function marshal(mixed $value): ?ChronosDate
     {
@@ -202,7 +192,7 @@ class DateType extends BaseType implements BatchCastingInterface
      * @param bool $enable Whether to enable
      * @return $this
      */
-    public function useLocaleParser(bool $enable = true)
+    public function useLocaleParser(bool $enable = true): static
     {
         if ($enable === false) {
             $this->_useLocaleMarshal = $enable;
@@ -228,7 +218,7 @@ class DateType extends BaseType implements BatchCastingInterface
      * @see \Cake\I18n\Date::parseDate()
      * @return $this
      */
-    public function setLocaleFormat(string|int $format)
+    public function setLocaleFormat(string|int $format): static
     {
         $this->_localeMarshalFormat = $format;
 
@@ -245,10 +235,6 @@ class DateType extends BaseType implements BatchCastingInterface
         return $this->_className;
     }
 
-    /**
-     * @param string $value
-     * @return \Cake\I18n\Date|null
-     */
     protected function _parseLocaleValue(string $value): ?Date
     {
         /** @var class-string<\Cake\I18n\Date> $class */
@@ -262,7 +248,6 @@ class DateType extends BaseType implements BatchCastingInterface
      * formats in `_marshalFormats`.
      *
      * @param string $value The value to parse and convert to an object.
-     * @return \Cake\Chronos\ChronosDate|null
      */
     protected function _parseValue(string $value): ?ChronosDate
     {

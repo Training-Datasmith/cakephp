@@ -30,16 +30,12 @@ class FloatType extends BaseType implements BatchCastingInterface
 {
     /**
      * The class to use for representing number objects
-     *
-     * @var string
      */
     public static string $numberClass = Number::class;
 
     /**
      * Whether numbers should be parsed using a locale aware parser
      * when marshaling string inputs.
-     *
-     * @var bool
      */
     protected bool $_useLocaleParser = false;
 
@@ -48,7 +44,6 @@ class FloatType extends BaseType implements BatchCastingInterface
      *
      * @param mixed $value The value to convert.
      * @param \Cake\Database\Driver $driver The driver instance to convert with.
-     * @return float|null
      */
     public function toDatabase(mixed $value, Driver $driver): ?float
     {
@@ -64,7 +59,6 @@ class FloatType extends BaseType implements BatchCastingInterface
      *
      * @param mixed $value The value to convert.
      * @param \Cake\Database\Driver $driver The driver instance to convert with.
-     * @return float|null
      */
     public function toPHP(mixed $value, Driver $driver): ?float
     {
@@ -130,7 +124,7 @@ class FloatType extends BaseType implements BatchCastingInterface
      * @param bool $enable Whether to enable
      * @return $this
      */
-    public function useLocaleParser(bool $enable = true)
+    public function useLocaleParser(bool $enable = true): static
     {
         if ($enable === false) {
             $this->_useLocaleParser = $enable;
@@ -155,7 +149,6 @@ class FloatType extends BaseType implements BatchCastingInterface
      * aware parser.
      *
      * @param string $value The value to parse and convert to an float.
-     * @return float
      */
     protected function _parseValue(string $value): float
     {

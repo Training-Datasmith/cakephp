@@ -17,39 +17,23 @@ use PHPUnit\Framework\Constraint\Constraint;
 class EventFiredWith extends Constraint
 {
     /**
-     * Array of fired events
-     *
-     * @var \Cake\Event\EventManager
-     */
-    protected EventManager $_eventManager;
-
-    /**
-     * Event data key
-     *
-     * @var string
-     */
-    protected string $_dataKey;
-
-    /**
-     * Event data value
-     *
-     * @var mixed
-     */
-    protected mixed $_dataValue;
-
-    /**
      * Constructor
      *
-     * @param \Cake\Event\EventManager $eventManager Event manager to check
-     * @param string $dataKey Data key
-     * @param mixed $dataValue Data value
+     * @param \Cake\Event\EventManager $_eventManager Event manager to check
+     * @param string $_dataKey Data key
+     * @param mixed $_dataValue Data value
      */
-    public function __construct(EventManager $eventManager, string $dataKey, mixed $dataValue)
+    public function __construct(/**
+     * Array of fired events
+     */
+    protected EventManager $_eventManager, /**
+     * Event data key
+     */
+    protected string $_dataKey, /**
+     * Event data value
+     */
+    protected mixed $_dataValue)
     {
-        $this->_eventManager = $eventManager;
-        $this->_dataKey = $dataKey;
-        $this->_dataValue = $dataValue;
-
         if ($this->_eventManager->getEventList() === null) {
             throw new AssertionFailedError(
                 'The event manager you are asserting against is not configured to track events.',
@@ -61,7 +45,6 @@ class EventFiredWith extends Constraint
      * Checks if event is in fired array
      *
      * @param mixed $other Constraint check
-     * @return bool
      * @throws \PHPUnit\Framework\AssertionFailedError
      */
     public function matches(mixed $other): bool
@@ -70,9 +53,7 @@ class EventFiredWith extends Constraint
         $list = $this->_eventManager->getEventList();
         if ($list !== null) {
             $eventGroup = (new Collection($list))
-                ->groupBy(function (EventInterface $event): string {
-                    return $event->getName();
-                })
+                ->groupBy(fn(EventInterface $event): string => $event->getName())
                 ->toArray();
         }
 
@@ -102,8 +83,6 @@ class EventFiredWith extends Constraint
 
     /**
      * Assertion message string
-     *
-     * @return string
      */
     public function toString(): string
     {

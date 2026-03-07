@@ -26,8 +26,6 @@ trait IdGeneratorTrait
 {
     /**
      * Prefix for id attribute.
-     *
-     * @var string|null
      */
     protected ?string $_idPrefix = null;
 
@@ -40,8 +38,6 @@ trait IdGeneratorTrait
 
     /**
      * Clear the stored ID suffixes.
-     *
-     * @return void
      */
     protected function _clearIds(): void
     {

@@ -93,8 +93,6 @@ class EavStrategy implements TranslateStrategyInterface
      *
      * Additionally it creates a `i18n` HasMany association that will be
      * used for fetching all translations for each record in the bound table.
-     *
-     * @return void
      */
     protected function setupAssociations(): void
     {
@@ -169,7 +167,6 @@ class EavStrategy implements TranslateStrategyInterface
      * @param \Cake\Event\EventInterface<\Cake\ORM\Table> $event The beforeFind event that was fired.
      * @param \Cake\ORM\Query\SelectQuery<\Cake\Datasource\EntityInterface|array> $query Query
      * @param \ArrayObject<string, mixed> $options The options for the query
-     * @return void
      */
     public function beforeFind(EventInterface $event, SelectQuery $query, ArrayObject $options): void
     {
@@ -179,22 +176,20 @@ class EavStrategy implements TranslateStrategyInterface
             return;
         }
 
-        $conditions = function (string $field, string $locale, SelectQuery $query, array $select) {
-            return function (SelectQuery $q) use ($field, $locale, $query, $select) {
-                $table = $q->getRepository();
-                $q->where([$table->aliasField('locale') => $locale]);
+        $conditions = (fn(string $field, string $locale, SelectQuery $query, array $select) => function (SelectQuery $q) use ($field, $locale, $query, $select): \Cake\ORM\Query\SelectQuery {
+            $table = $q->getRepository();
+            $q->where([$table->aliasField('locale') => $locale]);
 
-                if (
-                    $query->isAutoFieldsEnabled() ||
-                    in_array($field, $select, true) ||
-                    in_array($this->table->aliasField($field), $select, true)
-                ) {
-                    $q->select(['id', 'content']);
-                }
+            if (
+                $query->isAutoFieldsEnabled() ||
+                in_array($field, $select, true) ||
+                in_array($this->table->aliasField($field), $select, true)
+            ) {
+                $q->select(['id', 'content']);
+            }
 
-                return $q;
-            };
-        };
+            return $q;
+        });
 
         $contain = [];
         $fields = $this->_config['fields'];
@@ -224,7 +219,7 @@ class EavStrategy implements TranslateStrategyInterface
 
         $query->contain($contain);
         $query->formatResults(
-            fn(CollectionInterface $results) => $this->rowMapper($results, $locale),
+            fn(CollectionInterface $results): \Cake\Collection\CollectionInterface => $this->rowMapper($results, $locale),
             SelectQuery::PREPEND,
         );
     }
@@ -236,7 +231,6 @@ class EavStrategy implements TranslateStrategyInterface
      * @param \Cake\Event\EventInterface<\Cake\ORM\Table> $event The beforeSave event that was fired
      * @param \Cake\Datasource\EntityInterface $entity The entity that is going to be saved
      * @param \ArrayObject<string, mixed> $options the options passed to the save method
-     * @return void
      */
     public function beforeSave(EventInterface $event, EntityInterface $entity, ArrayObject $options): void
     {
@@ -340,7 +334,6 @@ class EavStrategy implements TranslateStrategyInterface
      * field name is returned for all other fields.
      *
      * @param string $field Field name to be aliased.
-     * @return string
      */
     public function translationField(string $field): string
     {
@@ -460,7 +453,6 @@ class EavStrategy implements TranslateStrategyInterface
      * entity. The result will be put into its `_i18n` property.
      *
      * @param \Cake\Datasource\EntityInterface $entity Entity
-     * @return void
      */
     protected function bundleTranslatedFields(EntityInterface $entity): void
     {
@@ -526,7 +518,6 @@ class EavStrategy implements TranslateStrategyInterface
      * to the conditions array.
      *
      * @param array $ruleSet An array of array of conditions to be used for finding each
-     * @return array
      */
     protected function findExistingTranslations(array $ruleSet): array
     {

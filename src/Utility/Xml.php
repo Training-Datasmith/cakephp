@@ -141,7 +141,6 @@ class Xml
      *
      * @param string $input The input to load.
      * @param array<string, mixed> $options The options to use. See Xml::build()
-     * @return \SimpleXMLElement|\DOMDocument
      * @throws \Cake\Utility\Exception\XmlException
      */
     protected static function _loadXml(string $input, array $options): SimpleXMLElement|DOMDocument
@@ -149,7 +148,7 @@ class Xml
         return static::load(
             $input,
             $options,
-            function ($input, $options, $flags) {
+            function ($input, array $options, $flags): \DOMDocument|\SimpleXMLElement {
                 if ($options['return'] === 'simplexml' || $options['return'] === 'simplexmlelement') {
                     $flags |= LIBXML_NOCDATA;
                     $xml = new SimpleXMLElement($input, $flags);
@@ -168,7 +167,6 @@ class Xml
      *
      * @param string $input The input html string to load.
      * @param array<string, mixed> $options The options to use. See Xml::build()
-     * @return \SimpleXMLElement|\DOMDocument
      * @throws \Cake\Utility\Exception\XmlException
      */
     public static function loadHtml(string $input, array $options = []): SimpleXMLElement|DOMDocument
@@ -182,7 +180,7 @@ class Xml
         return static::load(
             $input,
             $options,
-            function ($input, $options, $flags) {
+            function ($input, array $options, $flags): \SimpleXMLElement|null|\DOMDocument {
                 $xml = new DOMDocument();
                 $xml->loadHTML($input, $flags);
 
@@ -201,7 +199,6 @@ class Xml
      * @param string $input The input to load.
      * @param array<string, mixed> $options The options to use. See Xml::build()
      * @param \Closure $callable Closure that should return SimpleXMLElement or DOMDocument instance.
-     * @return \SimpleXMLElement|\DOMDocument
      * @throws \Cake\Utility\Exception\XmlException
      */
     protected static function load(string $input, array $options, Closure $callable): SimpleXMLElement|DOMDocument
@@ -297,7 +294,7 @@ class Xml
         }
         self::_fromArray($dom, $dom, $input, $options['format']);
 
-        $options['return'] = strtolower($options['return']);
+        $options['return'] = strtolower((string) $options['return']);
         if ($options['return'] === 'simplexml' || $options['return'] === 'simplexmlelement') {
             $xmlString = (string)$dom->saveXML();
             $check = new DOMDocument();
@@ -333,7 +330,6 @@ class Xml
      * @param \DOMDocument|\DOMElement $node Handler to DOMElement (child)
      * @param mixed $data Array of data to append to the $node.
      * @param string $format Either 'attributes' or 'tags'. This determines where nested keys go.
-     * @return void
      * @throws \Cake\Utility\Exception\XmlException
      */
     protected static function _fromArray(
@@ -415,7 +411,6 @@ class Xml
      * Helper to _fromArray(). It will create children of arrays
      *
      * @param array<string, mixed> $data Array with information to create children
-     * @return void
      * @phpstan-param array{dom: \DOMDocument, node: \DOMNode, key: string, format: string, value?: mixed} $data
      */
     protected static function _createChild(array $data): void
@@ -491,7 +486,6 @@ class Xml
      * @param array<string, mixed> $parentData Parent array with data
      * @param string $ns Namespace of current child
      * @param array<string> $namespaces List of namespaces in XML
-     * @return void
      */
     protected static function _toArray(SimpleXMLElement $xml, array &$parentData, string $ns, array $namespaces): void
     {

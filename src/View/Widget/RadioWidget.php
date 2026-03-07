@@ -52,8 +52,6 @@ class RadioWidget extends BasicWidget
 
     /**
      * Label instance.
-     *
-     * @var \Cake\View\Widget\LabelWidget
      */
     protected LabelWidget $_label;
 
@@ -97,7 +95,6 @@ class RadioWidget extends BasicWidget
      *
      * @param array<string, mixed> $data The data to build radio buttons with.
      * @param \Cake\View\Form\ContextInterface $context The current form context.
-     * @return string
      */
     public function render(array $data, ContextInterface $context): string
     {
@@ -130,7 +127,6 @@ class RadioWidget extends BasicWidget
      *
      * @param array<string, mixed> $radio Radio info.
      * @param array|string|true|null $disabled The disabled values.
-     * @return bool
      */
     protected function _isDisabled(array $radio, array|string|bool|null $disabled): bool
     {
@@ -152,7 +148,6 @@ class RadioWidget extends BasicWidget
      * @param array<string, mixed>|string|int $text The label text, or complex radio type.
      * @param array<string, mixed> $data Additional options for input generation.
      * @param \Cake\View\Form\ContextInterface $context The form context
-     * @return string
      */
     protected function _renderInput(
         string|int $val,
@@ -219,7 +214,7 @@ class RadioWidget extends BasicWidget
 
         if (
             $data['label'] === false &&
-            ($nestedInput || !str_contains($this->_templates->get('radioWrapper'), '{{input}}'))
+            ($nestedInput || !str_contains((string) $this->_templates->get('radioWrapper'), '{{input}}'))
         ) {
             $label = $input;
             $input = '';

@@ -26,7 +26,6 @@ class BodyNotEquals extends BodyEquals
      * Checks assertion
      *
      * @param mixed $other Expected type
-     * @return bool
      */
     public function matches(mixed $other): bool
     {
@@ -35,8 +34,6 @@ class BodyNotEquals extends BodyEquals
 
     /**
      * Assertion message
-     *
-     * @return string
      */
     public function toString(): string
     {

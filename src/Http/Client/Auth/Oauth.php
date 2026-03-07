@@ -49,7 +49,7 @@ class Oauth
             $credentials['method'] = 'hmac-sha1';
         }
 
-        $credentials['method'] = strtoupper($credentials['method']);
+        $credentials['method'] = strtoupper((string) $credentials['method']);
 
         switch ($credentials['method']) {
             case 'HMAC-SHA1':
@@ -128,7 +128,6 @@ class Oauth
      *
      * @param \Cake\Http\Client\Request $request The request object.
      * @param array $credentials Authentication credentials.
-     * @return string
      */
     protected function _hmacSha1(Request $request, array $credentials): string
     {
@@ -169,7 +168,6 @@ class Oauth
      *
      * @param \Cake\Http\Client\Request $request The request object.
      * @param array $credentials Authentication credentials.
-     * @return string
      */
     protected function _rsaSha1(Request $request, array $credentials): string
     {
@@ -226,7 +224,7 @@ class Oauth
         openssl_sign($baseString, $signature, $privateKey);
         $this->checkSslError();
 
-        $values['oauth_signature'] = base64_encode($signature);
+        $values['oauth_signature'] = base64_encode((string) $signature);
 
         return $this->_buildAuth($values);
     }
@@ -242,7 +240,6 @@ class Oauth
      *
      * @param \Cake\Http\Client\Request $request The request object.
      * @param array $oauthValues Oauth values.
-     * @return string
      */
     public function baseString(Request $request, array $oauthValues): string
     {
@@ -268,9 +265,8 @@ class Oauth
     {
         $out = $uri->getScheme() . '://';
         $out .= strtolower($uri->getHost());
-        $out .= $uri->getPath();
 
-        return $out;
+        return $out . $uri->getPath();
     }
 
     /**
@@ -312,7 +308,6 @@ class Oauth
      * @param array $args The arguments to normalize.
      * @param string $path The current path being converted.
      * @see https://tools.ietf.org/html/rfc5849#section-3.4.1.3.2
-     * @return array
      */
     protected function _normalizeData(array $args, string $path = ''): array
     {
@@ -329,7 +324,7 @@ class Oauth
                 }
             }
             if (is_array($value)) {
-                uksort($value, 'strcmp');
+                uksort($value, strcmp(...));
                 $data = array_merge($data, $this->_normalizeData($value, $key));
             } else {
                 $data[] = [$key, $value];
@@ -343,7 +338,6 @@ class Oauth
      * Builds the Oauth Authorization header value.
      *
      * @param array $data The oauth_* values to build
-     * @return string
      */
     protected function _buildAuth(array $data): string
     {
@@ -352,16 +346,14 @@ class Oauth
         foreach ($data as $key => $value) {
             $params[] = $key . '="' . $this->_encode((string)$value) . '"';
         }
-        $out .= implode(',', $params);
 
-        return $out;
+        return $out . implode(',', $params);
     }
 
     /**
      * URL Encodes a value based on rules of rfc3986
      *
      * @param string $value Value to encode.
-     * @return string
      */
     protected function _encode(string $value): string
     {
@@ -371,7 +363,6 @@ class Oauth
     /**
      * Check for SSL errors and throw an exception if found.
      *
-     * @return void
      * @throws \Cake\Core\Exception\CakeException When an error is found
      */
     protected function checkSslError(): void

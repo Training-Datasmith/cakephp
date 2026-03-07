@@ -41,7 +41,6 @@ class TreeHelper extends Helper
      * Outputs an array in tree form.
      *
      * @param array $args Tree array
-     * @return void
      */
     public function output(array $args): void
     {
@@ -51,11 +50,6 @@ class TreeHelper extends Helper
 
     /**
      * Output an array in a tree.
-     *
-     * @param array $array
-     * @param string $prefix
-     * @param bool $topLevel
-     * @return void
      */
     protected function outputArray(array $array, string $prefix, bool $topLevel): void
     {
@@ -72,13 +66,6 @@ class TreeHelper extends Helper
 
     /**
      * Output an array element.
-     *
-     * @param string|int $key
-     * @param mixed $value
-     * @param string $prefix
-     * @param string $marker
-     * @param string $indent
-     * @return void
      */
     protected function outputElement(
         string|int $key,
@@ -100,10 +87,6 @@ class TreeHelper extends Helper
 
     /**
      * Output a value in a tree.
-     *
-     * @param mixed $value
-     * @param string $prefix
-     * @return void
      */
     protected function outputValue(mixed $value, string $prefix): void
     {

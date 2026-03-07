@@ -52,8 +52,6 @@ class ConsoleFormatter implements FormatterInterface
 
     /**
      * Check if the current environment supports ANSI output.
-     *
-     * @return bool
      */
     public static function environmentMatches(): bool
     {
@@ -102,7 +100,6 @@ class ConsoleFormatter implements FormatterInterface
      * Convert a tree of NodeInterface objects into a plain text string.
      *
      * @param \Cake\Error\Debug\NodeInterface $node The node tree to dump.
-     * @return string
      */
     public function dump(NodeInterface $node): string
     {
@@ -116,7 +113,6 @@ class ConsoleFormatter implements FormatterInterface
      *
      * @param \Cake\Error\Debug\NodeInterface $var The node tree to dump.
      * @param int $indent The current indentation level.
-     * @return string
      */
     protected function export(NodeInterface $var, int $indent): string
     {
@@ -175,7 +171,6 @@ class ConsoleFormatter implements FormatterInterface
      *
      * @param \Cake\Error\Debug\ClassNode|\Cake\Error\Debug\ReferenceNode $var Object to convert.
      * @param int $indent Current indentation level.
-     * @return string
      * @see \Cake\Error\Debugger::exportVar()
      */
     protected function exportObject(ClassNode|ReferenceNode $var, int $indent): string

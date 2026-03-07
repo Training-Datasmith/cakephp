@@ -65,40 +65,19 @@ use function Cake\I18n\__d;
 class WebExceptionRenderer implements ExceptionRendererInterface
 {
     /**
-     * The exception being handled.
-     *
-     * @var \Throwable
-     */
-    protected Throwable $error;
-
-    /**
      * Controller instance.
-     *
-     * @var \Cake\Controller\Controller
      */
     protected Controller $controller;
 
     /**
      * Template to render for {@link \Cake\Core\Exception\CakeException}
-     *
-     * @var string
      */
     protected string $template = '';
 
     /**
      * The method corresponding to the Exception this object is for.
-     *
-     * @var string
      */
     protected string $method = '';
-
-    /**
-     * If set, this will be request used to create the controller that will render
-     * the error.
-     *
-     * @var \Cake\Http\ServerRequest|null
-     */
-    protected ?ServerRequest $request;
 
     /**
      * Map of exceptions to http status codes.
@@ -115,14 +94,19 @@ class WebExceptionRenderer implements ExceptionRendererInterface
     /**
      * Creates the controller to perform rendering on the error response.
      *
-     * @param \Throwable $exception Exception.
+     * @param \Throwable $error Exception.
      * @param \Cake\Http\ServerRequest|null $request The request if this is set it will be used
      *   instead of creating a new one.
      */
-    public function __construct(Throwable $exception, ?ServerRequest $request = null)
+    public function __construct(/**
+     * The exception being handled.
+     */
+    protected Throwable $error, /**
+     * If set, this will be request used to create the controller that will render
+     * the error.
+     */
+    protected ?ServerRequest $request = null)
     {
-        $this->error = $exception;
-        $this->request = $request;
         $this->controller = $this->_getController();
     }
 
@@ -132,7 +116,6 @@ class WebExceptionRenderer implements ExceptionRendererInterface
      * This method returns the built in `ErrorController` normally, or if an error is repeated
      * a bare controller will be used.
      *
-     * @return \Cake\Controller\Controller
      * @triggers Controller.startup $controller
      */
     protected function _getController(): Controller
@@ -193,8 +176,6 @@ class WebExceptionRenderer implements ExceptionRendererInterface
 
     /**
      * Clear output buffers so error pages display properly.
-     *
-     * @return void
      */
     protected function clearOutput(): void
     {
@@ -282,7 +263,6 @@ class WebExceptionRenderer implements ExceptionRendererInterface
      * Emit the response content
      *
      * @param \Psr\Http\Message\ResponseInterface|string $output The response to output.
-     * @return void
      */
     public function write(ResponseInterface|string $output): void
     {
@@ -318,7 +298,6 @@ class WebExceptionRenderer implements ExceptionRendererInterface
      * Get method name
      *
      * @param \Throwable $exception Exception instance.
-     * @return string
      */
     protected function _method(Throwable $exception): string
     {

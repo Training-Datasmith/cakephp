@@ -40,14 +40,11 @@ trait ContainerStubTrait
      * The customized application class name.
      *
      * @phpstan-var class-string<\Cake\Core\HttpApplicationInterface>|class-string<\Cake\Core\ConsoleApplicationInterface>|null
-     * @var string|null
      */
     protected ?string $_appClass = null;
 
     /**
      * The customized application constructor arguments.
-     *
-     * @var array|null
      */
     protected ?array $_appArgs = null;
 
@@ -63,7 +60,6 @@ trait ContainerStubTrait
      *
      * @param string $class The application class name.
      * @param array|null $constructorArgs The constructor arguments for your application class.
-     * @return void
      * @phpstan-param class-string<\Cake\Core\HttpApplicationInterface>|class-string<\Cake\Core\ConsoleApplicationInterface> $class
      */
     public function configApplication(string $class, ?array $constructorArgs): void
@@ -76,8 +72,6 @@ trait ContainerStubTrait
      * Create an application instance.
      *
      * Uses the configuration set in `configApplication()`.
-     *
-     * @return \Cake\Core\HttpApplicationInterface|\Cake\Core\ConsoleApplicationInterface
      */
     protected function createApp(): HttpApplicationInterface|ConsoleApplicationInterface
     {
@@ -152,7 +146,6 @@ trait ContainerStubTrait
      *
      * @param \Cake\Event\EventInterface $event The event
      * @param \Cake\Core\ContainerInterface $container The container to wrap.
-     * @return void
      */
     public function modifyContainer(EventInterface $event, ContainerInterface $container): void
     {
@@ -177,8 +170,6 @@ trait ContainerStubTrait
     /**
      * Clears any mocks that were defined and cleans
      * up application class configuration.
-     *
-     * @return void
      */
     #[After]
     public function cleanupContainer(): void
@@ -191,7 +182,7 @@ trait ContainerStubTrait
 
 // phpcs:disable
 class_alias(
-    'Cake\Core\TestSuite\ContainerStubTrait',
+    \Cake\Core\TestSuite\ContainerStubTrait::class,
     'Cake\TestSuite\ContainerStubTrait'
 );
 // phpcs:enable

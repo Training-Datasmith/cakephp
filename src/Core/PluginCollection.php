@@ -64,8 +64,6 @@ class PluginCollection implements Iterator, Countable
 
     /**
      * Loop depth
-     *
-     * @var int
      */
     protected int $loopDepth = -1;
 
@@ -94,7 +92,6 @@ class PluginCollection implements Iterator, Countable
      *       'Named' => ['routes' => false, 'bootstrap' => false],
      *   ]
      *   ```
-     * @return void
      */
     public function addFromConfig(array $config): void
     {
@@ -106,11 +103,10 @@ class PluginCollection implements Iterator, Countable
             $onlyDebug = $options['onlyDebug'] ?? false;
             $onlyCli = $options['onlyCli'] ?? false;
             $optional = $options['optional'] ?? false;
-
-            if (
-                ($onlyDebug && $notDebug)
-                || ($onlyCli && $notCli)
-            ) {
+            if ($onlyDebug && $notDebug) {
+                continue;
+            }
+            if ($onlyCli && $notCli) {
                 continue;
             }
 
@@ -134,7 +130,6 @@ class PluginCollection implements Iterator, Countable
      * no plugin class are being phased out.
      *
      * @param string $name The plugin name to locate a path for.
-     * @return string
      * @throws \Cake\Core\Exception\MissingPluginException when a plugin path cannot be resolved.
      * @internal
      */
@@ -170,7 +165,7 @@ class PluginCollection implements Iterator, Countable
      * @param \Cake\Core\PluginInterface $plugin The plugin to load.
      * @return $this
      */
-    public function add(PluginInterface $plugin)
+    public function add(PluginInterface $plugin): static
     {
         $name = $plugin->getName();
         if (isset($this->plugins[$name])) {
@@ -189,7 +184,7 @@ class PluginCollection implements Iterator, Countable
      * @param string $name The named plugin.
      * @return $this
      */
-    public function remove(string $name)
+    public function remove(string $name): static
     {
         unset($this->plugins[$name]);
         $this->names = array_keys($this->plugins);
@@ -202,7 +197,7 @@ class PluginCollection implements Iterator, Countable
      *
      * @return $this
      */
-    public function clear()
+    public function clear(): static
     {
         $this->plugins = [];
         $this->names = [];
@@ -216,7 +211,6 @@ class PluginCollection implements Iterator, Countable
      * Check whether the named plugin exists in the collection.
      *
      * @param string $name The named plugin.
-     * @return bool
      */
     public function has(string $name): bool
     {
@@ -250,7 +244,6 @@ class PluginCollection implements Iterator, Countable
      *
      * @param string $name The plugin name or classname
      * @param array<string, mixed> $config Configuration options for the plugin.
-     * @return \Cake\Core\PluginInterface
      * @throws \Cake\Core\Exception\MissingPluginException When plugin instance could not be created.
      * @throws \InvalidArgumentException When class name cannot be found or an empty name is provided.
      * @phpstan-param class-string<\Cake\Core\PluginInterface>|string $name
@@ -266,7 +259,6 @@ class PluginCollection implements Iterator, Countable
                 throw new InvalidArgumentException(sprintf('Class `%s` does not exist.', $name));
             }
 
-            /** @var \Cake\Core\PluginInterface */
             return new $name($config);
         }
 
@@ -311,8 +303,6 @@ class PluginCollection implements Iterator, Countable
      * Implementation of Countable.
      *
      * Get the number of plugins in the collection.
-     *
-     * @return int
      */
     public function count(): int
     {
@@ -321,8 +311,6 @@ class PluginCollection implements Iterator, Countable
 
     /**
      * Part of Iterator Interface
-     *
-     * @return void
      */
     public function next(): void
     {
@@ -331,8 +319,6 @@ class PluginCollection implements Iterator, Countable
 
     /**
      * Part of Iterator Interface
-     *
-     * @return string
      */
     public function key(): string
     {
@@ -341,8 +327,6 @@ class PluginCollection implements Iterator, Countable
 
     /**
      * Part of Iterator Interface
-     *
-     * @return \Cake\Core\PluginInterface
      */
     public function current(): PluginInterface
     {
@@ -354,8 +338,6 @@ class PluginCollection implements Iterator, Countable
 
     /**
      * Part of Iterator Interface
-     *
-     * @return void
      */
     public function rewind(): void
     {
@@ -365,8 +347,6 @@ class PluginCollection implements Iterator, Countable
 
     /**
      * Part of Iterator Interface
-     *
-     * @return bool
      */
     public function valid(): bool
     {

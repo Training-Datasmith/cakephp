@@ -36,8 +36,6 @@ trait InstanceConfigTrait
 
     /**
      * Whether the config property has already been configured with defaults
-     *
-     * @var bool
      */
     protected bool $_configInitialized = false;
 
@@ -187,8 +185,6 @@ trait InstanceConfigTrait
 
     /**
      * Initializes the config with the default config.
-     *
-     * @return void
      */
     private function initCfg(): void
     {
@@ -235,7 +231,6 @@ trait InstanceConfigTrait
      * @param mixed $value Value to write.
      * @param string|bool $merge True to merge recursively, 'shallow' for simple merge,
      *   false to overwrite, defaults to false.
-     * @return void
      * @throws \Cake\Core\Exception\CakeException if attempting to clobber existing config
      */
     protected function _configWrite(array|string $key, mixed $value, string|bool $merge = false): void
@@ -291,7 +286,6 @@ trait InstanceConfigTrait
      * Deletes a single config key.
      *
      * @param string $key Key to delete.
-     * @return void
      * @throws \Cake\Core\Exception\CakeException if attempting to clobber existing config
      */
     protected function _configDelete(string $key): void

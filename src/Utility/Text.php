@@ -54,8 +54,6 @@ class Text
 
     /**
      * Whether to use I18n functions for translating default error messages
-     *
-     * @var bool
      */
     protected static bool $useI18n;
 
@@ -188,7 +186,7 @@ class Text
         }
 
         if ($results) {
-            return array_map('trim', $results);
+            return array_map(trim(...), $results);
         }
 
         return [];
@@ -216,7 +214,6 @@ class Text
      * @param array $data A key => val array where each key stands for a placeholder variable name
      *     to be replaced with val
      * @param array<string, mixed> $options An array of options, see description above
-     * @return string
      * @link https://book.cakephp.org/5/en/core-libraries/text.html#text-insert
      */
     public static function insert(string $str, array $data, array $options = []): string
@@ -229,14 +226,14 @@ class Text
         $format = $options['format'];
         $format ??= sprintf(
             '/(?<!%s)%s%%s%s/',
-            preg_quote($options['escape'], '/'),
-            str_replace('%', '%%', preg_quote($options['before'], '/')),
-            str_replace('%', '%%', preg_quote($options['after'], '/')),
+            preg_quote((string) $options['escape'], '/'),
+            str_replace('%', '%%', preg_quote((string) $options['before'], '/')),
+            str_replace('%', '%%', preg_quote((string) $options['after'], '/')),
         );
 
         $dataKeys = array_keys($data);
         $hashKeys = array_map(
-            fn(int|string $str) => hash('xxh128', (string)$str),
+            fn(int|string $str): string => hash('xxh128', (string)$str),
             $dataKeys,
         );
         /** @var array<string, string> $tempData */
@@ -251,11 +248,11 @@ class Text
         $dataReplacements = array_combine($hashKeys, array_values($data));
         foreach ($dataReplacements as $tmpHash => $tmpValue) {
             $tmpValue = is_array($tmpValue) ? '' : (string)$tmpValue;
-            $str = (string)str_replace($tmpHash, $tmpValue, $str);
+            $str = str_replace($tmpHash, $tmpValue, $str);
         }
 
         if ($options['format'] === null && $options['before'] !== null) {
-            $str = (string)str_replace($options['escape'] . $options['before'], $options['before'], $str);
+            $str = str_replace($options['escape'] . $options['before'], $options['before'], $str);
         }
 
         return $options['clean'] ? static::cleanInsert($str, $options) : $str;
@@ -269,7 +266,6 @@ class Text
      *
      * @param string $str String to clean.
      * @param array<string, mixed> $options Options list.
-     * @return string
      * @see \Cake\Utility\Text::insert()
      * @link https://book.cakephp.org/5/en/core-libraries/text.html#text-cleaninsert
      */
@@ -294,11 +290,11 @@ class Text
                 ];
                 $kleenex = sprintf(
                     '/[\s]*[a-z]+=(")(%s%s%s[\s]*)+\\1/i',
-                    preg_quote($options['before'], '/'),
+                    preg_quote((string) $options['before'], '/'),
                     $clean['word'],
-                    preg_quote($options['after'], '/'),
+                    preg_quote((string) $options['after'], '/'),
                 );
-                $str = (string)preg_replace($kleenex, $clean['replacement'], $str);
+                $str = (string)preg_replace($kleenex, (string) $clean['replacement'], $str);
                 if ($clean['andText']) {
                     $options['clean'] = ['method' => 'text'];
                     $str = static::cleanInsert($str, $options);
@@ -313,16 +309,16 @@ class Text
 
                 $kleenex = sprintf(
                     '/(%s%s%s%s|%s%s%s%s)/',
-                    preg_quote($options['before'], '/'),
+                    preg_quote((string) $options['before'], '/'),
                     $clean['word'],
-                    preg_quote($options['after'], '/'),
+                    preg_quote((string) $options['after'], '/'),
                     $clean['gap'],
                     $clean['gap'],
-                    preg_quote($options['before'], '/'),
+                    preg_quote((string) $options['before'], '/'),
                     $clean['word'],
-                    preg_quote($options['after'], '/'),
+                    preg_quote((string) $options['after'], '/'),
                 );
-                $str = (string)preg_replace($kleenex, $clean['replacement'], $str);
+                $str = (string)preg_replace($kleenex, (string) $clean['replacement'], $str);
                 break;
         }
 
@@ -396,7 +392,7 @@ class Text
         $wrapped = self::wrap($text, $options);
 
         if ($options['indent']) {
-            $indentationLength = mb_strlen($options['indent']);
+            $indentationLength = mb_strlen((string) $options['indent']);
             $chunks = explode("\n", $wrapped);
             $count = count($chunks);
             if ($count < 2) {
@@ -543,7 +539,7 @@ class Text
 
         return (string)preg_replace(
             sprintf($options['regex'], $phrase),
-            $options['format'],
+            (string) $options['format'],
             $text,
             $options['limit'],
         );
@@ -617,7 +613,7 @@ class Text
         $suffix = $options['ellipsis'];
 
         if ($options['html']) {
-            $ellipsisLength = self::_strlen(strip_tags($options['ellipsis']), $options);
+            $ellipsisLength = self::_strlen(strip_tags((string) $options['ellipsis']), $options);
 
             $truncateLength = 0;
             $totalLength = 0;
@@ -721,7 +717,6 @@ class Text
      *
      * @param string $text The string being checked for length
      * @param array<string, mixed> $options An array of options.
-     * @return int
      */
     protected static function _strlen(string $text, array $options): int
     {
@@ -738,8 +733,8 @@ class Text
         $pattern = '/&[0-9a-z]{2,8};|&#[0-9]{1,7};|&#x[0-9a-f]{1,6};/i';
         $replace = (string)preg_replace_callback(
             $pattern,
-            function ($match) use ($strlen) {
-                $utf8 = html_entity_decode($match[0], ENT_HTML5 | ENT_QUOTES, 'UTF-8');
+            function (array $match) use ($strlen) {
+                $utf8 = html_entity_decode((string) $match[0], ENT_HTML5 | ENT_QUOTES, 'UTF-8');
 
                 return str_repeat(' ', $strlen($utf8, 'UTF-8'));
             },
@@ -761,7 +756,6 @@ class Text
      * @param int $start The position to begin extracting.
      * @param int|null $length The desired length.
      * @param array<string, mixed> $options An array of options.
-     * @return string
      */
     protected static function _substr(string $text, int $start, ?int $length, array $options): string
     {
@@ -795,7 +789,7 @@ class Text
         }
 
         if (empty($options['html'])) {
-            return (string)$substr($text, $start, $length);
+            return $substr($text, $start, $length);
         }
 
         $totalOffset = 0;
@@ -847,7 +841,6 @@ class Text
      * Removes the last word from the input text.
      *
      * @param string $text The input text
-     * @return string
      */
     protected static function _removeLastWord(string $text): string
     {
@@ -937,7 +930,6 @@ class Text
      * Check if the string contain multibyte characters
      *
      * @param string $string value to test
-     * @return bool
      */
     public static function isMultibyte(string $string): bool
     {
@@ -999,7 +991,6 @@ class Text
      * to a string
      *
      * @param array<int> $array Array
-     * @return string
      */
     public static function ascii(array $array): string
     {
@@ -1048,7 +1039,7 @@ class Text
         if ($i !== false) {
             $size = (float)substr($size, 0, $l);
 
-            return (int)($size * pow(1024, $i + 1));
+            return (int)($size * 1024 ** ($i + 1));
         }
 
         if (str_ends_with($size, 'B') && ctype_digit(substr($size, 0, -1))) {
@@ -1078,7 +1069,6 @@ class Text
      * Set the default transliterator.
      *
      * @param \Transliterator $transliterator A `Transliterator` instance.
-     * @return void
      */
     public static function setTransliterator(Transliterator $transliterator): void
     {
@@ -1099,7 +1089,6 @@ class Text
      * Set default transliterator identifier string.
      *
      * @param string $transliteratorId Transliterator identifier.
-     * @return void
      */
     public static function setTransliteratorId(string $transliteratorId): void
     {
@@ -1120,7 +1109,6 @@ class Text
      *   instance, or a transliterator identifier string. If `null`, the default
      *   transliterator (identifier) set via `setTransliteratorId()` or
      *   `setTransliterator()` will be used.
-     * @return string
      * @see https://secure.php.net/manual/en/transliterator.transliterate.php
      * @link https://book.cakephp.org/5/en/core-libraries/text.html#text-transliterate
      */
@@ -1155,7 +1143,6 @@ class Text
      * @param string $string the string you want to slug
      * @param array<string, mixed>|string $options If string it will be use as replacement character
      *   or an array of options.
-     * @return string
      * @see setTransliterator()
      * @see setTransliteratorId()
      * @link https://book.cakephp.org/5/en/core-libraries/text.html#text-slug
@@ -1177,7 +1164,7 @@ class Text
 
         $regex = '^\p{Ll}\p{Lm}\p{Lo}\p{Lt}\p{Lu}\p{Nd}';
         if ($options['preserve']) {
-            $regex .= preg_quote($options['preserve'], '/');
+            $regex .= preg_quote((string) $options['preserve'], '/');
         }
         $quotedReplacement = preg_quote((string)$options['replacement'], '/');
         $map = [

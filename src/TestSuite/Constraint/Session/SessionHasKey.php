@@ -26,25 +26,18 @@ use PHPUnit\Framework\Constraint\Constraint;
 class SessionHasKey extends Constraint
 {
     /**
-     * @var string
-     */
-    protected string $path;
-
-    /**
      * Constructor
      *
      * @param string $path Session Path
      */
-    public function __construct(string $path)
+    public function __construct(protected string $path)
     {
-        $this->path = $path;
     }
 
     /**
      * Compare session value
      *
      * @param mixed $other Value to compare with
-     * @return bool
      */
     public function matches(mixed $other): bool
     {
@@ -56,8 +49,6 @@ class SessionHasKey extends Constraint
 
     /**
      * Assertion message
-     *
-     * @return string
      */
     public function toString(): string
     {

@@ -25,39 +25,20 @@ use PHPUnit\Framework\Constraint\Constraint;
 class ExitCode extends Constraint
 {
     /**
-     * @var int|null
-     */
-    private ?int $exitCode = null;
-
-    /**
-     * @var array
-     */
-    private array $out = [];
-
-    /**
-     * @var array
-     */
-    private array $err = [];
-
-    /**
      * Constructor
      *
      * @param int|null $exitCode Exit code
      * @param array $out stdout stream
      * @param array $err stderr stream
      */
-    public function __construct(?int $exitCode, array $out, array $err)
+    public function __construct(private readonly ?int $exitCode, private readonly array $out, private readonly array $err)
     {
-        $this->exitCode = $exitCode;
-        $this->out = $out;
-        $this->err = $err;
     }
 
     /**
      * Checks if event is in fired array
      *
      * @param mixed $other Constraint check
-     * @return bool
      */
     public function matches(mixed $other): bool
     {
@@ -66,8 +47,6 @@ class ExitCode extends Constraint
 
     /**
      * Assertion message string
-     *
-     * @return string
      */
     public function toString(): string
     {
@@ -78,7 +57,6 @@ class ExitCode extends Constraint
      * Returns the description of the failure.
      *
      * @param mixed $other Expected
-     * @return string
      */
     public function failureDescription(mixed $other): string
     {
@@ -100,7 +78,7 @@ class ExitCode extends Constraint
 
 // phpcs:disable
 class_alias(
-    'Cake\Console\TestSuite\Constraint\ExitCode',
+    \Cake\Console\TestSuite\Constraint\ExitCode::class,
     'Cake\TestSuite\Constraint\Console\ExitCode'
 );
 // phpcs:enable

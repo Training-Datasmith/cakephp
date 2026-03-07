@@ -46,8 +46,6 @@ class TreeBehavior extends Behavior
 {
     /**
      * Cached copy of the first column in a table's primary key.
-     *
-     * @var string
      */
     protected string $_primaryKey = '';
 
@@ -98,7 +96,6 @@ class TreeBehavior extends Behavior
      *
      * @param \Cake\Event\EventInterface<\Cake\ORM\Table> $event The beforeSave event that was fired
      * @param \Cake\Datasource\EntityInterface $entity the entity that is going to be saved
-     * @return void
      * @throws \Cake\Database\Exception\DatabaseException if the parent to set for the node is invalid
      */
     public function beforeSave(EventInterface $event, EntityInterface $entity): void
@@ -167,7 +164,6 @@ class TreeBehavior extends Behavior
      *
      * @param \Cake\Event\EventInterface<\Cake\ORM\Table> $event The afterSave event that was fired
      * @param \Cake\Datasource\EntityInterface $entity the entity that is going to be saved
-     * @return void
      */
     public function afterSave(EventInterface $event, EntityInterface $entity): void
     {
@@ -182,7 +178,6 @@ class TreeBehavior extends Behavior
      * Set level for descendants.
      *
      * @param \Cake\Datasource\EntityInterface $entity The entity whose descendants need to be updated.
-     * @return void
      */
     protected function _setChildrenLevel(EntityInterface $entity): void
     {
@@ -222,7 +217,6 @@ class TreeBehavior extends Behavior
      *
      * @param \Cake\Event\EventInterface<\Cake\ORM\Table> $event The beforeDelete event that was fired
      * @param \Cake\Datasource\EntityInterface $entity The entity that is going to be saved
-     * @return void
      */
     public function beforeDelete(EventInterface $event, EntityInterface $entity): void
     {
@@ -266,7 +260,6 @@ class TreeBehavior extends Behavior
      *
      * @param \Cake\Datasource\EntityInterface $entity The entity to re-parent
      * @param mixed $parent the id of the parent to set
-     * @return void
      * @throws \Cake\Database\Exception\DatabaseException if the parent to set to the entity is not valid
      */
     protected function _setParent(EntityInterface $entity, mixed $parent): void
@@ -327,7 +320,6 @@ class TreeBehavior extends Behavior
      * so the structure remains valid
      *
      * @param \Cake\Datasource\EntityInterface $entity The entity to set as a new root
-     * @return void
      */
     protected function _setAsRoot(EntityInterface $entity): void
     {
@@ -359,8 +351,6 @@ class TreeBehavior extends Behavior
      * Helper method used to invert the sign of the left and right columns that are
      * less than 0. They were set to negative values before so their absolute value
      * wouldn't change while performing other tree transformations.
-     *
-     * @return void
      */
     protected function _unmarkInternalTree(): void
     {
@@ -515,7 +505,7 @@ class TreeBehavior extends Behavior
         ?string $spacer = null,
     ): SelectQuery {
         return $query->formatResults(
-            function (CollectionInterface $results) use ($keyPath, $valuePath, $spacer) {
+            function (CollectionInterface $results) use ($keyPath, $valuePath, $spacer): \Cake\Collection\Iterator\TreePrinter {
                 $keyPath ??= $this->_getPrimaryKey();
                 $valuePath ??= $this->_table->getDisplayField();
                 $spacer ??= '_';
@@ -542,7 +532,7 @@ class TreeBehavior extends Behavior
      */
     public function removeFromTree(EntityInterface $node): EntityInterface|false
     {
-        return $this->_table->getConnection()->transactional(function () use ($node) {
+        return $this->_table->getConnection()->transactional(function () use ($node): \Cake\Datasource\EntityInterface|false {
             $this->_ensureFields($node);
 
             return $this->_removeFromTree($node);
@@ -607,7 +597,7 @@ class TreeBehavior extends Behavior
             return false;
         }
 
-        return $this->_table->getConnection()->transactional(function () use ($node, $number) {
+        return $this->_table->getConnection()->transactional(function () use ($node, $number): \Cake\Datasource\EntityInterface {
             $this->_ensureFields($node);
 
             return $this->_moveUp($node, $number);
@@ -695,7 +685,7 @@ class TreeBehavior extends Behavior
             return false;
         }
 
-        return $this->_table->getConnection()->transactional(function () use ($node, $number) {
+        return $this->_table->getConnection()->transactional(function () use ($node, $number): \Cake\Datasource\EntityInterface {
             $this->_ensureFields($node);
 
             return $this->_moveDown($node, $number);
@@ -769,7 +759,6 @@ class TreeBehavior extends Behavior
      * Returns a single node from the tree from its primary key
      *
      * @param mixed $id Record id.
-     * @return \Cake\Datasource\EntityInterface
      * @throws \Cake\Datasource\Exception\RecordNotFoundException When node was not found
      */
     protected function _getNode(mixed $id): EntityInterface
@@ -797,8 +786,6 @@ class TreeBehavior extends Behavior
     /**
      * Recovers the lft and right column values out of the hierarchy defined by the
      * parent column.
-     *
-     * @return void
      */
     public function recover(): void
     {
@@ -849,8 +836,6 @@ class TreeBehavior extends Behavior
 
     /**
      * Returns the maximum index value in the table.
-     *
-     * @return int
      */
     protected function _getMax(): int
     {
@@ -878,7 +863,6 @@ class TreeBehavior extends Behavior
      * against it.
      * @param bool $mark whether to mark the updated values so that they can not be
      * modified by future calls to this function.
-     * @return void
      */
     protected function _sync(int $shift, string $dir, string $conditions, bool $mark = false): void
     {
@@ -931,7 +915,6 @@ class TreeBehavior extends Behavior
      * right fields
      *
      * @param \Cake\Datasource\EntityInterface $entity The entity to ensure fields for
-     * @return void
      */
     protected function _ensureFields(EntityInterface $entity): void
     {
@@ -957,8 +940,6 @@ class TreeBehavior extends Behavior
 
     /**
      * Returns a single string value representing the primary key of the attached table
-     *
-     * @return string
      */
     protected function _getPrimaryKey(): string
     {

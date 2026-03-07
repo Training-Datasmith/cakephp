@@ -89,101 +89,72 @@ trait IntegrationTestTrait
 
     /**
      * The data used to build the next request.
-     *
-     * @var array
      */
     protected array $_request = [];
 
     /**
      * The response for the most recent request.
-     *
-     * @var \Psr\Http\Message\ResponseInterface|null
      */
     protected ?ResponseInterface $_response = null;
 
     /**
      * The exception being thrown if the case.
-     *
-     * @var \Throwable|null
      */
     protected ?Throwable $_exception = null;
 
     /**
      * Session data to use in the next request.
-     *
-     * @var array
      */
     protected array $_session = [];
 
     /**
      * Cookie data to use in the next request.
-     *
-     * @var array
      */
     protected array $_cookie = [];
 
     /**
      * The controller used in the last request.
-     *
-     * @var \Cake\Controller\Controller|null
      */
     protected ?Controller $_controller = null;
 
     /**
      * The last rendered view
-     *
-     * @var string|null
      */
     protected ?string $_viewName = null;
 
     /**
      * The last rendered layout
-     *
-     * @var string|null
      */
     protected ?string $_layoutName = null;
 
     /**
      * The session instance from the last request
-     *
-     * @var \Cake\Http\Session|null
      */
     protected ?Session $_requestSession = null;
 
     /**
      * Boolean flag for whether the request should have
      * a FormProtectionComponent token added.
-     *
-     * @var bool
      */
     protected bool $_securityToken = false;
 
     /**
      * Boolean flag for whether the request should have
      * a CSRF token added.
-     *
-     * @var bool
      */
     protected bool $_csrfToken = false;
 
     /**
      * Boolean flag for whether the request should re-store
      * flash messages
-     *
-     * @var bool
      */
     protected bool $_retainFlashMessages = false;
 
     /**
      * Stored flash messages before render
-     *
-     * @var array
      */
     protected array $_flashMessages = [];
 
-    /**
-     * @var string|null
-     */
     protected ?string $_cookieEncryptionKey = null;
 
     /**
@@ -195,15 +166,11 @@ trait IntegrationTestTrait
 
     /**
      * The name that will be used when retrieving the csrf token.
-     *
-     * @var string
      */
     protected string $_csrfKeyName = 'csrfToken';
 
     /**
      * Clears the state used for requests.
-     *
-     * @return void
      */
     #[After]
     public function cleanup(): void
@@ -227,8 +194,6 @@ trait IntegrationTestTrait
      * Calling this method will enable a FormProtectionComponent
      * compatible token to be added to request data. This
      * lets you easily test actions protected by FormProtectionComponent.
-     *
-     * @return void
      */
     public function enableSecurityToken(): void
     {
@@ -239,7 +204,6 @@ trait IntegrationTestTrait
      * Set list of fields that are excluded from field validation.
      *
      * @param array<string> $unlockedFields List of fields that are excluded from field validation.
-     * @return void
      */
     public function setUnlockedFields(array $unlockedFields = []): void
     {
@@ -253,7 +217,6 @@ trait IntegrationTestTrait
      * is enabled. The default parameter names will be used.
      *
      * @param string $cookieName The name of the csrf token cookie.
-     * @return void
      */
     public function enableCsrfToken(string $cookieName = 'csrfToken'): void
     {
@@ -264,8 +227,6 @@ trait IntegrationTestTrait
     /**
      * Calling this method will re-store flash messages into the test session
      * after being removed by the FlashHelper
-     *
-     * @return void
      */
     public function enableRetainFlashMessages(): void
     {
@@ -282,7 +243,6 @@ trait IntegrationTestTrait
      * state.
      *
      * @param array $data The request data to use.
-     * @return void
      */
     public function configRequest(array $data): void
     {
@@ -293,7 +253,6 @@ trait IntegrationTestTrait
      * Configures the data for the *next* request replacing existing state.
      *
      * @param array $data The request data to use.
-     * @return void
      */
     public function replaceRequest(array $data): void
     {
@@ -302,8 +261,6 @@ trait IntegrationTestTrait
 
     /**
      * Sets HTTP headers for the *next* request to be identified as JSON request.
-     *
-     * @return void
      */
     public function requestAsJson(): void
     {
@@ -326,7 +283,6 @@ trait IntegrationTestTrait
      * the current state.
      *
      * @param array $data The session data to use.
-     * @return void
      */
     public function session(array $data): void
     {
@@ -345,7 +301,6 @@ trait IntegrationTestTrait
      *
      * @param string $name The cookie name to use.
      * @param string $value The value of the cookie.
-     * @return void
      */
     public function cookie(string $name, string $value): void
     {
@@ -354,8 +309,6 @@ trait IntegrationTestTrait
 
     /**
      * Returns the encryption key to be used.
-     *
-     * @return string
      */
     protected function _getCookieEncryptionKey(): string
     {
@@ -373,7 +326,6 @@ trait IntegrationTestTrait
      * @param string|false $encrypt Encryption mode to use.
      * @param string|null $key Encryption key used. Defaults
      *   to Security.salt.
-     * @return void
      * @see \Cake\Utility\CookieCryptTrait::_encrypt()
      */
     public function cookieEncrypted(
@@ -394,7 +346,6 @@ trait IntegrationTestTrait
      * response.
      *
      * @param array|string $url The URL to request.
-     * @return void
      */
     public function get(array|string $url): void
     {
@@ -410,7 +361,6 @@ trait IntegrationTestTrait
      *
      * @param array|string $url The URL to request.
      * @param array|string $data The data for the request.
-     * @return void
      */
     public function post(array|string $url, array|string $data = []): void
     {
@@ -426,7 +376,6 @@ trait IntegrationTestTrait
      *
      * @param array|string $url The URL to request.
      * @param array|string $data The data for the request.
-     * @return void
      */
     public function patch(array|string $url, array|string $data = []): void
     {
@@ -442,7 +391,6 @@ trait IntegrationTestTrait
      *
      * @param array|string $url The URL to request.
      * @param array|string $data The data for the request.
-     * @return void
      */
     public function put(array|string $url, array|string $data = []): void
     {
@@ -457,7 +405,6 @@ trait IntegrationTestTrait
      * response.
      *
      * @param array|string $url The URL to request.
-     * @return void
      */
     public function delete(array|string $url): void
     {
@@ -472,7 +419,6 @@ trait IntegrationTestTrait
      * response.
      *
      * @param array|string $url The URL to request.
-     * @return void
      */
     public function head(array|string $url): void
     {
@@ -487,7 +433,6 @@ trait IntegrationTestTrait
      * response.
      *
      * @param array|string $url The URL to request.
-     * @return void
      */
     public function options(array|string $url): void
     {
@@ -502,7 +447,6 @@ trait IntegrationTestTrait
      * @param array|string $url The URL
      * @param string $method The HTTP method
      * @param array|string $data The request data.
-     * @return void
      * @throws \PHPUnit\Exception|\Throwable
      */
     protected function _sendRequest(array|string $url, string $method, array|string $data = []): void
@@ -532,7 +476,6 @@ trait IntegrationTestTrait
      * Resolve the provided URL into a string.
      *
      * @param array|string $url The URL array/string to resolve.
-     * @return string
      * @since 5.1.0
      */
     public function resolveUrl(array|string $url): string
@@ -549,7 +492,6 @@ trait IntegrationTestTrait
      * Convert a URL array into a string URL via routing.
      *
      * @param array $url The url to resolve
-     * @return string
      * @since 5.1.0
      */
     protected function resolveRoute(array $url): string
@@ -596,7 +538,6 @@ trait IntegrationTestTrait
      *
      * @param \Cake\Event\EventInterface $event A dispatcher event.
      * @param \Cake\Controller\Controller|null $controller Controller instance.
-     * @return void
      */
     public function controllerSpy(EventInterface $event, ?Controller $controller = null): void
     {
@@ -635,7 +576,6 @@ trait IntegrationTestTrait
      * If that class does not exist, the built-in renderer will be used.
      *
      * @param \Throwable $exception Exception to handle.
-     * @return void
      */
     protected function _handleError(Throwable $exception): void
     {
@@ -669,7 +609,7 @@ trait IntegrationTestTrait
             $tokenUrl .= '?' . $query;
         }
 
-        parse_str($query, $queryData);
+        parse_str((string) $query, $queryData);
 
         $env = [
             'REQUEST_METHOD' => $method,
@@ -734,9 +674,7 @@ trait IntegrationTestTrait
         if ($this->_securityToken === true) {
             $fields = array_diff_key($data, array_flip($this->_unlockedFields));
 
-            $keys = array_map(function (int|string $field) {
-                return preg_replace('/(\.\d+)+$/', '', (string)$field);
-            }, array_keys(Hash::flatten($fields)));
+            $keys = array_map(fn(int|string $field) => preg_replace('/(\.\d+)+$/', '', (string)$field), array_keys(Hash::flatten($fields)));
 
             $formProtector = new FormProtector(['unlockedFields' => $this->_unlockedFields]);
             foreach ($keys as $field) {
@@ -783,7 +721,6 @@ trait IntegrationTestTrait
      * the real world
      *
      * @param array $data POST data
-     * @return array
      */
     protected function _castToString(array $data): array
     {
@@ -861,7 +798,6 @@ trait IntegrationTestTrait
      * Asserts that the response status code is in the 2xx range.
      *
      * @param string $message Custom message for failure.
-     * @return void
      */
     public function assertResponseOk(string $message = ''): void
     {
@@ -873,7 +809,6 @@ trait IntegrationTestTrait
      * Asserts that the response status code is in the 2xx/3xx range.
      *
      * @param string $message Custom message for failure.
-     * @return void
      */
     public function assertResponseSuccess(string $message = ''): void
     {
@@ -885,7 +820,6 @@ trait IntegrationTestTrait
      * Asserts that the response status code is in the 4xx range.
      *
      * @param string $message Custom message for failure.
-     * @return void
      */
     public function assertResponseError(string $message = ''): void
     {
@@ -896,7 +830,6 @@ trait IntegrationTestTrait
      * Asserts that the response status code is in the 5xx range.
      *
      * @param string $message Custom message for failure.
-     * @return void
      */
     public function assertResponseFailure(string $message = ''): void
     {
@@ -908,7 +841,6 @@ trait IntegrationTestTrait
      *
      * @param int $code Status code to assert.
      * @param string $message Custom message for failure.
-     * @return void
      */
     public function assertResponseCode(int $code, string $message = ''): void
     {
@@ -926,7 +858,6 @@ trait IntegrationTestTrait
      *   can either be a string URL or an array compatible with Router::url(). Use null to
      *   simply check for the existence of this header.
      * @param string $message The failure message that will be appended to the generated message.
-     * @return void
      */
     public function assertRedirect(array|string|null $url = null, string $message = ''): void
     {
@@ -958,7 +889,6 @@ trait IntegrationTestTrait
      *
      * @param int|null $code Specific status code to validate against, defaults to success (2xx-3xx) range.
      * @param string $message The failure message that will be appended to the generated message.
-     * @return void
      */
     public function assertRedirectBack(?int $code = null, string $message = ''): void
     {
@@ -991,7 +921,6 @@ trait IntegrationTestTrait
      *
      * @param int|null $code Specific status code to validate against, defaults to success (2xx-3xx) range.
      * @param string $message The failure message that will be appended to the generated message.
-     * @return void
      */
     public function assertRedirectBackToReferer(?int $code = null, string $message = ''): void
     {
@@ -1026,7 +955,6 @@ trait IntegrationTestTrait
      *   can either be a string URL or an array compatible with Router::url(). Use null to
      *   simply check for the existence of this header.
      * @param string $message The failure message that will be appended to the generated message.
-     * @return void
      */
     public function assertRedirectEquals(array|string|null $url = null, string $message = ''): void
     {
@@ -1058,7 +986,6 @@ trait IntegrationTestTrait
      *
      * @param string $url The URL you expected the client to go to.
      * @param string $message The failure message that will be appended to the generated message.
-     * @return void
      */
     public function assertRedirectContains(string $url, string $message = ''): void
     {
@@ -1076,7 +1003,6 @@ trait IntegrationTestTrait
      *
      * @param string $url The URL you expected the client to go to.
      * @param string $message The failure message that will be appended to the generated message.
-     * @return void
      */
     public function assertRedirectNotContains(string $url, string $message = ''): void
     {
@@ -1093,7 +1019,6 @@ trait IntegrationTestTrait
      * Asserts that the Location header is not set.
      *
      * @param string $message The failure message that will be appended to the generated message.
-     * @return void
      */
     public function assertNoRedirect(string $message = ''): void
     {
@@ -1107,7 +1032,6 @@ trait IntegrationTestTrait
      * @param string $header The header to check
      * @param string $content The content to check for.
      * @param string $message The failure message that will be appended to the generated message.
-     * @return void
      */
     public function assertHeader(string $header, string $content, string $message = ''): void
     {
@@ -1126,7 +1050,6 @@ trait IntegrationTestTrait
      * @param string $header The header to check
      * @param string $content The content to check for.
      * @param string $message The failure message that will be appended to the generated message.
-     * @return void
      */
     public function assertHeaderContains(string $header, string $content, string $message = ''): void
     {
@@ -1145,7 +1068,6 @@ trait IntegrationTestTrait
      * @param string $header The header to check
      * @param string $content The content to check for.
      * @param string $message The failure message that will be appended to the generated message.
-     * @return void
      */
     public function assertHeaderNotContains(string $header, string $content, string $message = ''): void
     {
@@ -1163,7 +1085,6 @@ trait IntegrationTestTrait
      *
      * @param string $type The content-type to check for.
      * @param string $message The failure message that will be appended to the generated message.
-     * @return void
      */
     public function assertContentType(string $type, string $message = ''): void
     {
@@ -1176,7 +1097,6 @@ trait IntegrationTestTrait
      *
      * @param mixed $content The content to check for.
      * @param string $message The failure message that will be appended to the generated message.
-     * @return void
      */
     public function assertResponseEquals(mixed $content, string $message = ''): void
     {
@@ -1192,7 +1112,6 @@ trait IntegrationTestTrait
      *
      * @param mixed $content The content to check for.
      * @param string $message The failure message that will be appended to the generated message.
-     * @return void
      */
     public function assertResponseNotEquals(mixed $content, string $message = ''): void
     {
@@ -1209,7 +1128,6 @@ trait IntegrationTestTrait
      * @param string $content The content to check for.
      * @param string $message The failure message that will be appended to the generated message.
      * @param bool $ignoreCase A flag to check whether we should ignore case or not.
-     * @return void
      */
     public function assertResponseContains(string $content, string $message = '', bool $ignoreCase = false): void
     {
@@ -1230,7 +1148,6 @@ trait IntegrationTestTrait
      * @param string $content The content to check for.
      * @param string $message The failure message that will be appended to the generated message.
      * @param bool $ignoreCase A flag to check whether we should ignore case or not.
-     * @return void
      */
     public function assertResponseNotContains(string $content, string $message = '', bool $ignoreCase = false): void
     {
@@ -1250,7 +1167,6 @@ trait IntegrationTestTrait
      *
      * @param string $pattern The pattern to compare against.
      * @param string $message The failure message that will be appended to the generated message.
-     * @return void
      */
     public function assertResponseRegExp(string $pattern, string $message = ''): void
     {
@@ -1266,7 +1182,6 @@ trait IntegrationTestTrait
      *
      * @param string $pattern The pattern to compare against.
      * @param string $message The failure message that will be appended to the generated message.
-     * @return void
      */
     public function assertResponseNotRegExp(string $pattern, string $message = ''): void
     {
@@ -1281,7 +1196,6 @@ trait IntegrationTestTrait
      * Assert response content is not empty.
      *
      * @param string $message The failure message that will be appended to the generated message.
-     * @return void
      */
     public function assertResponseNotEmpty(string $message = ''): void
     {
@@ -1295,7 +1209,6 @@ trait IntegrationTestTrait
      * Assert response content is empty.
      *
      * @param string $message The failure message that will be appended to the generated message.
-     * @return void
      */
     public function assertResponseEmpty(string $message = ''): void
     {
@@ -1310,7 +1223,6 @@ trait IntegrationTestTrait
      *
      * @param string $content The content to check for.
      * @param string $message The failure message that will be appended to the generated message.
-     * @return void
      */
     public function assertTemplate(string $content, string $message = ''): void
     {
@@ -1323,7 +1235,6 @@ trait IntegrationTestTrait
      *
      * @param string $content The content to check for.
      * @param string $message The failure message that will be appended to the generated message.
-     * @return void
      */
     public function assertLayout(string $content, string $message = ''): void
     {
@@ -1337,7 +1248,6 @@ trait IntegrationTestTrait
      * @param mixed $expected The expected contents.
      * @param string $path The session data path. Uses Hash::get() compatible notation
      * @param string $message The failure message that will be appended to the generated message.
-     * @return void
      */
     public function assertSession(mixed $expected, string $path, string $message = ''): void
     {
@@ -1350,7 +1260,6 @@ trait IntegrationTestTrait
      *
      * @param string $path The session data path. Uses Hash::get() compatible notation.
      * @param string $message The failure message that will be appended to the generated message.
-     * @return void
      */
     public function assertSessionHasKey(string $path, string $message = ''): void
     {
@@ -1363,7 +1272,6 @@ trait IntegrationTestTrait
      *
      * @param string $path The session data path. Uses Hash::get() compatible notation.
      * @param string $message The failure message that will be appended to the generated message.
-     * @return void
      */
     public function assertSessionNotHasKey(string $path, string $message = ''): void
     {
@@ -1377,7 +1285,6 @@ trait IntegrationTestTrait
      * @param string $expected Expected message
      * @param string $key Flash key
      * @param string $message Assertion failure message
-     * @return void
      */
     public function assertFlashMessage(string $expected, string $key = 'flash', string $message = ''): void
     {
@@ -1392,7 +1299,6 @@ trait IntegrationTestTrait
      * @param string $expected Expected message
      * @param string $key Flash key
      * @param string $message Assertion failure message
-     * @return void
      */
     public function assertFlashMessageAt(int $at, string $expected, string $key = 'flash', string $message = ''): void
     {
@@ -1411,7 +1317,6 @@ trait IntegrationTestTrait
      * @param string $key Flash key
      * @param string $message Assertion failure message
      * @param bool $ignoreCase Whether to ignore case
-     * @return void
      */
     public function assertFlashMessageContains(
         string $expected,
@@ -1435,7 +1340,6 @@ trait IntegrationTestTrait
      * @param string $key Flash key
      * @param string $message Assertion failure message
      * @param bool $ignoreCase Whether to ignore case
-     * @return void
      */
     public function assertFlashMessageContainsAt(
         int $at,
@@ -1458,7 +1362,6 @@ trait IntegrationTestTrait
      * @param string $expected Expected element name
      * @param string $key Flash key
      * @param string $message Assertion failure message
-     * @return void
      */
     public function assertFlashElement(string $expected, string $key = 'flash', string $message = ''): void
     {
@@ -1477,7 +1380,6 @@ trait IntegrationTestTrait
      * @param string $expected Expected element name
      * @param string $key Flash key
      * @param string $message Assertion failure message
-     * @return void
      */
     public function assertFlashElementAt(int $at, string $expected, string $key = 'flash', string $message = ''): void
     {
@@ -1495,7 +1397,6 @@ trait IntegrationTestTrait
      * @param mixed $expected The expected contents.
      * @param string $name The cookie name.
      * @param string $message The failure message that will be appended to the generated message.
-     * @return void
      */
     public function assertCookie(mixed $expected, string $name, string $message = ''): void
     {
@@ -1512,7 +1413,6 @@ trait IntegrationTestTrait
      *
      * @param string $name The cookie name.
      * @param string $message The failure message that will be appended to the generated message.
-     * @return void
      */
     public function assertCookieIsSet(string $name, string $message = ''): void
     {
@@ -1525,7 +1425,6 @@ trait IntegrationTestTrait
      *
      * @param string $cookie The cookie name to check
      * @param string $message The failure message that will be appended to the generated message.
-     * @return void
      */
     public function assertCookieNotSet(string $cookie, string $message = ''): void
     {
@@ -1539,8 +1438,6 @@ trait IntegrationTestTrait
      * By using this function, exceptions are no longer caught by the ErrorHandlerMiddleware
      * and are instead re-thrown by the TestExceptionRenderer. This can be helpful
      * when trying to diagnose/debug unexpected failures in test cases.
-     *
-     * @return void
      */
     public function disableErrorHandlerMiddleware(): void
     {
@@ -1560,7 +1457,6 @@ trait IntegrationTestTrait
      * @param string|null $key Encryption key used. Defaults
      *   to Security.salt.
      * @param string $message The failure message that will be appended to the generated message.
-     * @return void
      * @see \Cake\Utility\CookieCryptTrait::_encrypt()
      */
     public function assertCookieEncrypted(
@@ -1585,7 +1481,6 @@ trait IntegrationTestTrait
      *
      * @param string $expected The absolute file path that should be sent in the response.
      * @param string $message The failure message that will be appended to the generated message.
-     * @return void
      */
     public function assertFileResponse(string $expected, string $message = ''): void
     {
@@ -1603,7 +1498,6 @@ trait IntegrationTestTrait
      * Inspect controller to extract possible causes of the failed assertion
      *
      * @param string $message Original message to use as a base
-     * @return string
      */
     protected function extractVerboseMessage(string $message): string
     {
@@ -1625,7 +1519,6 @@ trait IntegrationTestTrait
      * Extract verbose message for existing exception
      *
      * @param \Exception $exception Exception to extract
-     * @return string
      */
     protected function extractExceptionMessage(Exception $exception): string
     {
@@ -1651,9 +1544,6 @@ trait IntegrationTestTrait
         return $message;
     }
 
-    /**
-     * @return \Cake\TestSuite\TestSession
-     */
     protected function getSession(): TestSession
     {
         return new TestSession($_SESSION);
@@ -1674,8 +1564,6 @@ trait IntegrationTestTrait
 
     /**
      * Debug content of response body.
-     *
-     * @return string
      */
     protected function responseBody(): string
     {

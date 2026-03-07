@@ -61,7 +61,7 @@ class CommandCollection implements IteratorAggregate, Countable
      * @return $this
      * @throws \InvalidArgumentException
      */
-    public function add(string $name, CommandInterface|string $command)
+    public function add(string $name, CommandInterface|string $command): static
     {
         if (is_string($command)) {
             assert(
@@ -93,7 +93,7 @@ class CommandCollection implements IteratorAggregate, Countable
      * @return $this
      * @see \Cake\Console\CommandCollection::add()
      */
-    public function addMany(array $commands)
+    public function addMany(array $commands): static
     {
         foreach ($commands as $name => $class) {
             $this->add($name, $class);
@@ -108,7 +108,7 @@ class CommandCollection implements IteratorAggregate, Countable
      * @param string $name The named shell.
      * @return $this
      */
-    public function remove(string $name)
+    public function remove(string $name): static
     {
         unset($this->commands[$name]);
 
@@ -124,7 +124,7 @@ class CommandCollection implements IteratorAggregate, Countable
      * Can be a FQCN or CommandInterface instance.
      * @return $this
      */
-    public function replace(string $oldName, string $newName, CommandInterface|string $command)
+    public function replace(string $oldName, string $newName, CommandInterface|string $command): static
     {
         $this->remove($oldName);
         $this->add($newName, $command);
@@ -136,7 +136,6 @@ class CommandCollection implements IteratorAggregate, Countable
      * Check whether the named shell exists in the collection.
      *
      * @param string $name The named shell.
-     * @return bool
      */
     public function has(string $name): bool
     {
@@ -162,7 +161,6 @@ class CommandCollection implements IteratorAggregate, Countable
     /**
      * Implementation of IteratorAggregate.
      *
-     * @return \Traversable
      * @phpstan-return \Traversable<string, \Cake\Console\CommandInterface|class-string<\Cake\Console\CommandInterface>>
      */
     public function getIterator(): Traversable
@@ -174,8 +172,6 @@ class CommandCollection implements IteratorAggregate, Countable
      * Implementation of Countable.
      *
      * Get the number of commands in the collection.
-     *
-     * @return int
      */
     public function count(): int
     {

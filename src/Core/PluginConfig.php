@@ -34,7 +34,6 @@ class PluginConfig
      * in their composer.json file to move plugin outside of vendor/
      *
      * @internal
-     * @return void
      */
     public static function loadInstallerConfig(): void
     {
@@ -59,7 +58,6 @@ class PluginConfig
      * Get the config how plugins should be loaded
      *
      * @param string|null $path The absolute path to the composer.lock file to retrieve the versions from
-     * @return array
      */
     public static function getAppConfig(?string $path = null): array
     {
@@ -130,7 +128,6 @@ class PluginConfig
 
     /**
      * @param string|null $path The absolute path to the composer.lock file to retrieve the versions from
-     * @return array
      */
     public static function getVersions(?string $path = null): array
     {
@@ -159,10 +156,6 @@ class PluginConfig
         ];
     }
 
-    /**
-     * @param string $path
-     * @return string
-     */
     protected static function getPackageNameFromPath(string $path): string
     {
         $jsonPath = $path . DS . 'composer.json';

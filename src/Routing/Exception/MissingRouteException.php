@@ -36,8 +36,6 @@ class MissingRouteException extends CakeException implements HttpErrorCodeInterf
 
     /**
      * Message template to use when the requested method is included.
-     *
-     * @var string
      */
     protected string $_messageTemplateWithMethod = 'A `%s` route matching `%s` could not be found.';
 

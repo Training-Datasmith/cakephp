@@ -25,28 +25,20 @@ use Psr\Http\Message\ResponseInterface;
 class BodyContains extends ResponseBase
 {
     /**
-     * @var bool
-     */
-    protected bool $ignoreCase;
-
-    /**
      * Constructor.
      *
      * @param \Psr\Http\Message\ResponseInterface $response A response instance.
      * @param bool $ignoreCase Ignore case
      */
-    public function __construct(ResponseInterface $response, bool $ignoreCase = false)
+    public function __construct(ResponseInterface $response, protected bool $ignoreCase = false)
     {
         parent::__construct($response);
-
-        $this->ignoreCase = $ignoreCase;
     }
 
     /**
      * Checks assertion
      *
      * @param mixed $other Expected type
-     * @return bool
      */
     public function matches(mixed $other): bool
     {
@@ -60,8 +52,6 @@ class BodyContains extends ResponseBase
 
     /**
      * Assertion message
-     *
-     * @return string
      */
     public function toString(): string
     {

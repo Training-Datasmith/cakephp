@@ -43,7 +43,6 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
      * @param array|null $parsedBody $_POST superglobal
      * @param array|null $cookies $_COOKIE superglobal
      * @param array|null $files $_FILES superglobal
-     * @return \Cake\Http\ServerRequest
      * @throws \InvalidArgumentException for invalid file values
      */
     public static function fromGlobals(
@@ -94,7 +93,6 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
      *
      * @param array $parsedBody Parsed body.
      * @param \Cake\Http\ServerRequest $request Request instance.
-     * @return \Cake\Http\ServerRequest
      */
     protected static function marshalBodyAndRequestMethod(array $parsedBody, ServerRequest $request): ServerRequest
     {
@@ -135,7 +133,6 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
      *
      * @param array $files Files array for normalization and merging in parsed body.
      * @param \Cake\Http\ServerRequest $request Request instance.
-     * @return \Cake\Http\ServerRequest
      */
     protected static function marshalFiles(array $files, ServerRequest $request): ServerRequest
     {
@@ -165,7 +162,6 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
      *     instance based on it.
      * @param array $serverParams Array of SAPI parameters with which to seed
      *     the generated request instance.
-     * @return \Psr\Http\Message\ServerRequestInterface
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
      */
     public function createServerRequest(string $method, $uri, array $serverParams = []): ServerRequestInterface

@@ -50,8 +50,6 @@ class RedisEngine extends CacheEngine
 {
     /**
      * Redis wrapper.
-     *
-     * @var \Redis
      */
     protected Redis|RedisCluster $_Redis;
 
@@ -645,7 +643,6 @@ class RedisEngine extends CacheEngine
      * as it creates problems incrementing/decrementing initially set integer value.
      *
      * @param mixed $value Value to serialize.
-     * @return string
      * @link https://github.com/phpredis/phpredis/issues/81
      */
     protected function serialize(mixed $value): string
@@ -661,7 +658,6 @@ class RedisEngine extends CacheEngine
      * Unserialize string value fetched from Redis.
      *
      * @param string $value Value to unserialize.
-     * @return mixed
      */
     protected function unserialize(string $value): mixed
     {
@@ -674,8 +670,6 @@ class RedisEngine extends CacheEngine
 
     /**
      * Create new Redis instance.
-     *
-     * @return \Redis
      */
     protected function _createRedisInstance(): Redis
     {
@@ -727,7 +721,6 @@ class RedisEngine extends CacheEngine
      * Flushes DB
      *
      * @param bool $async Whether to use asynchronous mode
-     * @return void
      */
     private function flushDB(bool $async): void
     {

@@ -27,25 +27,7 @@ use PHPUnit\Framework\Constraint\Constraint;
  */
 class FlashParamEquals extends Constraint
 {
-    /**
-     * @var \Cake\Http\Session
-     */
     protected Session $session;
-
-    /**
-     * @var string
-     */
-    protected string $key;
-
-    /**
-     * @var string
-     */
-    protected string $param;
-
-    /**
-     * @var int|null
-     */
-    protected ?int $at = null;
 
     /**
      * Constructor
@@ -55,7 +37,7 @@ class FlashParamEquals extends Constraint
      * @param string $param Param to check
      * @param int|null $at Expected index
      */
-    public function __construct(?Session $session, string $key, string $param, ?int $at = null)
+    public function __construct(?Session $session, protected string $key, protected string $param, protected ?int $at = null)
     {
         if (!$session) {
             $message = 'There is no stored session data. Perhaps you need to run a request?';
@@ -64,16 +46,12 @@ class FlashParamEquals extends Constraint
         }
 
         $this->session = $session;
-        $this->key = $key;
-        $this->param = $param;
-        $this->at = $at;
     }
 
     /**
      * Compare to flash message(s)
      *
      * @param mixed $other Value to compare with
-     * @return bool
      */
     public function matches(mixed $other): bool
     {
@@ -99,8 +77,6 @@ class FlashParamEquals extends Constraint
 
     /**
      * Assertion message string
-     *
-     * @return string
      */
     public function toString(): string
     {

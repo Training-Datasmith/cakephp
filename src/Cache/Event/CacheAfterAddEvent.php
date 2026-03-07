@@ -68,8 +68,6 @@ class CacheAfterAddEvent extends Event
 
     /**
      * The result value of the event listeners
-     *
-     * @return bool|null
      */
     public function getResult(): ?bool
     {
@@ -93,25 +91,16 @@ class CacheAfterAddEvent extends Event
         return parent::setResult($value);
     }
 
-    /**
-     * @return string
-     */
     public function getKey(): string
     {
         return $this->key;
     }
 
-    /**
-     * @return mixed
-     */
     public function getValue(): mixed
     {
         return $this->value;
     }
 
-    /**
-     * @return \DateInterval|int|null
-     */
     public function getTtl(): DateInterval|int|null
     {
         return $this->ttl;

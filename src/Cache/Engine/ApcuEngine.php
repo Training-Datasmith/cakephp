@@ -202,7 +202,7 @@ class ApcuEngine extends CacheEngine
     {
         if (class_exists(APCUIterator::class, false)) {
             $iterator = new APCUIterator(
-                '/^' . preg_quote($this->_config['prefix'], '/') . '/',
+                '/^' . preg_quote((string) $this->_config['prefix'], '/') . '/',
                 APC_ITER_NONE,
             );
             apcu_delete($iterator);
@@ -214,7 +214,7 @@ class ApcuEngine extends CacheEngine
 
         $cache = apcu_cache_info(); // Raises warning by itself already
         foreach ($cache['cache_list'] as $key) {
-            if (str_starts_with($key['info'], $this->_config['prefix'])) {
+            if (str_starts_with((string) $key['info'], (string) $this->_config['prefix'])) {
                 apcu_delete($key['info']);
             }
         }

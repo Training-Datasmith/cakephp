@@ -57,15 +57,8 @@ class ComponentRegistry extends ObjectRegistry implements EventDispatcherInterfa
 
     /**
      * The controller that this collection is associated with.
-     *
-     * @var \Cake\Controller\Controller|null
      */
     protected ?Controller $_Controller = null;
-
-    /**
-     * @var \Cake\Core\ContainerInterface|null
-     */
-    protected ?ContainerInterface $container = null;
 
     /**
      * Constructor.
@@ -73,12 +66,11 @@ class ComponentRegistry extends ObjectRegistry implements EventDispatcherInterfa
      * @param \Cake\Controller\Controller|null $controller Controller instance.
      * @param \Cake\Core\ContainerInterface|null $container Container instance.
      */
-    public function __construct(?Controller $controller = null, ?ContainerInterface $container = null)
+    public function __construct(?Controller $controller = null, protected ?ContainerInterface $container = null)
     {
         if ($controller !== null) {
             $this->setController($controller);
         }
-        $this->container = $container;
     }
 
     /**
@@ -87,7 +79,7 @@ class ComponentRegistry extends ObjectRegistry implements EventDispatcherInterfa
      * @param \Cake\Controller\Controller $controller Controller instance.
      * @return $this
      */
-    public function setController(Controller $controller)
+    public function setController(Controller $controller): static
     {
         $this->_Controller = $controller;
         $this->setEventManager($controller->getEventManager());
@@ -131,7 +123,6 @@ class ComponentRegistry extends ObjectRegistry implements EventDispatcherInterfa
      *
      * @param string $class The classname that is missing.
      * @param string|null $plugin The plugin the component is missing in.
-     * @return void
      * @throws \Cake\Controller\Exception\MissingComponentException
      */
     protected function _throwMissingClassError(string $class, ?string $plugin): void
@@ -213,8 +204,6 @@ class ComponentRegistry extends ObjectRegistry implements EventDispatcherInterfa
 
     /**
      * Get container instance.
-     *
-     * @return \Cake\Core\ContainerInterface
      */
     protected function getContainer(): ContainerInterface
     {

@@ -25,24 +25,8 @@ class CachedCollection implements CollectionInterface
 {
     /**
      * Cacher instance.
-     *
-     * @var \Psr\SimpleCache\CacheInterface
      */
     protected CacheInterface $cacher;
-
-    /**
-     * The decorated schema collection
-     *
-     * @var \Cake\Database\Schema\CollectionInterface
-     */
-    protected CollectionInterface $collection;
-
-    /**
-     * The cache key prefix
-     *
-     * @var string
-     */
-    protected string $prefix;
 
     /**
      * Constructor.
@@ -51,10 +35,14 @@ class CachedCollection implements CollectionInterface
      * @param string $prefix The cache key prefix to use. Typically the connection name.
      * @param \Psr\SimpleCache\CacheInterface $cacher Cacher instance.
      */
-    public function __construct(CollectionInterface $collection, string $prefix, CacheInterface $cacher)
+    public function __construct(/**
+     * The decorated schema collection
+     */
+    protected CollectionInterface $collection, /**
+     * The cache key prefix
+     */
+    protected string $prefix, CacheInterface $cacher)
     {
-        $this->collection = $collection;
-        $this->prefix = $prefix;
         $this->cacher = $cacher;
     }
 
@@ -127,7 +115,7 @@ class CachedCollection implements CollectionInterface
      * @param \Psr\SimpleCache\CacheInterface $cacher Cacher object
      * @return $this
      */
-    public function setCacher(CacheInterface $cacher)
+    public function setCacher(CacheInterface $cacher): static
     {
         $this->cacher = $cacher;
 

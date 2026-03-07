@@ -22,24 +22,10 @@ use Throwable;
  */
 class MissingTemplateException extends CakeException
 {
-    /**
-     * @var string|null
-     */
     protected ?string $templateName = null;
 
-    /**
-     * @var string
-     */
     protected string $filename;
 
-    /**
-     * @var array<string>
-     */
-    protected array $paths;
-
-    /**
-     * @var string
-     */
     protected string $type = 'Template';
 
     /**
@@ -50,7 +36,7 @@ class MissingTemplateException extends CakeException
      * @param int|null $code The code of the error.
      * @param \Throwable|null $previous the previous exception.
      */
-    public function __construct(array|string $file, array $paths = [], ?int $code = null, ?Throwable $previous = null)
+    public function __construct(array|string $file, protected array $paths = [], ?int $code = null, ?Throwable $previous = null)
     {
         if (is_array($file)) {
             $this->filename = (string)array_pop($file);
@@ -59,15 +45,12 @@ class MissingTemplateException extends CakeException
             $this->filename = $file;
             $this->templateName = null;
         }
-        $this->paths = $paths;
 
         parent::__construct($this->formatMessage(), $code, $previous);
     }
 
     /**
      * Get the formatted exception message.
-     *
-     * @return string
      */
     public function formatMessage(): string
     {

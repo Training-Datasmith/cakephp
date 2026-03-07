@@ -34,17 +34,17 @@ class ConnectionHelper
      * to `test_files`.
      *
      * The `default` connection is aliased to `test`.
-     *
-     * @return void
      */
     public static function addTestAliases(): void
     {
         ConnectionManager::alias('test', 'default');
         foreach (ConnectionManager::configured() as $connection) {
-            if ($connection === 'test' || $connection === 'default') {
+            if ($connection === 'test') {
                 continue;
             }
-
+            if ($connection === 'default') {
+                continue;
+            }
             if (str_starts_with($connection, 'test_')) {
                 $original = substr($connection, 5);
                 ConnectionManager::alias($connection, $original);
@@ -59,7 +59,6 @@ class ConnectionHelper
      * Enables query logging for all database connections.
      *
      * @param array<int, string>|null $connections Connection names or null for all.
-     * @return void
      */
     public static function enableQueryLogging(?array $connections = null): void
     {
@@ -82,7 +81,6 @@ class ConnectionHelper
      *
      * @param string $connectionName Connection name
      * @param array<string>|null $tables List of tables names or null for all.
-     * @return void
      */
     public static function dropTables(string $connectionName, ?array $tables = null): void
     {
@@ -98,7 +96,7 @@ class ConnectionHelper
 
         $tables = $tables !== null ? array_intersect($tables, $allTables) : $allTables;
         /** @var array<\Cake\Database\Schema\TableSchema> $schemas Specify type for psalm */
-        $schemas = array_map(fn(string $table) => $collection->describe($table), $tables);
+        $schemas = array_map(fn(string $table): \Cake\Database\Schema\TableSchemaInterface => $collection->describe($table), $tables);
 
         $dialect = $connection->getWriteDriver()->schemaDialect();
         foreach ($schemas as $schema) {
@@ -118,7 +116,6 @@ class ConnectionHelper
      *
      * @param string $connectionName Connection name
      * @param array<string>|null $tables List of tables names or null for all.
-     * @return void
      */
     public static function truncateTables(string $connectionName, ?array $tables = null): void
     {
@@ -129,7 +126,7 @@ class ConnectionHelper
         $allTables = $collection->listTablesWithoutViews();
         $tables = $tables !== null ? array_intersect($tables, $allTables) : $allTables;
         /** @var array<\Cake\Database\Schema\TableSchema> $schemas Specify type for psalm */
-        $schemas = array_map(fn(string $table) => $collection->describe($table), $tables);
+        $schemas = array_map(fn(string $table): \Cake\Database\Schema\TableSchemaInterface => $collection->describe($table), $tables);
 
         self::runWithoutConstraints($connection, function (Connection $connection) use ($schemas): void {
             $dialect = $connection->getWriteDriver()->schemaDialect();
@@ -146,7 +143,6 @@ class ConnectionHelper
      *
      * @param \Cake\Database\Connection $connection Database connection
      * @param \Closure $callback callback
-     * @return void
      */
     public static function runWithoutConstraints(Connection $connection, Closure $callback): void
     {

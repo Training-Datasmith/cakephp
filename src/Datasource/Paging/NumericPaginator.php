@@ -93,8 +93,6 @@ class NumericPaginator implements PaginatorInterface
 
     /**
      * Calculated paging params.
-     *
-     * @var array
      */
     protected array $pagingParams = [
         'limit' => null,
@@ -267,7 +265,6 @@ class NumericPaginator implements PaginatorInterface
      * Build paginated result set.
      *
      * @param \Cake\Datasource\ResultSetInterface<int, mixed> $items
-     * @param array $pagingParams
      * @return \Cake\Datasource\Paging\PaginatedInterface<int, mixed>
      */
     protected function buildPaginated(ResultSetInterface $items, array $pagingParams): PaginatedInterface
@@ -281,7 +278,6 @@ class NumericPaginator implements PaginatorInterface
      * @param \Cake\Datasource\RepositoryInterface $object Repository instance.
      * @param \Cake\Datasource\QueryInterface|null $query Query Instance.
      * @param array<string, mixed> $data Pagination data.
-     * @return \Cake\Datasource\QueryInterface
      */
     protected function getQuery(RepositoryInterface $object, ?QueryInterface $query, array $data): QueryInterface
     {
@@ -326,7 +322,6 @@ class NumericPaginator implements PaginatorInterface
      *
      * @param \Cake\Datasource\QueryInterface $query Query instance.
      * @param array $data Pagination data.
-     * @return int|null
      */
     protected function getCount(QueryInterface $query, array $data): ?int
     {
@@ -339,7 +334,6 @@ class NumericPaginator implements PaginatorInterface
      * @param \Cake\Datasource\RepositoryInterface $object The repository object.
      * @param array<string, mixed> $params Request params
      * @param array<string, mixed> $settings The settings/configuration used for pagination.
-     * @return array
      */
     protected function extractData(RepositoryInterface $object, array $params, array $settings): array
     {
@@ -407,7 +401,6 @@ class NumericPaginator implements PaginatorInterface
      * Add "currentPage" and "pageCount" params.
      *
      * @param array $data Paginator data.
-     * @return void
      */
     protected function addPageCountParams(array $data): void
     {
@@ -429,7 +422,6 @@ class NumericPaginator implements PaginatorInterface
      * Add "start" and "end" params.
      *
      * @param array $data Paginator data.
-     * @return void
      */
     protected function addStartEndParams(array $data): void
     {
@@ -448,7 +440,6 @@ class NumericPaginator implements PaginatorInterface
      * Add "prevPage" and "nextPage" params.
      *
      * @param array $data Paging data.
-     * @return void
      */
     protected function addPrevNextParams(array $data): void
     {
@@ -465,7 +456,6 @@ class NumericPaginator implements PaginatorInterface
      * Add sorting / ordering params.
      *
      * @param array $data Paging data.
-     * @return void
      */
     protected function addSortingParams(array $data): void
     {
@@ -751,11 +741,11 @@ class NumericPaginator implements PaginatorInterface
     protected function parseSortParams(array $options): array
     {
         $sortKey = $options['sort'];
-        $direction = isset($options['direction']) ? strtolower($options['direction']) : SortField::ASC;
+        $direction = isset($options['direction']) ? strtolower((string) $options['direction']) : SortField::ASC;
         $directionSpecified = isset($options['direction']);
 
         // Check for combined sort-direction format (e.g., 'title-asc' or 'title-desc')
-        if (preg_match('/^(.+)-(asc|desc)$/i', $sortKey, $matches)) {
+        if (preg_match('/^(.+)-(asc|desc)$/i', (string) $sortKey, $matches)) {
             $sortKey = $matches[1];
             $direction = strtolower($matches[2]);
             $directionSpecified = true;

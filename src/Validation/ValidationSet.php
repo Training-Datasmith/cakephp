@@ -55,8 +55,6 @@ class ValidationSet implements ArrayAccess, IteratorAggregate, Countable
 
     /**
      * Returns whether a field can be left out.
-     *
-     * @return callable|string|bool
      */
     public function isPresenceRequired(): callable|string|bool
     {
@@ -69,7 +67,7 @@ class ValidationSet implements ArrayAccess, IteratorAggregate, Countable
      * @param callable|string|bool $validatePresent Valid values are true, false, 'create', 'update' or a callable.
      * @return $this
      */
-    public function requirePresence(callable|string|bool $validatePresent)
+    public function requirePresence(callable|string|bool $validatePresent): static
     {
         $this->_validatePresent = $validatePresent;
 
@@ -78,8 +76,6 @@ class ValidationSet implements ArrayAccess, IteratorAggregate, Countable
 
     /**
      * Returns whether a field can be left empty.
-     *
-     * @return callable|string|bool
      */
     public function isEmptyAllowed(): callable|string|bool
     {
@@ -93,7 +89,7 @@ class ValidationSet implements ArrayAccess, IteratorAggregate, Countable
      * 'create', 'update' or a callable.
      * @return $this
      */
-    public function allowEmpty(callable|string|bool $allowEmpty)
+    public function allowEmpty(callable|string|bool $allowEmpty): static
     {
         $this->_allowEmpty = $allowEmpty;
 
@@ -104,7 +100,6 @@ class ValidationSet implements ArrayAccess, IteratorAggregate, Countable
      * Gets a rule for a given name if exists
      *
      * @param string $name The name under which the rule is set.
-     * @return \Cake\Validation\ValidationRule|null
      */
     public function rule(string $name): ?ValidationRule
     {
@@ -129,7 +124,6 @@ class ValidationSet implements ArrayAccess, IteratorAggregate, Countable
      * Returns whether a validation rule with the given name exists in this set.
      *
      * @param string $name The name to check
-     * @return bool
      */
     public function has(string $name): bool
     {
@@ -152,7 +146,7 @@ class ValidationSet implements ArrayAccess, IteratorAggregate, Countable
      * @return $this
      * @throws \Cake\Core\Exception\CakeException If a rule with the same name already exists
      */
-    public function add(string $name, ValidationRule|array $rule)
+    public function add(string $name, ValidationRule|array $rule): static
     {
         if (!($rule instanceof ValidationRule)) {
             $rule = new ValidationRule($rule);
@@ -179,7 +173,7 @@ class ValidationSet implements ArrayAccess, IteratorAggregate, Countable
      * @param string $name The name under which the rule should be unset
      * @return $this
      */
-    public function remove(string $name)
+    public function remove(string $name): static
     {
         unset($this->_rules[$name]);
 
@@ -190,7 +184,6 @@ class ValidationSet implements ArrayAccess, IteratorAggregate, Countable
      * Returns whether an index exists in the rule set
      *
      * @param string $index name of the rule
-     * @return bool
      */
     public function offsetExists(mixed $index): bool
     {
@@ -201,7 +194,6 @@ class ValidationSet implements ArrayAccess, IteratorAggregate, Countable
      * Returns a rule object by its index
      *
      * @param string $index name of the rule
-     * @return \Cake\Validation\ValidationRule
      */
     public function offsetGet(mixed $index): ValidationRule
     {
@@ -213,7 +205,6 @@ class ValidationSet implements ArrayAccess, IteratorAggregate, Countable
      *
      * @param string $offset name of the rule
      * @param \Cake\Validation\ValidationRule|array $value Rule to add to $index
-     * @return void
      */
     public function offsetSet(mixed $offset, mixed $value): void
     {
@@ -224,7 +215,6 @@ class ValidationSet implements ArrayAccess, IteratorAggregate, Countable
      * Unsets a validation rule
      *
      * @param string $index name of the rule
-     * @return void
      */
     public function offsetUnset(mixed $index): void
     {
@@ -243,8 +233,6 @@ class ValidationSet implements ArrayAccess, IteratorAggregate, Countable
 
     /**
      * Returns the number of rules in this set
-     *
-     * @return int
      */
     public function count(): int
     {

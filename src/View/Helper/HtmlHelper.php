@@ -37,8 +37,6 @@ class HtmlHelper extends Helper
 
     /**
      * List of helpers used by this helper
-     *
-     * @var array
      */
     protected array $helpers = ['Url'];
 
@@ -275,7 +273,7 @@ class HtmlHelper extends Helper
         if ($escapeTitle === true) {
             $title = h($title);
         } elseif (is_string($escapeTitle)) {
-            $title = htmlentities($title, ENT_QUOTES, $escapeTitle);
+            $title = htmlentities((string) $title, ENT_QUOTES, $escapeTitle);
         }
 
         $templater = $this->templater();
@@ -525,7 +523,6 @@ class HtmlHelper extends Helper
      *
      * @param array $map Map array.
      * @param array<string, mixed> $options Same options as `UrlHelper::script()`.
-     * @return string
      * @since 5.2.0
      * @phpstan-param array{imports?: array<string, string>, scopes?: array<string, array<string, array<string, string>>>, integrity?: array<string, string>} $map
      */
@@ -566,12 +563,11 @@ class HtmlHelper extends Helper
      *
      * @param array $map Import map.
      * @param array<string, mixed> $options Options.
-     * @return array
      */
     protected function getImportPaths(array $map, array $options): array
     {
         foreach ($map as $key => $path) {
-            if (str_ends_with($key, '/')) {
+            if (str_ends_with((string) $key, '/')) {
                 $map[$key] = $this->Url->assetUrl($path, $options);
             } else {
                 $map[$key] = $this->Url->script($path, $options);
@@ -629,7 +625,6 @@ class HtmlHelper extends Helper
      *   custom block name.
      *
      * @param array<string, mixed> $options Options for the code block.
-     * @return void
      * @link https://book.cakephp.org/5/en/views/helpers/html.html#creating-inline-javascript-blocks
      */
     public function scriptStart(array $options = []): void
@@ -886,7 +881,6 @@ class HtmlHelper extends Helper
      *
      * @param string $content The content of the row.
      * @param array<string, mixed> $options HTML attributes.
-     * @return string
      */
     public function tableRow(string $content, array $options = []): string
     {
@@ -901,7 +895,6 @@ class HtmlHelper extends Helper
      *
      * @param string $content The content of the cell.
      * @param array<string, mixed> $options HTML attributes.
-     * @return string
      */
     public function tableCell(string $content, array $options = []): string
     {
@@ -1104,7 +1097,7 @@ class HtmlHelper extends Helper
             } else {
                 $mimeType = MimeType::getMimeTypeForFile($path);
             }
-            if (str_starts_with($mimeType, 'video/')) {
+            if (str_starts_with((string) $mimeType, 'video/')) {
                 $tag = 'video';
             } else {
                 $tag = 'audio';

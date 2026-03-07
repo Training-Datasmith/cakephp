@@ -86,36 +86,26 @@ class Response extends Message implements ResponseInterface
 
     /**
      * The status code of the response.
-     *
-     * @var int
      */
     protected int $code = 0;
 
     /**
      * Cookie Collection instance
-     *
-     * @var \Cake\Http\Cookie\CookieCollection|null
      */
     protected ?CookieCollection $cookies = null;
 
     /**
      * The reason phrase for the status code
-     *
-     * @var string
      */
     protected string $reasonPhrase;
 
     /**
      * Cached decoded XML data.
-     *
-     * @var \SimpleXMLElement|null
      */
     protected ?SimpleXMLElement $_xml = null;
 
     /**
      * Cached decoded JSON data.
-     *
-     * @var mixed
      */
     protected mixed $_json = null;
 
@@ -144,7 +134,6 @@ class Response extends Message implements ResponseInterface
      * the body will be decompressed.
      *
      * @param string $body Gzip encoded body.
-     * @return string
      * @throws \Cake\Core\Exception\CakeException When attempting to decode gzip content without gzinflate.
      */
     protected function _decodeGzipBody(string $body): string
@@ -172,7 +161,6 @@ class Response extends Message implements ResponseInterface
      * - Parses and normalizes header names and values.
      *
      * @param array<string> $headers Headers to parse.
-     * @return void
      */
     protected function _parseHeaders(array $headers): void
     {
@@ -205,8 +193,6 @@ class Response extends Message implements ResponseInterface
 
     /**
      * Check if the response status code was in the 2xx/3xx range
-     *
-     * @return bool
      */
     public function isOk(): bool
     {
@@ -215,8 +201,6 @@ class Response extends Message implements ResponseInterface
 
     /**
      * Check if the response status code was in the 2xx range
-     *
-     * @return bool
      */
     public function isSuccess(): bool
     {
@@ -225,8 +209,6 @@ class Response extends Message implements ResponseInterface
 
     /**
      * Check if the response had a redirect status code.
-     *
-     * @return bool
      */
     public function isRedirect(): bool
     {
@@ -280,8 +262,6 @@ class Response extends Message implements ResponseInterface
 
     /**
      * Get the encoding if it was set.
-     *
-     * @return string|null
      */
     public function getEncoding(): ?string
     {
@@ -312,8 +292,6 @@ class Response extends Message implements ResponseInterface
      *
      * This method exposes the response's CookieCollection
      * instance allowing you to interact with cookie objects directly.
-     *
-     * @return \Cake\Http\Cookie\CookieCollection
      */
     public function getCookieCollection(): CookieCollection
     {
@@ -356,8 +334,6 @@ class Response extends Message implements ResponseInterface
 
     /**
      * Lazily build the CookieCollection and cookie objects from the response header
-     *
-     * @return \Cake\Http\Cookie\CookieCollection
      */
     protected function buildCookieCollection(): CookieCollection
     {
@@ -383,8 +359,6 @@ class Response extends Message implements ResponseInterface
 
     /**
      * Get the response body as string.
-     *
-     * @return string
      */
     public function getStringBody(): string
     {
@@ -393,8 +367,6 @@ class Response extends Message implements ResponseInterface
 
     /**
      * Get the response body as JSON decoded data.
-     *
-     * @return mixed
      */
     public function getJson(): mixed
     {
@@ -403,8 +375,6 @@ class Response extends Message implements ResponseInterface
 
     /**
      * Get the response body as JSON decoded data.
-     *
-     * @return mixed
      */
     protected function _getJson(): mixed
     {
@@ -417,8 +387,6 @@ class Response extends Message implements ResponseInterface
 
     /**
      * Get the response body as XML decoded data.
-     *
-     * @return \SimpleXMLElement|null
      */
     public function getXml(): ?SimpleXMLElement
     {
@@ -427,8 +395,6 @@ class Response extends Message implements ResponseInterface
 
     /**
      * Get the response body as XML decoded data.
-     *
-     * @return \SimpleXMLElement|null
      */
     protected function _getXml(): ?SimpleXMLElement
     {
@@ -463,8 +429,6 @@ class Response extends Message implements ResponseInterface
 
     /**
      * Provides magic __get() support.
-     *
-     * @return string
      */
     protected function _getBody(): string
     {

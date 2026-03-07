@@ -82,7 +82,6 @@ class CheckboxWidget extends BasicWidget
      * Checks whether the checkbox should be checked.
      *
      * @param array<string, mixed> $data Data to look at and determine checked state.
-     * @return bool
      */
     protected function _isChecked(array $data): bool
     {

@@ -75,22 +75,16 @@ abstract class Query implements ExpressionInterface, Stringable
 
     /**
      * Connection instance to be used to execute this query.
-     *
-     * @var \Cake\Database\Connection
      */
     protected Connection $_connection;
 
     /**
      * Connection role ('read' or 'write')
-     *
-     * @var string
      */
     protected string $connectionRole = Connection::ROLE_WRITE;
 
     /**
      * Type of this query (select, insert, update, delete).
-     *
-     * @var string
      */
     protected string $_type;
 
@@ -129,28 +123,19 @@ abstract class Query implements ExpressionInterface, Stringable
      * Indicates whether internal state of this query was changed, this is used to
      * discard internal cached objects such as the transformed query or the reference
      * to the executed statement.
-     *
-     * @var bool
      */
     protected bool $_dirty = false;
 
-    /**
-     * @var \Cake\Database\StatementInterface|null
-     */
     protected ?StatementInterface $_statement = null;
 
     /**
      * The object responsible for generating query placeholders and temporarily store values
      * associated to each of those.
-     *
-     * @var \Cake\Database\ValueBinder|null
      */
     protected ?ValueBinder $_valueBinder = null;
 
     /**
      * Instance of functions builder object used for generating arbitrary SQL functions.
-     *
-     * @var \Cake\Database\FunctionsBuilder|null
      */
     protected ?FunctionsBuilder $_functionsBuilder = null;
 
@@ -181,8 +166,6 @@ abstract class Query implements ExpressionInterface, Stringable
 
     /**
      * Gets the connection instance to be used for executing and transforming this query.
-     *
-     * @return \Cake\Database\Connection
      */
     public function getConnection(): Connection
     {
@@ -191,8 +174,6 @@ abstract class Query implements ExpressionInterface, Stringable
 
     /**
      * Returns the connection role ('read' or 'write')
-     *
-     * @return string
      */
     public function getConnectionRole(): string
     {
@@ -205,7 +186,6 @@ abstract class Query implements ExpressionInterface, Stringable
      * See `Query::getConnectionRole()` for role options.
      *
      * @param string|null $role Connection role
-     * @return \Cake\Database\Driver
      */
     public function getDriver(?string $role = null): Driver
     {
@@ -229,8 +209,6 @@ abstract class Query implements ExpressionInterface, Stringable
      *
      * This method can be overridden in query subclasses to decorate behavior
      * around query execution.
-     *
-     * @return \Cake\Database\StatementInterface
      */
     public function execute(): StatementInterface
     {
@@ -259,8 +237,6 @@ abstract class Query implements ExpressionInterface, Stringable
      *
      * The above example will change the published column to true for all false records, and return the number of
      * records that were updated.
-     *
-     * @return int
      */
     public function rowCountAndClose(): int
     {
@@ -288,7 +264,6 @@ abstract class Query implements ExpressionInterface, Stringable
      * values, `(string)$query` should be used, instead.
      *
      * @param \Cake\Database\ValueBinder|null $binder Value binder that generates parameter placeholders
-     * @return string
      */
     public function sql(?ValueBinder $binder = null): string
     {
@@ -1475,7 +1450,6 @@ abstract class Query implements ExpressionInterface, Stringable
      * ```
      *
      * @param string $identifier The identifier for an expression
-     * @return \Cake\Database\ExpressionInterface
      */
     public function identifier(string $identifier): ExpressionInterface
     {
@@ -1530,8 +1504,6 @@ abstract class Query implements ExpressionInterface, Stringable
 
     /**
      * Returns the type of this query (select, insert, update, delete)
-     *
-     * @return string
      */
     public function type(): string
     {
@@ -1553,7 +1525,6 @@ abstract class Query implements ExpressionInterface, Stringable
      * ```
      *
      * @param \Cake\Database\ExpressionInterface|array|string|null $rawExpression A string, array or anything you want wrapped in an expression object
-     * @return \Cake\Database\Expression\QueryExpression
      * @deprecated 5.3.0 Use `expr()` instead of `newExpr()`.
      */
     public function newExpr(ExpressionInterface|array|string|null $rawExpression = null): QueryExpression
@@ -1578,7 +1549,6 @@ abstract class Query implements ExpressionInterface, Stringable
      * ```
      *
      * @param \Cake\Database\ExpressionInterface|array|string|null $rawExpression A string, array or anything you want wrapped in an expression object
-     * @return \Cake\Database\Expression\QueryExpression
      */
     public function expr(ExpressionInterface|array|string|null $rawExpression = null): QueryExpression
     {
@@ -1601,8 +1571,6 @@ abstract class Query implements ExpressionInterface, Stringable
      * $query->func()->count('*');
      * $query->func()->dateDiff(['2012-01-05', '2012-01-02'])
      * ```
-     *
-     * @return \Cake\Database\FunctionsBuilder
      */
     public function func(): FunctionsBuilder
     {
@@ -1639,14 +1607,13 @@ abstract class Query implements ExpressionInterface, Stringable
      * - intersect: array
      *
      * @param string $name name of the clause to be returned
-     * @return mixed
      * @throws \InvalidArgumentException When the named clause does not exist.
      */
     public function clause(string $name): mixed
     {
         if (!array_key_exists($name, $this->_parts)) {
             $clauses = array_keys($this->_parts);
-            array_walk($clauses, fn(string &$x) => $x = "`{$x}`");
+            array_walk($clauses, fn(string &$x): string => $x = "`{$x}`");
             $clauses = implode(', ', $clauses);
             throw new InvalidArgumentException(sprintf(
                 'The `%s` clause is not defined. Valid clauses are: %s.',
@@ -1686,7 +1653,6 @@ abstract class Query implements ExpressionInterface, Stringable
      *   array of expressions.
      * @param \Closure $callback The callback to be executed for each ExpressionInterface
      *   found inside this query.
-     * @return void
      */
     protected function _expressionsVisitor(mixed $expression, Closure $callback): void
     {
@@ -1735,8 +1701,6 @@ abstract class Query implements ExpressionInterface, Stringable
      * A ValueBinder is responsible for generating query placeholders and temporarily
      * associate values to those placeholders so that they can be passed correctly
      * to the statement object.
-     *
-     * @return \Cake\Database\ValueBinder
      */
     public function getValueBinder(): ValueBinder
     {
@@ -1768,7 +1732,6 @@ abstract class Query implements ExpressionInterface, Stringable
      *   to append.
      * @param string $conjunction type of conjunction to be used to operate part
      * @param array<string, string> $types Associative array of type names used to bind values to query
-     * @return void
      */
     protected function _conjugate(
         string $part,
@@ -1803,8 +1766,6 @@ abstract class Query implements ExpressionInterface, Stringable
     /**
      * Marks a query as dirty, removing any preprocessed information
      * from in memory caching.
-     *
-     * @return void
      */
     protected function _dirty(): void
     {
@@ -1849,8 +1810,6 @@ abstract class Query implements ExpressionInterface, Stringable
 
     /**
      * Returns string representation of this query (complete SQL statement).
-     *
-     * @return string
      */
     public function __toString(): string
     {

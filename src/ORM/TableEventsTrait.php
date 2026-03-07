@@ -35,7 +35,6 @@ trait TableEventsTrait
      * @param \Cake\Event\EventInterface<\Cake\ORM\Table> $event Model event.
      * @param \ArrayObject<string, mixed> $data Data to be saved.
      * @param \ArrayObject<string, mixed> $options Options.
-     * @return void
      */
     public function beforeMarshal(EventInterface $event, ArrayObject $data, ArrayObject $options): void
     {
@@ -50,7 +49,6 @@ trait TableEventsTrait
      * @param \Cake\Datasource\EntityInterface $entity The entity to be saved.
      * @param \ArrayObject<string, mixed> $data Data to be saved.
      * @param \ArrayObject<string, mixed> $options Options.
-     * @return void
      */
     public function afterMarshal(
         EventInterface $event,
@@ -67,7 +65,6 @@ trait TableEventsTrait
      * @param \Cake\Event\EventInterface<\Cake\ORM\Table> $event Model event.
      * @param \Cake\Validation\Validator $validator Validator.
      * @param string $name Name.
-     * @return void
      */
     public function buildValidator(EventInterface $event, Validator $validator, string $name): void
     {
@@ -80,7 +77,6 @@ trait TableEventsTrait
      * @param \Cake\ORM\Query\SelectQuery $query Query.
      * @param \ArrayObject<string, mixed> $options Options.
      * @param bool $primary `true` if it is the root query, `false` if it is the associated query.
-     * @return void
      */
     public function beforeFind(EventInterface $event, SelectQuery $query, ArrayObject $options, bool $primary): void
     {
@@ -94,7 +90,6 @@ trait TableEventsTrait
      * @param \Cake\Event\EventInterface<\Cake\ORM\Table> $event Model event.
      * @param \Cake\Datasource\EntityInterface $entity The entity to be saved.
      * @param \ArrayObject<string, mixed> $options Options.
-     * @return void
      */
     public function beforeSave(EventInterface $event, EntityInterface $entity, ArrayObject $options): void
     {
@@ -106,7 +101,6 @@ trait TableEventsTrait
      * @param \Cake\Event\EventInterface<\Cake\ORM\Table> $event Model event.
      * @param \Cake\Datasource\EntityInterface $entity Saved entity.
      * @param \ArrayObject<string, mixed> $options Options.
-     * @return void
      */
     public function afterSave(EventInterface $event, EntityInterface $entity, ArrayObject $options): void
     {
@@ -121,7 +115,6 @@ trait TableEventsTrait
      * @param \Cake\Event\EventInterface<\Cake\ORM\Table> $event Model event.
      * @param \Cake\Datasource\EntityInterface $entity Saved entity.
      * @param \ArrayObject<string, mixed> $options Options.
-     * @return void
      */
     public function afterSaveCommit(EventInterface $event, EntityInterface $entity, ArrayObject $options): void
     {
@@ -135,7 +128,6 @@ trait TableEventsTrait
      * @param \Cake\Event\EventInterface<\Cake\ORM\Table> $event Model event.
      * @param \Cake\Datasource\EntityInterface $entity Entity to be deleted.
      * @param \ArrayObject<string, mixed> $options Options.
-     * @return void
      */
     public function beforeDelete(EventInterface $event, EntityInterface $entity, ArrayObject $options): void
     {
@@ -147,7 +139,6 @@ trait TableEventsTrait
      * @param \Cake\Event\EventInterface<\Cake\ORM\Table> $event Model event.
      * @param \Cake\Datasource\EntityInterface $entity Deleted entity.
      * @param \ArrayObject<string, mixed> $options Options.
-     * @return void
      */
     public function afterDelete(EventInterface $event, EntityInterface $entity, ArrayObject $options): void
     {
@@ -162,7 +153,6 @@ trait TableEventsTrait
      * @param \Cake\Event\EventInterface<\Cake\ORM\Table> $event Model event.
      * @param \Cake\Datasource\EntityInterface $entity Deleted entity.
      * @param \ArrayObject<string, mixed> $options Options.
-     * @return void
      */
     public function afterDeleteCommit(EventInterface $event, EntityInterface $entity, ArrayObject $options): void
     {
@@ -176,7 +166,6 @@ trait TableEventsTrait
      * @param \Cake\Datasource\EntityInterface $entity The entity to be saved.
      * @param \ArrayObject<string, mixed> $options Options.
      * @param string $operation Operation.
-     * @return void
      */
     public function beforeRules(
         EventInterface $event,
@@ -195,7 +184,6 @@ trait TableEventsTrait
      * @param \ArrayObject<string, mixed> $options Options.
      * @param bool $result Result.
      * @param string $operation Operation.
-     * @return void
      */
     public function afterRules(
         EventInterface $event,

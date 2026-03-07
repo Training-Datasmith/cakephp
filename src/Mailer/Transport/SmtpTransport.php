@@ -58,8 +58,6 @@ class SmtpTransport extends AbstractTransport
 
     /**
      * Socket to SMTP server
-     *
-     * @var \Cake\Network\Socket
      */
     protected Socket $_socket;
 
@@ -72,15 +70,11 @@ class SmtpTransport extends AbstractTransport
 
     /**
      * The response of the last sent SMTP command.
-     *
-     * @var array
      */
     protected array $_lastResponse = [];
 
     /**
      * Authentication type.
-     *
-     * @var string|null
      */
     protected ?string $authType = null;
 
@@ -113,8 +107,6 @@ class SmtpTransport extends AbstractTransport
      * Unserialize handler.
      *
      * Ensure that the socket property isn't reinitialized in a broken state.
-     *
-     * @return void
      */
     public function __unserialize(array $data): void
     {
@@ -130,8 +122,6 @@ class SmtpTransport extends AbstractTransport
      *
      * This method tries to connect only in case there is no open
      * connection available already.
-     *
-     * @return void
      */
     public function connect(): void
     {
@@ -143,8 +133,6 @@ class SmtpTransport extends AbstractTransport
 
     /**
      * Check whether an open connection to the SMTP server is available.
-     *
-     * @return bool
      */
     public function connected(): bool
     {
@@ -156,8 +144,6 @@ class SmtpTransport extends AbstractTransport
      *
      * This method tries to disconnect only in case there is an open
      * connection available.
-     *
-     * @return void
      */
     public function disconnect(): void
     {
@@ -190,8 +176,6 @@ class SmtpTransport extends AbstractTransport
      *     // etc...
      * ]
      * ```
-     *
-     * @return array
      */
     public function getLastResponse(): array
     {
@@ -224,7 +208,6 @@ class SmtpTransport extends AbstractTransport
             $this->_disconnect();
         }
 
-        /** @var array{headers: string, message: string} */
         return $this->_content;
     }
 
@@ -232,7 +215,6 @@ class SmtpTransport extends AbstractTransport
      * Parses and stores the response lines in `'code' => 'message'` format.
      *
      * @param array<string> $responseLines Response lines to parse.
-     * @return void
      */
     protected function _bufferResponseLines(array $responseLines): void
     {
@@ -250,8 +232,6 @@ class SmtpTransport extends AbstractTransport
 
     /**
      * Parses the last response line and extract the preferred authentication type.
-     *
-     * @return void
      */
     protected function _parseAuthType(): void
     {
@@ -274,7 +254,7 @@ class SmtpTransport extends AbstractTransport
 
         $auth = '';
         foreach ($this->_lastResponse as $line) {
-            if ($line['message'] === '' || str_starts_with($line['message'], 'AUTH ')) {
+            if ($line['message'] === '' || str_starts_with((string) $line['message'], 'AUTH ')) {
                 $auth = $line['message'];
                 break;
             }
@@ -285,20 +265,19 @@ class SmtpTransport extends AbstractTransport
         }
 
         foreach (self::SUPPORTED_AUTH_TYPES as $type) {
-            if (str_contains($auth, $type)) {
+            if (str_contains((string) $auth, $type)) {
                 $this->authType = $type;
 
                 return;
             }
         }
 
-        throw new CakeException('Unsupported auth type: ' . substr($auth, 5));
+        throw new CakeException('Unsupported auth type: ' . substr((string) $auth, 5));
     }
 
     /**
      * Connect to SMTP Server
      *
-     * @return void
      * @throws \Cake\Network\Exception\SocketException
      */
     protected function _connect(): void
@@ -352,7 +331,6 @@ class SmtpTransport extends AbstractTransport
     /**
      * Send authentication
      *
-     * @return void
      * @throws \Cake\Network\Exception\SocketException
      */
     protected function _auth(): void
@@ -410,7 +388,6 @@ class SmtpTransport extends AbstractTransport
      *
      * @param string $username Username.
      * @param string $password Password.
-     * @return void
      */
     protected function _authLogin(string $username, string $password): void
     {
@@ -440,7 +417,6 @@ class SmtpTransport extends AbstractTransport
      *
      * @param string $username Username.
      * @param string $token Token.
-     * @return void
      * @see https://learn.microsoft.com/en-us/exchange/client-developer/legacy-protocols/how-to-authenticate-an-imap-pop-smtp-application-by-using-oauth#smtp-protocol-exchange
      * @see https://developers.google.com/gmail/imap/xoauth2-protocol#smtp_protocol_exchange
      */
@@ -459,7 +435,6 @@ class SmtpTransport extends AbstractTransport
      * Prepares the `MAIL FROM` SMTP command.
      *
      * @param string $message The email address to send with the command.
-     * @return string
      */
     protected function _prepareFromCmd(string $message): string
     {
@@ -470,7 +445,6 @@ class SmtpTransport extends AbstractTransport
      * Prepares the `RCPT TO` SMTP command.
      *
      * @param string $message The email address to send with the command.
-     * @return string
      */
     protected function _prepareRcptCmd(string $message): string
     {
@@ -481,7 +455,6 @@ class SmtpTransport extends AbstractTransport
      * Prepares the `from` email address.
      *
      * @param \Cake\Mailer\Message $message Message instance
-     * @return array
      */
     protected function _prepareFromAddress(Message $message): array
     {
@@ -497,7 +470,6 @@ class SmtpTransport extends AbstractTransport
      * Prepares the recipient email addresses.
      *
      * @param \Cake\Mailer\Message $message Message instance
-     * @return array
      */
     protected function _prepareRecipientAddresses(Message $message): array
     {
@@ -512,14 +484,13 @@ class SmtpTransport extends AbstractTransport
      * Prepares the message body.
      *
      * @param \Cake\Mailer\Message $message Message instance
-     * @return string
      */
     protected function _prepareMessage(Message $message): string
     {
         $lines = $message->getBody();
         $messages = [];
         foreach ($lines as $line) {
-            if (str_starts_with($line, '.')) {
+            if (str_starts_with((string) $line, '.')) {
                 $messages[] = '.' . $line;
             } else {
                 $messages[] = $line;
@@ -534,7 +505,6 @@ class SmtpTransport extends AbstractTransport
      *
      * @param \Cake\Mailer\Message $message Message instance
      * @throws \Cake\Network\Exception\SocketException
-     * @return void
      */
     protected function _sendRcpt(Message $message): void
     {
@@ -551,7 +521,6 @@ class SmtpTransport extends AbstractTransport
      * Send Data
      *
      * @param \Cake\Mailer\Message $message Message instance
-     * @return void
      * @throws \Cake\Network\Exception\SocketException
      */
     protected function _sendData(Message $message): void
@@ -577,7 +546,6 @@ class SmtpTransport extends AbstractTransport
     /**
      * Disconnect
      *
-     * @return void
      * @throws \Cake\Network\Exception\SocketException
      */
     protected function _disconnect(): void
@@ -590,7 +558,6 @@ class SmtpTransport extends AbstractTransport
     /**
      * Helper method to generate socket
      *
-     * @return void
      * @throws \Cake\Network\Exception\SocketException
      */
     protected function _generateSocket(): void

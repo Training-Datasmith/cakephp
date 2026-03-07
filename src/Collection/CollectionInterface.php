@@ -208,7 +208,6 @@ interface CollectionInterface extends Iterator, JsonSerializable, Countable
      * @param callable $callback A callback receiving `($accumulator, $value, $key, $iterator)`
      *   that returns the updated accumulator for each iteration.
      * @param mixed $initial The initial state of reduction
-     * @return mixed
      */
     public function reduce(callable $callback, mixed $initial = null): mixed;
 
@@ -333,7 +332,6 @@ interface CollectionInterface extends Iterator, JsonSerializable, Countable
      * @param callable|string|null $path The property name to compute the average or a function
      * If no value is passed, an identity function will be used.
      * that will return the value of the property to compute the average.
-     * @return float|int|null
      */
     public function avg(callable|string|null $path = null): float|int|null;
 
@@ -366,7 +364,6 @@ interface CollectionInterface extends Iterator, JsonSerializable, Countable
      * @param callable|string|null $path The property name to compute the median or a function
      * If no value is passed, an identity function will be used.
      * that will return the value of the property to compute the median.
-     * @return float|int|null
      */
     public function median(callable|string|null $path = null): float|int|null;
 
@@ -553,7 +550,6 @@ interface CollectionInterface extends Iterator, JsonSerializable, Countable
      * @param callable|string|null $path The property name to sum or a function
      * If no value is passed, an identity function will be used.
      * that will return the value of the property to sum.
-     * @return float|int
      */
     public function sumOf(callable|string|null $path = null): float|int;
 
@@ -1108,8 +1104,6 @@ interface CollectionInterface extends Iterator, JsonSerializable, Countable
      * ```
      * (new Collection([]))->isEmpty(); // true
      * ```
-     *
-     * @return bool
      */
     public function isEmpty(): bool;
 
@@ -1117,8 +1111,6 @@ interface CollectionInterface extends Iterator, JsonSerializable, Countable
      * Returns the closest nested iterator that can be safely traversed without
      * losing any possible transformations. This is used mainly to remove empty
      * IteratorIterator wrappers that can only slowdown the iteration process.
-     *
-     * @return \Iterator
      */
     public function unwrap(): Iterator;
 
@@ -1182,8 +1174,6 @@ interface CollectionInterface extends Iterator, JsonSerializable, Countable
      *
      * If you need the count of elements after taking the keys in consideration
      * (the count of unique keys), you can call `countKeys()`
-     *
-     * @return int
      */
     public function count(): int;
 
@@ -1195,7 +1185,6 @@ interface CollectionInterface extends Iterator, JsonSerializable, Countable
      * for details.
      *
      * @see \Cake\Collection\CollectionInterface::count()
-     * @return int
      */
     public function countKeys(): int;
 

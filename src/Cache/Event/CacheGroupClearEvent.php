@@ -50,8 +50,6 @@ class CacheGroupClearEvent extends Event
 
     /**
      * Get the group name
-     *
-     * @return string
      */
     public function getGroup(): string
     {

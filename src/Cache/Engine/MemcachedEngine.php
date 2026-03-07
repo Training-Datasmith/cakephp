@@ -51,8 +51,6 @@ class MemcachedEngine extends CacheEngine
 {
     /**
      * memcached wrapper.
-     *
-     * @var \Memcached
      */
     protected Memcached $_Memcached;
 
@@ -220,7 +218,6 @@ class MemcachedEngine extends CacheEngine
     /**
      * Set the memcached instance options
      *
-     * @return void
      * @throws \Cake\Cache\Exception\InvalidArgumentException When the Memcached extension is not built
      *   with the desired serializer engine.
      */
@@ -228,7 +225,7 @@ class MemcachedEngine extends CacheEngine
     {
         $this->_Memcached->setOption(Memcached::OPT_LIBKETAMA_COMPATIBLE, true);
 
-        $serializer = strtolower($this->_config['serialize']);
+        $serializer = strtolower((string) $this->_config['serialize']);
         if (!isset($this->_serializers[$serializer])) {
             throw new InvalidArgumentException(
                 sprintf('`%s` is not a valid serializer engine for Memcached.', $serializer),
@@ -298,7 +295,6 @@ class MemcachedEngine extends CacheEngine
      * Read an option value from the memcached connection.
      *
      * @param int $name The option name to read.
-     * @return string|int|bool|null
      * @see https://secure.php.net/manual/en/memcached.getoption.php
      */
     public function getOption(int $name): string|int|bool|null
@@ -517,7 +513,7 @@ class MemcachedEngine extends CacheEngine
         }
 
         foreach ($keys as $key) {
-            if (str_starts_with($key, $this->_config['prefix'])) {
+            if (str_starts_with((string) $key, (string) $this->_config['prefix'])) {
                 $this->_Memcached->delete($key);
             }
         }

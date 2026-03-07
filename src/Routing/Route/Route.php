@@ -35,8 +35,6 @@ class Route
     /**
      * An array of named segments in a Route.
      * `/{controller}/{action}/{id}` has 3 key elements
-     *
-     * @var array
      */
     public array $keys = [];
 
@@ -49,37 +47,22 @@ class Route
 
     /**
      * Default parameters for a Route
-     *
-     * @var array
      */
     public array $defaults = [];
 
     /**
-     * The routes template string.
-     *
-     * @var string
-     */
-    public string $template;
-
-    /**
      * Is this route a greedy route? Greedy routes have a `/*` in their
      * template
-     *
-     * @var bool
      */
     protected bool $_greedy = false;
 
     /**
      * The compiled route regular expression
-     *
-     * @var string|null
      */
     protected ?string $_compiledRoute = null;
 
     /**
      * The name for a route. Fetch with Route::getName();
-     *
-     * @var string|null
      */
     protected ?string $_name = null;
 
@@ -92,8 +75,6 @@ class Route
 
     /**
      * List of middleware that should be applied.
-     *
-     * @var array
      */
     protected array $middleware = [];
 
@@ -132,7 +113,10 @@ class Route
      * @param array<string, mixed> $options Array of additional options for the Route
      * @throws \InvalidArgumentException When `$options['_method']` are not in `VALID_METHODS` list.
      */
-    public function __construct(string $template, array $defaults = [], array $options = [])
+    public function __construct(/**
+     * The routes template string.
+     */
+    public string $template, array $defaults = [], array $options = [])
     {
         $checker = function () use ($defaults): bool {
             foreach (['plugin', 'prefix', 'controller', 'action'] as $key) {
@@ -148,8 +132,6 @@ class Route
         };
 
         assert($checker());
-
-        $this->template = $template;
         $this->defaults = $defaults;
         $this->options = $options + ['_ext' => [], '_middleware' => []];
         $this->setExtensions((array)$this->options['_ext']);
@@ -167,9 +149,9 @@ class Route
      * @param array<string> $extensions The extensions to set.
      * @return $this
      */
-    public function setExtensions(array $extensions)
+    public function setExtensions(array $extensions): static
     {
-        $this->_extensions = array_map('strtolower', $extensions);
+        $this->_extensions = array_map(strtolower(...), $extensions);
 
         return $this;
     }
@@ -191,7 +173,7 @@ class Route
      * @return $this
      * @throws \InvalidArgumentException When methods are not in `VALID_METHODS` list.
      */
-    public function setMethods(array $methods)
+    public function setMethods(array $methods): static
     {
         $this->defaults['_method'] = $this->normalizeAndValidateMethods($methods);
 
@@ -208,7 +190,7 @@ class Route
     protected function normalizeAndValidateMethods(array|string $methods): array|string
     {
         $methods = is_array($methods)
-            ? array_map('strtoupper', $methods)
+            ? array_map(strtoupper(...), $methods)
             : strtoupper($methods);
 
         $diff = array_diff((array)$methods, static::VALID_METHODS);
@@ -230,7 +212,7 @@ class Route
      * @param array<string, string> $patterns The patterns to apply to routing elements
      * @return $this
      */
-    public function setPatterns(array $patterns)
+    public function setPatterns(array $patterns): static
     {
         $patternValues = implode('', $patterns);
         if (mb_strlen($patternValues) < strlen($patternValues)) {
@@ -247,7 +229,7 @@ class Route
      * @param string $host The host name this route is bound to
      * @return $this
      */
-    public function setHost(string $host)
+    public function setHost(string $host): static
     {
         $this->options['_host'] = $host;
 
@@ -260,7 +242,7 @@ class Route
      * @param array<string> $names The names of the parameters that should be passed.
      * @return $this
      */
-    public function setPass(array $names)
+    public function setPass(array $names): static
     {
         $this->options['pass'] = $names;
 
@@ -282,7 +264,7 @@ class Route
      * @param array $names The names of the parameters that should be passed.
      * @return $this
      */
-    public function setPersist(array $names)
+    public function setPersist(array $names): static
     {
         $this->options['persist'] = $names;
 
@@ -291,8 +273,6 @@ class Route
 
     /**
      * Check if a Route has been compiled into a regular expression.
-     *
-     * @return bool
      */
     public function compiled(): bool
     {
@@ -322,8 +302,6 @@ class Route
      *
      * Uses the template, defaults and options properties to compile a
      * regular expression that can be used to parse request strings.
-     *
-     * @return void
      */
     protected function _writeRoute(): void
     {
@@ -389,8 +367,6 @@ class Route
 
     /**
      * Get the standardized plugin.controller:action name for a route.
-     *
-     * @return string
      */
     public function getName(): string
     {
@@ -469,10 +445,10 @@ class Route
 
         $urldecode = $this->options['_urldecode'] ?? true;
         if ($urldecode) {
-            $url = urldecode($url);
+            $url = urldecode((string) $url);
         }
 
-        if (!preg_match($compiledRoute, $url, $route)) {
+        if (!preg_match($compiledRoute, (string) $url, $route)) {
             return null;
         }
 
@@ -549,7 +525,7 @@ class Route
      */
     public function hostMatches(string $host): bool
     {
-        $pattern = '@^' . str_replace('\*', '.*', preg_quote($this->options['_host'], '@')) . '$@';
+        $pattern = '@^' . str_replace('\*', '.*', preg_quote((string) $this->options['_host'], '@')) . '$@';
 
         return preg_match($pattern, $host) !== 0;
     }
@@ -653,7 +629,7 @@ class Route
 
         // Apply the _host option if possible
         if (isset($this->options['_host'])) {
-            if (!isset($hostOptions['_host']) && !str_contains($this->options['_host'], '*')) {
+            if (!isset($hostOptions['_host']) && !str_contains((string) $this->options['_host'], '*')) {
                 $hostOptions['_host'] = $this->options['_host'];
             }
             $hostOptions['_host'] ??= $context['_host'];
@@ -781,7 +757,6 @@ class Route
      * Check whether the URL's HTTP method matches.
      *
      * @param array $url The array for the URL being generated.
-     * @return bool
      */
     protected function _matchMethod(array $url): bool
     {
@@ -815,9 +790,7 @@ class Route
      */
     protected function _writeUrl(array $params, array $pass = [], array $query = []): string
     {
-        $pass = array_map(function ($value) {
-            return rawurlencode((string)$value);
-        }, $pass);
+        $pass = array_map(fn($value) => rawurlencode((string)$value), $pass);
         $pass = implode('/', $pass);
         $out = $this->template;
         $search = [];
@@ -887,8 +860,6 @@ class Route
 
     /**
      * Get the static path portion for this route.
-     *
-     * @return string
      */
     public function staticPath(): string
     {
@@ -920,7 +891,7 @@ class Route
      *   Middleware names will not be checked until the route is matched.
      * @return $this
      */
-    public function setMiddleware(array $middleware)
+    public function setMiddleware(array $middleware): static
     {
         $this->middleware = $middleware;
 
@@ -929,8 +900,6 @@ class Route
 
     /**
      * Get the names of the middleware that should be applied to this route.
-     *
-     * @return array
      */
     public function getMiddleware(): array
     {

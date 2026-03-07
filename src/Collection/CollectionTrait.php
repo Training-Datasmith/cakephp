@@ -88,7 +88,7 @@ trait CollectionTrait
      */
     public function filter(?callable $callback = null): CollectionInterface
     {
-        $callback ??= fn($v) => (bool)$v;
+        $callback ??= fn($v): bool => (bool)$v;
 
         return new FilterIterator($this->unwrap(), $callback);
     }
@@ -100,9 +100,9 @@ trait CollectionTrait
      */
     public function reject(?callable $callback = null): CollectionInterface
     {
-        $callback ??= fn($v) => (bool)$v;
+        $callback ??= fn($v): bool => (bool)$v;
 
-        return new FilterIterator($this->unwrap(), fn($value, $key, $items) => !$callback($value, $key, $items));
+        return new FilterIterator($this->unwrap(), fn($value, $key, $items): bool => !$callback($value, $key, $items));
     }
 
     /**
@@ -145,7 +145,6 @@ trait CollectionTrait
      * ```
      *
      * @param callable $callback a callback function
-     * @return bool
      */
     public function any(callable $callback): bool
     {
@@ -220,9 +219,7 @@ trait CollectionTrait
         $extractor = new ExtractIterator($this->unwrap(), $path);
         if (is_string($path) && str_contains($path, '{*}')) {
             return $extractor
-                ->filter(function ($data) {
-                    return is_iterable($data);
-                })
+                ->filter(fn($data) => is_iterable($data))
                 ->unfold();
         }
 
@@ -255,7 +252,7 @@ trait CollectionTrait
             $result = $result->extract($path);
         }
         $result = $result
-            ->reduce(function (array $acc, $current) {
+            ->reduce(function (array $acc, $current): array {
                 [$count, $sum] = $acc;
 
                 return [$count + 1, $sum + $current];
@@ -783,7 +780,7 @@ trait CollectionTrait
         $parentPath = $this->_propertyExtractor($parentPath);
         $isObject = true;
 
-        $mapper = function ($row, $key, MapReduce $mapReduce) use (&$parents, $idPath, $parentPath, $nestingKey): void {
+        $mapper = function (array $row, $key, MapReduce $mapReduce) use (&$parents, $idPath, $parentPath, $nestingKey): void {
             $row[$nestingKey] = [];
             $id = $idPath($row, $key);
             $parentId = $parentPath($row, $key);
@@ -1027,7 +1024,7 @@ trait CollectionTrait
     public function chunk(int $chunkSize): CollectionInterface
     {
         // @phpstan-ignore return.type
-        return $this->map(function ($v, $k, Iterator $iterator) use ($chunkSize) {
+        return $this->map(function ($v, $k, Iterator $iterator) use ($chunkSize): array {
             $values = [$v];
             for ($i = 1; $i < $chunkSize; $i++) {
                 $iterator->next();
@@ -1049,7 +1046,7 @@ trait CollectionTrait
     public function chunkWithKeys(int $chunkSize, bool $keepKeys = true): CollectionInterface
     {
         // @phpstan-ignore return.type
-        return $this->map(function ($v, $k, Iterator $iterator) use ($chunkSize, $keepKeys) {
+        return $this->map(function ($v, $k, Iterator $iterator) use ($chunkSize, $keepKeys): array {
             $key = 0;
             if ($keepKeys) {
                 $key = $k;
@@ -1109,7 +1106,6 @@ trait CollectionTrait
             return $iterator->unwrap();
         }
 
-        /** @var \Iterator */
         return $iterator;
     }
 
@@ -1154,9 +1150,7 @@ trait CollectionTrait
         $changeIndex = $lastIndex;
 
         while (!($changeIndex === 0 && $currentIndexes[0] === $collectionArraysCounts[0])) {
-            $currentCombination = array_map(function ($value, array $keys, $index) {
-                return $value[$keys[$index]];
-            }, $collectionArrays, $collectionArraysKeys, $currentIndexes);
+            $currentCombination = array_map(fn($value, array $keys, $index) => $value[$keys[$index]], $collectionArrays, $collectionArraysKeys, $currentIndexes);
 
             if ($filter === null || $filter($currentCombination)) {
                 $result[] = $operation === null ? $currentCombination : $operation($currentCombination);
@@ -1228,8 +1222,6 @@ trait CollectionTrait
     /**
      * Unwraps this iterator and returns the simplest
      * traversable that can be used for getting the data out
-     *
-     * @return \Iterator|array
      */
     protected function optimizeUnwrap(): Iterator|array
     {

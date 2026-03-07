@@ -76,7 +76,7 @@ class Column
      * @param string $name Name
      * @return $this
      */
-    public function setName(string $name)
+    public function setName(string $name): static
     {
         $this->name = $name;
 
@@ -85,8 +85,6 @@ class Column
 
     /**
      * Gets the column name.
-     *
-     * @return string|null
      */
     public function getName(): ?string
     {
@@ -97,8 +95,6 @@ class Column
      * Get the base type if defined. Will fallback to `type` if not set.
      *
      * Used to get the base type of a column when the column type is a complex/custom type.
-     *
-     * @return string|null
      */
     public function getBaseType(): ?string
     {
@@ -121,7 +117,7 @@ class Column
      * @param string|null $baseType Base type
      * @return $this
      */
-    public function setBaseType(?string $baseType)
+    public function setBaseType(?string $baseType): static
     {
         $this->baseType = $baseType;
 
@@ -139,7 +135,7 @@ class Column
      * @param string $type Column type
      * @return $this
      */
-    public function setType(string $type)
+    public function setType(string $type): static
     {
         $this->type = $type;
 
@@ -148,8 +144,6 @@ class Column
 
     /**
      * Gets the column type.
-     *
-     * @return string
      */
     public function getType(): string
     {
@@ -162,7 +156,7 @@ class Column
      * @param int|null $length Length
      * @return $this
      */
-    public function setLength(?int $length)
+    public function setLength(?int $length): static
     {
         $this->length = $length;
 
@@ -171,8 +165,6 @@ class Column
 
     /**
      * Gets the column length.
-     *
-     * @return int|null
      */
     public function getLength(): ?int
     {
@@ -185,7 +177,7 @@ class Column
      * @param bool $null Null
      * @return $this
      */
-    public function setNull(bool $null)
+    public function setNull(bool $null): static
     {
         $this->null = $null;
 
@@ -194,8 +186,6 @@ class Column
 
     /**
      * Gets whether the column allows nulls.
-     *
-     * @return bool|null
      */
     public function getNull(): ?bool
     {
@@ -204,8 +194,6 @@ class Column
 
     /**
      * Does the column allow nulls?
-     *
-     * @return bool
      */
     public function isNull(): bool
     {
@@ -218,7 +206,7 @@ class Column
      * @param mixed $default Default
      * @return $this
      */
-    public function setDefault(mixed $default)
+    public function setDefault(mixed $default): static
     {
         $this->default = $default;
 
@@ -227,8 +215,6 @@ class Column
 
     /**
      * Gets the default column value.
-     *
-     * @return mixed
      */
     public function getDefault(): mixed
     {
@@ -241,7 +227,7 @@ class Column
      * @param string|null $generated Generated option
      * @return $this
      */
-    public function setGenerated(?string $generated)
+    public function setGenerated(?string $generated): static
     {
         $this->generated = $generated;
 
@@ -250,8 +236,6 @@ class Column
 
     /**
      * Gets generated option for identity columns. Null otherwise
-     *
-     * @return string|null
      */
     public function getGenerated(): ?string
     {
@@ -264,7 +248,7 @@ class Column
      * @param bool $identity Identity
      * @return $this
      */
-    public function setIdentity(bool $identity)
+    public function setIdentity(bool $identity): static
     {
         $this->identity = $identity;
 
@@ -273,8 +257,6 @@ class Column
 
     /**
      * Gets whether the column is an identity column.
-     *
-     * @return bool
      */
     public function getIdentity(): bool
     {
@@ -283,8 +265,6 @@ class Column
 
     /**
      * Is the column an identity column?
-     *
-     * @return bool
      */
     public function isIdentity(): bool
     {
@@ -297,7 +277,7 @@ class Column
      * @param string $after After
      * @return $this
      */
-    public function setAfter(string $after)
+    public function setAfter(string $after): static
     {
         $this->after = $after;
 
@@ -308,8 +288,6 @@ class Column
      * Returns the name of the column to add this column after.
      *
      * Used by MySQL and MariaDB in ALTER TABLE statements.
-     *
-     * @return string|null
      */
     public function getAfter(): ?string
     {
@@ -324,7 +302,7 @@ class Column
      * @param string $update On Update function
      * @return $this
      */
-    public function setOnUpdate(string $update)
+    public function setOnUpdate(string $update): static
     {
         $this->onUpdate = $update;
 
@@ -333,8 +311,6 @@ class Column
 
     /**
      * Returns the value of the ON UPDATE column function.
-     *
-     * @return string|null
      */
     public function getOnUpdate(): ?string
     {
@@ -350,7 +326,7 @@ class Column
      * @param int|null $precision Number precision
      * @return $this
      */
-    public function setPrecision(?int $precision)
+    public function setPrecision(?int $precision): static
     {
         $this->precision = $precision;
 
@@ -362,8 +338,6 @@ class Column
      *
      * For example `DECIMAL(5,2)`, 5 is the length and 2 is the precision,
      * and the column could store value from -999.99 to 999.99.
-     *
-     * @return int|null
      */
     public function getPrecision(): ?int
     {
@@ -376,7 +350,7 @@ class Column
      * @param int $increment Number increment
      * @return $this
      */
-    public function setIncrement(int $increment)
+    public function setIncrement(int $increment): static
     {
         $this->increment = $increment;
 
@@ -385,8 +359,6 @@ class Column
 
     /**
      * Gets the column identity increment.
-     *
-     * @return int|null
      */
     public function getIncrement(): ?int
     {
@@ -399,7 +371,7 @@ class Column
      * @param string|null $comment Comment
      * @return $this
      */
-    public function setComment(?string $comment)
+    public function setComment(?string $comment): static
     {
         $this->comment = $comment;
 
@@ -422,7 +394,7 @@ class Column
      * @param bool $unsigned Signed
      * @return $this
      */
-    public function setUnsigned(bool $unsigned)
+    public function setUnsigned(bool $unsigned): static
     {
         $this->unsigned = $unsigned;
 
@@ -431,8 +403,6 @@ class Column
 
     /**
      * Gets whether field should be unsigned.
-     *
-     * @return bool|null
      */
     public function getUnsigned(): ?bool
     {
@@ -441,8 +411,6 @@ class Column
 
     /**
      * Should the column be signed?
-     *
-     * @return bool
      */
     public function isSigned(): bool
     {
@@ -451,8 +419,6 @@ class Column
 
     /**
      * Should the column be unsigned?
-     *
-     * @return bool
      */
     public function isUnsigned(): bool
     {
@@ -465,7 +431,7 @@ class Column
      * @param string $collation Collation
      * @return $this
      */
-    public function setCollate(string $collation)
+    public function setCollate(string $collation): static
     {
         $this->collate = $collation;
 
@@ -474,8 +440,6 @@ class Column
 
     /**
      * Gets the column collation.
-     *
-     * @return string|null
      */
     public function getCollate(): ?string
     {
@@ -488,7 +452,7 @@ class Column
      * @param int $srid SRID
      * @return $this
      */
-    public function setSrid(int $srid)
+    public function setSrid(int $srid): static
     {
         $this->srid = $srid;
 
@@ -497,8 +461,6 @@ class Column
 
     /**
      * Gets the column SRID from geometry fields.
-     *
-     * @return int|null
      */
     public function getSrid(): ?int
     {
@@ -513,7 +475,7 @@ class Column
      * @param bool $fixed Fixed
      * @return $this
      */
-    public function setFixed(bool $fixed)
+    public function setFixed(bool $fixed): static
     {
         $this->fixed = $fixed;
 
@@ -522,8 +484,6 @@ class Column
 
     /**
      * Gets whether the column is fixed-length.
-     *
-     * @return bool|null
      */
     public function getFixed(): ?bool
     {
@@ -532,8 +492,6 @@ class Column
 
     /**
      * Is the column fixed-length?
-     *
-     * @return bool
      */
     public function isFixed(): bool
     {
@@ -542,8 +500,6 @@ class Column
 
     /**
      * Gets all allowed options. Each option must have a corresponding `setFoo` method.
-     *
-     * @return array
      */
     protected function getValidOptions(): array
     {
@@ -575,7 +531,7 @@ class Column
      * @throws \RuntimeException
      * @return $this
      */
-    public function setAttributes(array $attributes)
+    public function setAttributes(array $attributes): static
     {
         $validOptions = $this->getValidOptions();
         if (isset($attributes['identity']) && $attributes['identity'] && !isset($attributes['null'])) {
@@ -596,8 +552,6 @@ class Column
 
     /**
      * Convert an index into an array that is compatible with the Column constructor.
-     *
-     * @return array
      */
     public function toArray(): array
     {

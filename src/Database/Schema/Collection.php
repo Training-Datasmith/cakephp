@@ -29,27 +29,22 @@ use Cake\Database\Connection;
 class Collection implements CollectionInterface
 {
     /**
-     * Connection object
-     *
-     * @var \Cake\Database\Connection
-     */
-    protected Connection $_connection;
-
-    /**
      * Schema dialect instance.
-     *
-     * @var \Cake\Database\Schema\SchemaDialect|null
      */
     protected ?SchemaDialect $_dialect = null;
 
     /**
      * Constructor.
      *
-     * @param \Cake\Database\Connection $connection The connection instance.
+     * @param \Cake\Database\Connection $_connection The connection instance.
      */
-    public function __construct(Connection $connection)
+    public function __construct(
+        /**
+         * Connection object
+         */
+        protected Connection $_connection
+    )
     {
-        $this->_connection = $connection;
     }
 
     /**
@@ -89,8 +84,6 @@ class Collection implements CollectionInterface
 
     /**
      * Setups the schema dialect to be used for this collection.
-     *
-     * @return \Cake\Database\Schema\SchemaDialect
      */
     protected function getDialect(): SchemaDialect
     {

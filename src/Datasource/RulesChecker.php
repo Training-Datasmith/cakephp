@@ -92,27 +92,20 @@ class RulesChecker
     protected array $_deleteRules = [];
 
     /**
-     * List of options to pass to every callable rule
-     *
-     * @var array
-     */
-    protected array $_options = [];
-
-    /**
      * Whether to use I18n functions for translating default error messages
-     *
-     * @var bool
      */
     protected bool $_useI18n = false;
 
     /**
      * Constructor. Takes the options to be passed to all rules.
      *
-     * @param array<string, mixed> $options The options to pass to every rule
+     * @param array<string, mixed> $_options The options to pass to every rule
      */
-    public function __construct(array $options = [])
+    public function __construct(/**
+     * List of options to pass to every callable rule
+     */
+    protected array $_options = [])
     {
-        $this->_options = $options;
         $this->_useI18n = function_exists('\Cake\I18n\__d');
     }
 
@@ -136,7 +129,7 @@ class RulesChecker
      * @return $this
      * @throws \Cake\Core\Exception\CakeException If a rule with the same name already exists
      */
-    public function add(callable $rule, array|string|null $name = null, array $options = [])
+    public function add(callable $rule, array|string|null $name = null, array $options = []): static
     {
         if (is_string($name)) {
             $this->checkName($name, $this->_rules);
@@ -155,7 +148,7 @@ class RulesChecker
      * @return $this
      * @since 5.1.0
      */
-    public function remove(string $name)
+    public function remove(string $name): static
     {
         unset($this->_rules[$name]);
 
@@ -181,7 +174,7 @@ class RulesChecker
      * @return $this
      * @throws \Cake\Core\Exception\CakeException If a rule with the same name already exists
      */
-    public function addCreate(callable $rule, array|string|null $name = null, array $options = [])
+    public function addCreate(callable $rule, array|string|null $name = null, array $options = []): static
     {
         if (is_string($name)) {
             $this->checkName($name, $this->_createRules);
@@ -200,7 +193,7 @@ class RulesChecker
      * @return $this
      * @since 5.1.0
      */
-    public function removeCreate(string $name)
+    public function removeCreate(string $name): static
     {
         unset($this->_createRules[$name]);
 
@@ -226,7 +219,7 @@ class RulesChecker
      * @return $this
      * @throws \Cake\Core\Exception\CakeException If a rule with the same name already exists
      */
-    public function addUpdate(callable $rule, array|string|null $name = null, array $options = [])
+    public function addUpdate(callable $rule, array|string|null $name = null, array $options = []): static
     {
         if (is_string($name)) {
             $this->checkName($name, $this->_updateRules);
@@ -245,7 +238,7 @@ class RulesChecker
      * @return $this
      * @since 5.1.0
      */
-    public function removeUpdate(string $name)
+    public function removeUpdate(string $name): static
     {
         unset($this->_updateRules[$name]);
 
@@ -271,7 +264,7 @@ class RulesChecker
      * @return $this
      * @throws \Cake\Core\Exception\CakeException If a rule with the same name already exists
      */
-    public function addDelete(callable $rule, array|string|null $name = null, array $options = [])
+    public function addDelete(callable $rule, array|string|null $name = null, array $options = []): static
     {
         if (is_string($name)) {
             $this->checkName($name, $this->_deleteRules);
@@ -290,7 +283,7 @@ class RulesChecker
      * @return $this
      * @since 5.1.0
      */
-    public function removeDelete(string $name)
+    public function removeDelete(string $name): static
     {
         unset($this->_deleteRules[$name]);
 
@@ -305,7 +298,6 @@ class RulesChecker
      * @param \Cake\Datasource\EntityInterface $entity The entity to check for validity.
      * @param string $mode Either 'create, 'update' or 'delete'.
      * @param array<string, mixed> $options Extra options to pass to checker functions.
-     * @return bool
      * @throws \InvalidArgumentException if an invalid mode is passed.
      */
     public function check(EntityInterface $entity, string $mode, array $options = []): bool
@@ -324,7 +316,6 @@ class RulesChecker
      *
      * @param \Cake\Datasource\EntityInterface $entity The entity to check for validity.
      * @param array<string, mixed> $options Extra options to pass to checker functions.
-     * @return bool
      */
     public function checkCreate(EntityInterface $entity, array $options = []): bool
     {
@@ -341,7 +332,6 @@ class RulesChecker
      *
      * @param \Cake\Datasource\EntityInterface $entity The entity to check for validity.
      * @param array<string, mixed> $options Extra options to pass to checker functions.
-     * @return bool
      */
     public function checkUpdate(EntityInterface $entity, array $options = []): bool
     {
@@ -358,7 +348,6 @@ class RulesChecker
      *
      * @param \Cake\Datasource\EntityInterface $entity The entity to check for validity.
      * @param array<string, mixed> $options Extra options to pass to checker functions.
-     * @return bool
      */
     public function checkDelete(EntityInterface $entity, array $options = []): bool
     {
@@ -372,7 +361,6 @@ class RulesChecker
      * @param \Cake\Datasource\EntityInterface $entity The entity to check for validity.
      * @param array<string, mixed> $options Extra options to pass to checker functions.
      * @param array<\Cake\Datasource\RuleInvoker> $rules The list of rules that must be checked.
-     * @return bool
      */
     protected function _checkRules(EntityInterface $entity, array $options = [], array $rules = []): bool
     {
@@ -392,7 +380,6 @@ class RulesChecker
      * @param callable $rule The rule to decorate
      * @param array|string|null $name The alias for a rule or an array of options
      * @param array<string, mixed> $options The options containing the error message and field.
-     * @return \Cake\Datasource\RuleInvoker
      */
     protected function _addError(callable $rule, array|string|null $name = null, array $options = []): RuleInvoker
     {
@@ -415,7 +402,6 @@ class RulesChecker
      *
      * @param string $name The name to check
      * @param array<\Cake\Datasource\RuleInvoker> $rules The rules array to check
-     * @return void
      * @throws \Cake\Core\Exception\CakeException
      */
     protected function checkName(string $name, array $rules): void

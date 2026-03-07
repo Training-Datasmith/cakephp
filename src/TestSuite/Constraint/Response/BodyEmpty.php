@@ -26,7 +26,6 @@ class BodyEmpty extends ResponseBase
      * Checks assertion
      *
      * @param mixed $other Expected type
-     * @return bool
      */
     public function matches(mixed $other): bool
     {
@@ -35,8 +34,6 @@ class BodyEmpty extends ResponseBase
 
     /**
      * Assertion message
-     *
-     * @return string
      */
     public function toString(): string
     {
@@ -47,7 +44,6 @@ class BodyEmpty extends ResponseBase
      * Overwrites the descriptions so we can remove the automatic "expected" message
      *
      * @param mixed $other Value
-     * @return string
      */
     protected function failureDescription(mixed $other): string
     {

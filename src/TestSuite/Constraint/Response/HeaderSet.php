@@ -25,28 +25,20 @@ use Psr\Http\Message\ResponseInterface;
 class HeaderSet extends ResponseBase
 {
     /**
-     * @var string
-     */
-    protected string $headerName;
-
-    /**
      * Constructor.
      *
      * @param \Psr\Http\Message\ResponseInterface|null $response A response instance.
      * @param string $headerName Header name
      */
-    public function __construct(?ResponseInterface $response, string $headerName)
+    public function __construct(?ResponseInterface $response, protected string $headerName)
     {
         parent::__construct($response);
-
-        $this->headerName = $headerName;
     }
 
     /**
      * Checks assertion
      *
      * @param mixed $other Expected content
-     * @return bool
      */
     public function matches(mixed $other): bool
     {
@@ -55,8 +47,6 @@ class HeaderSet extends ResponseBase
 
     /**
      * Assertion message
-     *
-     * @return string
      */
     public function toString(): string
     {
@@ -67,7 +57,6 @@ class HeaderSet extends ResponseBase
      * Overwrites the descriptions so we can remove the automatic "expected" message
      *
      * @param mixed $other Value
-     * @return string
      */
     protected function failureDescription(mixed $other): string
     {

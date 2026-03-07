@@ -133,8 +133,6 @@ class ArrayContext implements ContextInterface
      * For this method to return true, both the primary key constraint
      * must be defined in the 'schema' data, and the 'defaults' data must
      * contain a value for all fields in the key.
-     *
-     * @return bool
      */
     public function isCreate(): bool
     {
@@ -161,7 +159,6 @@ class ArrayContext implements ContextInterface
      *     context record.
      *   - `schemaDefault`: Boolean indicating whether default value from
      *     context's schema should be used if it's not explicitly provided.
-     * @return mixed
      */
     public function val(string $field, array $options = []): mixed
     {
@@ -195,7 +192,6 @@ class ArrayContext implements ContextInterface
      * In this context class, this is simply defined by the 'required' array.
      *
      * @param string $field A dot separated path to check required-ness for.
-     * @return bool|null
      */
     public function isRequired(string $field): ?bool
     {
@@ -241,7 +237,6 @@ class ArrayContext implements ContextInterface
      * In this context class, this is simply defined by the 'length' array.
      *
      * @param string $field A dot separated path to check required-ness for.
-     * @return int|null
      */
     public function getMaxLength(string $field): ?int
     {

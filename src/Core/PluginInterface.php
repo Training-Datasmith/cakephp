@@ -34,36 +34,26 @@ interface PluginInterface
 
     /**
      * Get the name of this plugin.
-     *
-     * @return string
      */
     public function getName(): string;
 
     /**
      * Get the filesystem path to this plugin
-     *
-     * @return string
      */
     public function getPath(): string;
 
     /**
      * Get the filesystem path to configuration for this plugin
-     *
-     * @return string
      */
     public function getConfigPath(): string;
 
     /**
      * Get the filesystem path to configuration for this plugin
-     *
-     * @return string
      */
     public function getClassPath(): string;
 
     /**
      * Get the filesystem path to templates for this plugin
-     *
-     * @return string
      */
     public function getTemplatePath(): string;
 
@@ -77,7 +67,6 @@ interface PluginInterface
      * plugin dependencies, or attach events.
      *
      * @param \Cake\Core\PluginApplicationInterface<mixed> $app The host application
-     * @return void
      */
     public function bootstrap(PluginApplicationInterface $app): void;
 
@@ -85,7 +74,6 @@ interface PluginInterface
      * Add console commands for the plugin.
      *
      * @param \Cake\Console\CommandCollection $commands The command collection to update
-     * @return \Cake\Console\CommandCollection
      */
     public function console(CommandCollection $commands): CommandCollection;
 
@@ -93,7 +81,6 @@ interface PluginInterface
      * Add middleware for the plugin.
      *
      * @param \Cake\Http\MiddlewareQueue $middlewareQueue The middleware queue to update.
-     * @return \Cake\Http\MiddlewareQueue
      */
     public function middleware(MiddlewareQueue $middlewareQueue): MiddlewareQueue;
 
@@ -104,7 +91,6 @@ interface PluginInterface
      * can override this method to replace that behavior.
      *
      * @param \Cake\Routing\RouteBuilder $routes The route builder to update.
-     * @return void
      */
     public function routes(RouteBuilder $routes): void;
 
@@ -112,7 +98,6 @@ interface PluginInterface
      * Register plugin services to the application's container
      *
      * @param \Cake\Core\ContainerInterface $container Container instance.
-     * @return void
      */
     public function services(ContainerInterface $container): void;
 
@@ -136,7 +121,6 @@ interface PluginInterface
      * Check if the named hook is enabled
      *
      * @param string $hook The hook to check
-     * @return bool
      */
     public function isEnabled(string $hook): bool;
 }

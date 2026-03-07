@@ -42,8 +42,6 @@ abstract class SchemaDialect
 {
     /**
      * The driver instance being used.
-     *
-     * @var \Cake\Database\Driver
      */
     protected Driver $_driver;
 
@@ -65,7 +63,6 @@ abstract class SchemaDialect
      * Generate an ON clause for a foreign key.
      *
      * @param string $on The on clause
-     * @return string
      */
     protected function _foreignOnClause(string $on): string
     {
@@ -92,7 +89,6 @@ abstract class SchemaDialect
      * Convert string on clauses to the abstract ones.
      *
      * @param string $clause The on clause to convert.
-     * @return string
      */
     protected function _convertOnClause(string $clause): string
     {
@@ -111,7 +107,6 @@ abstract class SchemaDialect
      * stringified list
      *
      * @param array<string>|string $references The referenced columns of a foreign key constraint statement
-     * @return string
      */
     protected function _convertConstraintColumns(array|string $references): string
     {
@@ -249,7 +244,6 @@ abstract class SchemaDialect
      *
      * @param \Cake\Database\Schema\TableSchema $schema The table object to append fields to.
      * @param array $row The row data from `describeColumnSql`.
-     * @return void
      * @deprecated 5.2.0 Use `describeColumns()` instead.
      */
     abstract public function convertColumnDescription(TableSchema $schema, array $row): void;
@@ -260,7 +254,6 @@ abstract class SchemaDialect
      * @param \Cake\Database\Schema\TableSchema $schema The table object to append
      *    an index or constraint to.
      * @param array $row The row data from `describeIndexSql`.
-     * @return void
      * @deprecated 5.2.0 Use `describeIndexes()` instead.
      */
     abstract public function convertIndexDescription(TableSchema $schema, array $row): void;
@@ -271,7 +264,6 @@ abstract class SchemaDialect
      * @param \Cake\Database\Schema\TableSchema $schema The table object to append
      *    a constraint to.
      * @param array $row The row data from `describeForeignKeySql`.
-     * @return void
      * @deprecated 5.2.0 Use `describeForeignKeys()` instead.
      */
     abstract public function convertForeignKeyDescription(TableSchema $schema, array $row): void;
@@ -281,7 +273,6 @@ abstract class SchemaDialect
      *
      * @param \Cake\Database\Schema\TableSchema $schema Table instance.
      * @param array $row The row of data.
-     * @return void
      * @deprecated 5.2.0 Use `describeOptions()` instead.
      */
     public function convertOptionsDescription(TableSchema $schema, array $row): void
@@ -473,7 +464,6 @@ abstract class SchemaDialect
      * Additionaly the `autoIncrement` key will be set for columns that are a primary key.
      *
      * @param string $tableName The name of the table to describe columns on.
-     * @return array
      */
     public function describeColumns(string $tableName): array
     {
@@ -516,7 +506,6 @@ abstract class SchemaDialect
      * - delete : The delete action or null
      *
      * @param string $tableName The name of the table to describe foreign keys on.
-     * @return array
      */
     public function describeForeignKeys(string $tableName): array
     {
@@ -561,7 +550,6 @@ abstract class SchemaDialect
      * - length : the length of the index if applicable.
      *
      * @param string $tableName The name of the table to describe indexes on.
-     * @return array
      */
     public function describeIndexes(string $tableName): array
     {
@@ -601,7 +589,6 @@ abstract class SchemaDialect
      * No keys are guaranteed to be present as they are database driver dependent.
      *
      * @param string $tableName The name of the table to describe options on.
-     * @return array
      */
     public function describeOptions(string $tableName): array
     {
@@ -636,7 +623,6 @@ abstract class SchemaDialect
      * - expression - The check constraint expression as a SQL fragment.
      *
      * @param string $tableName The name of the table to describe options on.
-     * @return array
      */
     public function describeCheckConstraints(string $tableName): array
     {
@@ -648,7 +634,6 @@ abstract class SchemaDialect
      *
      * @param string $tableName The name of the table
      * @param string $columnName The name of the column
-     * @return bool
      */
     public function hasColumn(string $tableName, string $columnName): bool
     {
@@ -671,7 +656,6 @@ abstract class SchemaDialect
      *
      * @param string $tableName The name of the table
      * @param string|null $schema The schema look for table in. If null the default schema is used.
-     * @return bool
      */
     public function hasTable(string $tableName, ?string $schema = null): bool
     {
@@ -688,7 +672,6 @@ abstract class SchemaDialect
      *   ordering matters.
      * @param string $name The name of the index to match on. Can be used alone,
      *   or with $columns to match indexes more precisely.
-     * @return bool
      */
     public function hasIndex(string $tableName, array $columns = [], ?string $name = null): bool
     {
@@ -730,7 +713,6 @@ abstract class SchemaDialect
      *   ordering matters.
      * @param string $name The name of the foreign key to match on. Can be used alone,
      *   or with $columns to match keys more precisely.
-     * @return bool
      */
     public function hasForeignKey(string $tableName, array $columns = [], ?string $name = null): bool
     {

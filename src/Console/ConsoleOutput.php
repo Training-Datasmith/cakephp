@@ -93,7 +93,6 @@ class ConsoleOutput
      * The current output type.
      *
      * @see setOutputAs() For manipulation.
-     * @var int
      */
     protected int $_outputAs = self::COLOR;
 
@@ -258,7 +257,6 @@ class ConsoleOutput
      * Replace tags with color codes.
      *
      * @param array<string, string> $matches An array of matches to replace.
-     * @return string
      */
     protected function _replaceTags(array $matches): string
     {
@@ -328,7 +326,6 @@ class ConsoleOutput
      *
      * @param string $style The style to set.
      * @param array $definition The array definition of the style to change or create.
-     * @return void
      */
     public function setStyle(string $style, array $definition): void
     {
@@ -353,8 +350,6 @@ class ConsoleOutput
 
     /**
      * Get the output type on how formatting tags are treated.
-     *
-     * @return int
      */
     public function getOutputAs(): int
     {
@@ -365,7 +360,6 @@ class ConsoleOutput
      * Set the output type on how formatting tags are treated.
      *
      * @param int $type The output type to use. Should be one of the class constants.
-     * @return void
      * @throws \InvalidArgumentException in case of a not supported output type.
      */
     public function setOutputAs(int $type): void

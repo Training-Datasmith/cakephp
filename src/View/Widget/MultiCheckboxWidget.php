@@ -50,8 +50,6 @@ class MultiCheckboxWidget extends BasicWidget
 
     /**
      * Label widget instance.
-     *
-     * @var \Cake\View\Widget\LabelWidget
      */
     protected LabelWidget $_label;
 
@@ -119,7 +117,6 @@ class MultiCheckboxWidget extends BasicWidget
      *
      * @param array<string, mixed> $data The data to generate a checkbox set with.
      * @param \Cake\View\Form\ContextInterface $context The current form context.
-     * @return string
      */
     public function render(array $data, ContextInterface $context): string
     {
@@ -191,7 +188,6 @@ class MultiCheckboxWidget extends BasicWidget
      *
      * @param array<string, mixed> $checkbox An array containing checkbox key/value option pairs
      * @param \Cake\View\Form\ContextInterface $context Context object.
-     * @return string
      */
     protected function _renderInput(array $checkbox, ContextInterface $context): string
     {
@@ -210,7 +206,7 @@ class MultiCheckboxWidget extends BasicWidget
 
         if (
             $checkbox['label'] === false
-            && ($nestedInput || !str_contains($this->_templates->get('checkboxWrapper'), '{{input}}'))
+            && ($nestedInput || !str_contains((string) $this->_templates->get('checkboxWrapper'), '{{input}}'))
         ) {
             $label = $input;
             $input = '';
@@ -252,7 +248,6 @@ class MultiCheckboxWidget extends BasicWidget
      *
      * @param string $key The key to test.
      * @param array<string>|string|int|false|null $selected The selected values.
-     * @return bool
      */
     protected function _isSelected(string $key, array|string|int|false|null $selected): bool
     {
@@ -272,7 +267,6 @@ class MultiCheckboxWidget extends BasicWidget
      *
      * @param string $key The key to test.
      * @param mixed $disabled The disabled values.
-     * @return bool
      */
     protected function _isDisabled(string $key, mixed $disabled): bool
     {

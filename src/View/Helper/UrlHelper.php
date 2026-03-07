@@ -50,7 +50,6 @@ class UrlHelper extends Helper
      * Check proper configuration
      *
      * @param array<string, mixed> $config The configuration settings provided to this helper.
-     * @return void
      */
     public function initialize(array $config): void
     {

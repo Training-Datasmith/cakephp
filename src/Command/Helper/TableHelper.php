@@ -83,7 +83,6 @@ class TableHelper extends Helper
      * Output a row separator.
      *
      * @param array<int> $widths The widths of each column to output.
-     * @return void
      */
     protected function _rowSeparator(array $widths): void
     {
@@ -101,7 +100,6 @@ class TableHelper extends Helper
      * @param array $row The row to output.
      * @param array<int> $widths The widths of each column to output.
      * @param array<string, mixed> $options Options to be passed.
-     * @return void
      */
     protected function _render(array $row, array $widths, array $options = []): void
     {
@@ -137,7 +135,6 @@ class TableHelper extends Helper
      * in the array. The keys will not be used to align data.
      *
      * @param array $args The data to render out.
-     * @return void
      */
     public function output(array $args): void
     {
@@ -176,7 +173,6 @@ class TableHelper extends Helper
      *
      * @param string $text The text to be surrounded
      * @param string $style The style to be applied
-     * @return string
      */
     protected function _addStyle(string $text, string $style): string
     {

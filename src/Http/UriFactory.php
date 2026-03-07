@@ -44,7 +44,6 @@ class UriFactory implements UriFactoryInterface
      *
      * @param array|null $server Array of server data to build the Uri from.
      *   $_SERVER will be used if $server parameter is null.
-     * @return array
      * @phpstan-return array{uri: \Psr\Http\Message\UriInterface, base: string, webroot: string}
      */
     public static function marshalUriAndBaseFromSapi(?array $server = null): array
@@ -69,7 +68,6 @@ class UriFactory implements UriFactoryInterface
      *
      * @param string $base The base path to remove.
      * @param \Psr\Http\Message\UriInterface $uri The uri to update.
-     * @return \Psr\Http\Message\UriInterface
      */
     protected static function updatePath(string $base, UriInterface $uri): UriInterface
     {
@@ -156,13 +154,13 @@ class UriFactory implements UriFactoryInterface
             if ($base === DIRECTORY_SEPARATOR || $base === '.') {
                 $base = '';
             }
-            $base = implode('/', array_map('rawurlencode', explode('/', $base)));
+            $base = implode('/', array_map(rawurlencode(...), explode('/', $base)));
 
             return ['base' => $base, 'webroot' => $base . '/'];
         }
 
-        $file = '/' . basename($baseUrl);
-        $base = dirname($baseUrl);
+        $file = '/' . basename((string) $baseUrl);
+        $base = dirname((string) $baseUrl);
 
         if ($base === DIRECTORY_SEPARATOR || $base === '.') {
             $base = '';

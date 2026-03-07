@@ -37,16 +37,12 @@ class QueryExpression implements ExpressionInterface, Countable
     /**
      * String to be used for joining each of the internal expressions
      * this object internally stores for example "AND", "OR", etc.
-     *
-     * @var string
      */
     protected string $_conjunction;
 
     /**
      * A list of strings or other expression objects that represent the "branches" of
      * the expression tree. For example one key of the array might look like "sum > :value"
-     *
-     * @var array
      */
     protected array $_conditions = [];
 
@@ -83,7 +79,7 @@ class QueryExpression implements ExpressionInterface, Countable
      * @param string $conjunction Value to be used for joining conditions
      * @return $this
      */
-    public function setConjunction(string $conjunction)
+    public function setConjunction(string $conjunction): static
     {
         $this->_conjunction = strtoupper($conjunction);
 
@@ -92,8 +88,6 @@ class QueryExpression implements ExpressionInterface, Countable
 
     /**
      * Gets the currently configured conjunction for the conditions at this level of the expression tree.
-     *
-     * @return string
      */
     public function getConjunction(): string
     {
@@ -120,7 +114,7 @@ class QueryExpression implements ExpressionInterface, Countable
      * @see \Cake\Database\Query::where() for examples on conditions
      * @return $this
      */
-    public function add(ExpressionInterface|array|string $conditions, array $types = [])
+    public function add(ExpressionInterface|array|string $conditions, array $types = []): static
     {
         if (is_string($conditions) || $conditions instanceof ExpressionInterface) {
             $this->_conditions[] = $conditions;
@@ -330,7 +324,6 @@ class QueryExpression implements ExpressionInterface, Countable
      * @param \Cake\Database\ExpressionInterface|object|scalar|null $value The case value.
      * @param string|null $type The case value type. If no type is provided, the type will be tried to be inferred
      *  from the value.
-     * @return \Cake\Database\Expression\CaseStatementExpression
      */
     public function case(mixed $value = null, ?string $type = null): CaseStatementExpression
     {
@@ -433,7 +426,6 @@ class QueryExpression implements ExpressionInterface, Countable
      * @param \Cake\Database\ExpressionInterface|\Closure|array|string $conditions to be joined with AND
      * @param array<string, string> $types Associative array of fields pointing to the type of the
      * values that are being passed. Used for correctly binding values to statements.
-     * @return static
      */
     public function and(ExpressionInterface|Closure|array|string $conditions, array $types = []): static
     {
@@ -451,7 +443,6 @@ class QueryExpression implements ExpressionInterface, Countable
      * @param \Cake\Database\ExpressionInterface|\Closure|array|string $conditions to be joined with OR
      * @param array<string, string> $types Associative array of fields pointing to the type of the
      * values that are being passed. Used for correctly binding values to statements.
-     * @return static
      */
     public function or(ExpressionInterface|Closure|array|string $conditions, array $types = []): static
     {
@@ -482,8 +473,6 @@ class QueryExpression implements ExpressionInterface, Countable
      * Returns the number of internal conditions that are stored in this expression.
      * Useful to determine if this expression object is void or it will generate
      * a non-empty string when compiled
-     *
-     * @return int
      */
     public function count(): int
     {
@@ -539,7 +528,7 @@ class QueryExpression implements ExpressionInterface, Countable
     /**
      * @inheritDoc
      */
-    public function traverse(Closure $callback)
+    public function traverse(Closure $callback): static
     {
         foreach ($this->_conditions as $c) {
             if ($c instanceof ExpressionInterface) {
@@ -566,7 +555,7 @@ class QueryExpression implements ExpressionInterface, Countable
      * @param \Closure $callback The callback to run for each part
      * @return $this
      */
-    public function iterateParts(Closure $callback)
+    public function iterateParts(Closure $callback): static
     {
         $parts = [];
         foreach ($this->_conditions as $k => $c) {
@@ -584,8 +573,6 @@ class QueryExpression implements ExpressionInterface, Countable
     /**
      * Returns true if this expression contains any other nested
      * ExpressionInterface objects
-     *
-     * @return bool
      */
     public function hasNestedExpression(): bool
     {
@@ -606,7 +593,6 @@ class QueryExpression implements ExpressionInterface, Countable
      *
      * @param array $conditions list of conditions to be stored in this object
      * @param array<int|string, string> $types list of types associated on fields referenced in $conditions
-     * @return void
      */
     protected function _addConditions(array $conditions, array $types): void
     {
@@ -675,7 +661,6 @@ class QueryExpression implements ExpressionInterface, Countable
      * @param string $condition The value from which the actual field and operator will
      * be extracted.
      * @param mixed $value The value to be bound to a placeholder for the field
-     * @return \Cake\Database\ExpressionInterface|string
      * @throws \InvalidArgumentException If operator is invalid or missing on NULL usage.
      */
     protected function _parseCondition(string $condition, mixed $value): ExpressionInterface|string

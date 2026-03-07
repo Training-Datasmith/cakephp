@@ -126,15 +126,11 @@ class Log
 
     /**
      * Internal flag for tracking whether configuration has been changed.
-     *
-     * @var bool
      */
     protected static bool $_dirtyConfig = false;
 
     /**
      * LogEngineRegistry class
-     *
-     * @var \Cake\Log\LogEngineRegistry
      */
     protected static LogEngineRegistry $_registry;
 
@@ -174,8 +170,6 @@ class Log
     /**
      * Creates registry if doesn't exist and creates all defined logging
      * adapters if config isn't loaded.
-     *
-     * @return \Cake\Log\LogEngineRegistry
      */
     protected static function getRegistry(): LogEngineRegistry
     {
@@ -203,8 +197,6 @@ class Log
      *
      * Resets the configured logging adapters, as well as any custom logging levels.
      * This will also clear the configuration data.
-     *
-     * @return void
      */
     public static function reset(): void
     {
@@ -265,7 +257,6 @@ class Log
      *
      * @param array<string, mixed>|string $key The name of the logger config, or an array of multiple configs.
      * @param \Psr\Log\LoggerInterface|\Closure|array<string, mixed>|null $config An array of name => config data for adapter.
-     * @return void
      * @throws \BadMethodCallException When trying to modify an existing config.
      */
     public static function setConfig(array|string $key, LoggerInterface|Closure|array|null $config = null): void

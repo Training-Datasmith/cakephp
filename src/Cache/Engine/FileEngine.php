@@ -48,8 +48,6 @@ class FileEngine extends CacheEngine
 {
     /**
      * Instance of SplFileObject class
-     *
-     * @var \SplFileObject
      */
     protected SplFileObject $_File;
 
@@ -82,8 +80,6 @@ class FileEngine extends CacheEngine
 
     /**
      * True unless FileEngine::__active(); fails
-     *
-     * @var bool
      */
     protected bool $_init = true;
 
@@ -100,7 +96,7 @@ class FileEngine extends CacheEngine
         parent::init($config);
 
         $this->_config['path'] ??= sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'cake_cache' . DIRECTORY_SEPARATOR;
-        if (substr($this->_config['path'], -1) !== DIRECTORY_SEPARATOR) {
+        if (substr((string) $this->_config['path'], -1) !== DIRECTORY_SEPARATOR) {
             $this->_config['path'] .= DIRECTORY_SEPARATOR;
         }
         if ($this->_groupPrefix) {
@@ -327,7 +323,6 @@ class FileEngine extends CacheEngine
      * Used to clear a directory of matching files.
      *
      * @param string $path The path to search.
-     * @return void
      */
     protected function _clearDirectory(string $path): void
     {
@@ -340,7 +335,7 @@ class FileEngine extends CacheEngine
             return;
         }
 
-        $prefixLength = strlen($this->_config['prefix']);
+        $prefixLength = strlen((string) $this->_config['prefix']);
 
         while (($entry = $dir->read()) !== false) {
             if (substr($entry, 0, $prefixLength) !== $this->_config['prefix']) {
@@ -448,8 +443,6 @@ class FileEngine extends CacheEngine
 
     /**
      * Determine if cache directory is writable
-     *
-     * @return bool
      */
     protected function _active(): bool
     {
@@ -504,7 +497,7 @@ class FileEngine extends CacheEngine
         /** @var iterable<\SplFileInfo> $filtered */
         $filtered = new CallbackFilterIterator(
             $contents,
-            function (SplFileInfo $current) use ($group, $prefix) {
+            function (SplFileInfo $current) use ($group, $prefix): bool {
                 if (!$current->isFile()) {
                     return false;
                 }

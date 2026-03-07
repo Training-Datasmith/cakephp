@@ -182,8 +182,6 @@ class DtoMapper
      * Clear the reflection cache.
      *
      * Useful for testing or when classes are reloaded.
-     *
-     * @return void
      */
     public static function clearCache(): void
     {

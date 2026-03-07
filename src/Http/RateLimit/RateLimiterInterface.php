@@ -51,7 +51,6 @@ interface RateLimiterInterface
      * ```
      *
      * @param string $identifier The identifier to reset
-     * @return void
      */
     public function reset(string $identifier): void;
 }

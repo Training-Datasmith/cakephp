@@ -27,9 +27,6 @@ use Cake\Database\Exception\DatabaseException;
  */
 class TransactionStrategy implements FixtureStrategyInterface
 {
-    /**
-     * @var \Cake\TestSuite\Fixture\FixtureHelper
-     */
     protected FixtureHelper $helper;
 
     /**

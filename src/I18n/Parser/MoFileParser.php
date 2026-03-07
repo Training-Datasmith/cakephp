@@ -158,7 +158,6 @@ class MoFileParser
      *
      * @param resource $stream The File being read.
      * @param bool $isBigEndian Whether the current platform is Big Endian
-     * @return int
      */
     protected function _readLong($stream, bool $isBigEndian): int
     {

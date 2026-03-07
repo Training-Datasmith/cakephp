@@ -27,9 +27,6 @@ use Psr\Http\Message\ResponseInterface;
  */
 abstract class ResponseBase extends Constraint
 {
-    /**
-     * @var \Psr\Http\Message\ResponseInterface
-     */
     protected ResponseInterface $response;
 
     /**

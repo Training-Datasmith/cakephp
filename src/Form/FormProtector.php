@@ -34,8 +34,6 @@ class FormProtector
 {
     /**
      * Fields list.
-     *
-     * @var array
      */
     protected array $fields = [];
 
@@ -48,8 +46,6 @@ class FormProtector
 
     /**
      * Error message providing detail for failed validation.
-     *
-     * @var string|null
      */
     protected ?string $debugMessage = null;
 
@@ -59,7 +55,6 @@ class FormProtector
      * @param mixed $formData Form data.
      * @param string $url URL form was POSTed to.
      * @param string $sessionId Session id for hash generation.
-     * @return bool
      */
     public function validate(mixed $formData, string $url, string $sessionId): bool
     {
@@ -114,7 +109,7 @@ class FormProtector
      * @param mixed $value Field value, if value should not be tampered with.
      * @return $this
      */
-    public function addField(array|string $field, bool $lock = true, mixed $value = null)
+    public function addField(array|string $field, bool $lock = true, mixed $value = null): static
     {
         if (is_string($field)) {
             $field = $this->getFieldNameArray($field);
@@ -172,9 +167,7 @@ class FormProtector
             return Hash::filter(explode('.', $name));
         }
         $parts = explode('[', $name);
-        $parts = array_map(function (string $el) {
-            return trim($el, ']');
-        }, $parts);
+        $parts = array_map(fn(string $el) => trim($el, ']'), $parts);
 
         return Hash::filter($parts, 'strlen');
     }
@@ -187,7 +180,7 @@ class FormProtector
      * @param string $name The dot separated name for the field.
      * @return $this
      */
-    public function unlockField(string $name)
+    public function unlockField(string $name): static
     {
         if (!in_array($name, $this->unlockedFields, true)) {
             $this->unlockedFields[] = $name;
@@ -204,8 +197,6 @@ class FormProtector
 
     /**
      * Get validation error message.
-     *
-     * @return string|null
      */
     public function getError(): ?string
     {
@@ -288,13 +279,12 @@ class FormProtector
      * Return the fields list for the hash calculation
      *
      * @param array $formData Data array
-     * @return array
      */
     protected function extractFields(array $formData): array
     {
         $locked = '';
-        $token = urldecode($formData['_Token']['fields']);
-        $unlocked = urldecode($formData['_Token']['unlocked']);
+        $token = urldecode((string) $formData['_Token']['fields']);
+        $unlocked = urldecode((string) $formData['_Token']['unlocked']);
 
         if (str_contains($token, ':')) {
             [, $locked] = explode(':', $token, 2);
@@ -351,9 +341,8 @@ class FormProtector
         }
         sort($fieldList, SORT_STRING);
         ksort($lockedFields, SORT_STRING);
-        $fieldList += $lockedFields;
 
-        return $fieldList;
+        return $fieldList + $lockedFields;
     }
 
     /**
@@ -364,7 +353,7 @@ class FormProtector
      */
     protected function sortedUnlockedFields(array $formData): array
     {
-        $unlocked = urldecode($formData['_Token']['unlocked']);
+        $unlocked = urldecode((string) $formData['_Token']['unlocked']);
         if (!$unlocked) {
             return [];
         }
@@ -430,7 +419,6 @@ class FormProtector
      * @param array<string> $unlockedFields Unlocked fields.
      * @param string $url Form URL.
      * @param string $sessionId Session Id.
-     * @return string
      */
     protected function generateHash(array $fields, array $unlockedFields, string $url, string $sessionId): string
     {

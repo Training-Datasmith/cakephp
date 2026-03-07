@@ -40,8 +40,6 @@ class AssetMiddleware implements MiddlewareInterface
 {
     /**
      * The amount of time to cache the asset.
-     *
-     * @var string
      */
     protected string $cacheTime = '+1 day';
 
@@ -67,11 +65,11 @@ class AssetMiddleware implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $url = $request->getUri()->getPath();
-        if (str_contains($url, '..') || !str_contains($url, '.')) {
+        if (str_contains((string) $url, '..') || !str_contains((string) $url, '.')) {
             return $handler->handle($request);
         }
 
-        if (str_contains($url, '/.')) {
+        if (str_contains((string) $url, '/.')) {
             return $handler->handle($request);
         }
 
@@ -100,7 +98,6 @@ class AssetMiddleware implements MiddlewareInterface
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request to check.
      * @param \SplFileInfo $file The file object to compare.
-     * @return bool
      */
     protected function isNotModified(ServerRequestInterface $request, SplFileInfo $file): bool
     {

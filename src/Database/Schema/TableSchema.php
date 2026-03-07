@@ -33,13 +33,6 @@ use Cake\Database\Exception\DatabaseException;
 class TableSchema implements TableSchemaInterface, SqlGeneratorInterface
 {
     /**
-     * The name of the table
-     *
-     * @var string
-     */
-    protected string $_table;
-
-    /**
      * Columns in the table.
      *
      * @var array<string, \Cake\Database\Schema\Column>
@@ -76,8 +69,6 @@ class TableSchema implements TableSchemaInterface, SqlGeneratorInterface
 
     /**
      * Whether the table is temporary
-     *
-     * @var bool
      */
     protected bool $_temporary = false;
 
@@ -337,12 +328,14 @@ class TableSchema implements TableSchemaInterface, SqlGeneratorInterface
     /**
      * Constructor.
      *
-     * @param string $table The table name.
+     * @param string $_table The table name.
      * @param array<string, array|string> $columns The list of columns for the schema.
      */
-    public function __construct(string $table, array $columns = [])
+    public function __construct(/**
+     * The name of the table
+     */
+    protected string $_table, array $columns = [])
     {
-        $this->_table = $table;
         foreach ($columns as $field => $definition) {
             $this->addColumn($field, $definition);
         }
@@ -359,7 +352,7 @@ class TableSchema implements TableSchemaInterface, SqlGeneratorInterface
     /**
      * @inheritDoc
      */
-    public function addColumn(string $name, array|string $attrs)
+    public function addColumn(string $name, array|string $attrs): static
     {
         if (is_string($attrs)) {
             $attrs = ['type' => $attrs];
@@ -405,7 +398,7 @@ class TableSchema implements TableSchemaInterface, SqlGeneratorInterface
     /**
      * @inheritDoc
      */
-    public function removeColumn(string $name)
+    public function removeColumn(string $name): static
     {
         unset($this->_columns[$name], $this->_typeMap[$name]);
 
@@ -455,7 +448,6 @@ class TableSchema implements TableSchemaInterface, SqlGeneratorInterface
      * Will raise an exception if the column does not exist.
      *
      * @param string $name The name of the column to get.
-     * @return \Cake\Database\Schema\Column
      */
     public function column(string $name): Column
     {
@@ -487,7 +479,7 @@ class TableSchema implements TableSchemaInterface, SqlGeneratorInterface
     /**
      * @inheritDoc
      */
-    public function setColumnType(string $name, string $type)
+    public function setColumnType(string $name, string $type): static
     {
         if (!isset($this->_columns[$name])) {
             $message = sprintf(
@@ -569,7 +561,7 @@ class TableSchema implements TableSchemaInterface, SqlGeneratorInterface
     /**
      * @inheritDoc
      */
-    public function addIndex(string $name, array|string $attrs)
+    public function addIndex(string $name, array|string $attrs): static
     {
         if (is_string($attrs)) {
             $attrs = ['type' => $attrs];
@@ -649,7 +641,6 @@ class TableSchema implements TableSchemaInterface, SqlGeneratorInterface
      * Will raise an exception if no index can be found.
      *
      * @param string $name The name of the index to get.
-     * @return \Cake\Database\Schema\Index
      */
     public function index(string $name): Index
     {
@@ -683,7 +674,7 @@ class TableSchema implements TableSchemaInterface, SqlGeneratorInterface
     /**
      * @inheritDoc
      */
-    public function addConstraint(string $name, array|string $attrs)
+    public function addConstraint(string $name, array|string $attrs): static
     {
         if (is_string($attrs)) {
             $attrs = ['type' => $attrs];
@@ -759,7 +750,7 @@ class TableSchema implements TableSchemaInterface, SqlGeneratorInterface
 
                 if ($constraint->getReferencedTable()) {
                     $constraint->setColumns(array_unique(array_merge(
-                        (array)$constraint->getReferencedColumns(),
+                        $constraint->getReferencedColumns(),
                         [$attrs['references'][1]],
                     )));
                 }
@@ -782,7 +773,7 @@ class TableSchema implements TableSchemaInterface, SqlGeneratorInterface
     /**
      * @inheritDoc
      */
-    public function dropConstraint(string $name)
+    public function dropConstraint(string $name): static
     {
         if (isset($this->_constraints[$name])) {
             unset($this->_constraints[$name]);
@@ -793,8 +784,6 @@ class TableSchema implements TableSchemaInterface, SqlGeneratorInterface
 
     /**
      * Check whether a table has an autoIncrement column defined.
-     *
-     * @return bool
      */
     public function hasAutoincrement(): bool
     {
@@ -908,7 +897,7 @@ class TableSchema implements TableSchemaInterface, SqlGeneratorInterface
     /**
      * @inheritDoc
      */
-    public function setOptions(array $options)
+    public function setOptions(array $options): static
     {
         $this->_options = $options + $this->_options;
 
@@ -926,7 +915,7 @@ class TableSchema implements TableSchemaInterface, SqlGeneratorInterface
     /**
      * @inheritDoc
      */
-    public function setTemporary(bool $temporary)
+    public function setTemporary(bool $temporary): static
     {
         $this->_temporary = $temporary;
 
@@ -1012,7 +1001,6 @@ class TableSchema implements TableSchemaInterface, SqlGeneratorInterface
      * contain arrays of objects.
      *
      * @param array<string, mixed> $data The serialized data.
-     * @return void
      */
     public function __unserialize(array $data): void
     {

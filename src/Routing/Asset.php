@@ -28,8 +28,6 @@ class Asset
 {
     /**
      * Inflection type.
-     *
-     * @var string
      */
     protected static string $inflectionType = 'underscore';
 
@@ -38,7 +36,6 @@ class Asset
      *
      * @param string $inflectionType Inflection type. Value should be a valid
      *  method name of `Inflector` class like `'dasherize'` or `'underscore`'`.
-     * @return void
      */
     public static function setInflectionType(string $inflectionType): void
     {
@@ -172,7 +169,7 @@ class Asset
         if (
             !empty($options['ext']) &&
             !str_contains($path, '?') &&
-            !str_ends_with($path, $options['ext'])
+            !str_ends_with($path, (string) $options['ext'])
         ) {
             $path .= $options['ext'];
         }
@@ -211,7 +208,6 @@ class Asset
      * Encodes URL parts using rawurlencode().
      *
      * @param string $url The URL to encode.
-     * @return string
      */
     protected static function encodeUrl(string $url): string
     {
@@ -220,8 +216,8 @@ class Asset
             $path = $url;
         }
 
-        $parts = array_map('rawurldecode', explode('/', $path));
-        $parts = array_map('rawurlencode', $parts);
+        $parts = array_map(rawurldecode(...), explode('/', $path));
+        $parts = array_map(rawurlencode(...), $parts);
         $encoded = implode('/', $parts);
 
         return str_replace($path, $encoded, $url);
@@ -336,8 +332,6 @@ class Asset
 
     /**
      * Get webroot from request.
-     *
-     * @return string
      */
     protected static function requestWebroot(): string
     {

@@ -86,7 +86,6 @@ HTML;
      * @param string $text The text to insert. Assumed to be HTML safe.
      * @param string $id The error id scope.
      * @param string $suffix The element selector.
-     * @return string
      */
     private function renderToggle(string $text, string $id, string $suffix): string
     {

@@ -49,7 +49,6 @@ interface LocatorInterface
      * Check to see if an instance exists in the registry.
      *
      * @param string $alias The alias to check for.
-     * @return bool
      */
     public function exists(string $alias): bool;
 
@@ -57,14 +56,11 @@ interface LocatorInterface
      * Removes a repository instance from the registry.
      *
      * @param string $alias The alias to remove.
-     * @return void
      */
     public function remove(string $alias): void;
 
     /**
      * Clears the registry of configuration and instances.
-     *
-     * @return void
      */
     public function clear(): void;
 }

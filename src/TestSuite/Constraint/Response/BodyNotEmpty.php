@@ -26,7 +26,6 @@ class BodyNotEmpty extends BodyEmpty
      * Checks assertion
      *
      * @param mixed $other Expected type
-     * @return bool
      */
     public function matches(mixed $other): bool
     {
@@ -35,8 +34,6 @@ class BodyNotEmpty extends BodyEmpty
 
     /**
      * Assertion message
-     *
-     * @return string
      */
     public function toString(): string
     {

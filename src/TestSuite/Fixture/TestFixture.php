@@ -37,8 +37,6 @@ class TestFixture implements FixtureInterface
 
     /**
      * Fixture Datasource
-     *
-     * @var string
      */
     public string $connection = 'test';
 
@@ -47,8 +45,6 @@ class TestFixture implements FixtureInterface
      *
      * If set, tableAlias must initially be empty.
      * $tableAlias will then be inflected as Inflector::camelize($table).
-     *
-     * @var string
      */
     public string $table = '';
 
@@ -61,22 +57,16 @@ class TestFixture implements FixtureInterface
      * If both table and tableAlias are empty, the alias will be inflected
      * from the class name using tableize() then camelize() to respect
      * custom Inflector rules.
-     *
-     * @var string
      */
     public string $tableAlias = '';
 
     /**
      * Fixture records to be inserted.
-     *
-     * @var array
      */
     public array $records = [];
 
     /**
      * The schema for this fixture.
-     *
-     * @var \Cake\Database\Schema\TableSchemaInterface&\Cake\Database\Schema\SqlGeneratorInterface
      */
     protected TableSchemaInterface&SqlGeneratorInterface $_schema;
 
@@ -126,7 +116,6 @@ class TestFixture implements FixtureInterface
     /**
      * Initialize the fixture.
      *
-     * @return void
      * @throws \Cake\ORM\Exception\MissingTableClassException When importing from a table that does not exist.
      */
     public function init(): void
@@ -146,8 +135,6 @@ class TestFixture implements FixtureInterface
      *
      * Uses tableize() then camelize() to respect custom Inflector rules
      * like uninflected words.
-     *
-     * @return string
      */
     protected function _aliasFromClass(): string
     {
@@ -161,7 +148,6 @@ class TestFixture implements FixtureInterface
     /**
      * Build fixture schema directly from the datasource
      *
-     * @return void
      * @throws \Cake\Core\Exception\CakeException when trying to reflect a table that does not exist
      */
     protected function _schemaFromReflection(): void
@@ -217,8 +203,6 @@ class TestFixture implements FixtureInterface
 
     /**
      * Converts the internal records into data used to generate a query.
-     *
-     * @return array
      */
     protected function _getRecords(): array
     {
@@ -231,7 +215,7 @@ class TestFixture implements FixtureInterface
             if ($this->strictFields) {
                 $invalidFields = array_values(array_filter(
                     $recordFields,
-                    fn(int|string $f) => !in_array($f, $columns, true),
+                    fn(int|string $f): bool => !in_array($f, $columns, true),
                 ));
                 if ($invalidFields !== []) {
                     throw new CakeException(
@@ -276,8 +260,6 @@ class TestFixture implements FixtureInterface
 
     /**
      * Returns the table schema for this fixture.
-     *
-     * @return \Cake\Database\Schema\TableSchemaInterface&\Cake\Database\Schema\SqlGeneratorInterface
      */
     public function getTableSchema(): TableSchemaInterface&SqlGeneratorInterface
     {

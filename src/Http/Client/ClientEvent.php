@@ -48,8 +48,6 @@ class ClientEvent extends Event
 
     /**
      * The result value of the event listeners
-     *
-     * @return \Cake\Http\Client\Response|null
      */
     public function getResult(): ?Response
     {
@@ -76,10 +74,9 @@ class ClientEvent extends Event
     /**
      * Set request instance.
      *
-     * @param \Psr\Http\Message\RequestInterface $request
      * @return $this
      */
-    public function setRequest(RequestInterface $request)
+    public function setRequest(RequestInterface $request): static
     {
         $this->_data['request'] = $request;
 
@@ -88,8 +85,6 @@ class ClientEvent extends Event
 
     /**
      * Get the request instance.
-     *
-     * @return \Psr\Http\Message\RequestInterface
      */
     public function getRequest(): RequestInterface
     {
@@ -101,7 +96,7 @@ class ClientEvent extends Event
      *
      * @return $this
      */
-    public function setAdapterOptions(array $options = [])
+    public function setAdapterOptions(array $options = []): static
     {
         $this->_data['adapterOptions'] = $options;
 
@@ -110,8 +105,6 @@ class ClientEvent extends Event
 
     /**
      * Get the adapter options.
-     *
-     * @return array
      */
     public function getAdapterOptions(): array
     {

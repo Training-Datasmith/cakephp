@@ -38,7 +38,6 @@ class QueryFactory
      * Create a new InsertQuery instance.
      *
      * @param \Cake\ORM\Table $table The table this query is starting on.
-     * @return \Cake\ORM\Query\InsertQuery
      */
     public function insert(Table $table): InsertQuery
     {
@@ -49,7 +48,6 @@ class QueryFactory
      * Create a new UpdateQuery instance.
      *
      * @param \Cake\ORM\Table $table The table this query is starting on.
-     * @return \Cake\ORM\Query\UpdateQuery
      */
     public function update(Table $table): UpdateQuery
     {
@@ -60,7 +58,6 @@ class QueryFactory
      * Create a new DeleteQuery instance.
      *
      * @param \Cake\ORM\Table $table The table this query is starting on.
-     * @return \Cake\ORM\Query\DeleteQuery
      */
     public function delete(Table $table): DeleteQuery
     {

@@ -42,8 +42,6 @@ class PluginLoadCommand extends Command
 
     /**
      * Config file
-     *
-     * @var string
      */
     protected string $configFile = CONFIG . 'plugins.php';
 
@@ -134,7 +132,6 @@ class PluginLoadCommand extends Command
      *
      * @param string $plugin Plugin name.
      * @param array<string, mixed> $options Plugin options.
-     * @return int
      */
     protected function modifyConfigFile(string $plugin, array $options): int
     {
@@ -163,7 +160,6 @@ class PluginLoadCommand extends Command
     }
 
     /**
-     * @param string $path
      * @return array<string, bool>
      */
     protected function recommendations(string $path): array
@@ -203,7 +199,6 @@ class PluginLoadCommand extends Command
      * Get the option parser.
      *
      * @param \Cake\Console\ConsoleOptionParser $parser The option parser to update
-     * @return \Cake\Console\ConsoleOptionParser
      */
     public function buildOptionParser(ConsoleOptionParser $parser): ConsoleOptionParser
     {

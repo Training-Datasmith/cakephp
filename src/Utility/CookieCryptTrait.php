@@ -34,8 +34,6 @@ trait CookieCryptTrait
 
     /**
      * Returns the encryption key to be used.
-     *
-     * @return string
      */
     abstract protected function _getCookieEncryptionKey(): string;
 
@@ -71,7 +69,6 @@ trait CookieCryptTrait
      * Helper method for validating encryption cipher names.
      *
      * @param string $encrypt The cipher name.
-     * @return void
      * @throws \RuntimeException When an invalid cipher is provided.
      */
     protected function _checkCipher(string $encrypt): void

@@ -64,39 +64,17 @@ abstract class Cell implements EventDispatcherInterface, Stringable
     protected View $View;
 
     /**
-     * An instance of a Cake\Http\ServerRequest object that contains information about the current request.
-     * This object contains all the information about a request and several methods for reading
-     * additional information about the request.
-     *
-     * @var \Cake\Http\ServerRequest
-     */
-    protected ServerRequest $request;
-
-    /**
-     * An instance of a Response object that contains information about the impending response
-     *
-     * @var \Cake\Http\Response
-     */
-    protected Response $response;
-
-    /**
      * The cell's action to invoke.
-     *
-     * @var string
      */
     protected string $action;
 
     /**
      * Arguments to pass to cell's action.
-     *
-     * @var array
      */
     protected array $args = [];
 
     /**
      * The plugin name this cell belongs to.
-     *
-     * @var string|null
      */
     protected ?string $plugin = null;
 
@@ -111,8 +89,6 @@ abstract class Cell implements EventDispatcherInterface, Stringable
 
     /**
      * Caching setup.
-     *
-     * @var array|bool
      */
     protected array|bool $_cache = false;
 
@@ -125,16 +101,22 @@ abstract class Cell implements EventDispatcherInterface, Stringable
      * @param array<string, mixed> $cellOptions Cell options to apply.
      */
     public function __construct(
-        ServerRequest $request,
-        Response $response,
+        /**
+         * An instance of a Cake\Http\ServerRequest object that contains information about the current request.
+         * This object contains all the information about a request and several methods for reading
+         * additional information about the request.
+         */
+        protected ServerRequest $request,
+        /**
+         * An instance of a Response object that contains information about the impending response
+         */
+        protected Response $response,
         ?EventManagerInterface $eventManager = null,
         array $cellOptions = [],
     ) {
         if ($eventManager !== null) {
             $this->setEventManager($eventManager);
         }
-        $this->request = $request;
-        $this->response = $response;
 
         $this->_validCellOptions = array_merge(['action', 'args', 'plugin'], $this->_validCellOptions);
         foreach ($this->_validCellOptions as $var) {
@@ -154,8 +136,6 @@ abstract class Cell implements EventDispatcherInterface, Stringable
      *
      * Implement this method to avoid having to overwrite
      * the constructor and calling parent::__construct().
-     *
-     * @return void
      */
     public function initialize(): void
     {
@@ -163,8 +143,6 @@ abstract class Cell implements EventDispatcherInterface, Stringable
 
     /**
      * Get the view builder being used.
-     *
-     * @return \Cake\View\ViewBuilder
      */
     public function viewBuilder(): ViewBuilder
     {

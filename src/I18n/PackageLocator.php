@@ -66,7 +66,6 @@ class PackageLocator
      * @param string $name The package name.
      * @param string $locale The locale for the package.
      * @param \Cake\I18n\Package|callable $spec A callable that returns a package or Package instance.
-     * @return void
      */
     public function set(string $name, string $locale, Package|callable $spec): void
     {
@@ -79,7 +78,6 @@ class PackageLocator
      *
      * @param string $name The package name.
      * @param string $locale The locale for the package.
-     * @return \Cake\I18n\Package
      */
     public function get(string $name, string $locale): Package
     {
@@ -94,7 +92,6 @@ class PackageLocator
             $this->converted[$name][$locale] = true;
         }
 
-        /** @var \Cake\I18n\Package */
         return $this->registry[$name][$locale];
     }
 
@@ -103,7 +100,6 @@ class PackageLocator
      *
      * @param string $name The package name.
      * @param string $locale The locale for the package.
-     * @return bool
      */
     public function has(string $name, string $locale): bool
     {

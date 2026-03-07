@@ -69,7 +69,6 @@ class TimeHelper extends Helper
      *
      * @param \Cake\Chronos\ChronosDate|\DateTimeInterface|string|int $dateString UNIX timestamp, strtotime() valid string or DateTime object
      * @param \DateTimeZone|string|null $timezone User's timezone string or DateTimeZone object
-     * @return \Cake\I18n\DateTime
      */
     public function fromString(
         ChronosDate|DateTimeInterface|string|int $dateString,
@@ -369,7 +368,6 @@ class TimeHelper extends Helper
      *    Example of valid types: 6 hours, 2 days, 1 minute.
      * @param \Cake\Chronos\ChronosDate|\DateTimeInterface|string|int $dateString UNIX timestamp, strtotime() valid string or DateTime object
      * @param \DateTimeZone|string|null $timezone User's timezone string or DateTimeZone object
-     * @return bool
      * @see \Cake\I18n\Time::wasWithinLast()
      */
     public function wasWithinLast(
@@ -387,7 +385,6 @@ class TimeHelper extends Helper
      *    Example of valid types: 6 hours, 2 days, 1 minute.
      * @param \Cake\Chronos\ChronosDate|\DateTimeInterface|string|int $dateString UNIX timestamp, strtotime() valid string or DateTime object
      * @param \DateTimeZone|string|null $timezone User's timezone string or DateTimeZone object
-     * @return bool
      * @see \Cake\I18n\Time::isWithinNext()
      */
     public function isWithinNext(

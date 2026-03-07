@@ -63,15 +63,11 @@ class XmlView extends SerializedView
 {
     /**
      * XML layouts are located in the `layouts/xml/` subdirectory
-     *
-     * @var string
      */
     protected string $layoutPath = 'xml';
 
     /**
      * XML views are located in the 'xml' subdirectory for controllers' views.
-     *
-     * @var string
      */
     protected string $subDir = 'xml';
 

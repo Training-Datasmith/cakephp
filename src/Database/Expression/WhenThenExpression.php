@@ -47,8 +47,6 @@ class WhenThenExpression implements ExpressionInterface
     /**
      * The type map to use when using an array of conditions for the
      * `WHEN` value.
-     *
-     * @var \Cake\Database\TypeMap
      */
     protected TypeMap $_typeMap;
 
@@ -61,8 +59,6 @@ class WhenThenExpression implements ExpressionInterface
 
     /**
      * The `WHEN` value type.
-     *
-     * @var array|string|null
      */
     protected array|string|null $whenType = null;
 
@@ -76,15 +72,11 @@ class WhenThenExpression implements ExpressionInterface
     /**
      * Whether the `THEN` value has been defined, eg whether `then()`
      * has been invoked.
-     *
-     * @var bool
      */
     protected bool $hasThenBeenDefined = false;
 
     /**
      * The `THEN` result type.
-     *
-     * @var string|null
      */
     protected ?string $thenType = null;
 
@@ -118,7 +110,7 @@ class WhenThenExpression implements ExpressionInterface
      * neither a string, nor null.
      * @see CaseStatementExpression::when() for a more detailed usage explanation.
      */
-    public function when(object|array|string|float|int|bool $when, array|string|null $type = null)
+    public function when(object|array|string|float|int|bool $when, array|string|null $type = null): static
     {
         if (is_array($when)) {
             if (!$when) {
@@ -180,7 +172,7 @@ class WhenThenExpression implements ExpressionInterface
      *  result value.
      * @return $this
      */
-    public function then(mixed $result, ?string $type = null)
+    public function then(mixed $result, ?string $type = null): static
     {
         if (
             $result !== null &&
@@ -207,7 +199,6 @@ class WhenThenExpression implements ExpressionInterface
     /**
      * Returns the expression's result value type.
      *
-     * @return string|null
      * @see WhenThenExpression::then()
      */
     public function getResultType(): ?string
@@ -287,7 +278,7 @@ class WhenThenExpression implements ExpressionInterface
     /**
      * @inheritDoc
      */
-    public function traverse(Closure $callback)
+    public function traverse(Closure $callback): static
     {
         if ($this->when instanceof ExpressionInterface) {
             $callback($this->when);
