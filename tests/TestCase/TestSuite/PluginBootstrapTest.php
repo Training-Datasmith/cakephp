@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,14 +15,17 @@ declare(strict_types=1);
  * @since         5.3.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Test\TestCase\TestSuite;
 
 use Cake\Core\Configure;
 use Cake\Core\Plugin;
+
+use function Cake\TestSuite\enablePluginLoadingForTests;
+
 use Cake\TestSuite\IntegrationTestTrait;
 use Cake\TestSuite\TestCase;
 use RuntimeException;
-use function Cake\TestSuite\enablePluginLoadingForTests;
 
 /**
  * Tests for the global plugin loading function in src/TestSuite/functions.php

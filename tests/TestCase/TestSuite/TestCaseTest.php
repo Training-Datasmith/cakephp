@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,9 +15,13 @@ declare(strict_types=1);
  * @since         1.2.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Test\TestCase\TestSuite;
 
 use Cake\Core\Configure;
+
+use function Cake\Core\deprecationWarning;
+
 use Cake\Database\Connection;
 use Cake\Datasource\ConnectionManager;
 use Cake\Event\Event;
@@ -41,7 +46,6 @@ use TestApp\Model\Table\SecondaryPostsTable;
 use TestPlugin\Model\Entity\Author;
 use TestPlugin\Model\Table\AuthorsTable;
 use TestPlugin\Model\Table\TestPluginCommentsTable;
-use function Cake\Core\deprecationWarning;
 
 /**
  * TestCaseTest
@@ -147,7 +151,7 @@ class TestCaseTest extends TestCase
     {
         $errorLevel = error_reporting();
         $this->withErrorReporting(E_USER_WARNING, function (): void {
-              $this->assertSame(E_USER_WARNING, error_reporting());
+            $this->assertSame(E_USER_WARNING, error_reporting());
         });
         $this->assertSame($errorLevel, error_reporting());
     }

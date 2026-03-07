@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,13 +15,16 @@ declare(strict_types=1);
  * @since         0.9.1
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\View\Helper;
 
 use Cake\Core\Configure;
+
+use function Cake\Core\h;
+
 use Cake\Http\MimeType;
 use Cake\View\Helper;
 use Cake\View\StringTemplateTrait;
-use function Cake\Core\h;
 
 /**
  * Html Helper class for easy use of HTML widgets.

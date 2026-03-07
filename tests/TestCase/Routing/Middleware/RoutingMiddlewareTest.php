@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         3.3.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Test\TestCase\Routing\Middleware;
 
 use Cake\Core\Configure;
@@ -461,7 +463,7 @@ class RoutingMiddlewareTest extends TestCase
      */
     public function testAppWithoutContainerApplicationInterface(): void
     {
-        $app = new class implements RoutingApplicationInterface {
+        $app = new class () implements RoutingApplicationInterface {
             public function routes(RouteBuilder $routes): void
             {
             }

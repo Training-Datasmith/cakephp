@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Collection\Iterator;
 
 use Cake\Chronos\ChronosDate;
@@ -21,6 +23,7 @@ use Cake\Chronos\ChronosTime;
 use Cake\Collection\Collection;
 use DateTimeInterface;
 use Iterator;
+
 use const SORT_DESC;
 use const SORT_NUMERIC;
 

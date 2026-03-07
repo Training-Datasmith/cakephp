@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Collection;
 
 use AppendIterator;
@@ -39,10 +41,12 @@ use Iterator;
 use LimitIterator;
 use LogicException;
 use RecursiveIteratorIterator;
-use UnitEnum;
+
 use const SORT_ASC;
 use const SORT_DESC;
 use const SORT_NUMERIC;
+
+use UnitEnum;
 
 /**
  * Offers a handful of methods to manipulate iterators
@@ -88,7 +92,7 @@ trait CollectionTrait
      */
     public function filter(?callable $callback = null): CollectionInterface
     {
-        $callback ??= fn($v): bool => (bool)$v;
+        $callback ??= fn ($v): bool => (bool)$v;
 
         return new FilterIterator($this->unwrap(), $callback);
     }
@@ -100,9 +104,9 @@ trait CollectionTrait
      */
     public function reject(?callable $callback = null): CollectionInterface
     {
-        $callback ??= fn($v): bool => (bool)$v;
+        $callback ??= fn ($v): bool => (bool)$v;
 
-        return new FilterIterator($this->unwrap(), fn($value, $key, $items): bool => !$callback($value, $key, $items));
+        return new FilterIterator($this->unwrap(), fn ($value, $key, $items): bool => !$callback($value, $key, $items));
     }
 
     /**
@@ -112,7 +116,7 @@ trait CollectionTrait
      */
     public function unique(?callable $callback = null): CollectionInterface
     {
-        $callback ??= fn($v) => $v;
+        $callback ??= fn ($v) => $v;
 
         return new UniqueIterator($this->unwrap(), $callback);
     }
@@ -219,7 +223,7 @@ trait CollectionTrait
         $extractor = new ExtractIterator($this->unwrap(), $path);
         if (is_string($path) && str_contains($path, '{*}')) {
             return $extractor
-                ->filter(fn($data) => is_iterable($data))
+                ->filter(fn ($data) => is_iterable($data))
                 ->unfold();
         }
 
@@ -411,8 +415,8 @@ trait CollectionTrait
     {
         $callback = $this->_propertyExtractor($path);
 
-        $mapper = fn($value, $key, MapReduce $mr) => $mr->emitIntermediate($value, $callback($value));
-        $reducer = fn($values, $key, MapReduce $mr) => $mr->emit(count($values), $key);
+        $mapper = fn ($value, $key, MapReduce $mr) => $mr->emitIntermediate($value, $callback($value));
+        $reducer = fn ($values, $key, MapReduce $mr) => $mr->emit(count($values), $key);
 
         return $this->newCollection(new MapReduce($this->unwrap(), $mapper, $reducer)); // @phpstan-ignore return.type
     }
@@ -964,7 +968,7 @@ trait CollectionTrait
      */
     public function unfold(?callable $callback = null): CollectionInterface
     {
-        $callback ??= fn($v) => $v;
+        $callback ??= fn ($v) => $v;
 
         return $this->newCollection(
             new RecursiveIteratorIterator(
@@ -1150,7 +1154,7 @@ trait CollectionTrait
         $changeIndex = $lastIndex;
 
         while (!($changeIndex === 0 && $currentIndexes[0] === $collectionArraysCounts[0])) {
-            $currentCombination = array_map(fn($value, array $keys, $index) => $value[$keys[$index]], $collectionArrays, $collectionArraysKeys, $currentIndexes);
+            $currentCombination = array_map(fn ($value, array $keys, $index) => $value[$keys[$index]], $collectionArrays, $collectionArraysKeys, $currentIndexes);
 
             if ($filter === null || $filter($currentCombination)) {
                 $result[] = $operation === null ? $currentCombination : $operation($currentCombination);

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         3.5.0
  * @license       https://www.opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Http\Middleware;
 
 use InvalidArgumentException;
@@ -252,7 +254,7 @@ class SecurityHeadersMiddleware implements MiddlewareInterface
     protected function checkValues(string $value, array $allowed): void
     {
         if (!in_array($value, $allowed, true)) {
-            array_walk($allowed, fn(string &$x): string => $x = "`{$x}`");
+            array_walk($allowed, fn (string &$x): string => $x = "`{$x}`");
             throw new InvalidArgumentException(sprintf(
                 'Invalid arg `%s`, use one of these: %s.',
                 $value,

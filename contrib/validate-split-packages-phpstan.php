@@ -1,5 +1,6 @@
 #!/usr/bin/php -q
 <?php
+
 declare(strict_types=1);
 
 /*

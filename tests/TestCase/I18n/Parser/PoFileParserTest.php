@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,17 +15,20 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Test\TestCase\I18n\Parser;
 
 use Cake\Cache\Cache;
 use Cake\Core\Configure;
+
+use function Cake\I18n\__;
+use function Cake\I18n\__d;
+use function Cake\I18n\__x;
+
 use Cake\I18n\I18n;
 use Cake\I18n\Package;
 use Cake\I18n\Parser\PoFileParser;
 use Cake\TestSuite\TestCase;
-use function Cake\I18n\__;
-use function Cake\I18n\__d;
-use function Cake\I18n\__x;
 
 /**
  * Tests the PoFileLoader

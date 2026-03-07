@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -12,10 +13,14 @@ declare(strict_types=1);
  * @since         3.1.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Test\TestCase\Mailer;
 
 use BadMethodCallException;
 use Cake\Core\Configure;
+
+use function Cake\Core\env;
+
 use Cake\Log\Log;
 use Cake\Mailer\AbstractTransport;
 use Cake\Mailer\Exception\MissingActionException;
@@ -28,7 +33,6 @@ use Cake\View\Exception\MissingTemplateException;
 use DateTime;
 use InvalidArgumentException;
 use TestApp\Mailer\TestMailer;
-use function Cake\Core\env;
 
 class MailerTest extends TestCase
 {
@@ -88,7 +92,7 @@ class MailerTest extends TestCase
         $result = $this->mailer->getTransport();
         $this->assertInstanceOf(DebugTransport::class, $result);
 
-        $instance = new class extends DebugTransport {
+        $instance = new class () extends DebugTransport {
         };
         $this->mailer->setTransport($instance);
         $this->assertSame($instance, $this->mailer->getTransport());
@@ -322,7 +326,7 @@ class MailerTest extends TestCase
     {
         TransportFactory::drop('default');
 
-        $instance = new class extends AbstractTransport {
+        $instance = new class () extends AbstractTransport {
             public function send(Message $message): array
             {
                 return [];

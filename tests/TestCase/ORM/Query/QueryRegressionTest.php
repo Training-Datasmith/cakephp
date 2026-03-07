@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,7 +15,10 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Test\TestCase\ORM\Query;
+
+use function Cake\Collection\collection;
 
 use Cake\Database\Driver\Sqlserver;
 use Cake\Database\Exception\DatabaseException;
@@ -31,7 +35,6 @@ use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use TestApp\Model\Table\ArticlesTable;
 use TestApp\Model\Table\TagsTable;
-use function Cake\Collection\collection;
 
 /**
  * Contains regression test for the Query builder

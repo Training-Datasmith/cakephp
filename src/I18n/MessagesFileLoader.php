@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,14 +15,17 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\I18n;
 
 use Cake\Core\App;
 use Cake\Core\Exception\CakeException;
 use Cake\Core\Plugin;
+
+use function Cake\Core\pluginSplit;
+
 use Cake\Utility\Inflector;
 use Locale;
-use function Cake\Core\pluginSplit;
 
 /**
  * A generic translations package factory that will load translations files
@@ -80,14 +84,14 @@ class MessagesFileLoader
     public function __construct(/**
      * The package (domain) name.
      */
-    protected string $_name, /**
+        protected string $_name, /**
      * The locale to load for the given package.
      */
-    protected string $_locale, /**
+        protected string $_locale, /**
      * The extension name.
      */
-    protected string $_extension = 'po')
-    {
+        protected string $_extension = 'po'
+    ) {
         // If space is not added after slash, the character after it remains lowercased
         $pluginName = Inflector::camelize(str_replace('/', '/ ', $this->_name));
         if (strpos($this->_name, '.')) {

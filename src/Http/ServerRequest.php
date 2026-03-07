@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,10 +15,15 @@ declare(strict_types=1);
  * @since         2.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Http;
 
 use BadMethodCallException;
 use Cake\Core\Configure;
+
+use function Cake\Core\deprecationWarning;
+use function Cake\Core\env;
+
 use Cake\Core\Exception\CakeException;
 use Cake\Http\Cookie\CookieCollection;
 use Cake\Http\Exception\MethodNotAllowedException;
@@ -30,8 +36,6 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
 use Psr\Http\Message\UriInterface;
-use function Cake\Core\deprecationWarning;
-use function Cake\Core\env;
 
 /**
  * A class that helps wrap Request information and particulars about a single request.

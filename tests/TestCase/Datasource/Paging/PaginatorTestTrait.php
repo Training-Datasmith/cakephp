@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         3.9.0
  * @license       https://www.opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Test\TestCase\Datasource\Paging;
 
 use Cake\Core\Configure;
@@ -45,7 +47,7 @@ trait PaginatorTestTrait
 
         Configure::write('App.namespace', 'TestApp');
 
-        $this->Paginator = new class extends NumericPaginator {
+        $this->Paginator = new class () extends NumericPaginator {
             public function getDefaults(string $alias, array $settings): array
             {
                 return parent::getDefaults($alias, $settings);

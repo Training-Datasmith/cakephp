@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Test\TestCase\ORM;
 
 use ArrayObject;
@@ -3101,7 +3103,7 @@ class TableTest extends TestCase
 
     public function testSaveWithBuildRulesFailWithErrorMessage(): void
     {
-        $Articles = new class extends Table {
+        $Articles = new class () extends Table {
             public function initialize(array $config): void
             {
                 $this->setAlias('Articles');
@@ -3109,7 +3111,7 @@ class TableTest extends TestCase
                 $this->hasMany('Comments');
             }
         };
-        $Comments = new class extends Table {
+        $Comments = new class () extends Table {
             public function initialize(array $config): void
             {
                 $this->setAlias('Comments');

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -16,6 +17,7 @@ declare(strict_types=1);
  * @since         1.2.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Test\TestCase\View;
 
 use Cake\Core\Configure;
@@ -97,8 +99,7 @@ class HelperTest extends TestCase
      */
     public function testThatHelperHelpersAreNotAttached(): void
     {
-        $eventsManager = new class extends EventManager
-        {
+        $eventsManager = new class () extends EventManager {
             public function on(string|EventListenerInterface $eventKey, callable|array $options = [], ?callable $callable = null): never
             {
                 throw new Exception('Should not be called');

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -16,9 +17,10 @@ declare(strict_types=1);
  */
 // phpcs:disable PSR1.Files.SideEffects
 
-use Psr\Http\Message\UriInterface;
 use function Cake\Routing\url as cakeUrl;
 use function Cake\Routing\urlArray as cakeUrlArray;
+
+use Psr\Http\Message\UriInterface;
 
 if (!function_exists('url')) {
     /**

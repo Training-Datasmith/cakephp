@@ -2,9 +2,7 @@
 use Cake\Cache\Cache;
 use Cake\Core\Configure;
 use Cake\Core\Plugin;
-use Cake\Datasource\ConnectionManager;
 use Cake\Error;
-use Cake\Error\Debugger;
 use Cake\Validation\Validation;
 
 if (!Configure::read('debug')):
@@ -107,16 +105,16 @@ You can also add some CSS styles for your pages at: APP/webroot/css.;
             'https://book.cakephp.org/5/en/',
             ['target' => '_blank', 'escape' => false]
         );
-    ?>
+?>
 </p>
 <p>
     <?php
-        echo $this->Html->link(
-            'The 15 min Blog Tutorial',
-            'https://book.cakephp.org/5/en/getting-started.html#blog-tutorial',
-            ['target' => '_blank', 'escape' => false]
-        );
-    ?>
+    echo $this->Html->link(
+        'The 15 min Blog Tutorial',
+        'https://book.cakephp.org/5/en/getting-started.html#blog-tutorial',
+        ['target' => '_blank', 'escape' => false]
+    );
+?>
 </p>
 
 <h3>Official Plugins</h3>

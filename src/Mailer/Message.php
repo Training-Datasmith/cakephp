@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,9 +15,13 @@ declare(strict_types=1);
  * @since         4.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Mailer;
 
 use Cake\Core\Configure;
+
+use function Cake\Core\env;
+
 use Cake\Http\Client\FormDataPart;
 use Cake\Utility\Hash;
 use Cake\Utility\Security;
@@ -27,7 +32,6 @@ use JsonSerializable;
 use Psr\Http\Message\UploadedFileInterface;
 use RuntimeException;
 use SimpleXMLElement;
-use function Cake\Core\env;
 
 /**
  * Email message class.
@@ -1806,7 +1810,7 @@ class Message implements JsonSerializable
             }
         });
 
-        return array_filter($array, fn($i) => $i !== null && !is_array($i) && !is_bool($i) && strlen((string) $i) || !empty($i));
+        return array_filter($array, fn ($i) => $i !== null && !is_array($i) && !is_bool($i) && strlen((string) $i) || !empty($i));
     }
 
     /**

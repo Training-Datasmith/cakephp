@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         2.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Console;
 
 use Cake\Console\Exception\ConsoleException;
@@ -241,7 +243,7 @@ class ConsoleInputOption
             $values = array_map(boolval(...), $values);
         }
 
-        $unwanted = array_filter($values, fn(bool|string $value): bool => !in_array($value, $this->_choices, true));
+        $unwanted = array_filter($values, fn (bool|string $value): bool => !in_array($value, $this->_choices, true));
         if ($unwanted) {
             throw new ConsoleException(
                 sprintf(

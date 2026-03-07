@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Core;
 
 use BadMethodCallException;
@@ -174,7 +176,7 @@ trait StaticConfigTrait
     {
         $configurations = array_keys(static::$_config);
 
-        return array_map(fn(int|string $key) => (string)$key, $configurations);
+        return array_map(fn (int|string $key) => (string)$key, $configurations);
     }
 
     /**

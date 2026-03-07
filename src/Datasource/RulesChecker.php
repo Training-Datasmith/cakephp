@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         3.0.7
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Datasource;
 
 use Cake\Core\Exception\CakeException;
@@ -104,8 +106,8 @@ class RulesChecker
     public function __construct(/**
      * List of options to pass to every callable rule
      */
-    protected array $_options = [])
-    {
+        protected array $_options = []
+    ) {
         $this->_useI18n = function_exists('\Cake\I18n\__d');
     }
 

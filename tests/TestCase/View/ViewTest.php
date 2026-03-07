@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,12 +15,16 @@ declare(strict_types=1);
  * @since         1.2.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Test\TestCase\View;
 
 use Cake\Cache\Cache;
 use Cake\Controller\Controller;
 use Cake\Core\App;
 use Cake\Core\Configure;
+
+use function Cake\Core\env;
+
 use Cake\Core\Exception\CakeException;
 use Cake\Core\Plugin;
 use Cake\Database\Exception\QueryException;
@@ -50,7 +55,6 @@ use TestApp\View\Object\TestObjectWithoutToString;
 use TestApp\View\Object\TestObjectWithToString;
 use TestApp\View\TestView;
 use TestApp\View\TestViewEventListenerInterface;
-use function Cake\Core\env;
 
 /**
  * ViewTest class

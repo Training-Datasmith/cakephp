@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,9 +15,13 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\ORM\Behavior;
 
 use ArrayObject;
+
+use function Cake\Core\namespaceSplit;
+
 use Cake\Datasource\QueryInterface;
 use Cake\Event\EventInterface;
 use Cake\I18n\I18n;
@@ -28,7 +33,6 @@ use Cake\ORM\PropertyMarshalInterface;
 use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\Table;
 use Cake\Utility\Inflector;
-use function Cake\Core\namespaceSplit;
 
 /**
  * This behavior provides a way to translate dynamic data by keeping translations

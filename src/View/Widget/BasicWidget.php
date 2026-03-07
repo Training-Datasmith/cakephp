@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\View\Widget;
 
 use Cake\View\Form\ContextInterface;
@@ -51,8 +53,7 @@ class BasicWidget implements WidgetInterface
          * StringTemplate instance.
          */
         protected StringTemplate $_templates
-    )
-    {
+    ) {
     }
 
     /**
@@ -137,7 +138,8 @@ class BasicWidget implements WidgetInterface
         if (
             empty($data['disabled'])
             && (
-                (isset($data['type'])
+                (
+                    isset($data['type'])
                     && $data['type'] !== 'hidden'
                 )
                 || !isset($data['type'])

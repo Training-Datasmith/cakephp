@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Test\TestCase\ORM;
 
 use Cake\Datasource\Exception\MissingPropertyException;
@@ -198,7 +200,7 @@ class EntityTest extends TestCase
      */
     public function testSetOneParamWithSetter(): void
     {
-        $entity = new class extends Entity {
+        $entity = new class () extends Entity {
             protected function _setName(?string $name): string
             {
                 return 'Dr. ' . $name;
@@ -213,7 +215,7 @@ class EntityTest extends TestCase
      */
     public function testMultipleWithSetter(): void
     {
-        $entity = new class extends Entity {
+        $entity = new class () extends Entity {
             protected function _setName(?string $name): string
             {
                 return 'Dr. ' . $name;
@@ -235,7 +237,7 @@ class EntityTest extends TestCase
      */
     public function testBypassSetters(): void
     {
-        $entity = new class extends Entity {
+        $entity = new class () extends Entity {
             protected function _setName(?string $name): string
             {
                 throw new Exception('_setName should not have been called');
@@ -349,7 +351,7 @@ class EntityTest extends TestCase
      */
     public function testGetCustomGetters(): void
     {
-        $entity = new class extends Entity {
+        $entity = new class () extends Entity {
             protected function _getName(string $name): string
             {
                 return 'Dr. ' . $name;
@@ -365,7 +367,7 @@ class EntityTest extends TestCase
      */
     public function testGetCustomGettersAfterSet(): void
     {
-        $entity = new class extends Entity {
+        $entity = new class () extends Entity {
             protected function _getName(string $name): string
             {
                 return 'Dr. ' . $name;
@@ -385,7 +387,7 @@ class EntityTest extends TestCase
      */
     public function testGetCacheClearedByUnset(): void
     {
-        $entity = new class extends Entity {
+        $entity = new class () extends Entity {
             protected function _getName(?string $name): string
             {
                 return 'Dr. ' . $name;
@@ -403,7 +405,7 @@ class EntityTest extends TestCase
      */
     public function testGetCamelCasedProperties(): void
     {
-        $entity = new class extends Entity {
+        $entity = new class () extends Entity {
             protected function _getListIdName(): string
             {
                 return 'A name';
@@ -431,7 +433,7 @@ class EntityTest extends TestCase
      */
     public function testMagicSetWithSetter(): void
     {
-        $entity = new class extends Entity {
+        $entity = new class () extends Entity {
             protected function _setName(?string $name): string
             {
                 return 'Dr. ' . $name;
@@ -446,7 +448,7 @@ class EntityTest extends TestCase
      */
     public function testMagicSetWithSetterTitleCase(): void
     {
-        $entity = new class extends Entity {
+        $entity = new class () extends Entity {
             protected function _setName(?string $name): string
             {
                 return 'Dr. ' . $name;
@@ -461,7 +463,7 @@ class EntityTest extends TestCase
      */
     public function testMagicGetWithGetter(): void
     {
-        $entity = new class extends Entity {
+        $entity = new class () extends Entity {
             protected function _getName(string $name): string
             {
                 return 'Dr. ' . $name;
@@ -476,7 +478,7 @@ class EntityTest extends TestCase
      */
     public function testMagicGetWithGetterTitleCase(): void
     {
-        $entity = new class extends Entity {
+        $entity = new class () extends Entity {
             protected function _getName(string $name): string
             {
                 return 'Dr. ' . $name;
@@ -515,7 +517,7 @@ class EntityTest extends TestCase
         $this->assertTrue($entity->has(['id', 'foo']));
         $this->assertFalse($entity->has(['id', 'nope']));
 
-        $entity = new class extends Entity {
+        $entity = new class () extends Entity {
             protected function _getThings(): never
             {
                 throw new Exception('_getThings() should not have been called');
@@ -654,7 +656,7 @@ class EntityTest extends TestCase
      */
     public function testMethodCache(): void
     {
-        $entity = new class extends Entity {
+        $entity = new class () extends Entity {
             protected function _setFoo(?string $name): string
             {
                 return 'Dr. ' . $name;
@@ -665,7 +667,7 @@ class EntityTest extends TestCase
                 return 'Dir. ' . $bar;
             }
         };
-        $entity2 = new class extends Entity {
+        $entity2 = new class () extends Entity {
             protected function _setBar(?string $name): string
             {
                 return 'DrDr. ' . $name;
@@ -683,7 +685,7 @@ class EntityTest extends TestCase
      */
     public function testSetGetLongPropertyNames(): void
     {
-        $entity = new class extends Entity {
+        $entity = new class () extends Entity {
             protected function _setVeryLongProperty(?string $name): string
             {
                 return 'Dr. ' . $name;
@@ -1066,7 +1068,7 @@ class EntityTest extends TestCase
      */
     public function testToArrayWithAccessor(): void
     {
-        $entity = new class extends Entity {
+        $entity = new class () extends Entity {
             protected function _getName(?string $name): string
             {
                 return 'Jose';
@@ -1134,7 +1136,7 @@ class EntityTest extends TestCase
      */
     public function testToArrayVirtualProperties(): void
     {
-        $entity = new class extends Entity {
+        $entity = new class () extends Entity {
             protected function _getName(?string $name): string
             {
                 return 'Jose';

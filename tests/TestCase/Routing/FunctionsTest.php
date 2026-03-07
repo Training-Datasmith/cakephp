@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,12 +15,15 @@ declare(strict_types=1);
  * @since         4.5.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Test\TestCase\Routing;
 
 use Cake\Routing\Router;
-use Cake\TestSuite\TestCase;
+
 use function Cake\Routing\url;
 use function Cake\Routing\urlArray;
+
+use Cake\TestSuite\TestCase;
 
 /**
  * FunctionsTest class

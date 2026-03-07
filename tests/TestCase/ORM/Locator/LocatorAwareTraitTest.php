@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -42,7 +43,7 @@ class LocatorAwareTraitTest extends TestCase
     {
         parent::setUp();
 
-        $this->subject = new class {
+        $this->subject = new class () {
             use LocatorAwareTrait;
         };
     }

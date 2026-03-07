@@ -14,8 +14,10 @@
  * @var string $class
  */
 use Cake\Core\Configure;
-use Cake\Core\Plugin;
+
 use function Cake\Core\h;
+
+use Cake\Core\Plugin;
 
 $namespace = Configure::read('App.namespace');
 

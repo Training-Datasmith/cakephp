@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 $count = 10;
 $messages = ['count' => 10];
 

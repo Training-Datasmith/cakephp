@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Collection;
 
 use ArrayAccess;
@@ -42,7 +44,7 @@ trait ExtractTrait
         $parts = explode('.', $path);
 
         if (str_contains($path, '{*}')) {
-            return fn($element) => $this->_extract($element, $parts);
+            return fn ($element) => $this->_extract($element, $parts);
         }
 
         return function ($element) use ($parts) {
@@ -131,7 +133,7 @@ trait ExtractTrait
         $matchers = [];
         foreach ($conditions as $property => $value) {
             $extractor = $this->_propertyExtractor($property);
-            $matchers[] = (fn($v): bool => $extractor($v) == $value);
+            $matchers[] = (fn ($v): bool => $extractor($v) == $value);
         }
 
         return function ($value) use ($matchers): bool {

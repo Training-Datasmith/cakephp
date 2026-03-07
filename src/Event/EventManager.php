@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,13 +15,15 @@ declare(strict_types=1);
  * @since         2.1.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Event;
+
+use function Cake\Core\deprecationWarning;
 
 use Cake\Core\Exception\CakeException;
 use Closure;
 use InvalidArgumentException;
 use ReflectionFunction;
-use function Cake\Core\deprecationWarning;
 
 /**
  * The event manager is responsible for keeping track of event listeners, passing the correct

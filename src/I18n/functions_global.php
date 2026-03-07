@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -16,8 +17,6 @@ declare(strict_types=1);
  */
 // phpcs:disable PSR1.Files.SideEffects
 
-use Cake\I18n\Date;
-use Cake\I18n\DateTime;
 use function Cake\I18n\__ as cake__;
 use function Cake\I18n\__d as cake__d;
 use function Cake\I18n\__dn as cake__dn;
@@ -26,6 +25,10 @@ use function Cake\I18n\__dxn as cake__dxn;
 use function Cake\I18n\__n as cake__n;
 use function Cake\I18n\__x as cake__x;
 use function Cake\I18n\__xn as cake__xn;
+
+use Cake\I18n\Date;
+use Cake\I18n\DateTime;
+
 use function Cake\I18n\toDate as cakeToDate;
 use function Cake\I18n\toDateTime as cakeToDateTime;
 

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 // phpcs:disable PSR1.Files.SideEffects
@@ -16,8 +17,9 @@ declare(strict_types=1);
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 
-use Cake\Collection\CollectionInterface;
 use function Cake\Collection\collection as cakeCollection;
+
+use Cake\Collection\CollectionInterface;
 
 if (!function_exists('collection')) {
     /**

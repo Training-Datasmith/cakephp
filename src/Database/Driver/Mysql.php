@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Database\Driver;
 
 use Cake\Database\Driver;
@@ -230,7 +232,7 @@ class Mysql extends Driver
      */
     public function supports(DriverFeatureEnum $feature): bool
     {
-        $versionCompare = (fn() => version_compare(
+        $versionCompare = (fn () => version_compare(
             $this->version(),
             $this->featureVersions[$this->serverType][$feature->value],
             '>=',

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         4.3.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Test\TestCase\TestSuite;
 
 use Cake\Core\Exception\CakeException;
@@ -108,7 +110,7 @@ class FixtureHelperTest extends TestCase
      */
     public function testPerConnection(): void
     {
-        $fixture1 = new class extends TestFixture {
+        $fixture1 = new class () extends TestFixture {
             public function connection(): string
             {
                 return 'test1';
@@ -118,7 +120,7 @@ class FixtureHelperTest extends TestCase
             {
             }
         };
-        $fixture2 = new class extends TestFixture {
+        $fixture2 = new class () extends TestFixture {
             public function connection(): string
             {
                 return 'test2';
@@ -165,7 +167,7 @@ class FixtureHelperTest extends TestCase
      */
     public function testInsertFixturesException(): void
     {
-        $fixture = new class extends TestFixture {
+        $fixture = new class () extends TestFixture {
             public function connection(): string
             {
                 return 'test';
@@ -181,10 +183,10 @@ class FixtureHelperTest extends TestCase
             }
         };
 
-        $helper = new class extends FixtureHelper {
+        $helper = new class () extends FixtureHelper {
             public function sortByConstraint(Connection $connection, array $fixtures): array
             {
-                return [new class extends TestFixture {
+                return [new class () extends TestFixture {
                     public function connection(): string
                     {
                         return 'test';
@@ -232,7 +234,7 @@ class FixtureHelperTest extends TestCase
      */
     public function testTruncateFixturesException(): void
     {
-        $fixture = new class extends TestFixture {
+        $fixture = new class () extends TestFixture {
             public function connection(): string
             {
                 return 'test';
@@ -248,10 +250,10 @@ class FixtureHelperTest extends TestCase
             }
         };
 
-        $helper = new class extends FixtureHelper {
+        $helper = new class () extends FixtureHelper {
             public function sortByConstraint(Connection $connection, array $fixtures): array
             {
-                return [new class extends TestFixture {
+                return [new class () extends TestFixture {
                     public function connection(): string
                     {
                         return 'test';

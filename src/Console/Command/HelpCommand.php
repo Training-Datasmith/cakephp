@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         3.6.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Console\Command;
 
 use ArrayIterator;
@@ -434,7 +436,7 @@ class HelpCommand extends BaseCommand implements CommandCollectionAwareInterface
      */
     protected function getShortestName(array $names): string
     {
-        usort($names, fn($a, $b) => strlen((string) $a) - strlen((string) $b));
+        usort($names, fn ($a, $b) => strlen((string) $a) - strlen((string) $b));
 
         return array_shift($names);
     }

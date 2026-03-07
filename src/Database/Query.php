@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,7 +15,10 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Database;
+
+use function Cake\Core\deprecationWarning;
 
 use Cake\Core\Exception\CakeException;
 use Cake\Database\Expression\CommonTableExpression;
@@ -26,7 +30,6 @@ use Closure;
 use InvalidArgumentException;
 use Stringable;
 use Throwable;
-use function Cake\Core\deprecationWarning;
 
 /**
  * This class represents a Relational database SQL Query. A query can be of
@@ -1613,7 +1616,7 @@ abstract class Query implements ExpressionInterface, Stringable
     {
         if (!array_key_exists($name, $this->_parts)) {
             $clauses = array_keys($this->_parts);
-            array_walk($clauses, fn(string &$x): string => $x = "`{$x}`");
+            array_walk($clauses, fn (string &$x): string => $x = "`{$x}`");
             $clauses = implode(', ', $clauses);
             throw new InvalidArgumentException(sprintf(
                 'The `%s` clause is not defined. Valid clauses are: %s.',
@@ -1665,7 +1668,7 @@ abstract class Query implements ExpressionInterface, Stringable
         }
 
         if ($expression instanceof ExpressionInterface) {
-            $expression->traverse(fn($exp) => $this->_expressionsVisitor($exp, $callback));
+            $expression->traverse(fn ($exp) => $this->_expressionsVisitor($exp, $callback));
 
             if (!$expression instanceof self) {
                 $callback($expression);

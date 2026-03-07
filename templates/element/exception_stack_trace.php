@@ -15,8 +15,9 @@
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  * @var array $trace
  */
-use Cake\Error\Debugger;
 use function Cake\Core\h;
+
+use Cake\Error\Debugger;
 
 foreach ($exceptions as $exc):
     $stackTrace = Debugger::formatTrace($exc->getTrace(), [
@@ -47,7 +48,7 @@ foreach ($exceptions as $exc):
                 $params[] = 'No arguments';
             endif;
         endif;
-    ?>
+        ?>
         <div id="stack-frame-<?= $i ?>" style="display:<?= $i === 0 ? 'block' : 'none'; ?>;" class="stack-details">
             <div class="stack-frame-header">
                 <span class="stack-frame-file">

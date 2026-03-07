@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,13 +15,15 @@ declare(strict_types=1);
  * @since         5.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\TestSuite\Fixture\Extension;
+
+use function Cake\Core\env;
 
 use Cake\Log\Log;
 use Cake\TestSuite\ConnectionHelper;
 use PHPUnit\Event\TestSuite\Started;
 use PHPUnit\Event\TestSuite\StartedSubscriber as PHPUnitStarted;
-use function Cake\Core\env;
 
 class PHPUnitStartedSubscriber implements PHPUnitStarted
 {

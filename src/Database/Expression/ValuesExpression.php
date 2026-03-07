@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Database\Expression;
 
 use Cake\Database\Exception\DatabaseException;
@@ -61,8 +63,9 @@ class ValuesExpression implements ExpressionInterface
     public function __construct(/**
      * List of columns to ensure are part of the insert.
      */
-    protected array $_columns, TypeMap $typeMap)
-    {
+        protected array $_columns,
+        TypeMap $typeMap
+    ) {
         $this->setTypeMap($typeMap);
     }
 

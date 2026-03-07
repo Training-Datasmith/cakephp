@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         2.1.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Test\TestCase\Event;
 
 use Cake\Event\Event;
@@ -223,7 +225,7 @@ class EventManagerTest extends TestCase
     public function testDispatch(): void
     {
         $manager = Mockery::mock(EventManager::class)->makePartial();
-        $listener = new class implements EventListenerInterface {
+        $listener = new class () implements EventListenerInterface {
             public array $callList = [];
 
             public function listenerFunction(EventInterface $event): void
@@ -236,7 +238,7 @@ class EventManagerTest extends TestCase
                 return [];
             }
         };
-        $anotherListener = new class implements EventListenerInterface {
+        $anotherListener = new class () implements EventListenerInterface {
             public array $callList = [];
 
             public function listenerFunction(EventInterface $event): void
@@ -281,7 +283,7 @@ class EventManagerTest extends TestCase
     public function testDispatchReturnValue(): void
     {
         $manager = new EventManager();
-        $listener = new class implements EventListenerInterface {
+        $listener = new class () implements EventListenerInterface {
             public array $callList = [];
 
             public function listenerFunction(EventInterface $event): void
@@ -296,7 +298,7 @@ class EventManagerTest extends TestCase
                 return [];
             }
         };
-        $anotherListener = new class implements EventListenerInterface {
+        $anotherListener = new class () implements EventListenerInterface {
             public array $callList = [];
 
             public function listenerFunction(EventInterface $event): void
@@ -327,7 +329,7 @@ class EventManagerTest extends TestCase
     public function testDispatchFalseStopsEvent(): void
     {
         $manager = new EventManager();
-        $listener = new class implements EventListenerInterface {
+        $listener = new class () implements EventListenerInterface {
             public array $callList = [];
 
             public function listenerFunction(EventInterface $event): void
@@ -342,7 +344,7 @@ class EventManagerTest extends TestCase
                 return [];
             }
         };
-        $anotherListener = new class implements EventListenerInterface {
+        $anotherListener = new class () implements EventListenerInterface {
             public array $callList = [];
 
             public function listenerFunction(EventInterface $event): void
@@ -412,7 +414,7 @@ class EventManagerTest extends TestCase
     public function testOnSubscriberMultiple(): void
     {
         $manager = new EventManager();
-        $listener = new class extends CustomTestEventListenerInterface {
+        $listener = new class () extends CustomTestEventListenerInterface {
             public $callList = [];
 
             public function listenerFunction(EventInterface $event): void
@@ -437,7 +439,7 @@ class EventManagerTest extends TestCase
     public function testOnListenerClass(): void
     {
         $manager = new EventManager();
-        $listener = new class implements EventListenerInterface {
+        $listener = new class () implements EventListenerInterface {
             public array $callList = [];
 
             final public function __invoke(EventInterface $event): void
@@ -466,7 +468,7 @@ class EventManagerTest extends TestCase
     public function testDetachSubscriber(): void
     {
         $manager = new EventManager();
-        $listener = new class extends CustomTestEventListenerInterface {
+        $listener = new class () extends CustomTestEventListenerInterface {
         };
         $manager->on($listener);
         $expected = [
@@ -501,7 +503,7 @@ class EventManagerTest extends TestCase
      */
     public function testDispatchWithGlobal(): void
     {
-        $eventListener = new class implements EventListenerInterface {
+        $eventListener = new class () implements EventListenerInterface {
             public array $callList = [];
 
             public function listenerFunction(EventInterface $event): void
@@ -535,8 +537,7 @@ class EventManagerTest extends TestCase
      */
     public function testStopPropagation(): void
     {
-        $generalManager = new class extends EventManager
-        {
+        $generalManager = new class () extends EventManager {
             public function prioritisedListeners(string $name): array
             {
                 return [];
@@ -565,8 +566,7 @@ class EventManagerTest extends TestCase
     public function testDispatchPrioritizedWithGlobal(): void
     {
         $listener = new CustomTestEventListenerInterface();
-        $generalManager = new class ($listener) extends EventManager
-        {
+        $generalManager = new class ($listener) extends EventManager {
             public function __construct(public CustomTestEventListenerInterface $listener)
             {
             }
@@ -599,8 +599,7 @@ class EventManagerTest extends TestCase
     public function testDispatchGlobalBeforeLocal(): void
     {
         $listener = new CustomTestEventListenerInterface();
-        $generalManager = new class ($listener) extends EventManager
-        {
+        $generalManager = new class ($listener) extends EventManager {
             public function __construct(public CustomTestEventListenerInterface $listener)
             {
             }
@@ -870,7 +869,7 @@ class EventManagerTest extends TestCase
     {
         $eventManager = new EventManager();
 
-        $listener = new class implements EventListenerInterface {
+        $listener = new class () implements EventListenerInterface {
             public function implementedEvents(): array
             {
                 return [];

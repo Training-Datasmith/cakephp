@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -12,9 +13,13 @@ declare(strict_types=1);
  * @since         3.1.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Mailer;
 
 use BadMethodCallException;
+
+use function Cake\Core\deprecationWarning;
+
 use Cake\Core\StaticConfigTrait;
 use Cake\Event\EventListenerInterface;
 use Cake\Log\Log;
@@ -22,7 +27,6 @@ use Cake\Mailer\Exception\MissingActionException;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\View\ViewBuilder;
 use InvalidArgumentException;
-use function Cake\Core\deprecationWarning;
 
 /**
  * Mailer base class.

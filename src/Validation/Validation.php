@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         1.2.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Validation;
 
 use BackedEnum;
@@ -1177,7 +1179,7 @@ class Validation
         $defaults = ['in' => null, 'max' => null, 'min' => null];
         $options += $defaults;
 
-        $check = array_filter((array)$check, fn($value) => $value || is_numeric($value));
+        $check = array_filter((array)$check, fn ($value) => $value || is_numeric($value));
         if (!$check) {
             return false;
         }

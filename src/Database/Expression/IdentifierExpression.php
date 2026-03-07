@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Database\Expression;
 
 use Cake\Database\ExpressionInterface;
@@ -42,8 +44,7 @@ class IdentifierExpression implements ExpressionInterface
          */
         protected string $_identifier,
         protected ?string $collation = null
-    )
-    {
+    ) {
     }
 
     /**

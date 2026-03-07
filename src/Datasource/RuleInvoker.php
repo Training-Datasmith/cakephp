@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         3.2.12
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Datasource;
 
 use Closure;
@@ -55,10 +57,10 @@ class RuleInvoker
     public function __construct(callable $rule, /**
      * The rule name
      */
-    protected ?string $name, /**
+        protected ?string $name, /**
      * Rule options
      */
-    protected array $options = [])
+        protected array $options = [])
     {
         $this->rule = $rule;
     }

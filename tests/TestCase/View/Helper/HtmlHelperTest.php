@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,9 +15,13 @@ declare(strict_types=1);
  * @since         1.2.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Test\TestCase\View\Helper;
 
 use Cake\Core\Configure;
+
+use function Cake\Core\h;
+
 use Cake\Core\Plugin;
 use Cake\Http\ServerRequest;
 use Cake\I18n\Date;
@@ -28,7 +33,6 @@ use Cake\View\Helper\HtmlHelper;
 use Cake\View\View;
 use Mockery;
 use PHPUnit\Framework\Attributes\DataProvider;
-use function Cake\Core\h;
 
 /**
  * HtmlHelperTest class

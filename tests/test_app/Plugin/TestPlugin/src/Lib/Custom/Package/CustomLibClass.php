@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -20,6 +21,7 @@ declare(strict_types=1);
 /**
  * CustomLibClass
  */
+
 namespace TestPlugin\Lib\Custom\Package;
 
 class CustomLibClass

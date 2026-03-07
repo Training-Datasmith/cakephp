@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         4.1.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Database\Expression;
 
 use Cake\Database\Exception\DatabaseException;
@@ -177,7 +179,7 @@ class CommonTableExpression implements ExpressionInterface
     {
         $fields = '';
         if ($this->fields) {
-            $expressions = array_map(fn(IdentifierExpression $e): string => $e->sql($binder), $this->fields);
+            $expressions = array_map(fn (IdentifierExpression $e): string => $e->sql($binder), $this->fields);
             $fields = sprintf('(%s)', implode(', ', $expressions));
         }
 

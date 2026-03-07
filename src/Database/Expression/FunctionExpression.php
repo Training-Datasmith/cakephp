@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Database\Expression;
 
 use Cake\Database\ExpressionInterface;
@@ -62,8 +64,11 @@ class FunctionExpression extends QueryExpression implements TypedResultInterface
     public function __construct(/**
      * The name of the function to be constructed when generating the SQL string
      */
-    protected string $_name, array $params = [], array $types = [], string $returnType = 'string')
-    {
+        protected string $_name,
+        array $params = [],
+        array $types = [],
+        string $returnType = 'string'
+    ) {
         $this->_returnType = $returnType;
         parent::__construct($params, $types, ',');
     }

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,9 +15,11 @@ declare(strict_types=1);
  * @since         3.6.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Console;
 
 use Cake\Console\Exception\ConsoleException;
+
 use function Cake\Core\deprecationWarning;
 
 /**
@@ -46,8 +49,7 @@ class Arguments
          * Positional argument name map
          */
         protected array $argNames
-    )
-    {
+    ) {
     }
 
     /**

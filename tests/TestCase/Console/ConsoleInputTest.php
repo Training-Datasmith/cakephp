@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,12 +15,15 @@ declare(strict_types=1);
  * @since         3.7.3
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Test\TestCase\Console;
 
 use Cake\Console\ConsoleInput;
 use Cake\Console\Exception\ConsoleException;
-use Cake\TestSuite\TestCase;
+
 use function Cake\Core\env;
+
+use Cake\TestSuite\TestCase;
 
 /**
  * ConsoleInput test.

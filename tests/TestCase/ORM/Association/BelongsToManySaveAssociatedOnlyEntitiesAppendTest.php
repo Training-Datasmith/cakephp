@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         5.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Test\TestCase\ORM\Association;
 
 use Cake\Datasource\ConnectionManager;
@@ -98,7 +100,11 @@ class BelongsToManySaveAssociatedOnlyEntitiesAppendTest extends TestCase
 // phpcs:disable
 class MockedTable extends Table
 {
-    public function saveAssociated() {}
-    public function schema() {}
+    public function saveAssociated()
+    {
+    }
+    public function schema()
+    {
+    }
 }
 // phpcs:enable

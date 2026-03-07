@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Test\TestCase\Validation;
 
 use Cake\TestSuite\TestCase;
@@ -1522,7 +1524,7 @@ class ValidatorTest extends TestCase
             ->add('email', 'alpha', ['rule' => 'alphanumeric'])
             ->add('title', 'cool', ['rule' => 'isCool', 'provider' => 'thing']);
 
-        $thing = new class {
+        $thing = new class () {
             public $args = [];
 
             public function isCool($data, $context): string
@@ -1573,7 +1575,7 @@ class ValidatorTest extends TestCase
             'rule' => ['isCool', 'and', 'awesome'],
             'provider' => 'thing',
         ]);
-        $thing = new class {
+        $thing = new class () {
             public $args = [];
 
             public function isCool($data, $a, $b, $context): string
@@ -3209,6 +3211,8 @@ class ValidatorTest extends TestCase
 // phpcs:disable
 class stdMock extends stdClass
 {
-    public function isCool() {}
+    public function isCool()
+    {
+    }
 }
 // phpcs:enable

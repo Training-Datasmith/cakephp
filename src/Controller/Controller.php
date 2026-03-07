@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,10 +15,15 @@ declare(strict_types=1);
  * @since         0.2.9
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Controller;
 
 use Cake\Controller\Exception\MissingActionException;
 use Cake\Core\App;
+
+use function Cake\Core\namespaceSplit;
+use function Cake\Core\pluginSplit;
+
 use Cake\Datasource\Paging\Exception\PageOutOfBoundsException;
 use Cake\Datasource\Paging\NumericPaginator;
 use Cake\Datasource\Paging\PaginatedInterface;
@@ -45,8 +51,6 @@ use Psr\Http\Message\UriInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use ReflectionException;
 use ReflectionMethod;
-use function Cake\Core\namespaceSplit;
-use function Cake\Core\pluginSplit;
 
 /**
  * Application controller class for organization of business logic.

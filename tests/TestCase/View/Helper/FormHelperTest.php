@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         1.2.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Test\TestCase\View\Helper;
 
 use ArrayObject;
@@ -5080,14 +5082,14 @@ class FormHelperTest extends TestCase
                 'type' => 'hidden',
                 'name' => 'Model[field]',
                 'value' => '',
-                'id' => 'model-field'
+                'id' => 'model-field',
             ]],
             ['label' => ['for' => 'model-field-0']],
                 ['input' => [
                     'type' => 'radio',
                     'name' => 'Model[field]',
                     'value' => '0',
-                    'id' => 'model-field-0'
+                    'id' => 'model-field-0',
                 ]],
                 'option A',
             '/label',
@@ -5096,7 +5098,7 @@ class FormHelperTest extends TestCase
                     'type' => 'radio',
                     'name' => 'Model[field]',
                     'value' => '1',
-                    'id' => 'model-field-1'
+                    'id' => 'model-field-1',
                 ]],
                 'option B',
             '/label',
@@ -8025,10 +8027,10 @@ class FormHelperTest extends TestCase
                 'textarea' => [
                     'name',
                     'id' => '0-comments-1-comment',
-                    'rows' => 5
+                    'rows' => 5,
                 ],
                 '/textarea',
-            '/div'
+            '/div',
         ];
         // phpcs:enable
         $this->assertHtml($expected, $result);
@@ -8043,11 +8045,11 @@ class FormHelperTest extends TestCase
                 'textarea' => [
                     'name',
                     'id' => '0-comments-0-comment',
-                    'rows' => 5
+                    'rows' => 5,
                 ],
                 'Value',
                 '/textarea',
-            '/div'
+            '/div',
         ];
         // phpcs:enable
         $this->assertHtml($expected, $result);
@@ -8066,14 +8068,14 @@ class FormHelperTest extends TestCase
                     'id' => '0-comments-0-comment',
                     'aria-invalid' => 'true',
                     'aria-describedby' => '0-comments-0-comment-error',
-                    'rows' => 5
+                    'rows' => 5,
                 ],
                 'Value',
                 '/textarea',
                 ['div' => ['class' => 'error-message', 'id' => '0-comments-0-comment-error']],
                 'Not valid',
                 '/div',
-            '/div'
+            '/div',
         ];
         // phpcs:enable
         $this->assertHtml($expected, $result);
@@ -8098,7 +8100,7 @@ class FormHelperTest extends TestCase
                     'oninput' => 'this.setCustomValidity(&#039;&#039;)',
                 ],
                 '/textarea',
-            '/div'
+            '/div',
         ];
         // phpcs:enable
         $this->assertHtml($expected, $result);

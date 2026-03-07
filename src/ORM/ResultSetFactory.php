@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         5.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\ORM;
 
 use Cake\Collection\Collection;
@@ -58,7 +60,7 @@ class ResultSetFactory
                 $results = SplFixedArray::fromArray($results);
             } else {
                 $results = (new Collection($results))
-                    ->map(fn($row) => $this->groupResult($row, $data));
+                    ->map(fn ($row) => $this->groupResult($row, $data));
             }
         }
 
@@ -287,11 +289,11 @@ class ResultSetFactory
         if (!isset(static::$dtoHydrators[$dtoClass])) {
             // Check for array style static factory method (cakephp-dto style)
             if (method_exists($dtoClass, 'createFromArray')) {
-                static::$dtoHydrators[$dtoClass] = (static fn(array $row): object => $dtoClass::createFromArray($row, true));
+                static::$dtoHydrators[$dtoClass] = (static fn (array $row): object => $dtoClass::createFromArray($row, true));
             } else {
                 // Use DtoMapper for plain readonly DTOs with named constructor params
                 $mapper = $this->getDtoMapper();
-                static::$dtoHydrators[$dtoClass] = (static fn(array $row): object => $mapper->map($row, $dtoClass));
+                static::$dtoHydrators[$dtoClass] = (static fn (array $row): object => $mapper->map($row, $dtoClass));
             }
         }
 

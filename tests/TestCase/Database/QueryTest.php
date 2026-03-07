@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -12,6 +13,7 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Test\TestCase\Database;
 
 use Cake\Database\Connection;
@@ -87,8 +89,7 @@ class QueryTest extends TestCase
 
     protected function newQuery(): Query
     {
-        return new class ($this->connection) extends Query
-        {
+        return new class ($this->connection) extends Query {
         };
     }
 
@@ -343,13 +344,13 @@ class QueryTest extends TestCase
         $this->query->with($cte1);
         $this->assertSame([$cte1], $this->query->clause('with'));
 
-        $this->query->with([$cte2, fn($query) => $cte1]);
+        $this->query->with([$cte2, fn ($query) => $cte1]);
         $this->assertSame([$cte1, $cte2, $cte1], $this->query->clause('with'));
 
         $this->query->with($cte1, true);
         $this->assertSame([$cte1], $this->query->clause('with'));
 
-        $this->query->with([$cte2, fn($query) => $cte1], true);
+        $this->query->with([$cte2, fn ($query) => $cte1], true);
         $this->assertSame([$cte2, $cte1], $this->query->clause('with'));
     }
 

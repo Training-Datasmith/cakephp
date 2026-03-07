@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Test\TestCase\Database\Log;
 
 use Cake\Database\Log\LoggedQuery;
@@ -83,8 +85,7 @@ class QueryLoggerTest extends TestCase
 
         $logger = new QueryLogger(['connection' => '']);
 
-        $stringable = new class implements Stringable
-        {
+        $stringable = new class () implements Stringable {
             public function __toString(): string
             {
                 return 'FooBar';

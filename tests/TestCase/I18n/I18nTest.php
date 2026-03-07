@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,14 +15,11 @@ declare(strict_types=1);
  * @since         1.2.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Test\TestCase\I18n;
 
 use Cake\Cache\Cache;
-use Cake\I18n\I18n;
-use Cake\I18n\Package;
-use Cake\I18n\Translator;
-use Cake\I18n\TranslatorRegistry;
-use Cake\TestSuite\TestCase;
+
 use function Cake\I18n\__;
 use function Cake\I18n\__d;
 use function Cake\I18n\__dn;
@@ -30,6 +28,12 @@ use function Cake\I18n\__dxn;
 use function Cake\I18n\__n;
 use function Cake\I18n\__x;
 use function Cake\I18n\__xn;
+
+use Cake\I18n\I18n;
+use Cake\I18n\Package;
+use Cake\I18n\Translator;
+use Cake\I18n\TranslatorRegistry;
+use Cake\TestSuite\TestCase;
 
 /**
  * I18nTest class
@@ -189,7 +193,7 @@ class I18nTest extends TestCase
      */
     public function testCreateCustomTranslationInvokable(): void
     {
-        $loader = new class {
+        $loader = new class () {
             public function __invoke(): Package
             {
                 $package = new Package('default');

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         4.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Test\TestCase\Http;
 
 use Cake\Http\MiddlewareApplication;
@@ -49,7 +51,7 @@ class MiddlewareApplicationTest extends TestCase
             'pass' => [],
         ]);
 
-        $app = new class extends MiddlewareApplication {
+        $app = new class () extends MiddlewareApplication {
             public function bootstrap(): void
             {
             }

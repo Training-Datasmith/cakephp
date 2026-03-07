@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         3.6.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\View\Widget;
 
 use Cake\Core\App;
@@ -55,11 +57,12 @@ class WidgetLocator
     public function __construct(/**
      * Templates to use.
      */
-    protected StringTemplate $_templates, /**
+        protected StringTemplate $_templates, /**
      * View instance.
      */
-    protected View $_view, array $widgets = [])
-    {
+        protected View $_view,
+        array $widgets = []
+    ) {
         $this->add($widgets);
     }
 

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,7 +15,10 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Test\TestCase\ORM\Association;
+
+use function Cake\Collection\collection;
 
 use Cake\Database\Connection;
 use Cake\Database\Driver\Sqlite;
@@ -40,7 +44,6 @@ use InvalidArgumentException;
 use Mockery;
 use PHPUnit\Framework\Attributes\DataProvider;
 use TestApp\Model\Entity\ArticlesTag;
-use function Cake\Collection\collection;
 
 /**
  * Tests BelongsToMany class

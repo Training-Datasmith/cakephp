@@ -13,8 +13,10 @@
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  * @var \Cake\Core\Exception\CakeException $error
  */
-use Cake\Error\Debugger;
 use function Cake\Core\h;
+
+use Cake\Error\Debugger;
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -332,9 +334,9 @@ use function Cake\Core\h;
     <header>
         <?php
         $title = explode("\n", trim($this->fetch('title')));
-        $errorTitle = array_shift($title);
-        $errorDescription = implode("\n", $title);
-        ?>
+$errorTitle = array_shift($title);
+$errorDescription = implode("\n", $title);
+?>
         <h1 class="header-title">
             <span><?= Debugger::formatHtmlMessage($errorTitle) ?></span>
             <a>&#128203</a>

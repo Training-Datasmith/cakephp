@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -13,9 +14,13 @@ declare(strict_types=1);
  * @since         3.5.0
  * @license       https://www.opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Http\Cookie;
 
 use ArrayIterator;
+
+use function Cake\Core\triggerWarning;
+
 use Countable;
 use DateTimeImmutable;
 use DateTimeZone;
@@ -27,7 +32,6 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Traversable;
 use TypeError;
-use function Cake\Core\triggerWarning;
 
 /**
  * Cookie Collection

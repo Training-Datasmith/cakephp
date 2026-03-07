@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -15,6 +16,7 @@ declare(strict_types=1);
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 // phpcs:disable PSR1.Files.SideEffects
+
 namespace Cake\Routing;
 
 use Psr\Http\Message\UriInterface;

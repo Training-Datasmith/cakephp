@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         1.2.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Controller;
 
 use Cake\Core\InstanceConfigTrait;
@@ -94,8 +96,9 @@ class Component implements EventListenerInterface
     public function __construct(/**
      * Component registry class used to lazy load components.
      */
-    protected ComponentRegistry $_registry, array $config = [])
-    {
+        protected ComponentRegistry $_registry,
+        array $config = []
+    ) {
         $this->setConfig($config);
 
         if ($this->components) {

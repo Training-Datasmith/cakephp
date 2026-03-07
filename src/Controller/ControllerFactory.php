@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,11 +15,17 @@ declare(strict_types=1);
  * @since         3.3.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Controller;
 
 use Cake\Controller\Exception\InvalidParameterException;
 use Cake\Core\App;
 use Cake\Core\ContainerInterface;
+
+use function Cake\Core\toBool;
+use function Cake\Core\toFloat;
+use function Cake\Core\toInt;
+
 use Cake\Http\ControllerFactoryInterface;
 use Cake\Http\Exception\MissingControllerException;
 use Cake\Http\MiddlewareQueue;
@@ -31,9 +38,6 @@ use Psr\Http\Server\RequestHandlerInterface;
 use ReflectionClass;
 use ReflectionFunction;
 use ReflectionNamedType;
-use function Cake\Core\toBool;
-use function Cake\Core\toFloat;
-use function Cake\Core\toInt;
 
 /**
  * Factory method for building controllers for request.

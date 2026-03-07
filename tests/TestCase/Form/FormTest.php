@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Test\TestCase\Form;
 
 use Cake\Form\Form;
@@ -166,7 +168,7 @@ class FormTest extends TestCase
     public function testExecuteInvalid(): void
     {
         $this->deprecated(function (): void {
-            $form = new class extends Form {
+            $form = new class () extends Form {
                 protected function _execute(array $data): bool
                 {
                     throw new Exception('Should not be called');
@@ -202,7 +204,7 @@ class FormTest extends TestCase
      */
     public function testExecuteWithProcess(): void
     {
-        $form = new class extends Form {
+        $form = new class () extends Form {
             public function process(array $data): bool
             {
                 return false;
@@ -218,7 +220,7 @@ class FormTest extends TestCase
     public function testExecuteWithExecuteAndNoValidate(): void
     {
         $this->deprecated(function (): void {
-            $form = new class extends Form {
+            $form = new class () extends Form {
                 protected function _execute(array $data): bool
                 {
                     return false;

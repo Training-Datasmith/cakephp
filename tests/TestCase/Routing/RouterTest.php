@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         1.2.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Test\TestCase\Routing;
 
 use Cake\Core\Configure;
@@ -26,13 +28,15 @@ use Cake\Routing\Route\Route;
 use Cake\Routing\RouteBuilder;
 use Cake\Routing\RouteCollection;
 use Cake\Routing\Router;
+
+use function Cake\Routing\url;
+use function Cake\Routing\urlArray;
+
 use Cake\TestSuite\TestCase;
 use Exception;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\DataProvider;
 use RuntimeException;
-use function Cake\Routing\url;
-use function Cake\Routing\urlArray;
 
 /**
  * RouterTest class

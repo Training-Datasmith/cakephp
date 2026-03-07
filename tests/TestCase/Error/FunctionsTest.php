@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,14 +15,18 @@ declare(strict_types=1);
  * @since         4.5.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Test\TestCase\Error;
 
-use Cake\Error\Debugger;
-use Cake\TestSuite\TestCase;
 use function Cake\Core\pj;
 use function Cake\Core\pr;
 use function Cake\Error\debug;
+
+use Cake\Error\Debugger;
+
 use function Cake\Error\stackTrace;
+
+use Cake\TestSuite\TestCase;
 
 /**
  * FunctionsTest class
@@ -174,14 +179,16 @@ EXPECTED;
     {
         ob_start();
         // phpcs:ignore
-        stackTrace(); $expected = Debugger::trace();
+        stackTrace();
+        $expected = Debugger::trace();
         $result = ob_get_clean();
         $this->assertSame($expected, $result);
 
         $opts = ['args' => true];
         ob_start();
         // phpcs:ignore
-        stackTrace($opts); $expected = Debugger::trace($opts);
+        stackTrace($opts);
+        $expected = Debugger::trace($opts);
         $result = ob_get_clean();
         $this->assertSame($expected, $result);
 

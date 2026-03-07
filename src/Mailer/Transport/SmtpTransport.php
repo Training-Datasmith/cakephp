@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,7 +15,10 @@ declare(strict_types=1);
  * @since         2.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Mailer\Transport;
+
+use function Cake\Core\env;
 
 use Cake\Core\Exception\CakeException;
 use Cake\Mailer\AbstractTransport;
@@ -22,7 +26,6 @@ use Cake\Mailer\Message;
 use Cake\Network\Exception\SocketException;
 use Cake\Network\Socket;
 use Exception;
-use function Cake\Core\env;
 
 /**
  * Send mail using SMTP protocol

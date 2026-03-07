@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Test\TestCase\ORM\Query;
 
 use AssertionError;
@@ -1507,7 +1509,7 @@ class SelectQueryTest extends TestCase
     public function testHydrateCustomObject(): void
     {
         // phpcs:ignore
-        $class = (new class extends Entity {})::class;
+        $class = (new class () extends Entity {})::class;
         $table = $this->getTableLocator()->get('articles', [
             'table' => 'articles',
             'entityClass' => '\\' . $class,
@@ -1535,8 +1537,8 @@ class SelectQueryTest extends TestCase
     public function testHydrateHasManyCustomEntity(): void
     {
         // phpcs:disable
-        $authorEntity = (new class extends Entity {})::class;
-        $articleEntity = (new class extends Entity {})::class;
+        $authorEntity = (new class () extends Entity {})::class;
+        $articleEntity = (new class () extends Entity {})::class;
         // phpcs:enable
         $table = $this->getTableLocator()->get('authors', [
             'entityClass' => '\\' . $authorEntity,
@@ -1575,7 +1577,7 @@ class SelectQueryTest extends TestCase
     public function testHydrateBelongsToCustomEntity(): void
     {
         // phpcs:ignore
-        $authorEntity = (new class extends Entity {})::class;
+        $authorEntity = (new class () extends Entity {})::class;
         $table = $this->getTableLocator()->get('articles');
         $this->getTableLocator()->get('authors', [
             'entityClass' => '\\' . $authorEntity,
@@ -4133,7 +4135,7 @@ class SelectQueryTest extends TestCase
         $this->expectExceptionMessage('You cannot join with `Articles.Authors` because it conflicts with the existing `Authors` join.');
         $comments->find()
             ->leftJoinWith('Authors')
-            ->leftJoinWith('Articles', fn(SelectQuery $q) => $q->leftJoinWith('Authors'))
+            ->leftJoinWith('Articles', fn (SelectQuery $q) => $q->leftJoinWith('Authors'))
             ->where(['Comments.id' => 1])
             ->disableHydration()
             ->all();
@@ -4163,7 +4165,7 @@ class SelectQueryTest extends TestCase
         $this->expectExceptionMessage('You cannot join with `Articles.Authors` because it conflicts with the existing `Authors` join.');
         $comments->find()
             ->leftJoinWith('Authors')
-            ->matching('Articles', fn(SelectQuery $q) => $q->leftJoinWith('Authors'))
+            ->matching('Articles', fn (SelectQuery $q) => $q->leftJoinWith('Authors'))
             ->where(['Comments.id' => 1])
             ->disableHydration()
             ->all();

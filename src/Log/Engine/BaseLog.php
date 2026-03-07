@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,9 +15,13 @@ declare(strict_types=1);
  * @since         2.2.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Log\Engine;
 
 use ArrayObject;
+
+use function Cake\Core\deprecationWarning;
+
 use Cake\Core\InstanceConfigTrait;
 use Cake\Log\Formatter\AbstractFormatter;
 use Cake\Log\Formatter\DefaultFormatter;
@@ -24,7 +29,6 @@ use JsonSerializable;
 use Psr\Log\AbstractLogger;
 use Serializable;
 use Stringable;
-use function Cake\Core\deprecationWarning;
 
 /**
  * Base log engine class.

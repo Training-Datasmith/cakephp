@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,14 +15,17 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\View\Helper;
 
 use Cake\Core\App;
 use Cake\Core\Exception\CakeException;
+
+use function Cake\Core\h;
+
 use Cake\Routing\Asset;
 use Cake\Routing\Router;
 use Cake\View\Helper;
-use function Cake\Core\h;
 
 /**
  * UrlHelper class for generating URLs.

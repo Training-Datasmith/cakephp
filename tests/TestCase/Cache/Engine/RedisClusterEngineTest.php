@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Cake\Test\TestCase\Cache\Engine;
@@ -177,7 +178,7 @@ class RedisClusterEngineTest extends TestCase
      */
     public function testConnectRedisClusterFailureLogsError(): void
     {
-        $mock = new class extends RedisEngine {
+        $mock = new class () extends RedisEngine {
             public function init(array $config = []): bool
             {
                 // Prevent init logic from running connectCluster, simulate failure instead

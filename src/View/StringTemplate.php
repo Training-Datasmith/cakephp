@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,15 +15,20 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\View;
 
 use Cake\Core\Configure\Engine\PhpConfig;
+
+use function Cake\Core\deprecationWarning;
+
 use Cake\Core\Exception\CakeException;
+
+use function Cake\Core\h;
+
 use Cake\Core\InstanceConfigTrait;
 use Cake\Utility\Hash;
 use InvalidArgumentException;
-use function Cake\Core\deprecationWarning;
-use function Cake\Core\h;
 
 /**
  * Provides an interface for registering and inserting

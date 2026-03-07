@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -18,6 +19,7 @@ declare(strict_types=1);
 /**
  * OtherComponent
  */
+
 namespace TestPlugin\Controller\Component;
 
 use Cake\Controller\Component;

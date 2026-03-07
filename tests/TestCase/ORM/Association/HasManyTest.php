@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Test\TestCase\ORM\Association;
 
 use Cake\Database\Connection;
@@ -27,6 +29,9 @@ use Cake\Database\ExpressionInterface;
 use Cake\Database\TypeMap;
 use Cake\Datasource\ConnectionManager;
 use Cake\Datasource\ResultSetInterface;
+
+use function Cake\I18n\__;
+
 use Cake\Log\Log;
 use Cake\ORM\Association;
 use Cake\ORM\Association\HasMany;
@@ -39,7 +44,6 @@ use Closure;
 use InvalidArgumentException;
 use Mockery;
 use PHPUnit\Framework\Attributes\DataProvider;
-use function Cake\I18n\__;
 
 /**
  * Tests HasMany class

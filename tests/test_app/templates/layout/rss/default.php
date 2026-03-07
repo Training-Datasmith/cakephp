@@ -1,4 +1,6 @@
 <?php
+
+declare(strict_types=1);
 echo $this->Rss->header();
 
 if (!isset($channel)) {
@@ -10,8 +12,8 @@ if (!isset($channel['title'])) {
 
 echo $this->Rss->document(
     $this->Rss->channel(
-        [], $channel, $this->fetch('content')
+        [],
+        $channel,
+        $this->fetch('content')
     )
 );
-
-?>

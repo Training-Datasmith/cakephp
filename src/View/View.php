@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         0.10.0
  * @license       https://www.opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\View;
 
 use Cake\Cache\Cache;
@@ -21,6 +23,9 @@ use Cake\Core\App;
 use Cake\Core\Exception\CakeException;
 use Cake\Core\InstanceConfigTrait;
 use Cake\Core\Plugin;
+
+use function Cake\Core\pluginSplit;
+
 use Cake\Event\EventDispatcherInterface;
 use Cake\Event\EventDispatcherTrait;
 use Cake\Event\EventManagerInterface;
@@ -36,7 +41,6 @@ use Generator;
 use InvalidArgumentException;
 use LogicException;
 use Throwable;
-use function Cake\Core\pluginSplit;
 
 /**
  * View, the V in the MVC triad. View interacts with Helpers and view variables passed

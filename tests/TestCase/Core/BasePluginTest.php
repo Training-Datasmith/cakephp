@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -13,6 +14,7 @@ declare(strict_types=1);
  * @since         3.6.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Test\TestCase\Core;
 
 use Cake\Console\CommandCollection;
@@ -120,7 +122,7 @@ class BasePluginTest extends TestCase
 
     public function testBootstrap(): void
     {
-        $app = new class implements PluginApplicationInterface {
+        $app = new class () implements PluginApplicationInterface {
             use BasePluginApplicationTrait;
         };
         $plugin = new TestPlugin();
@@ -135,7 +137,7 @@ class BasePluginTest extends TestCase
      */
     public function testBootstrapSkipMissingFile(): void
     {
-        $app = new class implements PluginApplicationInterface {
+        $app = new class () implements PluginApplicationInterface {
             use BasePluginApplicationTrait;
         };
         $plugin = new BasePlugin();
@@ -213,8 +215,7 @@ class BasePluginTest extends TestCase
             'pass' => [],
         ]);
 
-        $basePlugin = new class extends BasePlugin
-        {
+        $basePlugin = new class () extends BasePlugin {
             public function events(EventManagerInterface $eventManager): EventManagerInterface
             {
                 $eventManager->on('testTrue', function ($event) {
@@ -225,8 +226,7 @@ class BasePluginTest extends TestCase
             }
         };
 
-        $app = new class (dirname(__DIR__, 2)) extends BaseApplication
-        {
+        $app = new class (dirname(__DIR__, 2)) extends BaseApplication {
             public function middleware(MiddlewareQueue $middlewareQueue): MiddlewareQueue
             {
                 return $middlewareQueue;
@@ -240,8 +240,7 @@ class BasePluginTest extends TestCase
     public function testConsoleEventsAreRegistered(): void
     {
         static::setAppNamespace();
-        $basePlugin = new class extends BasePlugin
-        {
+        $basePlugin = new class () extends BasePlugin {
             public function events(EventManagerInterface $eventManager): EventManagerInterface
             {
                 $eventManager->on('testTrue', function ($event) {
@@ -252,8 +251,7 @@ class BasePluginTest extends TestCase
             }
         };
 
-        $app = new class (dirname(__DIR__, 2)) extends BaseApplication
-        {
+        $app = new class (dirname(__DIR__, 2)) extends BaseApplication {
             public function routes(RouteBuilder $routes): void
             {
             }

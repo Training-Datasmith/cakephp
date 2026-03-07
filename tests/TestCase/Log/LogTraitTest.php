@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -13,6 +14,7 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Test\TestCase\Log;
 
 use Cake\Log\Log;
@@ -49,7 +51,7 @@ class LogTraitTest extends TestCase
             ->once();
 
         Log::setConfig('trait_test', ['engine' => $mock]);
-        $subject = new class {
+        $subject = new class () {
             use LogTrait;
         };
 

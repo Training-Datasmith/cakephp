@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -18,6 +19,7 @@ declare(strict_types=1);
  * @copyright Copyright (c) 2015-2016 Zend Technologies USA Inc. (https://www.zend.com/)
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
+
 namespace Cake\Http;
 
 use Cake\Http\Cookie\Cookie;
@@ -40,8 +42,7 @@ class ResponseEmitter
          * Maximum output buffering size for each iteration.
          */
         protected int $maxBufferLength = 8192
-    )
-    {
+    ) {
     }
 
     /**

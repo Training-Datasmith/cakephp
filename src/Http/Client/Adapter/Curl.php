@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -13,6 +14,7 @@ declare(strict_types=1);
  * @since         3.7.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Http\Client\Adapter;
 
 use Cake\Http\Client\AdapterInterface;
@@ -173,7 +175,8 @@ class Curl implements AdapterInterface
             '1.1' => CURL_HTTP_VERSION_1_1,
             '2', '2.0' => defined('CURL_HTTP_VERSION_2TLS')
                 ? CURL_HTTP_VERSION_2TLS
-                : (defined('CURL_HTTP_VERSION_2_0')
+                : (
+                    defined('CURL_HTTP_VERSION_2_0')
                     ? CURL_HTTP_VERSION_2_0
                     : throw new HttpException('libcurl 7.33 or greater required for HTTP/2 support')
                 ),

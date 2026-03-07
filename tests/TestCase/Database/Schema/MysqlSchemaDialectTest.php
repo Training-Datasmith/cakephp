@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Test\TestCase\Database\Schema;
 
 use Cake\Database\Connection;
@@ -2095,6 +2097,8 @@ SQL;
 // phpcs:disable
 class PDOMocked extends PDO
 {
-    public function quoteIdentifier(): void {}
+    public function quoteIdentifier(): void
+    {
+    }
 }
 // phpcs:enable

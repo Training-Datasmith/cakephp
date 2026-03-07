@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -12,11 +13,13 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Controller\Exception;
+
+use function Cake\Core\deprecationWarning;
 
 use Cake\Http\Exception\BadRequestException;
 use Throwable;
-use function Cake\Core\deprecationWarning;
 
 /**
  * Security exception - used when SecurityComponent detects any issue with the current request

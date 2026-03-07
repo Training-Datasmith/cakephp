@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         2.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Core\Configure\Engine;
 
 use Cake\Core\Configure\ConfigEngineInterface;
@@ -74,7 +76,7 @@ class IniConfig implements ConfigEngineInterface
     public function __construct(?string $path = null, /**
      * The section to read, if null all sections will be read.
      */
-    protected ?string $_section = null)
+        protected ?string $_section = null)
     {
         $this->_path = $path ?? CONFIG;
     }

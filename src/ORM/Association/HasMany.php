@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\ORM\Association;
 
 use Cake\Collection\Collection;
@@ -312,7 +314,7 @@ class HasMany extends Association
 
         $sourceEntity->set($property, $currentEntities);
 
-        $savedEntity = $this->getConnection()->transactional(fn(): \Cake\Datasource\EntityInterface|false => $this->saveAssociated($sourceEntity, $options));
+        $savedEntity = $this->getConnection()->transactional(fn (): \Cake\Datasource\EntityInterface|false => $this->saveAssociated($sourceEntity, $options));
         $ok = ($savedEntity instanceof EntityInterface);
 
         $this->setSaveStrategy($saveStrategy);
@@ -402,7 +404,7 @@ class HasMany extends Association
                 $property,
                 (new Collection($sourceEntity->get($property)))
                 ->reject(
-                    fn($assoc) => in_array($assoc, $targetEntities, true),
+                    fn ($assoc) => in_array($assoc, $targetEntities, true),
                 )
                 ->toList(),
             );
@@ -496,10 +498,10 @@ class HasMany extends Association
         $primaryKey = (array)$target->getPrimaryKey();
         $exclusions = new Collection($remainingEntities);
         $exclusions = $exclusions->map(
-            fn(EntityInterface $ent) => $ent->extract($primaryKey),
+            fn (EntityInterface $ent) => $ent->extract($primaryKey),
         )
         ->filter(
-            fn($v) => !in_array(null, $v, true),
+            fn ($v) => !in_array(null, $v, true),
         )
         ->toList();
 

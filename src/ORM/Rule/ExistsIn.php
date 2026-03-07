@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\ORM\Rule;
 
 use Cake\Database\Exception\DatabaseException;
@@ -57,7 +59,7 @@ class ExistsIn
     public function __construct(array|string $fields, /**
      * The repository where the field will be looked for
      */
-    protected Table|Association|string $_repository, array $options = [])
+        protected Table|Association|string $_repository, array $options = [])
     {
         $options += ['allowNullableNulls' => false];
         $this->_options = $options;
@@ -133,7 +135,7 @@ class ExistsIn
         }
 
         $primary = array_map(
-            fn(string $key): string => $target->aliasField($key) . ' IS',
+            fn (string $key): string => $target->aliasField($key) . ' IS',
             $bindingKey,
         );
         $conditions = array_combine(

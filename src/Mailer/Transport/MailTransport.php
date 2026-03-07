@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -16,6 +17,7 @@ declare(strict_types=1);
  * @since         2.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Mailer\Transport;
 
 use Cake\Core\Exception\CakeException;
@@ -53,7 +55,7 @@ class MailTransport extends AbstractTransport
                 'bcc',
             ],
             $eol,
-            fn($val) => str_replace("\r\n", '', $val),
+            fn ($val) => str_replace("\r\n", '', $val),
         );
 
         $message = $message->getBodyString($eol);

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,11 +15,15 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\ORM;
 
 use Cake\Collection\CollectionInterface;
 use Cake\Core\App;
 use Cake\Core\ConventionsTrait;
+
+use function Cake\Core\pluginSplit;
+
 use Cake\Database\Exception\DatabaseException;
 use Cake\Database\Expression\IdentifierExpression;
 use Cake\Database\Expression\QueryExpression;
@@ -30,7 +35,6 @@ use Cake\ORM\Query\SelectQuery;
 use Cake\Utility\Inflector;
 use Closure;
 use InvalidArgumentException;
-use function Cake\Core\pluginSplit;
 
 /**
  * An Association is a relationship established between two tables and is used
@@ -922,7 +926,7 @@ abstract class Association
                 foreach ($fields as $field) {
                     if (
                         is_string($field) && (
-                        $field === $pkField ||
+                            $field === $pkField ||
                         str_ends_with($field, '.' . $pkField)
                         )
                     ) {

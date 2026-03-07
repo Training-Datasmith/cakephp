@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -13,6 +14,7 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Test\TestCase\Event;
 
 use Cake\Event\Event;
@@ -37,7 +39,7 @@ class EventDispatcherTraitTest extends TestCase
     {
         parent::setUp();
 
-        $this->subject = new class {
+        $this->subject = new class () {
             use EventDispatcherTrait;
         };
     }

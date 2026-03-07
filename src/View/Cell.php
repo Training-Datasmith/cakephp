@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\View;
 
 use BadMethodCallException;
@@ -276,7 +278,7 @@ abstract class Cell implements EventDispatcherInterface, Stringable
             ), E_USER_WARNING);
 
             return '';
-        /** @phpstan-ignore-next-line */
+            /** @phpstan-ignore-next-line */
         } catch (Error $e) {
             throw new Error(sprintf(
                 'Could not render cell - %s [%s, line %d]',

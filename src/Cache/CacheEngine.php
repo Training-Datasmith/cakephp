@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,18 +15,21 @@ declare(strict_types=1);
  * @since         1.2.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Cache;
 
 use Cake\Cache\Event\CacheAfterAddEvent;
 use Cake\Cache\Event\CacheBeforeAddEvent;
 use Cake\Cache\Exception\InvalidArgumentException;
 use Cake\Core\InstanceConfigTrait;
+
+use function Cake\Core\triggerWarning;
+
 use Cake\Event\EventDispatcherInterface;
 use Cake\Event\EventDispatcherTrait;
 use DateInterval;
 use DateTime;
 use Psr\SimpleCache\CacheInterface;
-use function Cake\Core\triggerWarning;
 
 /**
  * Storage engine for CakePHP caching

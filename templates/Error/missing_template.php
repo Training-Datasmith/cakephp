@@ -14,8 +14,9 @@
  * @var string $file
  * @var array<string> $paths
  */
-use Cake\Utility\Inflector;
 use function Cake\Core\h;
+
+use Cake\Utility\Inflector;
 
 $this->layout = 'dev_error';
 

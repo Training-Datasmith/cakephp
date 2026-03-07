@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -13,6 +14,7 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Test\TestCase\Datasource;
 
 use Cake\Datasource\Exception\MissingModelException;
@@ -122,7 +124,7 @@ class ModelAwareTraitTest extends TestCase
         $stub = new Stub();
         $stub->setProps('Articles');
 
-        $table = new class extends Table {
+        $table = new class () extends Table {
             public function getAlias(): string
             {
                 return 'Magic';
@@ -138,7 +140,7 @@ class ModelAwareTraitTest extends TestCase
         $this->assertSame('Magic', $result->getAlias());
 
         $locator = new StubFactory();
-        $table2 = new class extends Table {
+        $table2 = new class () extends Table {
             public function getAlias(): string
             {
                 return 'Foo';

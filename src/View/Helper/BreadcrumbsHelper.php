@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,12 +15,14 @@ declare(strict_types=1);
  * @since         3.3.6
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\View\Helper;
+
+use function Cake\Core\deprecationWarning;
 
 use Cake\View\Helper;
 use Cake\View\StringTemplateTrait;
 use LogicException;
-use function Cake\Core\deprecationWarning;
 
 /**
  * BreadcrumbsHelper to register and display a breadcrumb trail for your views

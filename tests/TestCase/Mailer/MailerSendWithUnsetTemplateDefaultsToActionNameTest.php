@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -12,6 +13,7 @@ declare(strict_types=1);
  * @since         5.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Test\TestCase\Mailer;
 
 use Cake\Mailer\Mailer;
@@ -21,7 +23,7 @@ class MailerSendWithUnsetTemplateDefaultsToActionNameTest extends TestCase
 {
     public function testSendAction(): void
     {
-        $mailer = new class extends Mailer {
+        $mailer = new class () extends Mailer {
             public bool $testIsCalled = false;
 
             public function test($to, $subject)

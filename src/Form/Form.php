@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,7 +15,10 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Form;
+
+use function Cake\Core\deprecationWarning;
 
 use Cake\Event\EventDispatcherInterface;
 use Cake\Event\EventDispatcherTrait;
@@ -24,7 +28,6 @@ use Cake\Utility\Hash;
 use Cake\Validation\ValidatorAwareInterface;
 use Cake\Validation\ValidatorAwareTrait;
 use ReflectionMethod;
-use function Cake\Core\deprecationWarning;
 
 /**
  * Form abstraction used to create forms not tied to ORM backed models,

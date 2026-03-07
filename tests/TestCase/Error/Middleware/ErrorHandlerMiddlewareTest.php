@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         3.3.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Test\TestCase\Error\Middleware;
 
 use Cake\Core\Configure;
@@ -99,8 +101,7 @@ class ErrorHandlerMiddlewareTest extends TestCase
         $factory = function ($exception) {
             $this->assertInstanceOf('LogicException', $exception);
 
-            return new class implements ExceptionRendererInterface
-            {
+            return new class () implements ExceptionRendererInterface {
                 public function render(): Response
                 {
                     return new Response();
@@ -367,8 +368,7 @@ class ErrorHandlerMiddlewareTest extends TestCase
         $request = ServerRequestFactory::fromGlobals();
 
         $factory = function () {
-            return new class implements ExceptionRendererInterface
-            {
+            return new class () implements ExceptionRendererInterface {
                 public function render(): ResponseInterface|string
                 {
                     throw new LogicException('Rendering failed');

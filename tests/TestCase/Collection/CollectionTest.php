@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,11 +15,15 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Test\TestCase\Collection;
 
 use ArrayIterator;
 use ArrayObject;
 use Cake\Collection\Collection;
+
+use function Cake\Collection\collection;
+
 use Cake\Collection\Iterator\BufferedIterator;
 use Cake\Collection\Iterator\ExtractIterator;
 use Cake\Collection\Iterator\InsertIterator;
@@ -40,7 +45,6 @@ use TestApp\Collection\TestCollection;
 use TestApp\Model\Enum\ArticleStatus;
 use TestApp\Model\Enum\NonBacked;
 use TestApp\Model\Enum\Priority;
-use function Cake\Collection\collection;
 
 /**
  * Collection Test
@@ -310,10 +314,10 @@ class CollectionTest extends TestCase
         $result = $collection->unique();
         $this->assertEquals(['a' => 1, 'b' => 2, 'f' => 3], iterator_to_array($result));
 
-        $result = $collection->unique(fn($v) => (string)$v);
+        $result = $collection->unique(fn ($v) => (string)$v);
         $this->assertEquals(['a' => 1, 'b' => 2, 'f' => 3], iterator_to_array($result));
 
-        $result = $collection->unique(fn($v, $k) => $k);
+        $result = $collection->unique(fn ($v, $k) => $k);
         $this->assertEquals(['a' => 1, 'b' => 2, 'c' => 1, 'd' => 2, 'e' => 1, 'f' => 3], iterator_to_array($result));
     }
 
@@ -2784,7 +2788,7 @@ class CollectionTest extends TestCase
     {
         $items = ['a' => 1, 'b' => 2, 'c' => 3];
         $collection = (new Collection($items))->lazy();
-        $callable = new class {
+        $callable = new class () {
             public function __invoke(): never
             {
                 throw new Exception('This should not be called');
@@ -2816,7 +2820,7 @@ class CollectionTest extends TestCase
         foreach ($collection as $item) {
             $count++;
             // Calling every() inside foreach should not cause infinite loop
-            $result = $collection->every(fn($i) => isset($i['id']));
+            $result = $collection->every(fn ($i) => isset($i['id']));
             $this->assertTrue($result);
         }
 

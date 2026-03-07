@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         4.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\ORM\Behavior\Translate;
 
 use ArrayObject;
@@ -176,7 +178,7 @@ class EavStrategy implements TranslateStrategyInterface
             return;
         }
 
-        $conditions = (fn(string $field, string $locale, SelectQuery $query, array $select) => function (SelectQuery $q) use ($field, $locale, $query, $select): \Cake\ORM\Query\SelectQuery {
+        $conditions = (fn (string $field, string $locale, SelectQuery $query, array $select) => function (SelectQuery $q) use ($field, $locale, $query, $select): \Cake\ORM\Query\SelectQuery {
             $table = $q->getRepository();
             $q->where([$table->aliasField('locale') => $locale]);
 
@@ -219,7 +221,7 @@ class EavStrategy implements TranslateStrategyInterface
 
         $query->contain($contain);
         $query->formatResults(
-            fn(CollectionInterface $results): \Cake\Collection\CollectionInterface => $this->rowMapper($results, $locale),
+            fn (CollectionInterface $results): \Cake\Collection\CollectionInterface => $this->rowMapper($results, $locale),
             SelectQuery::PREPEND,
         );
     }

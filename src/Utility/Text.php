@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,14 +15,17 @@ declare(strict_types=1);
  * @since         1.2.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Utility;
 
 use Cake\Core\Configure;
 use Cake\Core\Exception\CakeException;
+
+use function Cake\I18n\__d;
+
 use Closure;
 use InvalidArgumentException;
 use Transliterator;
-use function Cake\I18n\__d;
 
 /**
  * Text handling methods.
@@ -233,7 +237,7 @@ class Text
 
         $dataKeys = array_keys($data);
         $hashKeys = array_map(
-            fn(int|string $str): string => hash('xxh128', (string)$str),
+            fn (int|string $str): string => hash('xxh128', (string)$str),
             $dataKeys,
         );
         /** @var array<string, string> $tempData */

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -13,11 +14,13 @@ declare(strict_types=1);
  * @since         2.2.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Utility;
 
 use ArrayAccess;
 use Cake\Core\Exception\CakeException;
 use InvalidArgumentException;
+
 use const SORT_ASC;
 use const SORT_DESC;
 use const SORT_LOCALE_STRING;

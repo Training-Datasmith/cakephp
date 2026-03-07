@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,11 +15,14 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\I18n;
 
 use Cake\Cache\CacheEngineInterface;
-use Psr\SimpleCache\CacheInterface;
+
 use function Cake\Core\deprecationWarning;
+
+use Psr\SimpleCache\CacheInterface;
 
 /**
  * Constructs and stores instances of translators that can be

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         4.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Form;
 
 use Cake\Core\Configure;
@@ -167,7 +169,7 @@ class FormProtector
             return Hash::filter(explode('.', $name));
         }
         $parts = explode('[', $name);
-        $parts = array_map(fn(string $el) => trim($el, ']'), $parts);
+        $parts = array_map(fn (string $el) => trim($el, ']'), $parts);
 
         return Hash::filter($parts, 'strlen');
     }

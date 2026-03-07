@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         2.1.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Event;
 
 use Cake\Core\Exception\CakeException;
@@ -68,8 +70,7 @@ class Event implements EventInterface
          * Custom data for the method that receives the event
          */
         protected array $_data = []
-    )
-    {
+    ) {
     }
 
     /**

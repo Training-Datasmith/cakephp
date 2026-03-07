@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,11 +15,15 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\View\Form;
 
 use ArrayAccess;
 use Cake\Collection\Collection;
 use Cake\Core\Exception\CakeException;
+
+use function Cake\Core\namespaceSplit;
+
 use Cake\Datasource\EntityInterface;
 use Cake\Datasource\InvalidPropertyInterface;
 use Cake\ORM\Association\BelongsToMany;
@@ -29,7 +34,6 @@ use Cake\Utility\Inflector;
 use Cake\Validation\Validator;
 use InvalidArgumentException;
 use Traversable;
-use function Cake\Core\namespaceSplit;
 
 /**
  * Provides a form context around a single entity and its relations.
@@ -568,7 +572,7 @@ class EntityContext implements ContextInterface
      */
     protected function _getValidator(array $parts): Validator
     {
-        $keyParts = array_filter(array_slice($parts, 0, -1), fn(string $part) => !is_numeric($part));
+        $keyParts = array_filter(array_slice($parts, 0, -1), fn (string $part) => !is_numeric($part));
         $key = implode('.', $keyParts);
         $entity = $this->entity($parts);
 
@@ -616,7 +620,7 @@ class EntityContext implements ContextInterface
             return $this->_tables[$this->_rootName];
         }
 
-        $normalized = array_slice(array_filter($parts, fn(string $part) => !is_numeric($part)), 0, -1);
+        $normalized = array_slice(array_filter($parts, fn (string $part) => !is_numeric($part)), 0, -1);
 
         $path = implode('.', $normalized);
         if (isset($this->_tables[$path])) {

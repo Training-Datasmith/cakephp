@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,9 +15,13 @@ declare(strict_types=1);
  * @since         4.5.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Database\Query;
 
 use ArrayIterator;
+
+use function Cake\Core\deprecationWarning;
+
 use Cake\Core\Exception\CakeException;
 use Cake\Database\Connection;
 use Cake\Database\Expression\IdentifierExpression;
@@ -29,7 +34,6 @@ use Closure;
 use InvalidArgumentException;
 use IteratorAggregate;
 use Traversable;
-use function Cake\Core\deprecationWarning;
 
 /**
  * This class is used to generate SELECT queries for the relational database.

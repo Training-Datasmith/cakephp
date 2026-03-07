@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,9 +15,13 @@ declare(strict_types=1);
  * @since         3.1.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\ORM\Locator;
 
 use Cake\Core\App;
+
+use function Cake\Core\pluginSplit;
+
 use Cake\Database\Exception\DatabaseException;
 use Cake\Datasource\ConnectionManager;
 use Cake\Datasource\Locator\AbstractLocator;
@@ -26,7 +31,6 @@ use Cake\ORM\Exception\MissingTableClassException;
 use Cake\ORM\Query\QueryFactory;
 use Cake\ORM\Table;
 use Cake\Utility\Inflector;
-use function Cake\Core\pluginSplit;
 
 /**
  * Provides a default registry/factory for Table objects.

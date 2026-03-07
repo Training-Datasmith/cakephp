@@ -14,9 +14,10 @@
  * @var \Cake\Core\Exception\CakeException $error
  */
 
+use function Cake\Core\h;
+
 use Cake\Error\Debugger;
 use Cake\Routing\Router;
-use function Cake\Core\h;
 
 $this->layout = 'dev_error';
 

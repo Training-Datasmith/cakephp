@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,17 +15,20 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\ORM;
 
 use BadMethodCallException;
 use Cake\Core\App;
+
+use function Cake\Core\deprecationWarning;
+
 use Cake\Core\ObjectRegistry;
 use Cake\Event\EventDispatcherInterface;
 use Cake\Event\EventDispatcherTrait;
 use Cake\ORM\Exception\MissingBehaviorException;
 use Cake\ORM\Query\SelectQuery;
 use LogicException;
-use function Cake\Core\deprecationWarning;
 
 /**
  * BehaviorRegistry is used as a registry for loaded behaviors and handles loading

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,9 +15,13 @@ declare(strict_types=1);
  * @since         4.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Test\TestCase\Mailer;
 
 use Cake\Core\Configure;
+
+use function Cake\Core\env;
+
 use Cake\Mailer\Message;
 use Cake\Mailer\Transport\DebugTransport;
 use Cake\TestSuite\TestCase;
@@ -25,7 +30,6 @@ use Laminas\Diactoros\UploadedFile;
 use PHPUnit\Framework\Attributes\DataProvider;
 use ReflectionClass;
 use TestApp\Mailer\TestMessage;
-use function Cake\Core\env;
 
 /**
  * MessageTest class

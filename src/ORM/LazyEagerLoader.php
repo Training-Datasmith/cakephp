@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         3.1.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\ORM;
 
 use Cake\Database\Expression\QueryExpression;
@@ -74,7 +76,7 @@ class LazyEagerLoader
         $primaryKey = $source->getPrimaryKey();
         $method = is_string($primaryKey) ? 'get' : 'extract';
 
-        $keys = Hash::map($entities, '{*}', fn(EntityInterface $entity): mixed => $entity->{$method}($primaryKey));
+        $keys = Hash::map($entities, '{*}', fn (EntityInterface $entity): mixed => $entity->{$method}($primaryKey));
 
         $query = $source
             ->find()
@@ -148,7 +150,7 @@ class LazyEagerLoader
         /** @var array<\Cake\Datasource\EntityInterface> $results */
         $results = $query
             ->all()
-            ->indexBy(fn(EntityInterface $e): string => implode(';', $e->extract($primaryKey)))
+            ->indexBy(fn (EntityInterface $e): string => implode(';', $e->extract($primaryKey)))
             ->toArray();
 
         foreach ($entities as $k => $object) {

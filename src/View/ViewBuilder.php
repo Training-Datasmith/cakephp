@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,9 +15,13 @@ declare(strict_types=1);
  * @since         3.1.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\View;
 
 use Cake\Core\App;
+
+use function Cake\Core\pluginSplit;
+
 use Cake\Event\EventManagerInterface;
 use Cake\Http\Response;
 use Cake\Http\ServerRequest;
@@ -26,7 +31,6 @@ use Exception;
 use InvalidArgumentException;
 use JsonSerializable;
 use PDO;
-use function Cake\Core\pluginSplit;
 
 /**
  * Provides an API for iteratively building a view up.
@@ -638,7 +642,7 @@ class ViewBuilder implements JsonSerializable
         /** @phpstan-ignore-next-line argument.type */
         array_walk_recursive($array['_vars'], $this->_checkViewVars(...));
 
-        return array_filter($array, fn(array|bool|string|null $i) => !is_array($i) && strlen((string)$i) || !empty($i));
+        return array_filter($array, fn (array|bool|string|null $i) => !is_array($i) && strlen((string)$i) || !empty($i));
     }
 
     /**

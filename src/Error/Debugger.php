@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,11 +15,18 @@ declare(strict_types=1);
  * @since         1.2.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Error;
 
 use Cake\Core\Configure;
 use Cake\Core\Exception\CakeException;
+
+use function Cake\Core\h;
+
 use Cake\Core\InstanceConfigTrait;
+
+use function Cake\Core\pr;
+
 use Cake\Error\Debug\ArrayItemNode;
 use Cake\Error\Debug\ArrayNode;
 use Cake\Error\Debug\ClassNode;
@@ -41,8 +49,6 @@ use InvalidArgumentException;
 use ReflectionObject;
 use ReflectionProperty;
 use Throwable;
-use function Cake\Core\h;
-use function Cake\Core\pr;
 
 /**
  * Provide custom logging and error handling.

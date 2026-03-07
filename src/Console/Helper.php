@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         3.1.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Console;
 
 use Cake\Core\InstanceConfigTrait;
@@ -45,8 +47,9 @@ abstract class Helper
     public function __construct(/**
      * ConsoleIo instance.
      */
-    protected ConsoleIo $_io, array $config = [])
-    {
+        protected ConsoleIo $_io,
+        array $config = []
+    ) {
         $this->setConfig($config);
     }
 

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         2.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Test\TestCase\Error;
 
 use Cake\Controller\Controller;
@@ -24,6 +26,9 @@ use Cake\Controller\Exception\MissingComponentException;
 use Cake\Core\Configure;
 use Cake\Core\Exception\CakeException;
 use Cake\Core\Exception\MissingPluginException;
+
+use function Cake\Core\h;
+
 use Cake\Database\Driver;
 use Cake\Database\Exception\QueryException;
 use Cake\Database\Log\LoggedQuery;
@@ -60,7 +65,6 @@ use TestApp\Error\Exception\MissingWidgetThingException;
 use TestApp\Error\Renderer\MyCustomExceptionRenderer;
 use TestApp\Error\Renderer\TestAppsExceptionRenderer;
 use TestPlugin\Controller\ErrorController as PluginErrorController;
-use function Cake\Core\h;
 
 class WebExceptionRendererTest extends TestCase
 {

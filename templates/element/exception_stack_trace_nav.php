@@ -15,8 +15,10 @@
  * @var \Throwable $error
  * @var array<\Throwable> $exceptions
  */
-use Cake\Error\Debugger;
 use function Cake\Core\h;
+
+use Cake\Error\Debugger;
+
 ?>
 <a href="#" class="toggle-link toggle-vendor-frames">Toggle Vendor Stack Frames</a>
 

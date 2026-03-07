@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,12 +15,14 @@ declare(strict_types=1);
  * @since         4.1.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Database\Expression;
+
+use function Cake\Core\deprecationWarning;
 
 use Cake\Database\ExpressionInterface;
 use Cake\Database\ValueBinder;
 use Closure;
-use function Cake\Core\deprecationWarning;
 
 /**
  * This represents a SQL window expression used by aggregate and window functions.

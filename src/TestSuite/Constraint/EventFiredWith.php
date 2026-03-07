@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Cake\TestSuite\Constraint;
@@ -26,14 +27,14 @@ class EventFiredWith extends Constraint
     public function __construct(/**
      * Array of fired events
      */
-    protected EventManager $_eventManager, /**
+        protected EventManager $_eventManager, /**
      * Event data key
      */
-    protected string $_dataKey, /**
+        protected string $_dataKey, /**
      * Event data value
      */
-    protected mixed $_dataValue)
-    {
+        protected mixed $_dataValue
+    ) {
         if ($this->_eventManager->getEventList() === null) {
             throw new AssertionFailedError(
                 'The event manager you are asserting against is not configured to track events.',
@@ -53,7 +54,7 @@ class EventFiredWith extends Constraint
         $list = $this->_eventManager->getEventList();
         if ($list !== null) {
             $eventGroup = (new Collection($list))
-                ->groupBy(fn(EventInterface $event): string => $event->getName())
+                ->groupBy(fn (EventInterface $event): string => $event->getName())
                 ->toArray();
         }
 

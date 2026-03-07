@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,17 +15,20 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Test\TestCase\I18n;
 
 use Cake\I18n\Date;
 use Cake\I18n\DateTime;
+
+use function Cake\I18n\toDate;
+use function Cake\I18n\toDateTime;
+
 use Cake\TestSuite\TestCase;
 use DateTimeImmutable;
 use DateTimeInterface;
 use PHPUnit\Framework\Attributes\DataProvider;
 use stdClass;
-use function Cake\I18n\toDate;
-use function Cake\I18n\toDateTime;
 
 /**
  * Test cases for functions in I18n\functions.php

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,14 +15,17 @@ declare(strict_types=1);
  * @since         5.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Http;
 
 use Cake\Core\Configure;
+
+use function Laminas\Diactoros\marshalHeadersFromSapi;
+
 use Laminas\Diactoros\Uri;
 use Laminas\Diactoros\UriFactory as DiactorosUriFactory;
 use Psr\Http\Message\UriFactoryInterface;
 use Psr\Http\Message\UriInterface;
-use function Laminas\Diactoros\marshalHeadersFromSapi;
 
 /**
  * Factory class for creating uri instances.

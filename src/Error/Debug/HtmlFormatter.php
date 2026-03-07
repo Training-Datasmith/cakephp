@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,10 +15,12 @@ declare(strict_types=1);
  * @since         4.1.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Error\Debug;
 
-use InvalidArgumentException;
 use function Cake\Core\h;
+
+use InvalidArgumentException;
 
 /**
  * A Debugger formatter for generating interactive styled HTML output.

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         4.4.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Error\Renderer;
 
 use Cake\Controller\Controller;
@@ -21,9 +23,16 @@ use Cake\Controller\ControllerFactory;
 use Cake\Core\App;
 use Cake\Core\Configure;
 use Cake\Core\Container;
+
+use function Cake\Core\deprecationWarning;
+
 use Cake\Core\Exception\CakeException;
 use Cake\Core\Exception\HttpErrorCodeInterface;
 use Cake\Core\Exception\MissingPluginException;
+
+use function Cake\Core\h;
+use function Cake\Core\namespaceSplit;
+
 use Cake\Error\Debugger;
 use Cake\Error\ExceptionRendererInterface;
 use Cake\Http\Exception\HttpException;
@@ -31,6 +40,9 @@ use Cake\Http\Response;
 use Cake\Http\ResponseEmitter;
 use Cake\Http\ServerRequest;
 use Cake\Http\ServerRequestFactory;
+
+use function Cake\I18n\__d;
+
 use Cake\Log\Log;
 use Cake\Routing\Router;
 use Cake\Utility\Inflector;
@@ -40,10 +52,6 @@ use PDOException;
 use Psr\Http\Message\ResponseInterface;
 use ReflectionMethod;
 use Throwable;
-use function Cake\Core\deprecationWarning;
-use function Cake\Core\h;
-use function Cake\Core\namespaceSplit;
-use function Cake\I18n\__d;
 
 /**
  * Web Exception Renderer.
@@ -101,12 +109,12 @@ class WebExceptionRenderer implements ExceptionRendererInterface
     public function __construct(/**
      * The exception being handled.
      */
-    protected Throwable $error, /**
+        protected Throwable $error, /**
      * If set, this will be request used to create the controller that will render
      * the error.
      */
-    protected ?ServerRequest $request = null)
-    {
+        protected ?ServerRequest $request = null
+    ) {
         $this->controller = $this->_getController();
     }
 

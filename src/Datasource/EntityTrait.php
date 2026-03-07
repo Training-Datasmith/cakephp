@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,15 +15,18 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Datasource;
 
 use Cake\Collection\Collection;
+
+use function Cake\Core\deprecationWarning;
+
 use Cake\Datasource\Exception\MissingPropertyException;
 use Cake\ORM\Entity;
 use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 use InvalidArgumentException;
-use function Cake\Core\deprecationWarning;
 
 /**
  * An entity represents a single result row from a repository. It exposes the
@@ -1061,8 +1065,8 @@ trait EntityTrait
         $this->_hasBeenVisited = true;
         try {
             $errors = $this->_errors + (new Collection($diff))
-                ->filter(fn($value) => is_array($value) || $value instanceof EntityInterface)
-                ->map(fn($value) => $this->_readError($value))
+                ->filter(fn ($value) => is_array($value) || $value instanceof EntityInterface)
+                ->map(fn ($value) => $this->_readError($value))
                 ->filter()
                 ->toArray();
         } finally {
@@ -1349,7 +1353,7 @@ trait EntityTrait
     public function setAccess(array|string $field, bool $set)
     {
         if ($field === '*') {
-            $this->_accessible = array_map(fn(): bool => $set, $this->_accessible);
+            $this->_accessible = array_map(fn (): bool => $set, $this->_accessible);
             $this->_accessible['*'] = $set;
 
             return $this;

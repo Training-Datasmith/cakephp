@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -13,11 +14,15 @@ declare(strict_types=1);
  * @since         1.2.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\TestSuite;
 
 use Cake\Core\App;
 use Cake\Core\Configure;
 use Cake\Core\Plugin;
+
+use function Cake\Core\pluginSplit;
+
 use Cake\Datasource\ConnectionManager;
 use Cake\Error\Debugger;
 use Cake\Error\PhpError;
@@ -44,7 +49,6 @@ use PHPUnit\Framework\TestCase as BaseTestCase;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionMethod;
-use function Cake\Core\pluginSplit;
 
 /**
  * Cake TestCase class
@@ -331,8 +335,7 @@ abstract class TestCase extends BaseTestCase
     {
         $this->appPluginsToLoad = $plugins;
 
-        $app = new class ('') extends BaseApplication
-        {
+        $app = new class ('') extends BaseApplication {
             public function middleware(MiddlewareQueue $middlewareQueue): MiddlewareQueue
             {
                 return $middlewareQueue;
@@ -917,7 +920,7 @@ abstract class TestCase extends BaseTestCase
         return str_replace('/', DIRECTORY_SEPARATOR, $path);
     }
 
-// phpcs:disable
+    // phpcs:disable
 
     /**
      * Compatibility function to test if a value is between an acceptable range.
@@ -982,7 +985,7 @@ abstract class TestCase extends BaseTestCase
         return $condition;
     }
 
-// phpcs:enable
+    // phpcs:enable
     /**
      * Mock a model, maintain fixtures and table association
      *
@@ -1003,7 +1006,7 @@ abstract class TestCase extends BaseTestCase
         $options += ['alias' => $baseClass, 'connection' => $connection];
         $options += $locator->getConfig($alias);
         $reflection = new ReflectionClass($className);
-        $classMethods = array_map(fn(ReflectionMethod $method) => $method->name, $reflection->getMethods());
+        $classMethods = array_map(fn (ReflectionMethod $method) => $method->name, $reflection->getMethods());
 
         $existingMethods = array_intersect($classMethods, $methods);
         /** @var list<non-empty-string> $nonExistingMethods */

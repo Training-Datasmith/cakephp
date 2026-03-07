@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         5.2.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Test\TestCase\TestSuite\Fixture;
 
 use Cake\Core\Exception\CakeException;
@@ -26,7 +28,7 @@ class TestFixtureTest extends TestCase
 {
     public function testStrictFields(): void
     {
-        $fixture = new class extends TestFixture {
+        $fixture = new class () extends TestFixture {
             public string $table = 'my_table';
             protected bool $strictFields = true;
 

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,12 +15,14 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Datasource;
+
+use function Cake\Core\pluginSplit;
 
 use Cake\Datasource\Exception\MissingModelException;
 use Cake\Datasource\Locator\LocatorInterface;
 use UnexpectedValueException;
-use function Cake\Core\pluginSplit;
 
 /**
  * Provides functionality for loading table classes

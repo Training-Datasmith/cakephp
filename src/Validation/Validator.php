@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,18 +15,21 @@ declare(strict_types=1);
  * @since         2.2.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Validation;
 
 use ArrayAccess;
 use ArrayIterator;
 use BackedEnum;
+
+use function Cake\I18n\__d;
+
 use Closure;
 use Countable;
 use InvalidArgumentException;
 use IteratorAggregate;
 use Psr\Http\Message\UploadedFileInterface;
 use Traversable;
-use function Cake\I18n\__d;
 
 /**
  * Validator object encapsulates all methods related to data validations for a model
@@ -1045,7 +1049,7 @@ class Validator implements ArrayAccess, IteratorAggregate, Countable
             return $when === static::WHEN_CREATE ? static::WHEN_UPDATE : static::WHEN_CREATE;
         }
         if ($when instanceof Closure) {
-            return fn($context): bool => !$when($context);
+            return fn ($context): bool => !$when($context);
         }
 
         return $when;
@@ -2081,7 +2085,7 @@ class Validator implements ArrayAccess, IteratorAggregate, Countable
         }
 
         if ($message === null) {
-            $cases = array_map(fn(BackedEnum $case): int|string => $case->value, $enumClassName::cases());
+            $cases = array_map(fn (BackedEnum $case): int|string => $case->value, $enumClassName::cases());
             $caseOptions = implode('`, `', $cases);
             if (!$this->_useI18n) {
                 $message = sprintf('The provided value must be one of `%s`', $caseOptions);

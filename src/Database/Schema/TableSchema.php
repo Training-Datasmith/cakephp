@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Database\Schema;
 
 use Cake\Database\Connection;
@@ -281,7 +283,7 @@ class TableSchema implements TableSchemaInterface, SqlGeneratorInterface
      *
      * @var string
      */
-    public const INDEX_INDEX = Index ::INDEX;
+    public const INDEX_INDEX = Index::INDEX;
 
     /**
      * Fulltext index type
@@ -334,8 +336,9 @@ class TableSchema implements TableSchemaInterface, SqlGeneratorInterface
     public function __construct(/**
      * The name of the table
      */
-    protected string $_table, array $columns = [])
-    {
+        protected string $_table,
+        array $columns = []
+    ) {
         foreach ($columns as $field => $definition) {
             $this->addColumn($field, $definition);
         }

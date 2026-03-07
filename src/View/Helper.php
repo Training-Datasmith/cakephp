@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         0.2.9
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\View;
 
 use Cake\Core\InstanceConfigTrait;
@@ -74,8 +76,9 @@ class Helper implements EventListenerInterface
     public function __construct(/**
      * The View instance this helper is attached to
      */
-    protected View $_View, array $config = [])
-    {
+        protected View $_View,
+        array $config = []
+    ) {
         $this->setConfig($config);
 
         if ($this->helpers) {

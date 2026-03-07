@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,10 +15,12 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\View\Form;
 
-use Cake\Utility\Hash;
 use function Cake\I18n\__d;
+
+use Cake\Utility\Hash;
 
 /**
  * Provides a basic array based context provider for FormHelper.

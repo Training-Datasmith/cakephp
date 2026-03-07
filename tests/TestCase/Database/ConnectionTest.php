@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,10 +15,14 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Test\TestCase\Database;
 
 use Cake\Cache\Engine\NullEngine;
 use Cake\Core\App;
+
+use function Cake\Core\namespaceSplit;
+
 use Cake\Database\Connection;
 use Cake\Database\Driver;
 use Cake\Database\Driver\Sqlserver;
@@ -47,7 +52,6 @@ use TestApp\Database\Driver\RetryDriver;
 use TestApp\Database\Driver\StubDriver;
 use TestApp\Database\Driver\TestDriver;
 use TestPlugin\Database\Driver\TestDriver as PluginTestDriver;
-use function Cake\Core\namespaceSplit;
 
 /**
  * Tests Connection class
@@ -115,7 +119,7 @@ class ConnectionTest extends TestCase
      */
     protected function getDriver(): Driver
     {
-        return new class extends Driver {
+        return new class () extends Driver {
             use BaseDriverTrait;
         };
     }
@@ -159,7 +163,7 @@ class ConnectionTest extends TestCase
             '/Database driver `.+` cannot be used due to a missing PHP extension or unmet dependency\. ' .
             'Requested by connection `custom_connection_name`/',
         );
-        $driver = new class extends StubDriver {
+        $driver = new class () extends StubDriver {
             public function enabled(): bool
             {
                 return false;
@@ -1190,11 +1194,11 @@ class ConnectionTest extends TestCase
         $statement->execute();
         $statement->closeCursor();
 
-            $newDriver = $this->getMockBuilder(Driver::class)->getMock();
-            $prop = new ReflectionProperty($conn, 'readDriver');
-            $prop->setValue($conn, $newDriver);
-            $prop = new ReflectionProperty($conn, 'writeDriver');
-            $prop->setValue($conn, $newDriver);
+        $newDriver = $this->getMockBuilder(Driver::class)->getMock();
+        $prop = new ReflectionProperty($conn, 'readDriver');
+        $prop->setValue($conn, $newDriver);
+        $prop = new ReflectionProperty($conn, 'writeDriver');
+        $prop->setValue($conn, $newDriver);
 
         $newDriver->expects($this->exactly(2))
             ->method('execute')
@@ -1218,14 +1222,14 @@ class ConnectionTest extends TestCase
         $statement->execute();
         $statement->closeCursor();
 
-            $conn->begin();
+        $conn->begin();
 
-            $newDriver = $this->getMockBuilder(Driver::class)->getMock();
-            $prop = new ReflectionProperty($conn, 'readDriver');
-            $prop->setValue($conn, $newDriver);
-            $prop = new ReflectionProperty($conn, 'writeDriver');
-            $oldDriver = $prop->getValue($conn);
-            $prop->setValue($conn, $newDriver);
+        $newDriver = $this->getMockBuilder(Driver::class)->getMock();
+        $prop = new ReflectionProperty($conn, 'readDriver');
+        $prop->setValue($conn, $newDriver);
+        $prop = new ReflectionProperty($conn, 'writeDriver');
+        $oldDriver = $prop->getValue($conn);
+        $prop->setValue($conn, $newDriver);
 
         $newDriver->expects($this->once())
             ->method('execute')

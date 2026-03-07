@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -13,6 +14,7 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Test\TestCase\Http\Client\Auth;
 
 use Cake\Http\Client;
@@ -55,8 +57,7 @@ class DigestTest extends TestCase
      */
     protected function getDigestMock(): Digest
     {
-        return new class ($this->client) extends Digest
-        {
+        return new class ($this->client) extends Digest {
             public function generateCnonce(): string
             {
                 return 'cnonce';

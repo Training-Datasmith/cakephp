@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Test\TestCase\Collection\Iterator;
 
 use Cake\Collection\Iterator\NestIterator;
@@ -97,7 +99,7 @@ class TreeIteratorTest extends TestCase
         $items = new NestIterator($items, 'stuff');
         $result = (new TreeIterator($items))
             ->printer(function ($element, $key, $iterator) {
-                return ($iterator->getDepth() + 1 ) . '.' . $key . ' ' . $element['name'];
+                return ($iterator->getDepth() + 1) . '.' . $key . ' ' . $element['name'];
             }, null, '')
             ->toArray();
         $expected = [

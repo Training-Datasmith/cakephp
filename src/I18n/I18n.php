@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,15 +15,18 @@ declare(strict_types=1);
  * @since         1.2.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\I18n;
 
 use Cake\Cache\Cache;
 use Cake\Cache\Exception\InvalidArgumentException;
+
+use function Cake\Core\deprecationWarning;
+
 use Cake\I18n\Exception\I18nException;
 use Cake\I18n\Formatter\IcuFormatter;
 use Cake\I18n\Formatter\SprintfFormatter;
 use Locale;
-use function Cake\Core\deprecationWarning;
 
 /**
  * I18n handles translation of Text and time format strings.

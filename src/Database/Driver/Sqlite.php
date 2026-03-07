@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Database\Driver;
 
 use Cake\Database\Driver;
@@ -240,7 +242,7 @@ class Sqlite extends Driver
                 $expression
                     ->setName('ROUND')
                     ->setConjunction('-')
-                    ->iterateParts(fn($p) => new FunctionExpression('JULIANDAY', [$p['value']], [$p['type']]));
+                    ->iterateParts(fn ($p) => new FunctionExpression('JULIANDAY', [$p['value']], [$p['type']]));
                 break;
             case 'NOW':
                 $expression->setName('DATETIME')->add(["'now'" => 'literal']);

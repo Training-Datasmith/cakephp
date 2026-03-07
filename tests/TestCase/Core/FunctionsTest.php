@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,14 +15,11 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Test\TestCase\Core;
 
 use Cake\Core\Configure;
-use Cake\Http\Response;
-use Cake\TestSuite\TestCase;
-use PHPUnit\Framework\Attributes\DataProvider;
-use stdClass;
-use Stringable;
+
 use function Cake\Core\deprecationWarning;
 use function Cake\Core\env;
 use function Cake\Core\h;
@@ -33,6 +31,12 @@ use function Cake\Core\toFloat;
 use function Cake\Core\toInt;
 use function Cake\Core\toString;
 use function Cake\Core\triggerWarning;
+
+use Cake\Http\Response;
+use Cake\TestSuite\TestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
+use stdClass;
+use Stringable;
 
 /**
  * Test cases for functions in Core\functions.php
@@ -396,7 +400,7 @@ class FunctionsTest extends TestCase
      */
     public static function toStringProvider(): array
     {
-        $stringable = new class implements Stringable {
+        $stringable = new class () implements Stringable {
             public function __toString(): string
             {
                 return 'stringable';

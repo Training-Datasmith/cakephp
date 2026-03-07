@@ -12,8 +12,9 @@
  * @since         0.10.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-use Cake\Database\Exception\QueryException;
 use function Cake\Core\h;
+
+use Cake\Database\Exception\QueryException;
 
 $this->setLayout('dev_error');
 

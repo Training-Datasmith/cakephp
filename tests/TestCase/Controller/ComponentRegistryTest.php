@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         2.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Test\TestCase\Controller;
 
 use Cake\Controller\Component\FlashComponent;
@@ -211,7 +213,7 @@ class ComponentRegistryTest extends TestCase
      */
     public function testLoadWithEnableFalse(): void
     {
-        $eventManager = new class extends EventManager {
+        $eventManager = new class () extends EventManager {
             public function on($eventKey, $options = null, $callable = []): never
             {
                 throw new Exception('Should not be called');

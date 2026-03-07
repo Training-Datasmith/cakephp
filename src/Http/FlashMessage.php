@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,11 +15,14 @@ declare(strict_types=1);
  * @since         4.2.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Http;
 
 use Cake\Core\InstanceConfigTrait;
-use Throwable;
+
 use function Cake\Core\pluginSplit;
+
+use Throwable;
 
 /**
  * The FlashMessage class provides a way for you to write a flash variable

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,11 +15,18 @@ declare(strict_types=1);
  * @since         1.2.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\View\Helper;
 
 use Cake\Core\Exception\CakeException;
+
+use function Cake\Core\h;
+
 use Cake\Datasource\Paging\PaginatedInterface;
 use Cake\Datasource\Paging\SortField;
+
+use function Cake\I18n\__;
+
 use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 use Cake\View\Helper;
@@ -26,8 +34,6 @@ use Cake\View\StringTemplate;
 use Cake\View\StringTemplateTrait;
 use Cake\View\View;
 use InvalidArgumentException;
-use function Cake\Core\h;
-use function Cake\I18n\__;
 
 /**
  * Pagination Helper class for easy generation of pagination links.
@@ -1266,7 +1272,7 @@ class PaginatorHelper extends Helper
         // Filter out limits that exceed maxLimit
         $maxLimit = $this->param('maxLimit');
         if ($maxLimit !== null) {
-            $limits = array_filter($limits, fn($limit) => (int)$limit <= $maxLimit);
+            $limits = array_filter($limits, fn ($limit) => (int)$limit <= $maxLimit);
             if (!$limits) {
                 $limits[$maxLimit] = (string)$maxLimit;
             }

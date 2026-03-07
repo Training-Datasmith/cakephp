@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         4.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\ORM\Rule;
 
 use Cake\Database\Exception\DatabaseException;
@@ -56,8 +58,9 @@ class LinkConstraint
     public function __construct(/**
      * The association that should be checked.
      */
-    protected Association|string $_association, string $requiredLinkStatus)
-    {
+        protected Association|string $_association,
+        string $requiredLinkStatus
+    ) {
         if (!in_array($requiredLinkStatus, [static::STATUS_LINKED, static::STATUS_NOT_LINKED], true)) {
             throw new InvalidArgumentException(
                 'Argument 2 is expected to match one of the `\Cake\ORM\Rule\LinkConstraint::STATUS_*` constants.',

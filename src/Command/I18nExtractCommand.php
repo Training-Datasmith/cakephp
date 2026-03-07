@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         1.2.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Command;
 
 use Cake\Command\Helper\ProgressHelper;
@@ -520,7 +522,7 @@ class I18nExtractCommand extends Command
         $paths = $this->_paths;
         $paths[] = realpath(APP) . DIRECTORY_SEPARATOR;
 
-        usort($paths, fn(string $a, string $b) => strlen($a) - strlen($b));
+        usort($paths, fn (string $a, string $b) => strlen($a) - strlen($b));
 
         foreach ($this->_translations as $domain => $translations) {
             foreach ($translations as $msgid => $contexts) {
@@ -704,7 +706,8 @@ class I18nExtractCommand extends Command
         $count = 0;
         while (
             $count < $target
-            && ($this->_tokens[$position] === ','
+            && (
+                $this->_tokens[$position] === ','
                 || $this->_tokens[$position][0] === T_CONSTANT_ENCAPSED_STRING
                 || $this->_tokens[$position][0] === T_LNUMBER
             )

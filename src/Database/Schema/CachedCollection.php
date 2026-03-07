@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Database\Schema;
 
 use Psr\SimpleCache\CacheInterface;
@@ -38,11 +40,12 @@ class CachedCollection implements CollectionInterface
     public function __construct(/**
      * The decorated schema collection
      */
-    protected CollectionInterface $collection, /**
+        protected CollectionInterface $collection, /**
      * The cache key prefix
      */
-    protected string $prefix, CacheInterface $cacher)
-    {
+        protected string $prefix,
+        CacheInterface $cacher
+    ) {
         $this->cacher = $cacher;
     }
 

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\ORM\Behavior;
 
 use ArrayObject;
@@ -377,7 +379,7 @@ class CounterCacheBehavior extends Behavior
      */
     protected function _shouldUpdateCount(array $conditions): bool
     {
-        return !empty(array_filter($conditions, fn($value) => $value !== null));
+        return !empty(array_filter($conditions, fn ($value) => $value !== null));
     }
 
     /**

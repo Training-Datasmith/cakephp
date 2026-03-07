@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,15 +15,26 @@ declare(strict_types=1);
  * @since         0.10.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\View\Helper;
 
 use BackedEnum;
 use Cake\Core\Configure;
+
+use function Cake\Core\deprecationWarning;
+
 use Cake\Core\Exception\CakeException;
+
+use function Cake\Core\h;
+
 use Cake\Database\Type\EnumLabelInterface;
 use Cake\Database\Type\EnumType;
 use Cake\Database\TypeFactory;
 use Cake\Form\FormProtector;
+
+use function Cake\I18n\__;
+use function Cake\I18n\__d;
+
 use Cake\Routing\Router;
 use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
@@ -34,10 +46,6 @@ use Cake\View\View;
 use Cake\View\Widget\WidgetInterface;
 use Cake\View\Widget\WidgetLocator;
 use InvalidArgumentException;
-use function Cake\Core\deprecationWarning;
-use function Cake\Core\h;
-use function Cake\I18n\__;
-use function Cake\I18n\__d;
 
 /**
  * Form helper library.
@@ -435,22 +443,24 @@ class FormHelper extends Helper
             case 'get':
                 $htmlAttributes['method'] = 'get';
                 break;
-            // Set enctype for form
+                // Set enctype for form
             case 'file':
                 $htmlAttributes['enctype'] = 'multipart/form-data';
                 $options['type'] = $isCreate ? 'post' : 'put';
-            // Move on
+                // Move on
+                // no break
             case 'put':
-            // Move on
+                // Move on
             case 'delete':
-            // Set patch method
+                // Set patch method
             case 'patch':
                 $append .= $this->hidden('_method', [
                     'name' => '_method',
                     'value' => strtoupper((string) $options['type']),
                     'secure' => static::SECURE_SKIP,
                 ]);
-            // Default to post method
+                // Default to post method
+                // no break
             default:
                 $htmlAttributes['method'] = 'post';
         }
@@ -2488,7 +2498,7 @@ class FormHelper extends Helper
             if (is_array($first)) {
                 $disabled = array_filter(
                     $options['options'],
-                    fn(array $i): bool => in_array($i['value'], $options['disabled'], true),
+                    fn (array $i): bool => in_array($i['value'], $options['disabled'], true),
                 );
 
                 return $disabled !== [];
@@ -2646,8 +2656,8 @@ class FormHelper extends Helper
         $diff = array_diff($sources, $this->supportedValueSources);
 
         if ($diff) {
-            array_walk($diff, fn(string &$x): string => $x = "`{$x}`");
-            array_walk($this->supportedValueSources, fn(string &$x): string => $x = "`{$x}`");
+            array_walk($diff, fn (string &$x): string => $x = "`{$x}`");
+            array_walk($this->supportedValueSources, fn (string &$x): string => $x = "`{$x}`");
             throw new InvalidArgumentException(sprintf(
                 'Invalid value source(s): %s. Valid values are: %s.',
                 implode(', ', $diff),

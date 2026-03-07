@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -13,6 +14,7 @@ declare(strict_types=1);
  * @link          https://cakephp.org CakePHP(tm) Project
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Collection\Iterator;
 
 use ArrayIterator;
@@ -103,8 +105,10 @@ class MapReduce implements IteratorAggregate
     public function __construct(/**
      * Holds the original data that needs to be processed
      */
-    protected iterable $_data, callable $mapper, ?callable $reducer = null)
-    {
+        protected iterable $_data,
+        callable $mapper,
+        ?callable $reducer = null
+    ) {
         $this->_mapper = $mapper;
         $this->_reducer = $reducer;
     }

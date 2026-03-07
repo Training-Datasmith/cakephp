@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,10 +15,14 @@ declare(strict_types=1);
 * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Database;
 
 use Cake\Cache\Cache;
 use Cake\Core\App;
+
+use function Cake\Core\env;
+
 use Cake\Core\Exception\CakeException;
 use Cake\Core\Retry\CommandRetry;
 use Cake\Database\Exception\MissingDriverException;
@@ -37,7 +42,6 @@ use Cake\Log\Log;
 use Closure;
 use Psr\SimpleCache\CacheInterface;
 use Throwable;
-use function Cake\Core\env;
 
 /**
  * Represents a connection with a database server.
@@ -101,8 +105,8 @@ class Connection implements ConnectionInterface
     public function __construct(/**
      * Contains the configuration params for this connection.
      */
-    protected array $_config)
-    {
+        protected array $_config
+    ) {
         [self::ROLE_READ => $this->readDriver, self::ROLE_WRITE => $this->writeDriver] = $this->createDrivers($this->_config);
     }
 
@@ -256,7 +260,7 @@ class Connection implements ConnectionInterface
      */
     public function execute(string $sql, array $params = [], array $types = []): StatementInterface
     {
-        return $this->getDisconnectRetry()->run(fn(): \Cake\Database\StatementInterface => $this->getWriteDriver()->execute($sql, $params, $types));
+        return $this->getDisconnectRetry()->run(fn (): \Cake\Database\StatementInterface => $this->getWriteDriver()->execute($sql, $params, $types));
     }
 
     /**
@@ -268,7 +272,7 @@ class Connection implements ConnectionInterface
      */
     public function run(Query $query): StatementInterface
     {
-        return $this->getDisconnectRetry()->run(fn(): \Cake\Database\StatementInterface => $this->getDriver($query->getConnectionRole())->run($query));
+        return $this->getDisconnectRetry()->run(fn (): \Cake\Database\StatementInterface => $this->getDriver($query->getConnectionRole())->run($query));
     }
 
     /**

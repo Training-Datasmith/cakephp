@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         1.3.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Routing\Route;
 
 use BackedEnum;
@@ -116,8 +118,10 @@ class Route
     public function __construct(/**
      * The routes template string.
      */
-    public string $template, array $defaults = [], array $options = [])
-    {
+        public string $template,
+        array $defaults = [],
+        array $options = []
+    ) {
         $checker = function () use ($defaults): bool {
             foreach (['plugin', 'prefix', 'controller', 'action'] as $key) {
                 if (isset($defaults[$key]) && !is_string($defaults[$key])) {
@@ -790,7 +794,7 @@ class Route
      */
     protected function _writeUrl(array $params, array $pass = [], array $query = []): string
     {
-        $pass = array_map(fn($value) => rawurlencode((string)$value), $pass);
+        $pass = array_map(fn ($value) => rawurlencode((string)$value), $pass);
         $pass = implode('/', $pass);
         $out = $this->template;
         $search = [];

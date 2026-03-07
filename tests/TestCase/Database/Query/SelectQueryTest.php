@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,9 +15,13 @@ declare(strict_types=1);
  * @since         5.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Test\TestCase\Database\Query;
 
 use ArrayIterator;
+
+use function Cake\Collection\collection;
+
 use Cake\Database\Connection;
 use Cake\Database\Driver\Mysql;
 use Cake\Database\Driver\Postgres;
@@ -45,7 +50,6 @@ use InvalidArgumentException;
 use ReflectionProperty;
 use stdClass;
 use TestApp\Database\Type\BarType;
-use function Cake\Collection\collection;
 
 /**
  * Tests SelectQuery class
@@ -2319,7 +2323,7 @@ class SelectQueryTest extends TestCase
             ->execute();
         $rows = $result->fetchAll('assoc');
         $this->assertCount(1, $rows);
-            $this->assertEquals(['id' => 3], $rows[0]);
+        $this->assertEquals(['id' => 3], $rows[0]);
 
         $query = new SelectQuery($this->connection);
         $result = $query->select('id')->from('articles')

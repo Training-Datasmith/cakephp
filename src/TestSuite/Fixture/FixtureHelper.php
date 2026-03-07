@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         4.3.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\TestSuite\Fixture;
 
 use Cake\Core\Configure;
@@ -136,7 +138,7 @@ class FixtureHelper
                 } else {
                     ConnectionHelper::runWithoutConstraints(
                         $connection,
-                        fn(Connection $connection) => $this->insertConnection($connection, $groupFixtures),
+                        fn (Connection $connection) => $this->insertConnection($connection, $groupFixtures),
                     );
                 }
             } else {
@@ -189,7 +191,7 @@ class FixtureHelper
                     $helper = new ConnectionHelper();
                     $helper->runWithoutConstraints(
                         $connection,
-                        fn(Connection $connection) => $this->truncateConnection($connection, $groupFixtures),
+                        fn (Connection $connection) => $this->truncateConnection($connection, $groupFixtures),
                     );
                 }
             } else {

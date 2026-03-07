@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,16 +15,21 @@ declare(strict_types=1);
  * @since         0.10.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Http;
 
 use Cake\Core\App;
+
+use function Cake\Core\env;
+
 use Cake\Core\Exception\CakeException;
 use Cake\Error\Debugger;
 use Cake\Utility\Hash;
 use InvalidArgumentException;
-use SessionHandlerInterface;
-use function Cake\Core\env;
+
 use const PHP_SESSION_ACTIVE;
+
+use SessionHandlerInterface;
 
 /**
  * This class is a wrapper for the native PHP session functions. It provides

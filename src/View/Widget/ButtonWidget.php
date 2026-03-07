@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,11 +15,13 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\View\Widget;
+
+use function Cake\Core\h;
 
 use Cake\View\Form\ContextInterface;
 use Cake\View\StringTemplate;
-use function Cake\Core\h;
 
 /**
  * Button input class
@@ -39,8 +42,7 @@ class ButtonWidget implements WidgetInterface
          * StringTemplate instance.
          */
         protected StringTemplate $_templates
-    )
-    {
+    ) {
     }
 
     /**

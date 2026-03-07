@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         4.2.0
  * @license       https://www.opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Http\Middleware;
 
 use ArrayAccess;
@@ -21,13 +23,15 @@ use Cake\Core\Exception\CakeException;
 use Cake\Http\Exception\InvalidCsrfTokenException;
 use Cake\Http\ServerRequest;
 use Cake\Http\Session;
+
+use function Cake\I18n\__d;
+
 use Cake\Utility\Hash;
 use Cake\Utility\Security;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use function Cake\I18n\__d;
 
 /**
  * Provides CSRF protection via session based tokens.

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,18 +15,21 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\ORM;
 
 use ArrayIterator;
 use Cake\Core\Exception\CakeException;
+
+use function Cake\Core\namespaceSplit;
+use function Cake\Core\pluginSplit;
+
 use Cake\Datasource\EntityInterface;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\ORM\Locator\LocatorInterface;
 use InvalidArgumentException;
 use IteratorAggregate;
 use Traversable;
-use function Cake\Core\namespaceSplit;
-use function Cake\Core\pluginSplit;
 
 /**
  * A container/collection for association classes.

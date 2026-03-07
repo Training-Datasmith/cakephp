@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\ORM\Rule;
 
 use Cake\Datasource\EntityInterface;
@@ -46,8 +48,9 @@ class IsUnique
     public function __construct(/**
      * The list of fields to check
      */
-    protected array $_fields, array $options = [])
-    {
+        protected array $_fields,
+        array $options = []
+    ) {
         $this->_options = $options + $this->_options;
     }
 

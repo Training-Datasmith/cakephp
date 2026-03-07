@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Routing;
 
 use Cake\Routing\Exception\DuplicateNamedRouteException;
@@ -136,7 +138,7 @@ class RouteCollection
             // decode urlencoded segments, but don't decode %2f aka /
             $parts = explode('/', (string) $urlPath);
             $parts = array_map(
-                fn(string $part): string => str_replace('/', '%2f', urldecode($part)),
+                fn (string $part): string => str_replace('/', '%2f', urldecode($part)),
                 $parts,
             );
             $urlPath = implode('/', $parts);

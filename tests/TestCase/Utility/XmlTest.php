@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         1.2.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Test\TestCase\Utility;
 
 use Cake\Collection\Collection;
@@ -527,30 +529,30 @@ XML;
         $xmlResponse = Xml::fromArray($xml, ['pretty' => true]);
         $this->assertTextEquals($expected, $xmlResponse->asXML());
 
-                $xml = [
+        $xml = [
             'tags' => [
-                'tag' => [
-                    [
-                        'id' => '1',
-                        'name' => 'defect',
-                    ],
-                    [
-                        'id' => '2',
-                        'name' => 'enhancement',
-                    ],
-                ],
+        'tag' => [
+            [
+                'id' => '1',
+                'name' => 'defect',
             ],
-                ];
+            [
+                'id' => '2',
+                'name' => 'enhancement',
+            ],
+        ],
+            ],
+        ];
 
-                $expected = <<<XML
+        $expected = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <tags><tag id="1" name="defect"/><tag id="2" name="enhancement"/></tags>
 
 XML;
-                $xmlResponse = Xml::fromArray($xml, ['pretty' => false, 'format' => 'attributes']);
-                $this->assertTextEquals($expected, $xmlResponse->asXML());
+        $xmlResponse = Xml::fromArray($xml, ['pretty' => false, 'format' => 'attributes']);
+        $this->assertTextEquals($expected, $xmlResponse->asXML());
 
-                $expected = <<<XML
+        $expected = <<<XML
 <?xml version="1.0" encoding="UTF-8"?>
 <tags>
   <tag id="1" name="defect"/>
@@ -558,8 +560,8 @@ XML;
 </tags>
 
 XML;
-                $xmlResponse = Xml::fromArray($xml, ['pretty' => true, 'format' => 'attributes']);
-                $this->assertTextEquals($expected, $xmlResponse->asXML());
+        $xmlResponse = Xml::fromArray($xml, ['pretty' => true, 'format' => 'attributes']);
+        $this->assertTextEquals($expected, $xmlResponse->asXML());
     }
 
     /**

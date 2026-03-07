@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\ORM\Association;
 
 use Cake\Core\App;
@@ -553,7 +555,7 @@ class BelongsToMany extends Association
             'junctionProperty' => $this->_junctionProperty,
             'junctionAssoc' => $this->getTarget()->getAssociation($name),
             'junctionConditions' => $this->junctionConditions(),
-            'finder' => fn() => $this->_appendJunctionJoin($this->find(), []),
+            'finder' => fn () => $this->_appendJunctionJoin($this->find(), []),
         ]);
 
         return $loader->buildEagerLoader($options);
@@ -866,7 +868,7 @@ class BelongsToMany extends Association
         $sourceEntity->set($property, $links);
 
         return $this->junction()->getConnection()->transactional(
-            fn() => $this->_saveLinks($sourceEntity, $targetEntities, $options),
+            fn () => $this->_saveLinks($sourceEntity, $targetEntities, $options),
         );
     }
 
@@ -1402,10 +1404,10 @@ class BelongsToMany extends Association
         $hasMany = $source->getAssociation($junction->getAlias());
         /** @var array<string> $foreignKey */
         $foreignKey = (array)$this->getForeignKey();
-        $foreignKey = array_map(fn(string $key) => $key . ' IS', $foreignKey);
+        $foreignKey = array_map(fn (string $key) => $key . ' IS', $foreignKey);
         /** @var array<string> $assocForeignKey */
         $assocForeignKey = (array)$belongsTo->getForeignKey();
-        $assocForeignKey = array_map(fn(string $key) => $key . ' IS', $assocForeignKey);
+        $assocForeignKey = array_map(fn (string $key) => $key . ' IS', $assocForeignKey);
         $sourceKey = $sourceEntity->extract((array)$source->getPrimaryKey());
 
         $unions = [];

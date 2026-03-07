@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         0.10.3
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Utility;
 
 use BackedEnum;
@@ -390,14 +392,14 @@ class Xml
                         throw new XmlException('Invalid array');
                     }
                     if (is_numeric(implode('', array_keys($value)))) {
-// List
+                        // List
                         foreach ($value as $item) {
                             $itemData = compact('dom', 'node', 'key', 'format');
                             $itemData['value'] = $item;
                             static::_createChild($itemData);
                         }
                     } else {
-// Struct
+                        // Struct
                         static::_createChild(compact('dom', 'node', 'key', 'value', 'format'));
                     }
                 }

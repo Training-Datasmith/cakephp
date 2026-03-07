@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,12 +15,15 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\View\Widget;
 
 use ArrayAccess;
+
+use function Cake\Core\h;
+
 use Cake\View\Form\ContextInterface;
 use Traversable;
-use function Cake\Core\h;
 
 /**
  * Input widget class for generating a selectbox.

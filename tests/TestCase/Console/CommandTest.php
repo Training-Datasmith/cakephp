@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         3.6.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Test\TestCase\Console;
 
 use AssertionError;
@@ -133,7 +135,7 @@ class CommandTest extends TestCase
      */
     public function testRunCallsInitialize(): void
     {
-        $command = new class extends Command {
+        $command = new class () extends Command {
             public bool $initializeCalled = false;
 
             public function initialize(): void
@@ -220,7 +222,7 @@ class CommandTest extends TestCase
      */
     public function testRunOptionParserFailure(): void
     {
-        $command = new class extends Command {
+        $command = new class () extends Command {
             public function getOptionParser(): ConsoleOptionParser
             {
                 $parser = new ConsoleOptionParser('cake example');

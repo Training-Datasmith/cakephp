@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         3.0.7
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Test\TestCase\Datasource;
 
 use Cake\Core\Exception\CakeException;
@@ -294,40 +296,40 @@ class RulesCheckerTest extends TestCase
     public function testAddDuplicateName(): void
     {
         $rules = new RulesChecker();
-        $rules->add(fn() => false, 'myUniqueName');
+        $rules->add(fn () => false, 'myUniqueName');
 
         $this->expectException(CakeException::class);
-        $rules->add(fn() => true, 'myUniqueName');
+        $rules->add(fn () => true, 'myUniqueName');
         $this->fail('Exception not thrown');
     }
 
     public function testAddCreateDuplicateName(): void
     {
         $rules = new RulesChecker();
-        $rules->addCreate(fn() => false, 'myUniqueName');
+        $rules->addCreate(fn () => false, 'myUniqueName');
 
         $this->expectException(CakeException::class);
-        $rules->addCreate(fn() => true, 'myUniqueName');
+        $rules->addCreate(fn () => true, 'myUniqueName');
         $this->fail('Exception not thrown');
     }
 
     public function testAddUpdateDuplicateName(): void
     {
         $rules = new RulesChecker();
-        $rules->addUpdate(fn() => false, 'myUniqueName');
+        $rules->addUpdate(fn () => false, 'myUniqueName');
 
         $this->expectException(CakeException::class);
-        $rules->addUpdate(fn() => true, 'myUniqueName');
+        $rules->addUpdate(fn () => true, 'myUniqueName');
         $this->fail('Exception not thrown');
     }
 
     public function testAddDeleteDuplicateName(): void
     {
         $rules = new RulesChecker();
-        $rules->addDelete(fn() => false, 'myUniqueName');
+        $rules->addDelete(fn () => false, 'myUniqueName');
 
         $this->expectException(CakeException::class);
-        $rules->addDelete(fn() => true, 'myUniqueName');
+        $rules->addDelete(fn () => true, 'myUniqueName');
         $this->fail('Exception not thrown');
     }
 }

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -13,6 +14,7 @@ declare(strict_types=1);
  * @since         3.2.0
  * @license       https://www.opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\TestSuite\Constraint;
 
 use Cake\Event\EventManager;
@@ -34,8 +36,8 @@ class EventFired extends Constraint
     public function __construct(/**
      * Array of fired events
      */
-    protected EventManager $_eventManager)
-    {
+        protected EventManager $_eventManager
+    ) {
         if ($this->_eventManager->getEventList() === null) {
             throw new AssertionFailedError(
                 'The event manager you are asserting against is not configured to track events.',

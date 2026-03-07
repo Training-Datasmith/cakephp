@@ -14,9 +14,11 @@
  * @var string $controller
  */
 use Cake\Core\Configure;
+
+use function Cake\Core\h;
+
 use Cake\Core\Plugin;
 use Cake\Utility\Inflector;
-use function Cake\Core\h;
 
 $pluginDot = empty($plugin) ? null : $plugin . '.';
 $namespace = Configure::read('App.namespace');

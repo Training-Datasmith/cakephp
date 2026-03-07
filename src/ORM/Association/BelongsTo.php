@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,7 +15,10 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\ORM\Association;
+
+use function Cake\Core\pluginSplit;
 
 use Cake\Datasource\EntityInterface;
 use Cake\ORM\Association;
@@ -22,7 +26,6 @@ use Cake\ORM\Association\Loader\SelectLoader;
 use Cake\ORM\Table;
 use Cake\Utility\Inflector;
 use Closure;
-use function Cake\Core\pluginSplit;
 
 /**
  * Represents an 1 - N relationship where the source side of the relation is

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace TestApp\Config;
 
 use Cake\Core\StaticConfigTrait;

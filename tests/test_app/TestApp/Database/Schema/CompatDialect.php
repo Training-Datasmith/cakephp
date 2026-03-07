@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         5.2.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace TestApp\Database\Schema;
 
 use Cake\Core\Configure;
@@ -418,7 +420,7 @@ class CompatDialect extends SchemaDialect
         $columnsPattern = implode(
             '\s*,\s*',
             array_map(
-                fn($column) => '(?:' . $this->possiblyQuotedIdentifierRegex($column) . ')',
+                fn ($column) => '(?:' . $this->possiblyQuotedIdentifierRegex($column) . ')',
                 $columns,
             ),
         );

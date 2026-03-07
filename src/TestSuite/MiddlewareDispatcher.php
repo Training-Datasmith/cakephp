@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -13,7 +14,10 @@ declare(strict_types=1);
  * @since         3.3.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\TestSuite;
+
+use function Cake\Core\deprecationWarning;
 
 use Cake\Core\HttpApplicationInterface;
 use Cake\Core\PluginApplicationInterface;
@@ -24,7 +28,6 @@ use Cake\Http\ServerRequestFactory;
 use Cake\Routing\Router;
 use Cake\Routing\RoutingApplicationInterface;
 use Psr\Http\Message\ResponseInterface;
-use function Cake\Core\deprecationWarning;
 
 /**
  * Dispatches a request capturing the response for integration
@@ -44,8 +47,7 @@ class MiddlewareDispatcher
          * The application that is being dispatched.
          */
         protected HttpApplicationInterface $app
-    )
-    {
+    ) {
     }
 
     /**

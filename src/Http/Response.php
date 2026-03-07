@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,12 +15,19 @@ declare(strict_types=1);
  * @since         2.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Http;
 
 use Cake\Core\Configure;
+
+use function Cake\Core\env;
+
 use Cake\Http\Cookie\CookieCollection;
 use Cake\Http\Cookie\CookieInterface;
 use Cake\Http\Exception\NotFoundException;
+
+use function Cake\I18n\__d;
+
 use Cake\I18n\DateTime as CakeDateTime;
 use DateTime;
 use DateTimeInterface;
@@ -31,8 +39,6 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 use SplFileInfo;
 use Stringable;
-use function Cake\Core\env;
-use function Cake\I18n\__d;
 
 /**
  * Responses contain the response text, status and headers of a HTTP response.

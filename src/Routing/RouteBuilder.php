@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Routing;
 
 use BadMethodCallException;
@@ -109,14 +111,15 @@ class RouteBuilder
     public function __construct(/**
      * The route collection routes should be added to.
      */
-    protected RouteCollection $_collection, /**
+        protected RouteCollection $_collection, /**
      * The path prefix scope that this collection uses.
      */
-    protected string $_path, /**
+        protected string $_path, /**
      * The scope parameters if there are any.
      */
-    protected array $_params = [], array $options = [])
-    {
+        protected array $_params = [],
+        array $options = []
+    ) {
         if (isset($options['routeClass'])) {
             $this->_routeClass = $options['routeClass'];
         }

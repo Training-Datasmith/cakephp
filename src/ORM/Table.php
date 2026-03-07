@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\ORM;
 
 use ArrayObject;
@@ -21,7 +23,13 @@ use BadMethodCallException;
 use Cake\Collection\CollectionInterface;
 use Cake\Core\App;
 use Cake\Core\Configure;
+
+use function Cake\Core\deprecationWarning;
+
 use Cake\Core\Exception\CakeException;
+
+use function Cake\Core\namespaceSplit;
+
 use Cake\Database\Connection;
 use Cake\Database\Exception\DatabaseException;
 use Cake\Database\Expression\QueryExpression;
@@ -58,8 +66,6 @@ use InvalidArgumentException;
 use Psr\SimpleCache\CacheInterface;
 use ReflectionFunction;
 use ReflectionNamedType;
-use function Cake\Core\deprecationWarning;
-use function Cake\Core\namespaceSplit;
 
 /**
  * Represents a single database table.
@@ -1359,7 +1365,7 @@ class Table implements RepositoryInterface, EventListenerInterface, EventDispatc
             ['keyField', 'valueField', 'groupField'],
         );
 
-        return $query->formatResults(fn(CollectionInterface $results): \Cake\Collection\CollectionInterface => $results->combine(
+        return $query->formatResults(fn (CollectionInterface $results): \Cake\Collection\CollectionInterface => $results->combine(
             $options['keyField'],
             $options['valueField'],
             $options['groupField'],
@@ -1398,7 +1404,7 @@ class Table implements RepositoryInterface, EventListenerInterface, EventDispatc
 
         $options = $this->_setFieldMatchers(compact('keyField', 'parentField'), ['keyField', 'parentField']);
 
-        return $query->formatResults(fn(CollectionInterface $results): \Cake\Collection\CollectionInterface => $results->nest(
+        return $query->formatResults(fn (CollectionInterface $results): \Cake\Collection\CollectionInterface => $results->nest(
             $options['keyField'],
             $options['parentField'],
             $nestingKey,
@@ -1493,7 +1499,7 @@ class Table implements RepositoryInterface, EventListenerInterface, EventDispatc
         }
         if (count($key) !== count($primaryKey)) {
             $primaryKey = $primaryKey ?: [null];
-            $primaryKey = array_map(fn($key) => var_export($key, true), $primaryKey);
+            $primaryKey = array_map(fn ($key) => var_export($key, true), $primaryKey);
 
             throw new InvalidPrimaryKeyException(sprintf(
                 'Record not found in table `%s` with primary key `[%s]`.',
@@ -1610,7 +1616,7 @@ class Table implements RepositoryInterface, EventListenerInterface, EventDispatc
         ]);
 
         $entity = $this->_executeTransaction(
-            fn(): array|\Cake\Datasource\EntityInterface => $this->_processFindOrCreate($search, $callback, $options->getArrayCopy()),
+            fn (): array|\Cake\Datasource\EntityInterface => $this->_processFindOrCreate($search, $callback, $options->getArrayCopy()),
             $options['atomic'],
         );
 
@@ -1920,7 +1926,7 @@ class Table implements RepositoryInterface, EventListenerInterface, EventDispatc
         }
 
         $success = $this->_executeTransaction(
-            fn(): \Cake\Datasource\EntityInterface|false => $this->_processSave($entity, $options),
+            fn (): \Cake\Datasource\EntityInterface|false => $this->_processSave($entity, $options),
             $options['atomic'],
         );
 
@@ -2108,7 +2114,7 @@ class Table implements RepositoryInterface, EventListenerInterface, EventDispatc
         $primary = array_combine($primary, $id);
         $primary = array_intersect_key($data, $primary) + $primary;
 
-        $filteredKeys = array_filter($primary, fn($v) => $v !== null);
+        $filteredKeys = array_filter($primary, fn ($v) => $v !== null);
         $data += $filteredKeys;
 
         if (count($primary) > 1) {
@@ -2397,7 +2403,7 @@ class Table implements RepositoryInterface, EventListenerInterface, EventDispatc
         ]);
 
         $success = $this->_executeTransaction(
-            fn(): bool => $this->_processDelete($entity, $options),
+            fn (): bool => $this->_processDelete($entity, $options),
             $options['atomic'],
         );
 

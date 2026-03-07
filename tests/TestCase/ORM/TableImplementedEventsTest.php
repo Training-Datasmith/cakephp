@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -12,6 +13,7 @@ declare(strict_types=1);
  * @since         5.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Test\TestCase\ORM;
 
 use Cake\ORM\Table;
@@ -65,14 +67,30 @@ class TableImplementedEventsTest extends TestCase
 // phpcs:disable
 class ImplementedEventsTable extends Table
 {
-    public function buildValidator(): void {}
-    public function beforeMarshal(): void {}
-    public function beforeFind(): void {}
-    public function beforeSave(): void {}
-    public function afterSave(): void {}
-    public function beforeDelete(): void {}
-    public function afterDelete(): void {}
-    public function afterRules(): void {}
+    public function buildValidator(): void
+    {
+    }
+    public function beforeMarshal(): void
+    {
+    }
+    public function beforeFind(): void
+    {
+    }
+    public function beforeSave(): void
+    {
+    }
+    public function afterSave(): void
+    {
+    }
+    public function beforeDelete(): void
+    {
+    }
+    public function afterDelete(): void
+    {
+    }
+    public function afterRules(): void
+    {
+    }
 }
 
 class ImplementedAllEventsTable extends Table

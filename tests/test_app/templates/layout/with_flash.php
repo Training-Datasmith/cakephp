@@ -14,10 +14,10 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
     <?php
         echo $this->Html->meta('icon');
 
-        echo $this->Html->css('cake.generic');
+echo $this->Html->css('cake.generic');
 
-        echo $this->fetch('script');
-    ?>
+echo $this->fetch('script');
+?>
 </head>
 <body>
     <div id="container">
@@ -32,11 +32,11 @@ $cakeDescription = 'CakePHP: the rapid development php framework';
         </div>
         <div id="footer">
             <?= $this->Html->link(
-                    $this->Html->image('cake.power.gif', ['alt' => $cakeDescription, 'border' => '0']),
-                    'http://www.cakephp.org/',
-                    ['target' => '_blank', 'escape' => false]
-                );
-            ?>
+                $this->Html->image('cake.power.gif', ['alt' => $cakeDescription, 'border' => '0']),
+                'http://www.cakephp.org/',
+                ['target' => '_blank', 'escape' => false]
+            );
+?>
         </div>
     </div>
 </body>

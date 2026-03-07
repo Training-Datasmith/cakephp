@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -13,9 +14,13 @@ declare(strict_types=1);
  * @since         1.2.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\TestSuite\Fixture;
 
 use Cake\Core\Exception\CakeException;
+
+use function Cake\Core\namespaceSplit;
+
 use Cake\Database\Connection;
 use Cake\Database\Schema\SqlGeneratorInterface;
 use Cake\Database\Schema\TableSchema;
@@ -25,7 +30,6 @@ use Cake\Datasource\ConnectionManager;
 use Cake\Datasource\FixtureInterface;
 use Cake\ORM\Locator\LocatorAwareTrait;
 use Cake\Utility\Inflector;
-use function Cake\Core\namespaceSplit;
 
 /**
  * Cake TestFixture is responsible for building and destroying tables to be used
@@ -215,7 +219,7 @@ class TestFixture implements FixtureInterface
             if ($this->strictFields) {
                 $invalidFields = array_values(array_filter(
                     $recordFields,
-                    fn(int|string $f): bool => !in_array($f, $columns, true),
+                    fn (int|string $f): bool => !in_array($f, $columns, true),
                 ));
                 if ($invalidFields !== []) {
                     throw new CakeException(

@@ -16,9 +16,11 @@
  * @var string $class
  */
 use Cake\Core\Configure;
+
+use function Cake\Core\h;
+
 use Cake\Core\Plugin;
 use Cake\Utility\Inflector;
-use function Cake\Core\h;
 
 $namespace = Configure::read('App.namespace');
 if (!empty($plugin)) {

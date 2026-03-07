@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         2.2.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Test\TestCase\Validation;
 
 use Cake\Core\Exception\CakeException;
@@ -184,16 +186,16 @@ class ValidationRuleTest extends TestCase
     public function testAddDuplicateName(): void
     {
         $rules = new ValidationSet();
-        $rules->add('myUniqueName', ['rule' => fn() => false]);
+        $rules->add('myUniqueName', ['rule' => fn () => false]);
 
         $this->expectException(CakeException::class);
-        $rules->add('myUniqueName', ['rule' => fn() => true]);
+        $rules->add('myUniqueName', ['rule' => fn () => true]);
     }
 
     public function testHasName(): void
     {
         $rules = new ValidationSet();
-        $rules->add('myUniqueName', ['rule' => fn() => false]);
+        $rules->add('myUniqueName', ['rule' => fn () => false]);
 
         $this->assertTrue($rules->has('myUniqueName'));
         $this->assertFalse($rules->has('myMadeUpName'));

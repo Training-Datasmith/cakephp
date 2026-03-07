@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\ORM;
 
 use ArrayObject;
@@ -51,8 +53,7 @@ class Marshaller
          * The table instance this marshaller is for.
          */
         protected Table $_table
-    )
-    {
+    ) {
     }
 
     /**
@@ -245,7 +246,7 @@ class Marshaller
                     $entity->set($field, $properties[$field], ['asOriginal' => true]);
                 }
             }
-        // @phpstan-ignore function.alreadyNarrowedType (patch method available on EntityInterface)
+            // @phpstan-ignore function.alreadyNarrowedType (patch method available on EntityInterface)
         } elseif (method_exists($entity, 'patch')) {
             $entity->patch($properties, ['asOriginal' => true]);
         } else {
@@ -442,7 +443,7 @@ class Marshaller
         if ($conditions !== []) {
             /** @var \Traversable<\Cake\Datasource\EntityInterface> $results */
             $results = $target->find()
-                ->andWhere(fn(QueryExpression $exp): \Cake\Database\Expression\QueryExpression => $exp->or($conditions))
+                ->andWhere(fn (QueryExpression $exp): \Cake\Database\Expression\QueryExpression => $exp->or($conditions))
                 ->all();
 
             $keyFields = array_keys($primaryKey);
@@ -693,7 +694,7 @@ class Marshaller
 
                 return implode(';', $keys);
             })
-            ->map(fn($element, $key) => $key === '' ? $element : $element[0])
+            ->map(fn ($element, $key) => $key === '' ? $element : $element[0])
             ->toArray();
 
         $new = $indexed[''] ?? [];
@@ -715,8 +716,8 @@ class Marshaller
         }
 
         $conditions = (new Collection($indexed))
-            ->map(fn($data, $key) => explode(';', (string)$key))
-            ->filter(fn(array $keys): bool => count(Hash::filter($keys)) === count($primary))
+            ->map(fn ($data, $key) => explode(';', (string)$key))
+            ->filter(fn (array $keys): bool => count(Hash::filter($keys)) === count($primary))
             ->reduce(function (array $conditions, $keys) use ($primary): array {
                 $fields = array_map($this->_table->aliasField(...), $primary);
                 $conditions['OR'][] = array_combine($fields, $keys);

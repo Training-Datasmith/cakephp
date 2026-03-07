@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,12 +15,15 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\View;
 
 use Cake\Core\App;
+
+use function Cake\Core\pluginSplit;
+
 use Cake\Utility\Inflector;
 use Cake\View\Exception\MissingCellException;
-use function Cake\Core\pluginSplit;
 
 /**
  * Provides cell() method for usage in Controller and View classes.

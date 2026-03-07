@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,11 +15,15 @@ declare(strict_types=1);
  * @since         4.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\ORM\Behavior\Translate;
 
 use ArrayObject;
 use Cake\Collection\CollectionInterface;
 use Cake\Core\InstanceConfigTrait;
+
+use function Cake\Core\pluginSplit;
+
 use Cake\Database\Expression\FieldInterface;
 use Cake\Database\Expression\QueryExpression;
 use Cake\Datasource\EntityInterface;
@@ -28,7 +33,6 @@ use Cake\ORM\Marshaller;
 use Cake\ORM\Query\SelectQuery;
 use Cake\ORM\Table;
 use Cake\Utility\Hash;
-use function Cake\Core\pluginSplit;
 
 /**
  * This class provides a way to translate dynamic data by keeping translations
@@ -151,7 +155,7 @@ class ShadowTableStrategy implements TranslateStrategyInterface
         $query->contain([$config['hasOneAlias']]);
 
         $query->formatResults(
-            fn(CollectionInterface $results): \Cake\Collection\CollectionInterface => $this->rowMapper($results, $locale),
+            fn (CollectionInterface $results): \Cake\Collection\CollectionInterface => $this->rowMapper($results, $locale),
             SelectQuery::PREPEND,
         );
     }

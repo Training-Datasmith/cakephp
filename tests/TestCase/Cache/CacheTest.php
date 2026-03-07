@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         1.2.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Test\TestCase\Cache;
 
 use AssertionError;
@@ -103,7 +105,7 @@ class CacheTest extends TestCase
      */
     public function testCachePoolFallbackDisabled(): void
     {
-        $engine = new class extends TestAppCacheEngine {
+        $engine = new class () extends TestAppCacheEngine {
             public function init(array $config = []): bool
             {
                 return false;
@@ -268,7 +270,7 @@ class CacheTest extends TestCase
      */
     public function testConfigFailedInit(): void
     {
-        $engine = new class extends TestAppCacheEngine {
+        $engine = new class () extends TestAppCacheEngine {
             public function init(array $config = []): bool
             {
                 return false;

@@ -1,8 +1,10 @@
 <?php
+
 declare(strict_types=1);
 
-use Cake\I18n\DateTime;
 use function Cake\Core\deprecationWarning;
+
+use Cake\I18n\DateTime;
 
 deprecationWarning('5.0.0', 'Cake\I18n\FrozenTime is deprecated. Use Cake\I18n\DateTime instead');
 

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -13,6 +14,7 @@ declare(strict_types=1);
  * @since         3.7.0
  * @license       https://www.opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Console\TestSuite\Constraint;
 
 use SebastianBergmann\Exporter\Exporter;
@@ -31,7 +33,7 @@ class ContentsContainRow extends ContentsRegExp
      */
     public function matches(mixed $other): bool
     {
-        $row = array_map(fn($cell) => preg_quote((string) $cell, '/'), (array)$other);
+        $row = array_map(fn ($cell) => preg_quote((string) $cell, '/'), (array)$other);
         $cells = implode('\s+\|\s+', $row);
         $pattern = '/' . $cells . '/';
 

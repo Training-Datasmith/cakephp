@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Test\TestCase\Collection\Iterator;
 
 use ArrayObject;
@@ -25,6 +27,7 @@ use Cake\TestSuite\TestCase;
 use DateInterval;
 use DateTime;
 use DateTimeImmutable;
+
 use const SORT_ASC;
 use const SORT_DESC;
 use const SORT_NUMERIC;
@@ -237,7 +240,7 @@ class SortIteratorTest extends TestCase
             new ChronosDate('2015-06-30'),
             new DateTimeImmutable('2013-08-12'),
         ]);
-        $callback = fn($d) => $d;
+        $callback = fn ($d) => $d;
         $sorted = new SortIterator($items, $callback);
         $expected = [
             new ChronosDate('2015-06-30'),
@@ -271,7 +274,7 @@ class SortIteratorTest extends TestCase
             new ChronosTime('10:00:01'),
             new ChronosTime('11:00:00'),
         ]);
-        $callback = fn($d) => $d;
+        $callback = fn ($d) => $d;
         $sorted = new SortIterator($items, $callback);
         $expected = [
             new ChronosTime('12:00:00'),

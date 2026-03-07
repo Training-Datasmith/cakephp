@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,12 +15,16 @@ declare(strict_types=1);
  * @since         3.3.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Error\Middleware;
 
 use Cake\Core\App;
 use Cake\Core\Configure;
 use Cake\Core\InstanceConfigTrait;
 use Cake\Core\PluginApplicationInterface;
+
+use function Cake\Core\triggerWarning;
+
 use Cake\Error\ExceptionTrap;
 use Cake\Error\Renderer\WebExceptionRenderer;
 use Cake\Event\EventDispatcherTrait;
@@ -33,7 +38,6 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Throwable;
-use function Cake\Core\triggerWarning;
 
 /**
  * Error handling middleware.

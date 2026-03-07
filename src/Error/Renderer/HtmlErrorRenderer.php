@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,12 +15,14 @@ declare(strict_types=1);
  * @since         4.4.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Error\Renderer;
+
+use function Cake\Core\h;
 
 use Cake\Error\Debugger;
 use Cake\Error\ErrorRendererInterface;
 use Cake\Error\PhpError;
-use function Cake\Core\h;
 
 /**
  * Interactive HTML error rendering with a stack trace.

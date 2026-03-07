@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -16,6 +17,9 @@ declare(strict_types=1);
 use Cake\Cache\Cache;
 use Cake\Chronos\Chronos;
 use Cake\Core\Configure;
+
+use function Cake\Core\env;
+
 use Cake\Datasource\ConnectionManager;
 use Cake\Datasource\FactoryLocator;
 use Cake\Error\Debug\TextFormatter;
@@ -24,7 +28,6 @@ use Cake\Log\Log;
 use Cake\ORM\Locator\TableLocator;
 use Cake\TestSuite\Fixture\SchemaLoader;
 use Cake\Utility\Security;
-use function Cake\Core\env;
 
 if (is_file('vendor/autoload.php')) {
     require_once 'vendor/autoload.php';

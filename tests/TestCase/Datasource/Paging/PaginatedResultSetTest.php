@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,16 +15,19 @@ declare(strict_types=1);
  * @since         5.0.0
  * @license       https://www.opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Test\TestCase\Datasource\Paging;
 
 use ArrayIterator;
 use Cake\Collection\Collection;
+
+use function Cake\Collection\collection;
+
 use Cake\Datasource\Paging\PaginatedResultSet;
 use Cake\Datasource\ResultSetInterface;
 use Cake\ORM\ResultSet;
 use Cake\TestSuite\TestCase;
 use Mockery;
-use function Cake\Collection\collection;
 
 class PaginatedResultSetTest extends TestCase
 {

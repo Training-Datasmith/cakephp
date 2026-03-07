@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         3.2.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Http;
 
 use Psr\Http\Message\ResponseInterface;
@@ -54,10 +56,10 @@ class CorsBuilder
     public function __construct(ResponseInterface $response, /**
      * The request's Origin header value
      */
-    protected string $_origin, /**
+        protected string $_origin, /**
      * Whether the request was over SSL.
      */
-    protected bool $_isSsl = false)
+        protected bool $_isSsl = false)
     {
         $this->_response = $response;
     }

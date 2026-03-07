@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         3.3.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Test\TestCase\Http;
 
 use Cake\Core\HttpApplicationInterface;
@@ -86,8 +88,7 @@ class ServerTest extends TestCase
     public function testAppGetSet(): void
     {
         $eventManager = new EventManager();
-        $app = new class ($this->config, $eventManager) extends BaseApplication
-        {
+        $app = new class ($this->config, $eventManager) extends BaseApplication {
             public function middleware(MiddlewareQueue $middlewareQueue): MiddlewareQueue
             {
                 return $middlewareQueue;
@@ -302,8 +303,7 @@ class ServerTest extends TestCase
      */
     public function testEventManagerProxies(): void
     {
-        $app = new class ($this->config) extends BaseApplication
-        {
+        $app = new class ($this->config) extends BaseApplication {
             public function middleware(MiddlewareQueue $middlewareQueue): MiddlewareQueue
             {
                 return $middlewareQueue;
@@ -319,7 +319,7 @@ class ServerTest extends TestCase
      */
     public function testGetEventManagerNonEventedApplication(): void
     {
-        $app = new class implements HttpApplicationInterface {
+        $app = new class () implements HttpApplicationInterface {
             public function bootstrap(): void
             {
             }
@@ -344,7 +344,7 @@ class ServerTest extends TestCase
      */
     public function testSetEventManagerNonEventedApplication(): void
     {
-        $app = new class implements HttpApplicationInterface {
+        $app = new class () implements HttpApplicationInterface {
             public function bootstrap(): void
             {
             }
@@ -373,7 +373,7 @@ class ServerTest extends TestCase
      */
     public function testAppWithoutContainerApplicationInterface(): void
     {
-        $app = new class implements HttpApplicationInterface {
+        $app = new class () implements HttpApplicationInterface {
             public function bootstrap(): void
             {
             }
@@ -411,7 +411,7 @@ class ServerTest extends TestCase
             },
         );
 
-        $emitter = new class extends ResponseEmitter {
+        $emitter = new class () extends ResponseEmitter {
             public function emit(ResponseInterface $response, $stream = null): bool
             {
                 return true;

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         3.1.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Command;
 
 use Cake\Console\Arguments;
@@ -86,7 +88,7 @@ class RoutesCommand extends Command
         }
 
         if ($args->getOption('sort')) {
-            usort($output, fn(array $a, array $b) => strcasecmp((string) $a[0], (string) $b[0]));
+            usort($output, fn (array $a, array $b) => strcasecmp((string) $a[0], (string) $b[0]));
         }
 
         array_unshift($output, $header);

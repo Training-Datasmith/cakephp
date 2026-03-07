@@ -15,9 +15,9 @@
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  * @var array $trace
  */
-use Cake\Error\Debugger;
 use function Cake\Core\h;
 
+use Cake\Error\Debugger;
 
 foreach ($exceptions as $level => $exc):
     $parent = $exceptions[$level - 1] ?? null;
@@ -38,11 +38,11 @@ foreach ($exceptions as $level => $exc):
     <div class="stack-frame">
         <?php
         $line = $exc->getLine();
-        $file = $exc->getFile();
-        $excerpt = Debugger::excerpt($file, $line, 4);
+    $file = $exc->getFile();
+    $excerpt = Debugger::excerpt($file, $line, 4);
 
-        $lineno = $line ? $line - 4 : 0;
-        ?>
+    $lineno = $line ? $line - 4 : 0;
+    ?>
         <span class="stack-frame-file">
             <?= h(Debugger::trimPath($file)); ?> at line <?= h($line) ?>
         </span>
@@ -90,7 +90,7 @@ foreach ($exceptions as $level => $exc):
         $frameId = "{$level}-{$i}";
         $activeFrame = $i == 0;
         $vendorFrame = isset($stack['file']) && str_starts_with($stack['file'], ROOT . DS . 'vendor') ? 'vendor-frame' : '';
-    ?>
+        ?>
         <li id="stack-frame-<?= $frameId ?>" class="stack-frame <?= $vendorFrame ?>">
             <div class="stack-frame-header">
                 <button data-frame-id="<?= h($frameId) ?>" class="stack-frame-toggle">

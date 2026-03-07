@@ -1,1 +1,1 @@
-<?= implode(' ', $data) ?>
+<?= implode(' ', $data);

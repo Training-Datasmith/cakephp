@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,10 +15,14 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Test\TestCase\View\Helper;
 
 use Cake\Core\Configure;
 use Cake\Core\Exception\CakeException;
+
+use function Cake\Core\h;
+
 use Cake\Http\ServerRequest;
 use Cake\Routing\Route\DashedRoute;
 use Cake\Routing\Router;
@@ -25,7 +30,6 @@ use Cake\TestSuite\TestCase;
 use Cake\View\Helper\UrlHelper;
 use Cake\View\View;
 use TestApp\Routing\Asset;
-use function Cake\Core\h;
 
 /**
  * UrlHelperTest class

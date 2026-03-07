@@ -1,7 +1,10 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Cake\Error;
+
+use function Cake\Core\env;
 
 use Cake\Core\InstanceConfigTrait;
 use Cake\Error\Renderer\ConsoleExceptionRenderer;
@@ -11,7 +14,6 @@ use Cake\Routing\Router;
 use InvalidArgumentException;
 use Psr\Http\Message\ServerRequestInterface;
 use Throwable;
-use function Cake\Core\env;
 
 /**
  * Entry point to CakePHP's exception handling.

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         3.6.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Database\Retry;
 
 use Cake\Core\Retry\RetryStrategyInterface;
@@ -64,8 +66,7 @@ class ReconnectStrategy implements RetryStrategyInterface
          * The connection to check for validity
          */
         protected Connection $connection
-    )
-    {
+    ) {
     }
 
     /**

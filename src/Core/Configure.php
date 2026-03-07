@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,6 +15,7 @@ declare(strict_types=1);
  * @since         1.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\Core;
 
 use Cake\Cache\Cache;
@@ -268,7 +270,7 @@ class Configure
     {
         $engines = array_keys(static::$_engines);
 
-        return array_map(fn(int|string $key) => (string)$key, $engines);
+        return array_map(fn (int|string $key) => (string)$key, $engines);
     }
 
     /**

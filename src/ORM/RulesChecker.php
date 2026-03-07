@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,17 +15,20 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\ORM;
 
 use Cake\Datasource\RuleInvoker;
 use Cake\Datasource\RulesChecker as BaseRulesChecker;
+
+use function Cake\I18n\__d;
+
 use Cake\ORM\Rule\ExistsIn;
 use Cake\ORM\Rule\ExistsInNullable;
 use Cake\ORM\Rule\IsUnique;
 use Cake\ORM\Rule\LinkConstraint;
 use Cake\ORM\Rule\ValidCount;
 use Cake\Utility\Inflector;
-use function Cake\I18n\__d;
 
 /**
  * ORM flavored rules checker.

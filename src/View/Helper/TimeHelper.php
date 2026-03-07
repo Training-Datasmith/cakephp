@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -14,16 +15,19 @@ declare(strict_types=1);
  * @since         0.10.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\View\Helper;
 
 use Cake\Chronos\ChronosDate;
+
+use function Cake\Core\deprecationWarning;
+
 use Cake\I18n\DateTime;
 use Cake\View\Helper;
 use Cake\View\StringTemplateTrait;
 use DateTimeInterface;
 use DateTimeZone;
 use Exception;
-use function Cake\Core\deprecationWarning;
 
 /**
  * Time Helper class for easy use of time data.

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 /**
@@ -13,6 +14,7 @@ declare(strict_types=1);
  * @since         3.7.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+
 namespace Cake\TestSuite;
 
 use Cake\Controller\Controller;
@@ -674,7 +676,7 @@ trait IntegrationTestTrait
         if ($this->_securityToken === true) {
             $fields = array_diff_key($data, array_flip($this->_unlockedFields));
 
-            $keys = array_map(fn(int|string $field) => preg_replace('/(\.\d+)+$/', '', (string)$field), array_keys(Hash::flatten($fields)));
+            $keys = array_map(fn (int|string $field) => preg_replace('/(\.\d+)+$/', '', (string)$field), array_keys(Hash::flatten($fields)));
 
             $formProtector = new FormProtector(['unlockedFields' => $this->_unlockedFields]);
             foreach ($keys as $field) {
