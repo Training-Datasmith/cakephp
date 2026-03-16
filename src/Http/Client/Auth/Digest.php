@@ -167,7 +167,7 @@ class Digest
 
     protected function generateCnonce(): string
     {
-        return uniqid();
+        return bin2hex(random_bytes(8));
     }
 
     /**

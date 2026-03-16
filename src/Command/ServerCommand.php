@@ -177,7 +177,7 @@ class ServerCommand extends Command
         );
 
         if ($this->_iniPath) {
-            $command = sprintf('%s -c %s', $command, $this->_iniPath);
+            $command = sprintf('%s -c %s', $command, escapeshellarg($this->_iniPath));
         }
 
         return sprintf('%s %s', $command, escapeshellarg($this->_documentRoot . '/index.php'));

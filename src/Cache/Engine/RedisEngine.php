@@ -666,7 +666,7 @@ class RedisEngine extends CacheEngine
             return (int)$value;
         }
 
-        return unserialize($value);
+        return unserialize($value, ['allowed_classes' => true]);
     }
 
     /**

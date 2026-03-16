@@ -55,7 +55,7 @@ class OpenSsl
             throw new CakeException(sprintf('Cannot get the cipher iv length for `%s`', $method));
         }
 
-        $iv = openssl_random_pseudo_bytes($ivSize);
+        $iv = random_bytes($ivSize);
 
         return $iv . openssl_encrypt($plain, $method, $key, OPENSSL_RAW_DATA, $iv);
     }

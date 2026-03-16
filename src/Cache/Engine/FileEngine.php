@@ -219,7 +219,7 @@ class FileEngine extends CacheEngine
         $data = trim($data);
 
         if ($data !== '' && !empty($this->_config['serialize'])) {
-            $data = unserialize($data);
+            $data = unserialize($data, ['allowed_classes' => true]);
             $this->dispatchEvent(CacheAfterGetEvent::NAME, ['key' => $key, 'value' => $data, 'success' => true]);
 
             return $data;

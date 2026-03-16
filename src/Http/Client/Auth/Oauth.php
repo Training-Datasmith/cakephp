@@ -107,7 +107,7 @@ class Oauth
     {
         $values = [
             'oauth_version' => '1.0',
-            'oauth_nonce' => uniqid(),
+            'oauth_nonce' => bin2hex(random_bytes(16)),
             'oauth_timestamp' => time(),
             'oauth_signature_method' => 'PLAINTEXT',
             'oauth_token' => $credentials['token'],
@@ -133,7 +133,7 @@ class Oauth
      */
     protected function _hmacSha1(Request $request, array $credentials): string
     {
-        $nonce = $credentials['nonce'] ?? uniqid();
+        $nonce = $credentials['nonce'] ?? bin2hex(random_bytes(16));
         $timestamp = $credentials['timestamp'] ?? time();
         $values = [
             'oauth_version' => '1.0',
