@@ -86,7 +86,7 @@ class Behavior_Registry extends Object_Registry implements Event_Dispatcher_Inte
      */
     public static function class_name(string $class): ?string
     {
-        return App::class_name($class, 'Model/Behavior', 'Behavior') ?: App::class_name($class, 'ORM/Behavior', 'Behavior');
+        return App::class_name($class, 'Model/Behavior', '_Behavior') ?: App::class_name($class, 'ORM/Behavior', '_Behavior');
     }
     /**
      * Resolve a behavior classname.

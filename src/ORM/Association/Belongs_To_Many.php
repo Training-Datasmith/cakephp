@@ -212,7 +212,7 @@ class Belongs_To_Many extends Association
             if (!$table_locator->exists($table_alias)) {
                 $config = ['table' => $table_name, 'allowFallbackClass' => true];
                 // Propagate the connection if we'll get an auto-model
-                if (!App::class_name($table_alias, 'Model/Table', 'Table')) {
+                if (!App::class_name($table_alias, 'Model/Table', '_Table')) {
                     $config['connection'] = $this->get_source()->get_connection();
                 }
             }

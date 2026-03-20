@@ -102,7 +102,7 @@ class Component_Registry extends Object_Registry implements Event_Dispatcher_Int
     protected function _resolve_class_name(string $class): ?string
     {
         /** @var class-string<\Cake\Controller\Component>|null */
-        return App::class_name($class, 'Controller/Component', 'Component');
+        return App::class_name($class, 'Controller/Component', '_Component');
     }
     /**
      * Throws an exception when a component is missing.

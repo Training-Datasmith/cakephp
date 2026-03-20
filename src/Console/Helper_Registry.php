@@ -51,7 +51,7 @@ class Helper_Registry extends Object_Registry
     protected function _resolve_class_name(string $class): ?string
     {
         /** @var class-string<\Cake\Console\Helper>|null */
-        return App::class_name($class, 'Command/Helper', 'Helper');
+        return App::class_name($class, 'Command/Helper', '_Helper');
     }
     /**
      * Throws an exception when a helper is missing.

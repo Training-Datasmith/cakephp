@@ -237,7 +237,7 @@ class Controller_Factory implements Controller_Factory_Interface, Request_Handle
             throw $this->missing_controller($request);
         }
         /** @var class-string<\Cake\Controller\Controller>|null */
-        return App::class_name($plugin_path . $controller, $namespace, 'Controller');
+        return App::class_name($plugin_path . $controller, $namespace, '_Controller');
     }
     /**
      * Throws an exception when a controller is missing.

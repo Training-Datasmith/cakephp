@@ -143,7 +143,7 @@ class Web_Exception_Renderer implements Exception_Renderer_Interface
             if (!$class) {
                 // Fallback to app/core provided controller.
                 /** @var string $class */
-                $class = App::class_name('Error', 'Controller', 'Controller');
+                $class = App::class_name('Error', 'Controller', '_Controller');
             }
             assert(is_subclass_of($class, Controller::class));
             $controller = new $class($request);

@@ -214,7 +214,7 @@ abstract class Association
      */
     public function set_class_name(string $class_name)
     {
-        if (isset($this->_target_table) && $this->_target_table::class !== App::class_name($class_name, 'Model/Table', 'Table')) {
+        if (isset($this->_target_table) && $this->_target_table::class !== App::class_name($class_name, 'Model/Table', '_Table')) {
             throw new InvalidArgumentException(sprintf("The class name `%s` doesn't match the target table class name of `%s`.", $class_name, $this->_target_table::class));
         }
         $this->_class_name = $class_name;
@@ -276,7 +276,7 @@ abstract class Association
             }
             $this->_target_table = $table_locator->get($registry_alias, $config);
             if ($exists) {
-                $class_name = App::class_name($this->_class_name, 'Model/Table', 'Table') ?: Table::class;
+                $class_name = App::class_name($this->_class_name, 'Model/Table', '_Table') ?: Table::class;
                 if (!$this->_target_table instanceof $class_name) {
                     $msg = "`%s` association `%s` of type `%s` to `%s` doesn't match the expected class `%s`. ";
                     $msg .= "You can't have an association of the same name with a different target ";
