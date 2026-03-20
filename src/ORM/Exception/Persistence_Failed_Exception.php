@@ -22,7 +22,29 @@ use Cake\Utility\Hash;
 use Throwable;
 
 /**
- * Used when a strict save or delete fails
+ * Thrown when a strict ORM operation (saveOrFail / deleteOrFail) fails.
+ *
+ * Carries a reference to the entity that triggered the failure so callers can
+ * inspect validation errors without having to maintain a separate reference.
+ *
+ * ### Common causes
+ * - Validation errors present on the entity at the time of save
+ * - An application rule check (RulesChecker) returned false
+ * - A beforeSave / beforeDelete listener stopped the event
+ * - A database constraint violation raised during the query
+ *
+ * ### Usage
+ * ```php
+ * try {
+ *     $table->saveOrFail($entity);
+ * } catch (PersistenceFailedException $e) {
+ *     $errors = $e->getEntity()->getErrors(); // ['field' => ['rule' => 'message']]
+ * }
+ * ```
+ *
+ * @see \Cake\ORM\Table::saveOrFail() Throws this exception on failure.
+ * @see \Cake\ORM\Table::deleteOrFail() Throws this exception on failure.
+ * @since 3.4.0
  */
 class PersistenceFailedException extends CakeException
 {
@@ -63,7 +85,13 @@ class PersistenceFailedException extends CakeException
     }
 
     /**
-     * Get the passed in entity
+     * Returns the entity that caused the persistence failure.
+     *
+     * Use this to inspect validation errors, dirty fields, or the entity's
+     * primary key to determine how to respond to the failure.
+     *
+     * @return \Cake\Datasource\EntityInterface The entity as it was at the time
+     *   of the failed operation, including any validation errors set by the ORM.
      */
     public function getEntity(): EntityInterface
     {

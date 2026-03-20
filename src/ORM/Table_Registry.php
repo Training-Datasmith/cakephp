@@ -55,7 +55,12 @@ use Cake\ORM\Locator\LocatorInterface;
 class TableRegistry
 {
     /**
-     * Returns a singleton instance of LocatorInterface implementation.
+     * Returns the singleton TableLocator instance registered with FactoryLocator.
+     *
+     * @return \Cake\ORM\Locator\LocatorInterface The active table locator.
+     * @deprecated 4.3.0 — Use `\Cake\ORM\Locator\TableLocator` directly, or access it
+     *   via `\Cake\ORM\Table::locator()` / controller's `$this->fetchTable()`.
+     * @see \Cake\ORM\Locator\TableLocator The preferred locator implementation.
      */
     public static function getTableLocator(): LocatorInterface
     {

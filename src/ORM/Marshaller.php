@@ -190,10 +190,20 @@ class Marshaller
      *  ]);
      *  ```
      *
-     * @param array<string, mixed> $data The data to hydrate.
-     * @param array<string, mixed> $options List of options
-     * @see \Cake\ORM\Table::newEntity()
-     * @see \Cake\ORM\Entity::$_accessible
+     * @param array<string, mixed> $data Raw input data (e.g. from a request body) to convert
+     *   into a new entity. Keys are mapped to entity properties; unknown keys are ignored
+     *   unless `$options['accessibleFields']['*']` is true.
+     * @param array<string, mixed> $options Marshalling options:
+     *   - `associated` (array|bool): associations to hydrate recursively.
+     *   - `accessibleFields` (array): override the entity's `$_accessible` map for this call.
+     *   - `validate` (bool|string): validator name or false to disable. Default true.
+     *   - `fields` (array): whitelist of field names to accept.
+     * @return \Cake\Datasource\EntityInterface A newly created entity populated from `$data`.
+     * @throws \InvalidArgumentException When a named association does not exist on the table.
+     * @see \Cake\ORM\Table::newEntity() High-level wrapper for this method.
+     * @see \Cake\ORM\Entity::$_accessible For property-level access control.
+     * @complexity O(f + a) where f = number of fields and a = number of associations.
+     * @since 3.0.0
      */
     public function one(array $data, array $options = []): EntityInterface
     {
