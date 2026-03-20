@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,12 +14,10 @@ declare(strict_types=1);
  * @since         2.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Console;
 
 use Cake\Utility\Text;
-use SimpleXMLElement;
-
+use Simple_Xml_Element;
 /**
  * HelpFormatter formats help for console shells. Can format to either
  * text or XML formats. Uses ConsoleOptionParser methods to generate help.
@@ -30,23 +27,20 @@ use SimpleXMLElement;
  *
  * Xml output is useful for integration with other tools like IDE's or other build tools.
  */
-class HelpFormatter
+class Help_Formatter
 {
     /**
      * The maximum number of arguments shown when generating usage.
      */
-    protected int $_maxArgs = 6;
-
+    protected int $_max_args = 6;
     /**
      * The maximum number of options shown when generating usage.
      */
-    protected int $_maxOptions = 6;
-
+    protected int $_max_options = 6;
     /**
      * Alias to display in the output.
      */
     protected string $_alias = 'cake';
-
     /**
      * Build the help formatter for an OptionParser
      *
@@ -56,20 +50,19 @@ class HelpFormatter
         /**
          * Option parser.
          */
-        protected ConsoleOptionParser $_parser
-    ) {
+        protected Console_Option_Parser $_parser
+    )
+    {
     }
-
     /**
      * Set the alias
      *
      * @param string $alias The alias
      */
-    public function setAlias(string $alias): void
+    public function set_alias(string $alias): void
     {
         $this->_alias = $alias;
     }
-
     /**
      * Get the help as formatted text suitable for output on the command line.
      *
@@ -79,66 +72,54 @@ class HelpFormatter
     {
         $parser = $this->_parser;
         $out = [];
-        $description = $parser->getDescription();
+        $description = $parser->get_description();
         if ($description) {
             $out[] = Text::wrap($description, $width);
             $out[] = '';
         }
         $out[] = '<info>Usage:</info>';
-        $out[] = $this->_generateUsage();
+        $out[] = $this->_generate_usage();
         $out[] = '';
-
         $options = $parser->options();
         if ($options) {
-            $max = $this->_getMaxLength($options) + 8;
+            $max = $this->_get_max_length($options) + 8;
             $out[] = '<info>Options:</info>';
             $out[] = '';
             foreach ($options as $option) {
-                $out[] = Text::wrapBlock($option->help($max), [
-                    'width' => $width,
-                    'indent' => str_repeat(' ', $max),
-                    'indentAt' => 1,
-                ]);
+                $out[] = Text::wrap_block($option->help($max), ['width' => $width, 'indent' => str_repeat(' ', $max), 'indentAt' => 1]);
             }
             $out[] = '';
         }
-
         $arguments = $parser->arguments();
         if ($arguments) {
-            $max = $this->_getMaxLength($arguments) + 2;
+            $max = $this->_get_max_length($arguments) + 2;
             $out[] = '<info>Arguments:</info>';
             $out[] = '';
             foreach ($arguments as $argument) {
-                $out[] = Text::wrapBlock($argument->help($max), [
-                    'width' => $width,
-                    'indent' => str_repeat(' ', $max),
-                    'indentAt' => 1,
-                ]);
+                $out[] = Text::wrap_block($argument->help($max), ['width' => $width, 'indent' => str_repeat(' ', $max), 'indentAt' => 1]);
             }
             $out[] = '';
         }
-        $epilog = $parser->getEpilog();
+        $epilog = $parser->get_epilog();
         if ($epilog) {
             $out[] = Text::wrap($epilog, $width);
             $out[] = '';
         }
-
         return implode("\n", $out);
     }
-
     /**
      * Generate the usage for a shell based on its arguments and options.
      * Usage strings favor short options over the long ones. and optional args will
      * be indicated with []
      */
-    protected function _generateUsage(): string
+    protected function _generate_usage(): string
     {
-        $usage = [$this->_alias . ' ' . $this->_parser->getCommand()];
+        $usage = [$this->_alias . ' ' . $this->_parser->get_command()];
         $options = [];
         foreach ($this->_parser->options() as $option) {
             $options[] = $option->usage();
         }
-        if (count($options) > $this->_maxOptions) {
+        if (count($options) > $this->_max_options) {
             $options = ['[options]'];
         }
         $usage = array_merge($usage, $options);
@@ -146,52 +127,46 @@ class HelpFormatter
         foreach ($this->_parser->arguments() as $argument) {
             $args[] = $argument->usage();
         }
-        if (count($args) > $this->_maxArgs) {
+        if (count($args) > $this->_max_args) {
             $args = ['[arguments]'];
         }
         $usage = array_merge($usage, $args);
-
         return implode(' ', $usage);
     }
-
     /**
      * Iterate over a collection and find the longest named thing.
      *
      * @param array<\Cake\Console\ConsoleInputOption|\Cake\Console\ConsoleInputArgument> $collection The collection to find a max length of.
      */
-    protected function _getMaxLength(array $collection): int
+    protected function _get_max_length(array $collection): int
     {
         $max = 0;
         foreach ($collection as $item) {
             $max = max(strlen($item->name()), $max);
         }
-
         return $max;
     }
-
     /**
      * Get the help as an XML string.
      *
      * @param bool $string Return the SimpleXml object or a string. Defaults to true.
      * @return \SimpleXMLElement|string See $string
      */
-    public function xml(bool $string = true): SimpleXMLElement|string
+    public function xml(bool $string = true): Simple_Xml_Element|string
     {
         $parser = $this->_parser;
-        $xml = new SimpleXMLElement('<shell></shell>');
-        $xml->addChild('command', $parser->getCommand());
-        $xml->addChild('description', $parser->getDescription());
-
-        $options = $xml->addChild('options');
+        $xml = new Simple_Xml_Element('<shell></shell>');
+        $xml->add_child('command', $parser->get_command());
+        $xml->add_child('description', $parser->get_description());
+        $options = $xml->add_child('options');
         foreach ($parser->options() as $option) {
             $option->xml($options);
         }
-        $arguments = $xml->addChild('arguments');
+        $arguments = $xml->add_child('arguments');
         foreach ($parser->arguments() as $argument) {
             $argument->xml($arguments);
         }
-        $xml->addChild('epilog', $parser->getEpilog());
-
-        return $string ? (string)$xml->asXML() : $xml;
+        $xml->add_child('epilog', $parser->get_epilog());
+        return $string ? (string) $xml->as_xml() : $xml;
     }
 }

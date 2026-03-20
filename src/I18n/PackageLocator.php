@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -16,17 +15,15 @@ declare(strict_types=1);
  * @since         4.2.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\I18n;
 
-use Cake\I18n\Exception\I18nException;
-
+use Cake\I18n\Exception\I18n_Exception;
 /**
  * A ServiceLocator implementation for loading and retaining package objects.
  *
  * @internal
  */
-class PackageLocator
+class Package_Locator
 {
     /**
      * A registry of packages.
@@ -38,7 +35,6 @@ class PackageLocator
      * @var array<string, array<string, \Cake\I18n\Package|callable>>
      */
     protected array $registry = [];
-
     /**
      * Tracks whether a registry entry has been converted from a
      * callable to a Package object.
@@ -46,7 +42,6 @@ class PackageLocator
      * @var array<string, array<string, bool>>
      */
     protected array $converted = [];
-
     /**
      * Constructor.
      *
@@ -61,7 +56,6 @@ class PackageLocator
             }
         }
     }
-
     /**
      * Sets a Package loader.
      *
@@ -74,7 +68,6 @@ class PackageLocator
         $this->registry[$name][$locale] = $spec;
         $this->converted[$name][$locale] = $spec instanceof Package;
     }
-
     /**
      * Gets a Package object.
      *
@@ -84,19 +77,16 @@ class PackageLocator
     public function get(string $name, string $locale): Package
     {
         if (!isset($this->registry[$name][$locale])) {
-            throw new I18nException(sprintf('Package `%s` with locale `%s` is not registered.', $name, $locale));
+            throw new I18n_Exception(sprintf('Package `%s` with locale `%s` is not registered.', $name, $locale));
         }
-
         if (!$this->converted[$name][$locale]) {
             $func = $this->registry[$name][$locale];
             assert(is_callable($func));
             $this->registry[$name][$locale] = $func();
             $this->converted[$name][$locale] = true;
         }
-
         return $this->registry[$name][$locale];
     }
-
     /**
      * Check if a Package object for given name and locale exists in registry.
      *

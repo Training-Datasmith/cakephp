@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,14 +14,12 @@ declare(strict_types=1);
  * @since         2.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Core\Configure\Engine;
 
-use Cake\Core\Configure\ConfigEngineInterface;
-use Cake\Core\Configure\FileConfigTrait;
-use Cake\Core\Exception\CakeException;
+use Cake\Core\Configure\Config_Engine_Interface;
+use Cake\Core\Configure\File_Config_Trait;
+use Cake\Core\Exception\Cake_Exception;
 use Cake\Utility\Hash;
-
 /**
  * Ini file configuration engine.
  *
@@ -56,15 +53,13 @@ use Cake\Utility\Hash;
  *
  * @see https://secure.php.net/parse_ini_file
  */
-class IniConfig implements ConfigEngineInterface
+class Ini_Config implements Config_Engine_Interface
 {
-    use FileConfigTrait;
-
+    use File_Config_Trait;
     /**
      * File extension.
      */
     protected string $_extension = '.ini';
-
     /**
      * Build and construct a new ini file parser. The parser can be used to read
      * ini files that are on the filesystem.
@@ -73,14 +68,16 @@ class IniConfig implements ConfigEngineInterface
      * @param string|null $_section Only get one section, leave null to parse and fetch
      *     all sections in the ini file.
      */
-    public function __construct(?string $path = null, /**
-     * The section to read, if null all sections will be read.
-     */
-        protected ?string $_section = null)
+    public function __construct(
+        ?string $path = null,
+        /**
+         * The section to read, if null all sections will be read.
+         */
+        protected ?string $_section = null
+    )
     {
         $this->_path = $path ?? CONFIG;
     }
-
     /**
      * Read an ini file and return the results as an array.
      *
@@ -92,37 +89,33 @@ class IniConfig implements ConfigEngineInterface
      */
     public function read(string $key): array
     {
-        $file = $this->_getFilePath($key, true);
-
+        $file = $this->_get_file_path($key, true);
         $contents = parse_ini_file($file, true);
         if ($contents === false) {
-            throw new CakeException(sprintf('Cannot parse INI file `%s`', $file));
+            throw new Cake_Exception(sprintf('Cannot parse INI file `%s`', $file));
         }
-
         if ($this->_section && isset($contents[$this->_section])) {
-            $values = $this->_parseNestedValues($contents[$this->_section]);
+            $values = $this->_parse_nested_values($contents[$this->_section]);
         } else {
             $values = [];
             foreach ($contents as $section => $attribs) {
                 if (is_array($attribs)) {
-                    $values[$section] = $this->_parseNestedValues($attribs);
+                    $values[$section] = $this->_parse_nested_values($attribs);
                 } else {
-                    $parse = $this->_parseNestedValues([$attribs]);
+                    $parse = $this->_parse_nested_values([$attribs]);
                     $values[$section] = array_shift($parse);
                 }
             }
         }
-
         return $values;
     }
-
     /**
      * parses nested values out of keys.
      *
      * @param array $values Values to be exploded.
      * @return array Array of values exploded
      */
-    protected function _parseNestedValues(array $values): array
+    protected function _parse_nested_values(array $values): array
     {
         foreach ($values as $key => $value) {
             if ($value === '1') {
@@ -132,16 +125,14 @@ class IniConfig implements ConfigEngineInterface
                 $value = false;
             }
             unset($values[$key]);
-            if (str_contains((string)$key, '.')) {
+            if (str_contains((string) $key, '.')) {
                 $values = Hash::insert($values, $key, $value);
             } else {
                 $values[$key] = $value;
             }
         }
-
         return $values;
     }
-
     /**
      * Dumps the state of Configure data into an ini formatted string.
      *
@@ -154,28 +145,25 @@ class IniConfig implements ConfigEngineInterface
     {
         $result = [];
         foreach ($data as $k => $value) {
-            $isSection = false;
+            $is_section = false;
             if (!str_starts_with((string) $k, '[')) {
                 $result[] = "[{$k}]";
-                $isSection = true;
+                $is_section = true;
             }
             if (is_array($value)) {
-                $kValues = Hash::flatten($value, '.');
-                foreach ($kValues as $k2 => $v) {
+                $k_values = Hash::flatten($value, '.');
+                foreach ($k_values as $k2 => $v) {
                     $result[] = "{$k2} = " . $this->_value($v);
                 }
             }
-            if ($isSection) {
+            if ($is_section) {
                 $result[] = '';
             }
         }
         $contents = trim(implode("\n", $result));
-
-        $filename = $this->_getFilePath($key);
-
+        $filename = $this->_get_file_path($key);
         return file_put_contents($filename, $contents) > 0;
     }
-
     /**
      * Converts a value into the ini equivalent
      *
@@ -188,7 +176,7 @@ class IniConfig implements ConfigEngineInterface
             null => 'null',
             true => 'true',
             false => 'false',
-            default => (string)$value
+            default => (string) $value,
         };
     }
 }

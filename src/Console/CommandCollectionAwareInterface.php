@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,19 +14,18 @@ declare(strict_types=1);
  * @since         3.5.0
  * @license       https://www.opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Console;
 
 /**
  * An interface for shells that take a CommandCollection
  * during initialization.
  */
-interface CommandCollectionAwareInterface
+interface Command_Collection_Aware_Interface
 {
     /**
      * Set the command collection being used.
      *
      * @param \Cake\Console\CommandCollection $commands The commands to use.
      */
-    public function setCommandCollection(CommandCollection $commands): void;
+    public function set_command_collection(Command_Collection $commands): void;
 }

@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,13 +14,12 @@ declare(strict_types=1);
  * @since         5.3.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
-namespace Cake\Http\RateLimit;
+namespace Cake\Http\Rate_Limit;
 
 /**
  * Rate limiter interface
  */
-interface RateLimiterInterface
+interface Rate_Limiter_Interface
 {
     /**
      * Attempt to consume from the rate limit
@@ -33,7 +31,6 @@ interface RateLimiterInterface
      * @return array{allowed: bool, limit: int, remaining: int, reset: int}
      */
     public function attempt(string $identifier, int $limit, int $window, int $cost = 1): array;
-
     /**
      * Reset rate limit for an identifier
      *

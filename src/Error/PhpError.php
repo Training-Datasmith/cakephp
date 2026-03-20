@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,44 +14,21 @@ declare(strict_types=1);
  * @since         4.4.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Error;
 
 /**
  * Object wrapper around PHP errors that are emitted by `trigger_error()`
  */
-class PhpError
+class Php_Error
 {
     /**
      * @var array<int, string>
      */
-    private array $levelMap = [
-        E_PARSE => 'error',
-        E_ERROR => 'error',
-        E_CORE_ERROR => 'error',
-        E_COMPILE_ERROR => 'error',
-        E_USER_ERROR => 'error',
-        E_WARNING => 'warning',
-        E_USER_WARNING => 'warning',
-        E_COMPILE_WARNING => 'warning',
-        E_RECOVERABLE_ERROR => 'warning',
-        E_NOTICE => 'notice',
-        E_USER_NOTICE => 'notice',
-        E_DEPRECATED => 'deprecated',
-        E_USER_DEPRECATED => 'deprecated',
-    ];
-
+    private array $level_map = [E_PARSE => 'error', E_ERROR => 'error', E_CORE_ERROR => 'error', E_COMPILE_ERROR => 'error', E_USER_ERROR => 'error', E_WARNING => 'warning', E_USER_WARNING => 'warning', E_COMPILE_WARNING => 'warning', E_RECOVERABLE_ERROR => 'warning', E_NOTICE => 'notice', E_USER_NOTICE => 'notice', E_DEPRECATED => 'deprecated', E_USER_DEPRECATED => 'deprecated'];
     /**
      * @var array<string, int>
      */
-    private array $logMap = [
-        'error' => LOG_ERR,
-        'warning' => LOG_WARNING,
-        'notice' => LOG_NOTICE,
-        'strict' => LOG_NOTICE,
-        'deprecated' => LOG_NOTICE,
-    ];
-
+    private array $log_map = ['error' => LOG_ERR, 'warning' => LOG_WARNING, 'notice' => LOG_NOTICE, 'strict' => LOG_NOTICE, 'deprecated' => LOG_NOTICE];
     /**
      * Constructor
      *
@@ -70,75 +46,67 @@ class PhpError
         /**
          * Stack trace data. Each item should have a `reference`, `file` and `line` keys.
          */
-        private readonly array $trace = [],
-    ) {
+        private readonly array $trace = []
+    )
+    {
         if (version_compare(PHP_VERSION, '8.4.0-dev', '<')) {
-            $this->levelMap[E_STRICT] = 'strict';
+            $this->level_map[E_STRICT] = 'strict';
         }
     }
-
     /**
      * Get the PHP error constant.
      */
-    public function getCode(): int
+    public function get_code(): int
     {
         return $this->code;
     }
-
     /**
      * Get the mapped LOG_ constant.
      */
-    public function getLogLevel(): int
+    public function get_log_level(): int
     {
-        $label = $this->getLabel();
-
-        return $this->logMap[$label] ?? LOG_ERR;
+        $label = $this->get_label();
+        return $this->log_map[$label] ?? LOG_ERR;
     }
-
     /**
      * Get the error code label
      */
-    public function getLabel(): string
+    public function get_label(): string
     {
-        return $this->levelMap[$this->code] ?? 'error';
+        return $this->level_map[$this->code] ?? 'error';
     }
-
     /**
      * Get the error message.
      */
-    public function getMessage(): string
+    public function get_message(): string
     {
         return $this->message;
     }
-
     /**
      * Get the error file
      */
-    public function getFile(): ?string
+    public function get_file(): ?string
     {
         return $this->file;
     }
-
     /**
      * Get the error line number.
      */
-    public function getLine(): ?int
+    public function get_line(): ?int
     {
         return $this->line;
     }
-
     /**
      * Get the stacktrace as an array.
      */
-    public function getTrace(): array
+    public function get_trace(): array
     {
         return $this->trace;
     }
-
     /**
      * Get the stacktrace as a string.
      */
-    public function getTraceAsString(): string
+    public function get_trace_as_string(): string
     {
         $out = [];
         foreach ($this->trace as $frame) {
@@ -148,7 +116,6 @@ class PhpError
                 $out[] = $frame['reference'];
             }
         }
-
         return implode("\n", $out);
     }
 }

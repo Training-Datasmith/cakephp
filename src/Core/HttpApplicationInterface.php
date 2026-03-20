@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright 2005-2011, Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -14,17 +13,15 @@ declare(strict_types=1);
  * @since         3.5.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Core;
 
-use Cake\Http\MiddlewareQueue;
-use Psr\Http\Server\RequestHandlerInterface;
-
+use Cake\Http\Middleware_Queue;
+use Psr\Http\Server\Request_Handler_Interface;
 /**
  * An interface defining the methods that the
  * http server depend on.
  */
-interface HttpApplicationInterface extends RequestHandlerInterface
+interface Http_Application_Interface extends Request_Handler_Interface
 {
     /**
      * Load all the application configuration and bootstrap logic.
@@ -32,11 +29,10 @@ interface HttpApplicationInterface extends RequestHandlerInterface
      * Override this method to add additional bootstrap logic for your application.
      */
     public function bootstrap(): void;
-
     /**
      * Define the HTTP middleware layers for an application.
      *
      * @param \Cake\Http\MiddlewareQueue $middlewareQueue The middleware queue to set in your App Class
      */
-    public function middleware(MiddlewareQueue $middlewareQueue): MiddlewareQueue;
+    public function middleware(Middleware_Queue $middleware_queue): Middleware_Queue;
 }

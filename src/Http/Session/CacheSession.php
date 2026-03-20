@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * Cache Session save handler. Allows saving session information into Cache.
  *
@@ -17,19 +16,17 @@ declare(strict_types=1);
  * @since         2.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Http\Session;
 
 use Cake\Cache\Cache;
 use InvalidArgumentException;
-use SessionHandlerInterface;
-
+use Session_Handler_Interface;
 /**
  * CacheSession provides method for saving sessions into a Cache engine. Used with Session
  *
  * @see \Cake\Http\Session for configuration information.
  */
-class CacheSession implements SessionHandlerInterface
+class Cache_Session implements Session_Handler_Interface
 {
     /**
      * Options for this session engine
@@ -37,7 +34,6 @@ class CacheSession implements SessionHandlerInterface
      * @var array<string, mixed>
      */
     protected array $_options = [];
-
     /**
      * Constructor.
      *
@@ -53,7 +49,6 @@ class CacheSession implements SessionHandlerInterface
         }
         $this->_options = $config;
     }
-
     /**
      * Method called on open of a database session.
      *
@@ -65,7 +60,6 @@ class CacheSession implements SessionHandlerInterface
     {
         return true;
     }
-
     /**
      * Method called on close of a database session.
      *
@@ -75,7 +69,6 @@ class CacheSession implements SessionHandlerInterface
     {
         return true;
     }
-
     /**
      * Method used to read from a cache session.
      *
@@ -86,7 +79,6 @@ class CacheSession implements SessionHandlerInterface
     {
         return Cache::read($id, $this->_options['config']) ?? '';
     }
-
     /**
      * Helper function called on write for cache sessions.
      *
@@ -99,10 +91,8 @@ class CacheSession implements SessionHandlerInterface
         if (!$id) {
             return false;
         }
-
         return Cache::write($id, $data, $this->_options['config']);
     }
-
     /**
      * Method called on the destruction of a cache session.
      *
@@ -112,10 +102,8 @@ class CacheSession implements SessionHandlerInterface
     public function destroy(string $id): bool
     {
         Cache::delete($id, $this->_options['config']);
-
         return true;
     }
-
     /**
      * No-op method. Always returns 0 since cache engine don't have garbage collection.
      *

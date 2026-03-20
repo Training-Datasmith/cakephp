@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,36 +14,32 @@ declare(strict_types=1);
  * @since         4.5.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Command;
 
 use Cake\Cache\Cache;
 use Cake\Cache\Exception\InvalidArgumentException;
 use Cake\Console\Arguments;
-use Cake\Console\ConsoleIo;
-use Cake\Console\ConsoleOptionParser;
-
+use Cake\Console\Console_Io;
+use Cake\Console\Console_Option_Parser;
 /**
  * Cache Clear Group command.
  */
-class CacheClearGroupCommand extends Command
+class Cache_Clear_Group_Command extends Command
 {
     /**
      * Get the command name.
      */
-    public static function defaultName(): string
+    public static function default_name(): string
     {
         return 'cache clear_group';
     }
-
     /**
      * @inheritDoc
      */
-    public static function getDescription(): string
+    public static function get_description(): string
     {
         return 'Clear all data in a single cache group.';
     }
-
     /**
      * Hook method for defining this command's option parser.
      *
@@ -52,22 +47,14 @@ class CacheClearGroupCommand extends Command
      * @param \Cake\Console\ConsoleOptionParser $parser The parser to be defined
      * @return \Cake\Console\ConsoleOptionParser The built parser.
      */
-    public function buildOptionParser(ConsoleOptionParser $parser): ConsoleOptionParser
+    public function build_option_parser(Console_Option_Parser $parser): Console_Option_Parser
     {
-        $parser = parent::buildOptionParser($parser);
-        $parser->setDescription(static::getDescription());
-        $parser->addArgument('group', [
-            'help' => 'The cache group to clear. For example, `cake cache clear_group mygroup` will clear ' .
-                'all cache items belonging to group "mygroup".',
-            'required' => true,
-        ]);
-        $parser->addArgument('config', [
-            'help' => 'Name of the configuration to use. Defaults to no value which clears all cache configurations.',
-        ]);
-
+        $parser = parent::build_option_parser($parser);
+        $parser->set_description(static::get_description());
+        $parser->add_argument('group', ['help' => 'The cache group to clear. For example, `cake cache clear_group mygroup` will clear ' . 'all cache items belonging to group "mygroup".', 'required' => true]);
+        $parser->add_argument('config', ['help' => 'Name of the configuration to use. Defaults to no value which clears all cache configurations.']);
         return $parser;
     }
-
     /**
      * Clears the cache group
      *
@@ -75,41 +62,31 @@ class CacheClearGroupCommand extends Command
      * @param \Cake\Console\ConsoleIo $io The console io
      * @return int|null The exit code or null for success
      */
-    public function execute(Arguments $args, ConsoleIo $io): ?int
+    public function execute(Arguments $args, Console_Io $io): ?int
     {
-        $group = (string)$args->getArgument('group');
+        $group = (string) $args->get_argument('group');
         try {
-            $groupConfigs = Cache::groupConfigs($group);
+            $group_configs = Cache::group_configs($group);
         } catch (InvalidArgumentException) {
             $io->error(sprintf('Cache group "%s" not found', $group));
-
             return static::CODE_ERROR;
         }
-
-        $config = $args->getArgument('config');
-        if ($config !== null && Cache::getConfig($config) === null) {
+        $config = $args->get_argument('config');
+        if ($config !== null && Cache::get_config($config) === null) {
             $io->error(sprintf('Cache config "%s" not found', $config));
-
             return static::CODE_ERROR;
         }
-
-        foreach ($groupConfigs[$group] as $groupConfig) {
-            if ($config !== null && $config !== $groupConfig) {
+        foreach ($group_configs[$group] as $group_config) {
+            if ($config !== null && $config !== $group_config) {
                 continue;
             }
-
-            if (!Cache::clearGroup($group, $groupConfig)) {
-                $io->error(sprintf(
-                    'Error encountered clearing group "%s". Was unable to clear entries for "%s".',
-                    $group,
-                    $groupConfig,
-                ));
+            if (!Cache::clear_group($group, $group_config)) {
+                $io->error(sprintf('Error encountered clearing group "%s". Was unable to clear entries for "%s".', $group, $group_config));
                 $this->abort();
             } else {
-                $io->success(sprintf('Cache "%s" was cleared.', $groupConfig));
+                $io->success(sprintf('Cache "%s" was cleared.', $group_config));
             }
         }
-
         return static::CODE_SUCCESS;
     }
 }

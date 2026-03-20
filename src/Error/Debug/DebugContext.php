@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,11 +14,9 @@ declare(strict_types=1);
  * @since         4.1.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Error\Debug;
 
-use SplObjectStorage;
-
+use Spl_Object_Storage;
 /**
  * Context tracking for Debugger::exportVar()
  *
@@ -28,44 +25,38 @@ use SplObjectStorage;
  *
  * @internal
  */
-class DebugContext
+class Debug_Context
 {
     private int $depth = 0;
-
     /**
      * @var \SplObjectStorage<object, int>
      */
-    private SplObjectStorage $refs;
-
+    private Spl_Object_Storage $refs;
     /**
      * Constructor
      *
      * @param int $maxDepth The desired depth of dump output.
      */
-    public function __construct(private int $maxDepth)
+    public function __construct(private int $max_depth)
     {
-        $this->refs = new SplObjectStorage();
+        $this->refs = new Spl_Object_Storage();
     }
-
     /**
      * Return a clone with increased depth.
      */
-    public function withAddedDepth(): static
+    public function with_added_depth(): static
     {
         $new = clone $this;
         $new->depth += 1;
-
         return $new;
     }
-
     /**
      * Get the remaining depth levels
      */
-    public function remainingDepth(): int
+    public function remaining_depth(): int
     {
-        return $this->maxDepth - $this->depth;
+        return $this->max_depth - $this->depth;
     }
-
     /**
      * Get the reference ID for an object.
      *
@@ -74,23 +65,21 @@ class DebugContext
      *
      * @param object $object The object to get a reference for.
      */
-    public function getReferenceId(object $object): int
+    public function get_reference_id(object $object): int
     {
         if ($this->refs->offsetExists($object)) {
             return $this->refs[$object];
         }
-        $refId = $this->refs->count();
-        $this->refs->offsetSet($object, $refId);
-
-        return $refId;
+        $ref_id = $this->refs->count();
+        $this->refs->offsetSet($object, $ref_id);
+        return $ref_id;
     }
-
     /**
      * Check whether an object has been seen before.
      *
      * @param object $object The object to get a reference for.
      */
-    public function hasReference(object $object): bool
+    public function has_reference(object $object): bool
     {
         return $this->refs->offsetExists($object);
     }

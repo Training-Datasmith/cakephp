@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,12 +14,10 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\I18n\Parser;
 
-use Cake\Core\Exception\CakeException;
+use Cake\Core\Exception\Cake_Exception;
 use Cake\I18n\Translator;
-
 /**
  * Parses file in PO format
  *
@@ -28,7 +25,7 @@ use Cake\I18n\Translator;
  * @copyright Copyright (c) 2012, Clemens Tolboom
  * @copyright Copyright (c) 2014, Fabien Potencier https://github.com/symfony/Translation/blob/master/LICENSE
  */
-class PoFileParser
+class Po_File_Parser
 {
     /**
      * Parses portable object (PO) format.
@@ -76,30 +73,23 @@ class PoFileParser
     {
         $stream = fopen($resource, 'rb');
         if ($stream === false) {
-            throw new CakeException(sprintf('Cannot open resource `%s`', $resource));
+            throw new Cake_Exception(sprintf('Cannot open resource `%s`', $resource));
         }
-
-        $defaults = [
-            'ids' => [],
-            'translated' => null,
-        ];
-
+        $defaults = ['ids' => [], 'translated' => null];
         $messages = [];
         $item = $defaults;
         /** @var array<int, string> $stage */
         $stage = [];
-
         while ($line = fgets($stream)) {
             $line = trim($line);
-
             if ($line === '') {
                 // Whitespace indicated current item is done
-                $this->_addMessage($messages, $item);
+                $this->_add_message($messages, $item);
                 $item = $defaults;
                 $stage = [];
             } elseif (str_starts_with($line, 'msgid "')) {
                 // We start a new msg so save previous
-                $this->_addMessage($messages, $item);
+                $this->_add_message($messages, $item);
                 $item['ids']['singular'] = substr($line, 7, -1);
                 $stage = ['ids', 'singular'];
             } elseif (str_starts_with($line, 'msgstr "')) {
@@ -115,7 +105,6 @@ class PoFileParser
                         assert(isset($stage[1]));
                         $item[$stage[0]][$stage[1]] .= substr($line, 1, -1);
                         break;
-
                     case 1:
                         assert(isset($stage[0]));
                         $item[$stage[0]] .= substr($line, 1, -1);
@@ -127,63 +116,51 @@ class PoFileParser
             } elseif (str_starts_with($line, 'msgstr[')) {
                 $size = strpos($line, ']');
                 assert(is_int($size));
-
-                $row = (int)substr($line, 7, 1);
+                $row = (int) substr($line, 7, 1);
                 $item['translated'][$row] = substr($line, $size + 3, -1);
                 $stage = ['translated', $row];
             }
         }
         // save last item
-        $this->_addMessage($messages, $item);
+        $this->_add_message($messages, $item);
         fclose($stream);
-
         return $messages;
     }
-
     /**
      * Saves a translation item to the messages.
      *
      * @param array $messages The messages array being collected from the file
      * @param array $item The current item being inspected
      */
-    protected function _addMessage(array &$messages, array $item): void
+    protected function _add_message(array &$messages, array $item): void
     {
         if (empty($item['ids']['singular']) && empty($item['ids']['plural'])) {
             return;
         }
-
         $singular = stripcslashes((string) $item['ids']['singular']);
         $context = $item['context'] ?? null;
         $translation = $item['translated'];
-
         if (is_array($translation)) {
             $translation = $translation[0];
         }
-
-        $translation = stripcslashes((string)$translation);
-
+        $translation = stripcslashes((string) $translation);
         if ($context !== null && !isset($messages[$singular]['_context'][$context])) {
             $messages[$singular]['_context'][$context] = $translation;
         } elseif (!isset($messages[$singular]['_context'][''])) {
             $messages[$singular]['_context'][''] = $translation;
         }
-
         if (isset($item['ids']['plural'])) {
             $plurals = $item['translated'];
             // PO are by definition indexed so sort by index.
             ksort($plurals);
-
             // Make sure every index is filled.
-            $count = (int)array_key_last($plurals);
-
+            $count = (int) array_key_last($plurals);
             // Fill missing spots with an empty string.
             $empties = array_fill(0, $count + 1, '');
             $plurals += $empties;
             ksort($plurals);
-
             $plurals = array_map(stripcslashes(...), $plurals);
             $key = stripcslashes($item['ids']['plural']);
-
             if ($context !== null) {
                 $messages[Translator::PLURAL_PREFIX . $key]['_context'][$context] = $plurals;
             } else {

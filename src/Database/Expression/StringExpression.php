@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,17 +14,15 @@ declare(strict_types=1);
  * @since         4.2.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Database\Expression;
 
-use Cake\Database\ExpressionInterface;
-use Cake\Database\ValueBinder;
+use Cake\Database\Expression_Interface;
+use Cake\Database\Value_Binder;
 use Closure;
-
 /**
  * String expression with collation.
  */
-class StringExpression implements ExpressionInterface
+class String_Expression implements Expression_Interface
 {
     /**
      * @param string $string String value
@@ -34,36 +31,31 @@ class StringExpression implements ExpressionInterface
     public function __construct(protected string $string, protected string $collation)
     {
     }
-
     /**
      * Sets the string collation.
      *
      * @param string $collation String collation
      */
-    public function setCollation(string $collation): void
+    public function set_collation(string $collation): void
     {
         $this->collation = $collation;
     }
-
     /**
      * Returns the string collation.
      */
-    public function getCollation(): string
+    public function get_collation(): string
     {
         return $this->collation;
     }
-
     /**
      * @inheritDoc
      */
-    public function sql(ValueBinder $binder): string
+    public function sql(Value_Binder $binder): string
     {
         $placeholder = $binder->placeholder('c');
         $binder->bind($placeholder, $this->string, 'string');
-
         return $placeholder . ' COLLATE ' . $this->collation;
     }
-
     /**
      * @inheritDoc
      */

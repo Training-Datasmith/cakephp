@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -16,14 +15,12 @@ declare(strict_types=1);
  * @since         4.2.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\I18n\Exception;
 
-use Cake\Core\Exception\CakeException;
-
+use Cake\Core\Exception\Cake_Exception;
 /**
  * I18n exception.
  */
-class I18nException extends CakeException
+class I18n_Exception extends Cake_Exception
 {
 }

@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,18 +14,17 @@ declare(strict_types=1);
  * @since         3.2.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Database\Type;
 
 /**
  * An interface used by Type objects to signal whether the casting
  * is actually required.
  */
-interface OptionalConvertInterface
+interface Optional_Convert_Interface
 {
     /**
      * Returns whether the cast to PHP is required to be invoked, since
      * it is not a identity function.
      */
-    public function requiresToPhpCast(): bool;
+    public function requires_to_php_cast(): bool;
 }

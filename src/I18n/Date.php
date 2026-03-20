@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,17 +14,15 @@ declare(strict_types=1);
  * @since         3.2.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\I18n;
 
-use Cake\Chronos\ChronosDate;
-use Cake\Chronos\DifferenceFormatterInterface;
+use Cake\Chronos\Chronos_Date;
+use Cake\Chronos\Difference_Formatter_Interface;
 use Closure;
-use IntlDateFormatter;
+use Intl_Date_Formatter;
 use InvalidArgumentException;
 use JsonSerializable;
 use Stringable;
-
 /**
  * Extends the Date class provided by Chronos.
  *
@@ -33,10 +30,9 @@ use Stringable;
  *
  * @phpstan-immutable
  */
-class Date extends ChronosDate implements JsonSerializable, Stringable
+class Date extends Chronos_Date implements JsonSerializable, Stringable
 {
-    use DateFormatTrait;
-
+    use Date_Format_Trait;
     /**
      * The format to use when formatting a time using `Cake\I18n\Date::i18nFormat()`
      * and `__toString`.
@@ -47,8 +43,7 @@ class Date extends ChronosDate implements JsonSerializable, Stringable
      *
      * @see \Cake\I18n\Date::i18nFormat()
      */
-    protected static string|int $_toStringFormat = IntlDateFormatter::SHORT;
-
+    protected static string|int $_to_string_format = Intl_Date_Formatter::SHORT;
     /**
      * The format to use when converting this object to JSON.
      *
@@ -58,16 +53,14 @@ class Date extends ChronosDate implements JsonSerializable, Stringable
      *
      * @see \Cake\I18n\Date::i18nFormat()
      */
-    protected static Closure|string|int $_jsonEncodeFormat = 'yyyy-MM-dd';
-
+    protected static Closure|string|int $_json_encode_format = 'yyyy-MM-dd';
     /**
      * The format to use when formatting a time using `Cake\I18n\Date::timeAgoInWords()`
      * and the difference is more than `Cake\I18n\Date::$wordEnd`
      *
      * @see \Cake\I18n\Date::parseDate()
      */
-    public static string|int $wordFormat = IntlDateFormatter::SHORT;
-
+    public static string|int $word_format = Intl_Date_Formatter::SHORT;
     /**
      * The format to use when formatting a time using `Cake\I18n\Date::nice()`
      *
@@ -77,8 +70,7 @@ class Date extends ChronosDate implements JsonSerializable, Stringable
      *
      * @see \Cake\I18n\Date::nice()
      */
-    public static string|int $niceFormat = IntlDateFormatter::MEDIUM;
-
+    public static string|int $nice_format = Intl_Date_Formatter::MEDIUM;
     /**
      * The format to use when formatting a time using `Date::timeAgoInWords()`
      * and the difference is less than `Date::$wordEnd`
@@ -86,23 +78,13 @@ class Date extends ChronosDate implements JsonSerializable, Stringable
      * @var array<string, string>
      * @see \Cake\I18n\Date::timeAgoInWords()
      */
-    public static array $wordAccuracy = [
-        'year' => 'day',
-        'month' => 'day',
-        'week' => 'day',
-        'day' => 'day',
-        'hour' => 'day',
-        'minute' => 'day',
-        'second' => 'day',
-    ];
-
+    public static array $word_accuracy = ['year' => 'day', 'month' => 'day', 'week' => 'day', 'day' => 'day', 'hour' => 'day', 'minute' => 'day', 'second' => 'day'];
     /**
      * The end of relative time telling
      *
      * @see \Cake\I18n\Date::timeAgoInWords()
      */
-    public static string $wordEnd = '+1 month';
-
+    public static string $word_end = '+1 month';
     /**
      * Sets the default format used when type converting instances of this type to string
      *
@@ -113,11 +95,10 @@ class Date extends ChronosDate implements JsonSerializable, Stringable
      * @param string|int $format Format.
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
      */
-    public static function setToStringFormat($format): void
+    public static function set_to_string_format($format): void
     {
-        static::$_toStringFormat = $format;
+        static::$_to_string_format = $format;
     }
-
     /**
      * Sets the default format used when converting this object to JSON
      *
@@ -131,11 +112,10 @@ class Date extends ChronosDate implements JsonSerializable, Stringable
      * @see \Cake\I18n\Date::i18nFormat()
      * @param \Closure|string|int $format Format.
      */
-    public static function setJsonEncodeFormat(Closure|string|int $format): void
+    public static function set_json_encode_format(Closure|string|int $format): void
     {
-        static::$_jsonEncodeFormat = $format;
+        static::$_json_encode_format = $format;
     }
-
     /**
      * Returns a new Date object after parsing the provided $date string based on
      * the passed or configured format. This method is locale dependent,
@@ -157,37 +137,31 @@ class Date extends ChronosDate implements JsonSerializable, Stringable
      * @param string $date The date string to parse.
      * @param string|int|null $format Any format accepted by IntlDateFormatter.
      */
-    public static function parseDate(string $date, string|int|null $format = null): ?static
+    public static function parse_date(string $date, string|int|null $format = null): ?static
     {
-        $format ??= static::$wordFormat;
+        $format ??= static::$word_format;
         if (is_int($format)) {
-            $format = [$format, IntlDateFormatter::NONE];
+            $format = [$format, Intl_Date_Formatter::NONE];
         }
-
-        return static::_parseDateTime($date, $format);
+        return static::_parse_date_time($date, $format);
     }
-
     /**
      * Get the difference formatter instance.
      *
      * @param \Cake\Chronos\DifferenceFormatterInterface|null $formatter Difference formatter
      */
-    public static function diffFormatter(?DifferenceFormatterInterface $formatter = null): RelativeTimeFormatter
+    public static function diff_formatter(?Difference_Formatter_Interface $formatter = null): Relative_Time_Formatter
     {
         if ($formatter) {
-            if (!$formatter instanceof RelativeTimeFormatter) {
+            if (!$formatter instanceof Relative_Time_Formatter) {
                 throw new InvalidArgumentException('Formatter for I18n must extend RelativeTimeFormatter.');
             }
-
-            return static::$diffFormatter = $formatter;
+            return static::$diff_formatter = $formatter;
         }
-
         /** @var \Cake\I18n\RelativeTimeFormatter $formatter */
-        $formatter = static::$diffFormatter ??= new RelativeTimeFormatter();
-
+        $formatter = static::$diff_formatter ??= new Relative_Time_Formatter();
         return $formatter;
     }
-
     /**
      * Returns a formatted string for this time object using the preferred format and
      * language for the specified locale.
@@ -229,21 +203,16 @@ class Date extends ChronosDate implements JsonSerializable, Stringable
      * @param string|null $locale The locale name in which the date should be displayed (e.g. pt-BR)
      * @return string|int Formatted and translated date string
      */
-    public function i18nFormat(
-        string|int|null $format = null,
-        ?string $locale = null,
-    ): string|int {
+    public function i18n_format(string|int|null $format = null, ?string $locale = null): string|int
+    {
         if ($format === DateTime::UNIX_TIMESTAMP_FORMAT) {
             throw new InvalidArgumentException('UNIT_TIMESTAMP_FORMAT is not supported for Date.');
         }
-
-        $format ??= static::$_toStringFormat;
-        $format = is_int($format) ? [$format, IntlDateFormatter::NONE] : $format;
-        $locale = $locale ?: DateTime::getDefaultLocale();
-
-        return $this->_formatObject($this->native, $format, $locale);
+        $format ??= static::$_to_string_format;
+        $format = is_int($format) ? [$format, Intl_Date_Formatter::NONE] : $format;
+        $locale = $locale ?: DateTime::get_default_locale();
+        return $this->_format_object($this->native, $format, $locale);
     }
-
     /**
      * Returns a nicely formatted date string for this object.
      *
@@ -254,9 +223,8 @@ class Date extends ChronosDate implements JsonSerializable, Stringable
      */
     public function nice(?string $locale = null): string
     {
-        return (string)$this->i18nFormat(static::$niceFormat, $locale);
+        return (string) $this->i18n_format(static::$nice_format, $locale);
     }
-
     /**
      * Returns either a relative or a formatted absolute date depending
      * on the difference between the current date and this object.
@@ -291,11 +259,10 @@ class Date extends ChronosDate implements JsonSerializable, Stringable
      * @param array<string, mixed> $options Array of options.
      * @return string Relative time string.
      */
-    public function timeAgoInWords(array $options = []): string
+    public function time_ago_in_words(array $options = []): string
     {
-        return static::diffFormatter()->dateAgoInWords($this, $options);
+        return static::diff_formatter()->date_ago_in_words($this, $options);
     }
-
     /**
      * Returns a string that should be serialized when converting this object to JSON
      *
@@ -303,32 +270,28 @@ class Date extends ChronosDate implements JsonSerializable, Stringable
      */
     public function jsonSerialize(): mixed
     {
-        if (static::$_jsonEncodeFormat instanceof Closure) {
-            return call_user_func(static::$_jsonEncodeFormat, $this);
+        if (static::$_json_encode_format instanceof Closure) {
+            return call_user_func(static::$_json_encode_format, $this);
         }
-
-        return $this->i18nFormat(static::$_jsonEncodeFormat);
+        return $this->i18n_format(static::$_json_encode_format);
     }
-
     /**
      * Returns a UNIX timestamp as an integer.
      *
      * @return int UNIX timestamp
      */
-    public function getTimestamp(): int
+    public function get_timestamp(): int
     {
-        return (int)$this->toUnixString();
+        return (int) $this->to_unix_string();
     }
-
     /**
      * @inheritDoc
      */
     public function __toString(): string
     {
-        return (string)$this->i18nFormat();
+        return (string) $this->i18n_format();
     }
 }
-
 // phpcs:disable
 class_alias(\Cake\I18n\Date::class, 'Cake\I18n\FrozenDate');
 // phpcs:enable

@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -17,11 +16,9 @@ declare(strict_types=1);
  * @since         5.3.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Database\Schema;
 
 use RuntimeException;
-
 /**
  * Index value object
  *
@@ -34,12 +31,10 @@ class Index
      * @var string
      */
     public const INDEX = 'index';
-
     /**
      * @var string
      */
     public const FULLTEXT = 'fulltext';
-
     /**
      * Constructor
      *
@@ -51,82 +46,65 @@ class Index
      * @param array<string>|null $include The included columns for covering indexes.
      * @param ?string $where The where clause for partial indexes.
      */
-    public function __construct(
-        protected string $name,
-        protected array $columns,
-        protected string $type = self::INDEX,
-        protected array|int|null $length = null,
-        protected ?array $order = null,
-        protected ?array $include = null,
-        protected ?string $where = null,
-    ) {
+    public function __construct(protected string $name, protected array $columns, protected string $type = self::INDEX, protected array|int|null $length = null, protected ?array $order = null, protected ?array $include = null, protected ?string $where = null)
+    {
     }
-
     /**
      * Sets the index columns.
      *
      * @param array<string>|string $columns Columns
      * @return $this
      */
-    public function setColumns(string|array $columns): static
+    public function set_columns(string|array $columns): static
     {
-        $this->columns = (array)$columns;
-
+        $this->columns = (array) $columns;
         return $this;
     }
-
     /**
      * Gets the index columns.
      *
      * @return ?array<string>
      */
-    public function getColumns(): ?array
+    public function get_columns(): ?array
     {
         return $this->columns;
     }
-
     /**
      * Sets the index type.
      *
      * @param string $type Type
      * @return $this
      */
-    public function setType(string $type): static
+    public function set_type(string $type): static
     {
         $this->type = $type;
-
         return $this;
     }
-
     /**
      * Gets the index type.
      */
-    public function getType(): string
+    public function get_type(): string
     {
         return $this->type;
     }
-
     /**
      * Sets the index name.
      *
      * @param string $name Name
      * @return $this
      */
-    public function setName(string $name): static
+    public function set_name(string $name): static
     {
         $this->name = $name;
-
         return $this;
     }
-
     /**
      * Gets the index name.
      */
-    public function getName(): ?string
+    public function get_name(): ?string
     {
         return $this->name;
     }
-
     /**
      * Sets the index length.
      *
@@ -136,13 +114,11 @@ class Index
      * @param array<string, int>|int $length length value or array of length value
      * @return $this
      */
-    public function setLength(int|array $length): static
+    public function set_length(int|array $length): static
     {
         $this->length = $length;
-
         return $this;
     }
-
     /**
      * Gets the index length.
      *
@@ -150,34 +126,30 @@ class Index
      *
      * @return array<string, int>|int|null
      */
-    public function getLength(): array|int|null
+    public function get_length(): array|int|null
     {
         return $this->length;
     }
-
     /**
      * Sets the index columns sort order.
      *
      * @param array<string> $order column name sort order key value pair
      * @return $this
      */
-    public function setOrder(array $order): static
+    public function set_order(array $order): static
     {
         $this->order = $order;
-
         return $this;
     }
-
     /**
      * Gets the index columns sort order.
      *
      * @return ?array<string>
      */
-    public function getOrder(): ?array
+    public function get_order(): ?array
     {
         return $this->order;
     }
-
     /**
      * Sets the index included columns for a 'covering index'.
      *
@@ -189,44 +161,38 @@ class Index
      * @param array<string> $includedColumns Columns
      * @return $this
      */
-    public function setInclude(array $includedColumns): static
+    public function set_include(array $included_columns): static
     {
-        $this->include = $includedColumns;
-
+        $this->include = $included_columns;
         return $this;
     }
-
     /**
      * Gets the index included columns.
      *
      * @return ?array<string>
      */
-    public function getInclude(): ?array
+    public function get_include(): ?array
     {
         return $this->include;
     }
-
     /**
      * Set the where clause for partial indexes.
      *
      * @param ?string $where The where clause for partial indexes.
      * @return $this
      */
-    public function setWhere(?string $where): static
+    public function set_where(?string $where): static
     {
         $this->where = $where;
-
         return $this;
     }
-
     /**
      * Get the where clause for partial indexes.
      */
-    public function getWhere(): ?string
+    public function get_where(): ?string
     {
         return $this->where;
     }
-
     /**
      * Utility method that maps an array of index options to this object's methods.
      *
@@ -234,36 +200,26 @@ class Index
      * @throws \RuntimeException
      * @return $this
      */
-    public function setAttributes(array $attributes): static
+    public function set_attributes(array $attributes): static
     {
         // Valid Options
-        $validOptions = ['columns', 'type', 'name', 'length', 'order', 'include', 'where'];
+        $valid_options = ['columns', 'type', 'name', 'length', 'order', 'include', 'where'];
         foreach ($attributes as $attr => $value) {
-            if (!in_array($attr, $validOptions, true)) {
+            if (!in_array($attr, $valid_options, true)) {
                 throw new RuntimeException(sprintf('"%s" is not a valid index option.', $attr));
             }
             $method = 'set' . ucfirst($attr);
-            $this->$method($value);
+            $this->{$method}($value);
         }
-
         return $this;
     }
-
     /**
      * Convert an index into an array that is compatible with the Index constructor.
      *
      * @return array<string, mixed>
      */
-    public function toArray(): array
+    public function to_array(): array
     {
-        return [
-            'name' => $this->getName(),
-            'columns' => $this->getColumns(),
-            'type' => $this->getType(),
-            'length' => $this->getLength(),
-            'order' => $this->getOrder(),
-            'include' => $this->getInclude(),
-            'where' => $this->getWhere(),
-        ];
+        return ['name' => $this->get_name(), 'columns' => $this->get_columns(), 'type' => $this->get_type(), 'length' => $this->get_length(), 'order' => $this->get_order(), 'include' => $this->get_include(), 'where' => $this->get_where()];
     }
 }

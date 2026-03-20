@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,12 +14,10 @@ declare(strict_types=1);
  * @since         3.9.0
  * @license       https://www.opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Datasource\Paging;
 
-use Cake\Datasource\QueryInterface;
-use Cake\Datasource\ResultSetInterface;
-
+use Cake\Datasource\Query_Interface;
+use Cake\Datasource\Result_Set_Interface;
 /**
  * Simplified paginator which avoids potentially expensive queries
  * to get the total count of records.
@@ -28,7 +25,7 @@ use Cake\Datasource\ResultSetInterface;
  * When using a simple paginator you will not be able to generate page numbers.
  * Instead use only the prev/next pagination controls.
  */
-class SimplePaginator extends NumericPaginator
+class Simple_Paginator extends Numeric_Paginator
 {
     /**
      * Get paginated items.
@@ -39,29 +36,24 @@ class SimplePaginator extends NumericPaginator
      * @param array $data Paging data.
      * @return \Cake\Datasource\ResultSetInterface<int, mixed>
      */
-    protected function getItems(QueryInterface $query, array $data): ResultSetInterface
+    protected function get_items(Query_Interface $query, array $data): Result_Set_Interface
     {
         return $query->limit($data['options']['limit'] + 1)->all();
     }
-
     /**
      * @inheritDoc
      */
-    protected function buildParams(array $data): array
+    protected function build_params(array $data): array
     {
-        $hasNextPage = false;
-        if ($this->pagingParams['count'] > $data['options']['limit']) {
-            $hasNextPage = true;
-            $this->pagingParams['count'] -= 1;
+        $has_next_page = false;
+        if ($this->paging_params['count'] > $data['options']['limit']) {
+            $has_next_page = true;
+            $this->paging_params['count'] -= 1;
         }
-
-        parent::buildParams($data);
-
-        $this->pagingParams['hasNextPage'] = $hasNextPage;
-
-        return $this->pagingParams;
+        parent::build_params($data);
+        $this->paging_params['hasNextPage'] = $has_next_page;
+        return $this->paging_params;
     }
-
     /**
      * Build paginated result set.
      *
@@ -71,22 +63,20 @@ class SimplePaginator extends NumericPaginator
      * @param \Cake\Datasource\ResultSetInterface<int, mixed> $items
      * @return \Cake\Datasource\Paging\PaginatedInterface<int, mixed>
      */
-    protected function buildPaginated(ResultSetInterface $items, array $pagingParams): PaginatedInterface
+    protected function build_paginated(Result_Set_Interface $items, array $paging_params): Paginated_Interface
     {
-        if (count($items) > $this->pagingParams['perPage']) {
-            $items = $items->take($this->pagingParams['perPage']);
+        if (count($items) > $this->paging_params['perPage']) {
+            $items = $items->take($this->paging_params['perPage']);
         }
-
-        return new PaginatedResultSet($items, $pagingParams);
+        return new Paginated_Result_Set($items, $paging_params);
     }
-
     /**
      * Simple pagination does not perform any count query, so this method returns `null`.
      *
      * @param \Cake\Datasource\QueryInterface $query Query instance.
      * @param array $data Pagination data.
      */
-    protected function getCount(QueryInterface $query, array $data): ?int
+    protected function get_count(Query_Interface $query, array $data): ?int
     {
         return null;
     }

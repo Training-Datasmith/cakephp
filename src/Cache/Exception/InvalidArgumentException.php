@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,15 +14,13 @@ declare(strict_types=1);
  * @since         3.7.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Cache\Exception;
 
-use Cake\Core\Exception\CakeException;
-use Psr\SimpleCache\InvalidArgumentException as InvalidArgumentInterface;
-
+use Cake\Core\Exception\Cake_Exception;
+use Psr\Simple_Cache\InvalidArgumentException as InvalidArgumentInterface;
 /**
  * Exception raised when cache keys are invalid.
  */
-class InvalidArgumentException extends CakeException implements InvalidArgumentInterface
+class InvalidArgumentException extends Cake_Exception implements Invalid_Argument_Interface
 {
 }

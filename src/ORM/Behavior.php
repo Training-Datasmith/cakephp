@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,15 +14,13 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\ORM;
 
-use Cake\Core\Exception\CakeException;
-use Cake\Core\InstanceConfigTrait;
-use Cake\Event\EventListenerInterface;
+use Cake\Core\Exception\Cake_Exception;
+use Cake\Core\Instance_Config_Trait;
+use Cake\Event\Event_Listener_Interface;
 use ReflectionClass;
 use ReflectionMethod;
-
 /**
  * Base class for behaviors.
  *
@@ -114,10 +111,9 @@ use ReflectionMethod;
  * @see \Cake\ORM\Table::addBehavior()
  * @see \Cake\Event\EventManager
  */
-class Behavior implements EventListenerInterface
+class Behavior implements Event_Listener_Interface
 {
-    use InstanceConfigTrait;
-
+    use Instance_Config_Trait;
     /**
      * Reflection method cache for behaviors.
      *
@@ -126,8 +122,7 @@ class Behavior implements EventListenerInterface
      *
      * @var array<string, array>
      */
-    protected static array $_reflectionCache = [];
-
+    protected static array $_reflection_cache = [];
     /**
      * Default configuration
      *
@@ -135,8 +130,7 @@ class Behavior implements EventListenerInterface
      *
      * @var array<string, mixed>
      */
-    protected array $_defaultConfig = [];
-
+    protected array $_default_config = [];
     /**
      * Constructor
      *
@@ -145,26 +139,19 @@ class Behavior implements EventListenerInterface
      * @param \Cake\ORM\Table $_table The table this behavior is attached to.
      * @param array<string, mixed> $config The config for this behavior.
      */
-    public function __construct(/**
-     * Table instance.
-     */
+    public function __construct(
+        /**
+         * Table instance.
+         */
         protected Table $_table,
         array $config = []
-    ) {
-        $config = $this->_resolveMethodAliases(
-            'implementedFinders',
-            $this->_defaultConfig,
-            $config,
-        );
-        $config = $this->_resolveMethodAliases(
-            'implementedMethods',
-            $this->_defaultConfig,
-            $config,
-        );
-        $this->setConfig($config);
+    )
+    {
+        $config = $this->_resolve_method_aliases('implementedFinders', $this->_default_config, $config);
+        $config = $this->_resolve_method_aliases('implementedMethods', $this->_default_config, $config);
+        $this->set_config($config);
         $this->initialize($config);
     }
-
     /**
      * Constructor hook method.
      *
@@ -176,7 +163,6 @@ class Behavior implements EventListenerInterface
     public function initialize(array $config): void
     {
     }
-
     /**
      * Get the table instance this behavior is bound to.
      *
@@ -186,7 +172,6 @@ class Behavior implements EventListenerInterface
     {
         return $this->_table;
     }
-
     /**
      * Removes aliased methods that would otherwise be duplicated by userland configuration.
      *
@@ -195,29 +180,25 @@ class Behavior implements EventListenerInterface
      * @param array<string, mixed> $config The customized method mappings.
      * @return array A de-duped list of config data.
      */
-    protected function _resolveMethodAliases(string $key, array $defaults, array $config): array
+    protected function _resolve_method_aliases(string $key, array $defaults, array $config): array
     {
         if (!isset($defaults[$key], $config[$key])) {
             return $config;
         }
         if ($config[$key] === []) {
-            $this->setConfig($key, [], false);
+            $this->set_config($key, [], false);
             unset($config[$key]);
-
             return $config;
         }
-
         $indexed = array_flip($defaults[$key]);
-        $indexedCustom = array_flip($config[$key]);
+        $indexed_custom = array_flip($config[$key]);
         foreach ($indexed as $method => $alias) {
-            $indexedCustom[$method] ??= $alias;
+            $indexed_custom[$method] ??= $alias;
         }
-        $this->setConfig($key, array_flip($indexedCustom), false);
+        $this->set_config($key, array_flip($indexed_custom), false);
         unset($config[$key]);
-
         return $config;
     }
-
     /**
      * verifyConfig
      *
@@ -225,26 +206,20 @@ class Behavior implements EventListenerInterface
      *
      * @throws \Cake\Core\Exception\CakeException if config are invalid
      */
-    public function verifyConfig(): void
+    public function verify_config(): void
     {
         $keys = ['implementedFinders', 'implementedMethods'];
         foreach ($keys as $key) {
             if (!isset($this->_config[$key])) {
                 continue;
             }
-
             foreach ($this->_config[$key] as $method) {
                 if (!is_callable([$this, $method])) {
-                    throw new CakeException(sprintf(
-                        'The method `%s` is not callable on class `%s`.',
-                        $method,
-                        static::class,
-                    ));
+                    throw new Cake_Exception(sprintf('The method `%s` is not callable on class `%s`.', $method, static::class));
                 }
             }
         }
     }
-
     /**
      * Gets the Model callbacks this behavior is interested in.
      *
@@ -256,44 +231,24 @@ class Behavior implements EventListenerInterface
      *
      * @return array<string, mixed>
      */
-    public function implementedEvents(): array
+    public function implemented_events(): array
     {
-        $eventMap = [
-            'Model.beforeMarshal' => 'beforeMarshal',
-            'Model.afterMarshal' => 'afterMarshal',
-            'Model.beforeFind' => 'beforeFind',
-            'Model.beforeSave' => 'beforeSave',
-            'Model.afterSave' => 'afterSave',
-            'Model.afterSaveCommit' => 'afterSaveCommit',
-            'Model.beforeDelete' => 'beforeDelete',
-            'Model.afterDelete' => 'afterDelete',
-            'Model.afterDeleteCommit' => 'afterDeleteCommit',
-            'Model.buildValidator' => 'buildValidator',
-            'Model.buildRules' => 'buildRules',
-            'Model.beforeRules' => 'beforeRules',
-            'Model.afterRules' => 'afterRules',
-        ];
-        $config = $this->getConfig();
+        $event_map = ['Model.beforeMarshal' => 'beforeMarshal', 'Model.afterMarshal' => 'afterMarshal', 'Model.beforeFind' => 'beforeFind', 'Model.beforeSave' => 'beforeSave', 'Model.afterSave' => 'afterSave', 'Model.afterSaveCommit' => 'afterSaveCommit', 'Model.beforeDelete' => 'beforeDelete', 'Model.afterDelete' => 'afterDelete', 'Model.afterDeleteCommit' => 'afterDeleteCommit', 'Model.buildValidator' => 'buildValidator', 'Model.buildRules' => 'buildRules', 'Model.beforeRules' => 'beforeRules', 'Model.afterRules' => 'afterRules'];
+        $config = $this->get_config();
         $priority = $config['priority'] ?? null;
         $events = [];
-
-        foreach ($eventMap as $event => $method) {
+        foreach ($event_map as $event => $method) {
             if (!method_exists($this, $method)) {
                 continue;
             }
             if ($priority === null) {
                 $events[$event] = $method;
             } else {
-                $events[$event] = [
-                    'callable' => $method,
-                    'priority' => $priority,
-                ];
+                $events[$event] = ['callable' => $method, 'priority' => $priority];
             }
         }
-
         return $events;
     }
-
     /**
      * implementedFinders
      *
@@ -315,16 +270,14 @@ class Behavior implements EventListenerInterface
      *
      * @throws \ReflectionException
      */
-    public function implementedFinders(): array
+    public function implemented_finders(): array
     {
-        $methods = $this->getConfig('implementedFinders');
+        $methods = $this->get_config('implementedFinders');
         if ($methods !== null) {
             return $methods;
         }
-
-        return $this->_reflectionCache()['finders'];
+        return $this->_reflection_cache()['finders'];
     }
-
     /**
      * implementedMethods
      *
@@ -347,16 +300,14 @@ class Behavior implements EventListenerInterface
      * @throws \ReflectionException
      * @deprecated 5.3.0 Calling behavior methods on the table instance is deprecated.
      */
-    public function implementedMethods(): array
+    public function implemented_methods(): array
     {
-        $methods = $this->getConfig('implementedMethods');
+        $methods = $this->get_config('implementedMethods');
         if ($methods !== null) {
             return $methods;
         }
-
-        return $this->_reflectionCache()['methods'];
+        return $this->_reflection_cache()['methods'];
     }
-
     /**
      * Gets the methods implemented by this behavior
      *
@@ -366,55 +317,45 @@ class Behavior implements EventListenerInterface
      *
      * @throws \ReflectionException
      */
-    protected function _reflectionCache(): array
+    protected function _reflection_cache(): array
     {
         $class = static::class;
-        if (isset(self::$_reflectionCache[$class])) {
-            return self::$_reflectionCache[$class];
+        if (isset(self::$_reflection_cache[$class])) {
+            return self::$_reflection_cache[$class];
         }
-
-        $events = $this->implementedEvents();
-        $eventMethods = [];
+        $events = $this->implemented_events();
+        $event_methods = [];
         foreach ($events as $binding) {
             if (is_array($binding) && isset($binding['callable'])) {
                 $callable = $binding['callable'];
                 assert(is_string($callable));
                 $binding = $callable;
             }
-            $eventMethods[$binding] = true;
+            $event_methods[$binding] = true;
         }
-
-        $baseClass = self::class;
-        if (isset(self::$_reflectionCache[$baseClass])) {
-            $baseMethods = self::$_reflectionCache[$baseClass];
+        $base_class = self::class;
+        if (isset(self::$_reflection_cache[$base_class])) {
+            $base_methods = self::$_reflection_cache[$base_class];
         } else {
-            $baseMethods = get_class_methods($baseClass);
-            self::$_reflectionCache[$baseClass] = $baseMethods;
+            $base_methods = get_class_methods($base_class);
+            self::$_reflection_cache[$base_class] = $base_methods;
         }
-
-        $return = [
-            'finders' => [],
-            'methods' => [],
-        ];
-
+        $return = ['finders' => [], 'methods' => []];
         $reflection = new ReflectionClass($class);
-
-        foreach ($reflection->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
-            $methodName = $method->getName();
-            if (in_array($methodName, $baseMethods, true)) {
+        foreach ($reflection->get_methods(ReflectionMethod::IS_PUBLIC) as $method) {
+            $method_name = $method->get_name();
+            if (in_array($method_name, $base_methods, true)) {
                 continue;
             }
-            if (isset($eventMethods[$methodName])) {
+            if (isset($event_methods[$method_name])) {
                 continue;
             }
-
-            if (str_starts_with($methodName, 'find')) {
-                $return['finders'][lcfirst(substr($methodName, 4))] = $methodName;
+            if (str_starts_with($method_name, 'find')) {
+                $return['finders'][lcfirst(substr($method_name, 4))] = $method_name;
             } else {
-                $return['methods'][$methodName] = $methodName;
+                $return['methods'][$method_name] = $method_name;
             }
         }
-
-        return self::$_reflectionCache[$class] = $return;
+        return self::$_reflection_cache[$class] = $return;
     }
 }

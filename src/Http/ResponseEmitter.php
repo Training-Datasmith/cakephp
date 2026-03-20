@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -19,18 +18,16 @@ declare(strict_types=1);
  * @copyright Copyright (c) 2015-2016 Zend Technologies USA Inc. (https://www.zend.com/)
  * @license   https://github.com/zendframework/zend-diactoros/blob/master/LICENSE.md New BSD License
  */
-
 namespace Cake\Http;
 
 use Cake\Http\Cookie\Cookie;
-use Cake\Http\Cookie\CookieInterface;
-use Laminas\Diactoros\RelativeStream;
-use Psr\Http\Message\ResponseInterface;
-
+use Cake\Http\Cookie\Cookie_Interface;
+use Laminas\Diactoros\Relative_Stream;
+use Psr\Http\Message\Response_Interface;
 /**
  * Emits a Response to the PHP Server API.
  */
-class ResponseEmitter
+class Response_Emitter
 {
     /**
      * Constructor
@@ -41,10 +38,10 @@ class ResponseEmitter
         /**
          * Maximum output buffering size for each iteration.
          */
-        protected int $maxBufferLength = 8192
-    ) {
+        protected int $max_buffer_length = 8192
+    )
+    {
     }
-
     /**
      * Emit a response.
      *
@@ -53,7 +50,7 @@ class ResponseEmitter
      *
      * @param \Psr\Http\Message\ResponseInterface $response The response to emit.
      */
-    public function emit(ResponseInterface $response): bool
+    public function emit(Response_Interface $response): bool
     {
         $file = '';
         $line = 0;
@@ -61,83 +58,68 @@ class ResponseEmitter
             $message = "Unable to emit headers. Headers sent in file={$file} line={$line}";
             trigger_error($message, E_USER_WARNING);
         }
-
-        $this->emitStatusLine($response);
-        $this->emitHeaders($response);
-
-        $range = $this->parseContentRange($response->getHeaderLine('Content-Range'));
+        $this->emit_status_line($response);
+        $this->emit_headers($response);
+        $range = $this->parse_content_range($response->get_header_line('Content-Range'));
         if (is_array($range)) {
-            $this->emitBodyRange($range, $response);
+            $this->emit_body_range($range, $response);
         } else {
-            $this->emitBody($response);
+            $this->emit_body($response);
         }
-
         if (function_exists('fastcgi_finish_request')) {
             fastcgi_finish_request();
         }
-
         return true;
     }
-
     /**
      * Emit the message body.
      *
      * @param \Psr\Http\Message\ResponseInterface $response The response to emit
      */
-    protected function emitBody(ResponseInterface $response): void
+    protected function emit_body(Response_Interface $response): void
     {
-        if (in_array($response->getStatusCode(), [204, 304], true)) {
+        if (in_array($response->get_status_code(), [204, 304], true)) {
             return;
         }
-        $body = $response->getBody();
-
-        if (!$body->isSeekable()) {
+        $body = $response->get_body();
+        if (!$body->is_seekable()) {
             echo $body;
-
             return;
         }
-
         $body->rewind();
         while (!$body->eof()) {
-            echo $body->read($this->maxBufferLength);
+            echo $body->read($this->max_buffer_length);
         }
     }
-
     /**
      * Emit a range of the message body.
      *
      * @param array $range The range data to emit
      * @param \Psr\Http\Message\ResponseInterface $response The response to emit
      */
-    protected function emitBodyRange(array $range, ResponseInterface $response): void
+    protected function emit_body_range(array $range, Response_Interface $response): void
     {
         [, $first, $last] = $range;
-
-        $body = $response->getBody();
-
-        if (!$body->isSeekable()) {
-            $contents = $body->getContents();
+        $body = $response->get_body();
+        if (!$body->is_seekable()) {
+            $contents = $body->get_contents();
             echo substr($contents, $first, $last - $first + 1);
-
             return;
         }
-
-        $body = new RelativeStream($body, $first);
+        $body = new Relative_Stream($body, $first);
         $body->rewind();
         $pos = 0;
         /** @var int $length */
         $length = $last - $first + 1;
         while (!$body->eof() && $pos < $length) {
-            if ($pos + $this->maxBufferLength > $length) {
+            if ($pos + $this->max_buffer_length > $length) {
                 echo $body->read($length - $pos);
                 break;
             }
-
-            echo $body->read($this->maxBufferLength);
+            echo $body->read($this->max_buffer_length);
             $pos = $body->tell();
         }
     }
-
     /**
      * Emit the status line.
      *
@@ -146,17 +128,11 @@ class ResponseEmitter
      *
      * @param \Psr\Http\Message\ResponseInterface $response The response to emit
      */
-    protected function emitStatusLine(ResponseInterface $response): void
+    protected function emit_status_line(Response_Interface $response): void
     {
-        $reasonPhrase = $response->getReasonPhrase();
-        header(sprintf(
-            'HTTP/%s %d%s',
-            $response->getProtocolVersion(),
-            $response->getStatusCode(),
-            ($reasonPhrase ? ' ' . $reasonPhrase : ''),
-        ));
+        $reason_phrase = $response->get_reason_phrase();
+        header(sprintf('HTTP/%s %d%s', $response->get_protocol_version(), $response->get_status_code(), $reason_phrase ? ' ' . $reason_phrase : ''));
     }
-
     /**
      * Emit response headers.
      *
@@ -167,58 +143,48 @@ class ResponseEmitter
      *
      * @param \Psr\Http\Message\ResponseInterface $response The response to emit
      */
-    protected function emitHeaders(ResponseInterface $response): void
+    protected function emit_headers(Response_Interface $response): void
     {
         $cookies = [];
         if ($response instanceof Response) {
-            $cookies = iterator_to_array($response->getCookieCollection());
+            $cookies = iterator_to_array($response->get_cookie_collection());
         }
-
-        foreach ($response->getHeaders() as $name => $values) {
+        foreach ($response->get_headers() as $name => $values) {
             if (strtolower($name) === 'set-cookie') {
                 $cookies = array_merge($cookies, $values);
                 continue;
             }
             $first = true;
             foreach ($values as $value) {
-                header(sprintf(
-                    '%s: %s',
-                    $name,
-                    $value,
-                ), $first);
+                header(sprintf('%s: %s', $name, $value), $first);
                 $first = false;
             }
         }
-
-        $this->emitCookies($cookies);
+        $this->emit_cookies($cookies);
     }
-
     /**
      * Emit cookies using setcookie()
      *
      * @param array<\Cake\Http\Cookie\CookieInterface|string> $cookies An array of cookies.
      */
-    protected function emitCookies(array $cookies): void
+    protected function emit_cookies(array $cookies): void
     {
         foreach ($cookies as $cookie) {
-            $this->setCookie($cookie);
+            $this->set_cookie($cookie);
         }
     }
-
     /**
      * Helper methods to set cookie.
      *
      * @param \Cake\Http\Cookie\CookieInterface|string $cookie Cookie.
      */
-    protected function setCookie(CookieInterface|string $cookie): bool
+    protected function set_cookie(Cookie_Interface|string $cookie): bool
     {
         if (is_string($cookie)) {
-            $cookie = Cookie::createFromHeaderString($cookie, ['path' => '']);
+            $cookie = Cookie::create_from_header_string($cookie, ['path' => '']);
         }
-
-        return setcookie($cookie->getName(), $cookie->getScalarValue(), $cookie->getOptions());
+        return setcookie($cookie->get_name(), $cookie->get_scalar_value(), $cookie->get_options());
     }
-
     /**
      * Parse content-range header
      * https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.16
@@ -227,17 +193,11 @@ class ResponseEmitter
      * @return array|false [unit, first, last, length]; returns false if no
      *     content range or an invalid content range is provided
      */
-    protected function parseContentRange(string $header): array|false
+    protected function parse_content_range(string $header): array|false
     {
         if (preg_match('/(?P<unit>[\w]+)\s+(?P<first>\d+)-(?P<last>\d+)\/(?P<length>\d+|\*)/', $header, $matches)) {
-            return [
-                $matches['unit'],
-                (int)$matches['first'],
-                (int)$matches['last'],
-                $matches['length'] === '*' ? '*' : (int)$matches['length'],
-            ];
+            return [$matches['unit'], (int) $matches['first'], (int) $matches['last'], $matches['length'] === '*' ? '*' : (int) $matches['length']];
         }
-
         return false;
     }
 }

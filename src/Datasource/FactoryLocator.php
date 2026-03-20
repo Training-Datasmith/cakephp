@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,35 +14,31 @@ declare(strict_types=1);
  * @since         3.3.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Datasource;
 
-use Cake\Datasource\Locator\LocatorInterface;
+use Cake\Datasource\Locator\Locator_Interface;
 use InvalidArgumentException;
-
 /**
  * Class FactoryLocator
  */
-class FactoryLocator
+class Factory_Locator
 {
     /**
      * A list of model factory functions.
      *
      * @var array<string, \Cake\Datasource\Locator\LocatorInterface<\Cake\Datasource\RepositoryInterface>>
      */
-    protected static array $_modelFactories = [];
-
+    protected static array $_model_factories = [];
     /**
      * Register a locator to return repositories of a given type.
      *
      * @param string $type The name of the repository type the factory function is for.
      * @param \Cake\Datasource\Locator\LocatorInterface<\Cake\Datasource\RepositoryInterface> $factory The factory function used to create instances.
      */
-    public static function add(string $type, LocatorInterface $factory): void
+    public static function add(string $type, Locator_Interface $factory): void
     {
-        static::$_modelFactories[$type] = $factory;
+        static::$_model_factories[$type] = $factory;
     }
-
     /**
      * Drop a model factory.
      *
@@ -51,9 +46,8 @@ class FactoryLocator
      */
     public static function drop(string $type): void
     {
-        unset(static::$_modelFactories[$type]);
+        unset(static::$_model_factories[$type]);
     }
-
     /**
      * Get the factory for the specified repository type.
      *
@@ -61,15 +55,11 @@ class FactoryLocator
      * @throws \InvalidArgumentException If the specified repository type has no factory.
      * @return \Cake\Datasource\Locator\LocatorInterface<\Cake\Datasource\RepositoryInterface> The factory for the repository type.
      */
-    public static function get(string $type): LocatorInterface
+    public static function get(string $type): Locator_Interface
     {
-        if (isset(static::$_modelFactories[$type])) {
-            return static::$_modelFactories[$type];
+        if (isset(static::$_model_factories[$type])) {
+            return static::$_model_factories[$type];
         }
-
-        throw new InvalidArgumentException(sprintf(
-            'Unknown repository type `%s`. Make sure you register a type before trying to use it.',
-            $type,
-        ));
+        throw new InvalidArgumentException(sprintf('Unknown repository type `%s`. Make sure you register a type before trying to use it.', $type));
     }
 }

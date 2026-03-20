@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,26 +14,22 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Datasource;
 
 use Cake\Collection\Collection;
-
-use function Cake\Core\deprecationWarning;
-
-use Cake\Datasource\Exception\MissingPropertyException;
+use function Cake\Core\Deprecation_Warning;
+use Cake\Datasource\Exception\Missing_Property_Exception;
 use Cake\ORM\Entity;
 use Cake\Utility\Hash;
 use Cake\Utility\Inflector;
 use InvalidArgumentException;
-
 /**
  * An entity represents a single result row from a repository. It exposes the
  * methods for retrieving and storing fields associated in this row.
  *
  * @require-implements \Cake\Datasource\EntityInterface
  */
-trait EntityTrait
+trait Entity_Trait
 {
     /**
      * Holds all fields and their values for this entity.
@@ -42,21 +37,18 @@ trait EntityTrait
      * @var array<string, mixed>
      */
     protected array $_fields = [];
-
     /**
      * Holds all fields that have been changed and their original values for this entity.
      *
      * @var array<string, mixed>
      */
     protected array $_original = [];
-
     /**
      * Holds all fields that have been initially set on instantiation, or after marking as clean
      *
      * @var array<string>
      */
-    protected array $_originalFields = [];
-
+    protected array $_original_fields = [];
     /**
      * List of field names that should **not** be included in JSON or Array
      * representations of this Entity.
@@ -64,7 +56,6 @@ trait EntityTrait
      * @var array<string>
      */
     protected array $_hidden = [];
-
     /**
      * List of computed or virtual fields that **should** be included in JSON or array
      * representations of this Entity. If a field is present in both _hidden and _virtual
@@ -73,7 +64,6 @@ trait EntityTrait
      * @var array<string>
      */
     protected array $_virtual = [];
-
     /**
      * Holds a list of the fields that were modified or added after this object
      * was originally created.
@@ -81,35 +71,30 @@ trait EntityTrait
      * @var array<string, bool>
      */
     protected array $_dirty = [];
-
     /**
      * Holds a cached list of getters/setters per class
      *
      * @var array<string, array<string, array<string, string>>>
      */
     protected static array $_accessors = [];
-
     /**
      * Indicates whether this entity is yet to be persisted.
      * Entities default to assuming they are new. You can use Table::persisted()
      * to set the new flag on an entity based on records in the database.
      */
     protected bool $_new = true;
-
     /**
      * List of errors per field as stored in this object.
      *
      * @var array<string, mixed>
      */
     protected array $_errors = [];
-
     /**
      * List of invalid fields and their data for errors upon validation/patching.
      *
      * @var array<string, mixed>
      */
     protected array $_invalid = [];
-
     /**
      * Map of fields in this entity that can be safely mass assigned, each
      * field name points to a boolean indicating its status. An empty array
@@ -123,24 +108,20 @@ trait EntityTrait
      * @var array<string, bool>
      */
     protected array $_accessible = ['*' => true];
-
     /**
      * The alias of the repository this entity came from
      */
-    protected string $_registryAlias = '';
-
+    protected string $_registry_alias = '';
     /**
      * Storing the current visitation status while recursing through entities getting errors.
      */
-    protected bool $_hasBeenVisited = false;
-
+    protected bool $_has_been_visited = false;
     /**
      * Whether the presence of a field is checked when accessing a property.
      *
      * If enabled an exception will be thrown when trying to access a non-existent property.
      */
-    protected bool $requireFieldPresence = false;
-
+    protected bool $require_field_presence = false;
     /**
      * Magic getter to access fields that have been set in this entity
      *
@@ -148,9 +129,8 @@ trait EntityTrait
      */
     public function &__get(string $field): mixed
     {
-        return $this->getRequiredOrFail($field, $this->requireFieldPresence);
+        return $this->get_required_or_fail($field, $this->require_field_presence);
     }
-
     /**
      * Magic setter to add or edit a field in this entity
      *
@@ -161,7 +141,6 @@ trait EntityTrait
     {
         $this->set($field, $value);
     }
-
     /**
      * Returns whether this entity contains a field named $field
      * and is not set to null.
@@ -172,7 +151,6 @@ trait EntityTrait
     {
         return $this->has($field) && $this->get($field) !== null;
     }
-
     /**
      * Removes a field from this entity
      *
@@ -182,7 +160,6 @@ trait EntityTrait
     {
         $this->unset($field);
     }
-
     /**
      * Sets a single field inside this entity.
      *
@@ -224,23 +201,11 @@ trait EntityTrait
     {
         if (is_string($field)) {
             $options += ['guard' => false];
-
             return $this->patch([$field => $value], $options);
         }
-
-        deprecationWarning(
-            '5.2.0',
-            sprintf(
-                'Passing an array as the first argument to `%s::set()` is deprecated. '
-                . 'Use `%s::patch()` instead.',
-                static::class,
-                static::class,
-            ),
-        );
-
-        return $this->patch($field, (array)$value);
+        deprecation_warning('5.2.0', sprintf('Passing an array as the first argument to `%s::set()` is deprecated. ' . 'Use `%s::patch()` instead.', static::class, static::class));
+        return $this->patch($field, (array) $value);
     }
-
     /**
      * Patch (mass-assign) multiple fields to this entity.
      *
@@ -290,49 +255,35 @@ trait EntityTrait
     public function patch(array $values, array $options = [])
     {
         $options += ['setter' => true, 'guard' => true, 'asOriginal' => false];
-
         if ($options['asOriginal'] === true) {
-            $this->setOriginalField(array_keys($values));
+            $this->set_original_field(array_keys($values));
         }
-
         foreach ($values as $name => $value) {
-            $name = (string)$name;
+            $name = (string) $name;
             if ($name === '') {
                 throw new InvalidArgumentException('Cannot set an empty field');
             }
-
-            if ($options['guard'] === true && !$this->isAccessible($name)) {
+            if ($options['guard'] === true && !$this->is_accessible($name)) {
                 continue;
             }
-
-            if ($options['asOriginal'] || $this->isModified($name, $value)) {
-                $this->setDirty($name, true);
+            if ($options['asOriginal'] || $this->is_modified($name, $value)) {
+                $this->set_dirty($name, true);
             } else {
                 continue;
             }
-
             if ($options['setter']) {
                 $setter = static::_accessor($name, 'set');
                 if ($setter) {
                     $value = $this->{$setter}($value);
                 }
             }
-
-            if (
-                $this->isOriginalField($name) &&
-                !array_key_exists($name, $this->_original) &&
-                array_key_exists($name, $this->_fields) &&
-                $value !== $this->_fields[$name]
-            ) {
+            if ($this->is_original_field($name) && !array_key_exists($name, $this->_original) && array_key_exists($name, $this->_fields) && $value !== $this->_fields[$name]) {
                 $this->_original[$name] = $this->_fields[$name];
             }
-
             $this->_fields[$name] = $value;
         }
-
         return $this;
     }
-
     /**
      * Check if the provided value is same as existing value for a field.
      *
@@ -344,30 +295,20 @@ trait EntityTrait
      *
      * @param string $field The field to check.
      */
-    protected function isModified(string $field, mixed $value): bool
+    protected function is_modified(string $field, mixed $value): bool
     {
         if (!array_key_exists($field, $this->_fields)) {
             return true;
         }
-
         $existing = $this->_fields[$field] ?? null;
-
         if (($value === null || is_scalar($value)) && $existing === $value) {
             return false;
         }
-
-        if (
-            is_object($value)
-            && is_object($existing)
-            && !($value instanceof EntityInterface)
-            && $existing == $value
-        ) {
+        if (is_object($value) && is_object($existing) && !$value instanceof Entity_Interface && $existing == $value) {
             return false;
         }
-
         return true;
     }
-
     /**
      * Returns the value of a field by name
      *
@@ -377,9 +318,8 @@ trait EntityTrait
      */
     public function &get(string $field): mixed
     {
-        return $this->getRequiredOrFail($field, false);
+        return $this->get_required_or_fail($field, false);
     }
-
     /**
      * Get field with option for requireFieldPresence.
      *
@@ -390,37 +330,28 @@ trait EntityTrait
      * @throws \InvalidArgumentException if an empty field name is passed
      * @throws \Cake\Datasource\Exception\MissingPropertyException If property does not exist and $requireFieldPresence
      */
-    public function &getRequiredOrFail(string $field, bool $requireFieldPresence = true): mixed
+    public function &get_required_or_fail(string $field, bool $require_field_presence = true): mixed
     {
         if ($field === '') {
             throw new InvalidArgumentException('Cannot get an empty field');
         }
-
         $value = null;
-        $fieldIsPresent = false;
+        $field_is_present = false;
         if (array_key_exists($field, $this->_fields)) {
-            $fieldIsPresent = true;
-            $value = &$this->_fields[$field];
+            $field_is_present = true;
+            $value =& $this->_fields[$field];
         }
-
         $method = static::_accessor($field, 'get');
         if ($method) {
             // Must be variable before returning: Only variable references should be returned by reference.
             $result = $this->{$method}($value);
-
             return $result;
         }
-
-        if (!$fieldIsPresent && $requireFieldPresence) {
-            throw new MissingPropertyException([
-                'property' => $field,
-                'entity' => $this::class,
-            ]);
+        if (!$field_is_present && $require_field_presence) {
+            throw new Missing_Property_Exception(['property' => $field, 'entity' => $this::class]);
         }
-
         return $value;
     }
-
     /**
      * Enable/disable field presence check when accessing a property.
      *
@@ -428,19 +359,17 @@ trait EntityTrait
      *
      * @param bool $value `true` to enable, `false` to disable.
      */
-    public function requireFieldPresence(bool $value = true): void
+    public function require_field_presence(bool $value = true): void
     {
-        $this->requireFieldPresence = $value;
+        $this->require_field_presence = $value;
     }
-
     /**
      * Returns whether a field has an original value
      */
-    public function hasOriginal(string $field): bool
+    public function has_original(string $field): bool
     {
         return array_key_exists($field, $this->_original);
     }
-
     /**
      * Returns the value of an original field by name
      *
@@ -448,7 +377,7 @@ trait EntityTrait
      * @param bool $allowFallback whether to allow falling back to the current field value if no original exists
      * @throws \InvalidArgumentException if an empty field name is passed or if the field has no original value and $allowFallback is false
      */
-    public function getOriginal(string $field, bool $allowFallback = true): mixed
+    public function get_original(string $field, bool $allow_fallback = true): mixed
     {
         if ($field === '') {
             throw new InvalidArgumentException('Cannot get an empty field');
@@ -456,33 +385,25 @@ trait EntityTrait
         if (array_key_exists($field, $this->_original)) {
             return $this->_original[$field];
         }
-
-        if (!$allowFallback) {
+        if (!$allow_fallback) {
             throw new InvalidArgumentException(sprintf('Cannot retrieve original value for field `%s`', $field));
         }
-
         return $this->get($field);
     }
-
     /**
      * Gets all original values of the entity.
      */
-    public function getOriginalValues(): array
+    public function get_original_values(): array
     {
         $originals = $this->_original;
-        $originalKeys = array_keys($originals);
+        $original_keys = array_keys($originals);
         foreach ($this->_fields as $key => $value) {
-            if (
-                !in_array($key, $originalKeys, true) &&
-                $this->isOriginalField($key)
-            ) {
+            if (!in_array($key, $original_keys, true) && $this->is_original_field($key)) {
                 $originals[$key] = $value;
             }
         }
-
         return $originals;
     }
-
     /**
      * Returns whether this entity contains a field named $field.
      *
@@ -510,15 +431,13 @@ trait EntityTrait
      */
     public function has(array|string $field): bool
     {
-        foreach ((array)$field as $prop) {
+        foreach ((array) $field as $prop) {
             if (!array_key_exists($prop, $this->_fields) && !static::_accessor($prop, 'get')) {
                 return false;
             }
         }
-
         return true;
     }
-
     /**
      * Checks that a field is empty
      *
@@ -534,13 +453,11 @@ trait EntityTrait
      * @param string $field The field to check.
      * @deprecated 5.3.0 Use hasValue() instead.
      */
-    public function isEmpty(string $field): bool
+    public function is_empty(string $field): bool
     {
-        deprecationWarning('5.3.0', 'isEmpty() is deprecated. Use hasValue() instead.');
-
-        return !$this->hasValue($field);
+        deprecation_warning('5.3.0', 'isEmpty() is deprecated. Use hasValue() instead.');
+        return !$this->has_value($field);
     }
-
     /**
      * Checks that a field has a value.
      *
@@ -557,22 +474,14 @@ trait EntityTrait
      *
      * @param string $field The field to check.
      */
-    public function hasValue(string $field): bool
+    public function has_value(string $field): bool
     {
         $value = $this->get($field);
-        if (
-            $value === null ||
-            (
-                $value === [] ||
-                $value === ''
-            )
-        ) {
+        if ($value === null || ($value === [] || $value === '')) {
             return false;
         }
-
         return true;
     }
-
     /**
      * Removes a field or list of fields from this entity
      *
@@ -588,14 +497,12 @@ trait EntityTrait
      */
     public function unset(array|string $field)
     {
-        $field = (array)$field;
+        $field = (array) $field;
         foreach ($field as $p) {
             unset($this->_fields[$p], $this->_dirty[$p]);
         }
-
         return $this;
     }
-
     /**
      * Sets hidden fields.
      *
@@ -603,30 +510,25 @@ trait EntityTrait
      * @param bool $merge Merge the new fields with the existing. By default false.
      * @return $this
      */
-    public function setHidden(array $fields, bool $merge = false)
+    public function set_hidden(array $fields, bool $merge = false)
     {
         if ($merge === false) {
             $this->_hidden = $fields;
-
             return $this;
         }
-
         $fields = array_merge($this->_hidden, $fields);
         $this->_hidden = array_unique($fields);
-
         return $this;
     }
-
     /**
      * Gets the hidden fields.
      *
      * @return array<string>
      */
-    public function getHidden(): array
+    public function get_hidden(): array
     {
         return $this->_hidden;
     }
-
     /**
      * Sets the virtual fields on this entity.
      *
@@ -634,30 +536,25 @@ trait EntityTrait
      * @param bool $merge Merge the new fields with the existing. By default false.
      * @return $this
      */
-    public function setVirtual(array $fields, bool $merge = false)
+    public function set_virtual(array $fields, bool $merge = false)
     {
         if ($merge === false) {
             $this->_virtual = $fields;
-
             return $this;
         }
-
         $fields = array_merge($this->_virtual, $fields);
         $this->_virtual = array_unique($fields);
-
         return $this;
     }
-
     /**
      * Gets the virtual fields on this entity.
      *
      * @return array<string>
      */
-    public function getVirtual(): array
+    public function get_virtual(): array
     {
         return $this->_virtual;
     }
-
     /**
      * Gets the list of visible fields.
      *
@@ -667,14 +564,12 @@ trait EntityTrait
      * @return array<string> A list of fields that are 'visible' in all
      *     representations.
      */
-    public function getVisible(): array
+    public function get_visible(): array
     {
         $fields = array_keys($this->_fields);
         $fields = array_merge($fields, $this->_virtual);
-
         return array_diff($fields, $this->_hidden);
     }
-
     /**
      * Returns an array with all the fields that have been set
      * to this entity
@@ -684,30 +579,28 @@ trait EntityTrait
      *
      * @return array<string, mixed>
      */
-    public function toArray(): array
+    public function to_array(): array
     {
         $result = [];
-        foreach ($this->getVisible() as $field) {
+        foreach ($this->get_visible() as $field) {
             $value = $this->get($field);
             if (is_array($value)) {
                 $result[$field] = [];
                 foreach ($value as $k => $entity) {
-                    if ($entity instanceof EntityInterface) {
-                        $result[$field][$k] = $entity->toArray();
+                    if ($entity instanceof Entity_Interface) {
+                        $result[$field][$k] = $entity->to_array();
                     } else {
                         $result[$field][$k] = $entity;
                     }
                 }
-            } elseif ($value instanceof EntityInterface) {
-                $result[$field] = $value->toArray();
+            } elseif ($value instanceof Entity_Interface) {
+                $result[$field] = $value->to_array();
             } else {
                 $result[$field] = $value;
             }
         }
-
         return $result;
     }
-
     /**
      * Returns the fields that will be serialized as JSON
      *
@@ -715,9 +608,8 @@ trait EntityTrait
      */
     public function jsonSerialize(): array
     {
-        return $this->extract($this->getVisible());
+        return $this->extract($this->get_visible());
     }
-
     /**
      * Implements isset($entity);
      *
@@ -728,7 +620,6 @@ trait EntityTrait
     {
         return $this->__isset($offset);
     }
-
     /**
      * Implements $entity[$offset];
      *
@@ -738,7 +629,6 @@ trait EntityTrait
     {
         return $this->get($offset);
     }
-
     /**
      * Implements $entity[$offset] = $value;
      *
@@ -749,7 +639,6 @@ trait EntityTrait
     {
         $this->set($offset, $value);
     }
-
     /**
      * Implements unset($result[$offset]);
      *
@@ -759,7 +648,6 @@ trait EntityTrait
     {
         $this->unset($offset);
     }
-
     /**
      * Fetch accessor method name
      * Accessor methods (available or not) are cached in $_accessors
@@ -771,19 +659,15 @@ trait EntityTrait
     protected static function _accessor(string $property, string $type): string
     {
         $class = static::class;
-
         if (isset(static::$_accessors[$class][$type][$property])) {
             return static::$_accessors[$class][$type][$property];
         }
-
         if (isset(static::$_accessors[$class])) {
             return static::$_accessors[$class][$type][$property] = '';
         }
-
         if (static::class === Entity::class) {
             return '';
         }
-
         foreach (get_class_methods($class) as $method) {
             $prefix = substr($method, 1, 3);
             if (!str_starts_with($method, '_')) {
@@ -793,20 +677,17 @@ trait EntityTrait
                 continue;
             }
             $field = lcfirst(substr($method, 4));
-            $snakeField = Inflector::underscore($field);
-            $titleField = ucfirst($field);
-            static::$_accessors[$class][$prefix][$snakeField] = $method;
+            $snake_field = Inflector::underscore($field);
+            $title_field = ucfirst($field);
+            static::$_accessors[$class][$prefix][$snake_field] = $method;
             static::$_accessors[$class][$prefix][$field] = $method;
-            static::$_accessors[$class][$prefix][$titleField] = $method;
+            static::$_accessors[$class][$prefix][$title_field] = $method;
         }
-
         if (!isset(static::$_accessors[$class][$type][$property])) {
             static::$_accessors[$class][$type][$property] = '';
         }
-
         return static::$_accessors[$class][$type][$property];
     }
-
     /**
      * Returns an array with the requested fields
      * stored in this entity, indexed by field name
@@ -815,18 +696,16 @@ trait EntityTrait
      * @param bool $onlyDirty Return the requested field only if it is dirty
      * @return array<string, mixed>
      */
-    public function extract(array $fields, bool $onlyDirty = false): array
+    public function extract(array $fields, bool $only_dirty = false): array
     {
         $result = [];
         foreach ($fields as $field) {
-            if (!$onlyDirty || $this->isDirty($field)) {
+            if (!$only_dirty || $this->is_dirty($field)) {
                 $result[$field] = $this->has($field) ? $this->get($field) : null;
             }
         }
-
         return $result;
     }
-
     /**
      * Returns an array with the requested original fields
      * stored in this entity, indexed by field name, if they exist.
@@ -837,20 +716,18 @@ trait EntityTrait
      * @param array<string> $fields List of fields to be returned
      * @return array<string, mixed>
      */
-    public function extractOriginal(array $fields): array
+    public function extract_original(array $fields): array
     {
         $result = [];
         foreach ($fields as $field) {
-            if ($this->hasOriginal($field)) {
-                $result[$field] = $this->getOriginal($field);
-            } elseif ($this->isOriginalField($field)) {
+            if ($this->has_original($field)) {
+                $result[$field] = $this->get_original($field);
+            } elseif ($this->is_original_field($field)) {
                 $result[$field] = $this->get($field);
             }
         }
-
         return $result;
     }
-
     /**
      * Returns an array with only the original fields
      * stored in this entity, indexed by field name, if they exist.
@@ -861,42 +738,37 @@ trait EntityTrait
      * @param array<string> $fields List of fields to be returned
      * @return array<string, mixed>
      */
-    public function extractOriginalChanged(array $fields): array
+    public function extract_original_changed(array $fields): array
     {
         $result = [];
         foreach ($fields as $field) {
-            if (!$this->hasOriginal($field)) {
+            if (!$this->has_original($field)) {
                 continue;
             }
-
-            $original = $this->getOriginal($field);
+            $original = $this->get_original($field);
             if ($original !== $this->get($field)) {
                 $result[$field] = $original;
             }
         }
-
         return $result;
     }
-
     /**
      * Returns whether a field is an original one
      */
-    public function isOriginalField(string $name): bool
+    public function is_original_field(string $name): bool
     {
-        return in_array($name, $this->_originalFields, true);
+        return in_array($name, $this->_original_fields, true);
     }
-
     /**
      * Returns an array of original fields.
      * Original fields are those that the entity was initialized with.
      *
      * @return array<string>
      */
-    public function getOriginalFields(): array
+    public function get_original_fields(): array
     {
-        return $this->_originalFields;
+        return $this->_original_fields;
     }
-
     /**
      * Sets the given field or a list of fields to as original.
      * Normally there is no need to call this method manually.
@@ -904,25 +776,21 @@ trait EntityTrait
      * @param array<string>|string $field the name of a field or a list of fields to set as original
      * @return $this
      */
-    protected function setOriginalField(string|array $field, bool $merge = true)
+    protected function set_original_field(string|array $field, bool $merge = true)
     {
         if (!$merge) {
-            $this->_originalFields = (array)$field;
-
+            $this->_original_fields = (array) $field;
             return $this;
         }
-
-        $fields = (array)$field;
+        $fields = (array) $field;
         foreach ($fields as $field) {
-            $field = (string)$field;
-            if (!$this->isOriginalField($field)) {
-                $this->_originalFields[] = $field;
+            $field = (string) $field;
+            if (!$this->is_original_field($field)) {
+                $this->_original_fields[] = $field;
             }
         }
-
         return $this;
     }
-
     /**
      * Sets the dirty status of a single field.
      *
@@ -931,45 +799,36 @@ trait EntityTrait
      * it was not changed. Defaults to true.
      * @return $this
      */
-    public function setDirty(string $field, bool $isDirty = true)
+    public function set_dirty(string $field, bool $is_dirty = true)
     {
-        if ($isDirty === false) {
-            $this->setOriginalField($field);
-
+        if ($is_dirty === false) {
+            $this->set_original_field($field);
             unset($this->_dirty[$field], $this->_original[$field]);
-
             return $this;
         }
-
         $this->_dirty[$field] = true;
         unset($this->_errors[$field], $this->_invalid[$field]);
-
         return $this;
     }
-
     /**
      * Checks if the entity is dirty or if a single field of it is dirty.
      *
      * @param string|null $field The field to check the status for. Null for the whole entity.
      * @return bool Whether the field was changed or not
      */
-    public function isDirty(?string $field = null): bool
+    public function is_dirty(?string $field = null): bool
     {
-        return $field === null
-            ? $this->_dirty !== []
-            : isset($this->_dirty[$field]);
+        return $field === null ? $this->_dirty !== [] : isset($this->_dirty[$field]);
     }
-
     /**
      * Gets the dirty fields.
      *
      * @return array<string>
      */
-    public function getDirty(): array
+    public function get_dirty(): array
     {
         return array_keys($this->_dirty);
     }
-
     /**
      * Sets the entire entity as clean, which means that it will appear as
      * no fields being modified or added at all. This is an useful call
@@ -981,9 +840,8 @@ trait EntityTrait
         $this->_errors = [];
         $this->_invalid = [];
         $this->_original = [];
-        $this->setOriginalField(array_keys($this->_fields), false);
+        $this->set_original_field(array_keys($this->_fields), false);
     }
-
     /**
      * Set the status of this entity.
      *
@@ -993,99 +851,81 @@ trait EntityTrait
      * @param bool $new Indicate whether this entity has been persisted.
      * @return $this
      */
-    public function setNew(bool $new)
+    public function set_new(bool $new)
     {
         if ($new) {
             foreach ($this->_fields as $k => $p) {
                 $this->_dirty[$k] = true;
             }
         }
-
         $this->_new = $new;
-
         return $this;
     }
-
     /**
      * Returns whether this entity has already been persisted.
      *
      * @return bool Whether the entity has been persisted.
      */
-    public function isNew(): bool
+    public function is_new(): bool
     {
         return $this->_new;
     }
-
     /**
      * Returns whether this entity has errors.
      *
      * @param bool $includeNested true will check nested entities for hasErrors()
      */
-    public function hasErrors(bool $includeNested = true): bool
+    public function has_errors(bool $include_nested = true): bool
     {
-        if ($this->_hasBeenVisited) {
+        if ($this->_has_been_visited) {
             // While recursing through entities, each entity should only be visited once. See https://github.com/cakephp/cakephp/issues/17318
             return false;
         }
-
         if (Hash::filter($this->_errors)) {
             return true;
         }
-
-        if ($includeNested === false) {
+        if ($include_nested === false) {
             return false;
         }
-
-        $this->_hasBeenVisited = true;
+        $this->_has_been_visited = true;
         try {
             foreach ($this->_fields as $field) {
-                if ($this->_readHasErrors($field)) {
+                if ($this->_read_has_errors($field)) {
                     return true;
                 }
             }
         } finally {
-            $this->_hasBeenVisited = false;
+            $this->_has_been_visited = false;
         }
-
         return false;
     }
-
     /**
      * Returns all validation errors.
      */
-    public function getErrors(): array
+    public function get_errors(): array
     {
-        if ($this->_hasBeenVisited) {
+        if ($this->_has_been_visited) {
             // While recursing through entities, each entity should only be visited once. See https://github.com/cakephp/cakephp/issues/17318
             return [];
         }
-
         $diff = array_diff_key($this->_fields, $this->_errors);
-
-        $this->_hasBeenVisited = true;
+        $this->_has_been_visited = true;
         try {
-            $errors = $this->_errors + (new Collection($diff))
-                ->filter(fn ($value) => is_array($value) || $value instanceof EntityInterface)
-                ->map(fn ($value) => $this->_readError($value))
-                ->filter()
-                ->toArray();
+            $errors = $this->_errors + (new Collection($diff))->filter(fn($value) => is_array($value) || $value instanceof Entity_Interface)->map(fn($value) => $this->_read_error($value))->filter()->to_array();
         } finally {
-            $this->_hasBeenVisited = false;
+            $this->_has_been_visited = false;
         }
-
         return $errors;
     }
-
     /**
      * Returns validation errors of a field
      *
      * @param string $field Field name to get the errors from
      */
-    public function getError(string $field): array
+    public function get_error(string $field): array
     {
-        return $this->_errors[$field] ?? $this->_nestedErrors($field);
+        return $this->_errors[$field] ?? $this->_nested_errors($field);
     }
-
     /**
      * Sets error messages to the entity
      *
@@ -1100,19 +940,16 @@ trait EntityTrait
      * @param bool $overwrite Whether to overwrite pre-existing errors for $fields
      * @return $this
      */
-    public function setErrors(array $errors, bool $overwrite = false)
+    public function set_errors(array $errors, bool $overwrite = false)
     {
         if ($overwrite) {
             foreach ($errors as $f => $error) {
-                $this->_errors[$f] = (array)$error;
+                $this->_errors[$f] = (array) $error;
             }
-
             return $this;
         }
-
         foreach ($errors as $f => $error) {
             $this->_errors += [$f => []];
-
             // String messages are appended to the list,
             // while more complex error structures need their
             // keys preserved for nested validator.
@@ -1124,10 +961,8 @@ trait EntityTrait
                 }
             }
         }
-
         return $this;
     }
-
     /**
      * Sets errors for a single field
      *
@@ -1143,41 +978,35 @@ trait EntityTrait
      * @param bool $overwrite Whether to overwrite pre-existing errors for $field
      * @return $this
      */
-    public function setError(string $field, array|string $errors, bool $overwrite = false)
+    public function set_error(string $field, array|string $errors, bool $overwrite = false)
     {
         if (is_string($errors)) {
             $errors = [$errors];
         }
-
         // Handle dotted field paths by creating nested error structure
         if (str_contains($field, '.')) {
             $nested = Hash::insert([], $field, $errors);
-
-            return $this->setErrors($nested, $overwrite);
+            return $this->set_errors($nested, $overwrite);
         }
-
-        return $this->setErrors([$field => $errors], $overwrite);
+        return $this->set_errors([$field => $errors], $overwrite);
     }
-
     /**
      * Auxiliary method for getting errors in nested entities
      *
      * @param string $field the field in this entity to check for errors
      * @return array Errors in nested entity if any
      */
-    protected function _nestedErrors(string $field): array
+    protected function _nested_errors(string $field): array
     {
         // Only one path element, check for nested entity with error.
         if (!str_contains($field, '.')) {
             if (!$this->has($field)) {
                 return [];
             }
-
             $entity = $this->get($field);
-            if ($entity instanceof EntityInterface || is_iterable($entity)) {
-                return $this->_readError($entity);
+            if ($entity instanceof Entity_Interface || is_iterable($entity)) {
+                return $this->_read_error($entity);
             }
-
             return [];
         }
         // Try reading the errors data with field as a simple path
@@ -1186,7 +1015,6 @@ trait EntityTrait
             return $error;
         }
         $path = explode('.', $field);
-
         // Traverse down the related entities/arrays for
         // the relevant entity.
         $entity = $this;
@@ -1196,18 +1024,14 @@ trait EntityTrait
             $part = array_shift($path);
             $len = count($path);
             $val = null;
-            if ($entity instanceof EntityInterface) {
+            if ($entity instanceof Entity_Interface) {
                 if ($entity->has($part)) {
                     $val = $entity->get($part);
                 }
             } elseif (is_array($entity)) {
                 $val = $entity[$part] ?? false;
             }
-
-            if (
-                is_iterable($val) ||
-                $val instanceof EntityInterface
-            ) {
+            if (is_iterable($val) || $val instanceof Entity_Interface) {
                 $entity = $val;
             } else {
                 $path[] = $part;
@@ -1215,79 +1039,69 @@ trait EntityTrait
             }
         }
         if (count($path) <= 1) {
-            return $this->_readError($entity, array_pop($path));
+            return $this->_read_error($entity, array_pop($path));
         }
-
         return [];
     }
-
     /**
      * Reads if there are errors for one or many objects.
      *
      * @param \Cake\Datasource\EntityInterface|array $object The object to read errors from.
      */
-    protected function _readHasErrors(mixed $object): bool
+    protected function _read_has_errors(mixed $object): bool
     {
-        if ($object instanceof EntityInterface && $object->hasErrors()) {
+        if ($object instanceof Entity_Interface && $object->has_errors()) {
             return true;
         }
-
         if (is_array($object)) {
             foreach ($object as $value) {
-                if ($this->_readHasErrors($value)) {
+                if ($this->_read_has_errors($value)) {
                     return true;
                 }
             }
         }
-
         return false;
     }
-
     /**
      * Read the error(s) from one or many objects.
      *
      * @param \Cake\Datasource\EntityInterface|iterable $object The object to read errors from.
      * @param string|null $path The field name for errors.
      */
-    protected function _readError(EntityInterface|iterable $object, ?string $path = null): array
+    protected function _read_error(Entity_Interface|iterable $object, ?string $path = null): array
     {
-        if ($path !== null && $object instanceof EntityInterface) {
-            return $object->getError($path);
+        if ($path !== null && $object instanceof Entity_Interface) {
+            return $object->get_error($path);
         }
-        if ($object instanceof EntityInterface) {
-            return $object->getErrors();
+        if ($object instanceof Entity_Interface) {
+            return $object->get_errors();
         }
-
         $array = array_map(function ($val) {
-            if ($val instanceof EntityInterface) {
-                return $val->getErrors();
+            if ($val instanceof Entity_Interface) {
+                return $val->get_errors();
             }
-        }, (array)$object);
-
+        }, (array) $object);
         return array_filter($array);
     }
-
     /**
      * Get a list of invalid fields and their data for errors upon validation/patching
      *
      * @return array<string, mixed>
      */
-    public function getInvalid(): array
+    public function get_invalid(): array
     {
         return $this->_invalid;
     }
-
     /**
      * Get a single value of an invalid field. Returns null if not set.
      *
      * @param string $field The name of the field.
      * @return mixed|null
      */
-    public function getInvalidField(string $field): mixed
+    public function get_invalid_field(string $field): mixed
     {
         return $this->_invalid[$field] ?? null;
     }
-
     /**
      * Set fields as invalid and not patchable into the entity.
      *
@@ -1299,7 +1113,7 @@ trait EntityTrait
      * @param bool $overwrite Whether to overwrite pre-existing values for $field.
      * @return $this
      */
-    public function setInvalid(array $fields, bool $overwrite = false)
+    public function set_invalid(array $fields, bool $overwrite = false)
     {
         foreach ($fields as $field => $value) {
             if ($overwrite) {
@@ -1308,10 +1122,8 @@ trait EntityTrait
             }
             $this->_invalid += [$field => $value];
         }
-
         return $this;
     }
-
     /**
      * Sets a field as invalid and not patchable into the entity.
      *
@@ -1319,13 +1131,11 @@ trait EntityTrait
      * @param mixed $value The invalid value to be set for $field.
      * @return $this
      */
-    public function setInvalidField(string $field, mixed $value)
+    public function set_invalid_field(string $field, mixed $value)
     {
         $this->_invalid[$field] = $value;
-
         return $this;
     }
-
     /**
      * Stores whether a field value can be changed or set in this entity.
      * The special field `*` can also be marked as accessible or protected, meaning
@@ -1350,33 +1160,28 @@ trait EntityTrait
      * mark it as protected.
      * @return $this
      */
-    public function setAccess(array|string $field, bool $set)
+    public function set_access(array|string $field, bool $set)
     {
         if ($field === '*') {
-            $this->_accessible = array_map(fn (): bool => $set, $this->_accessible);
+            $this->_accessible = array_map(fn(): bool => $set, $this->_accessible);
             $this->_accessible['*'] = $set;
-
             return $this;
         }
-
-        foreach ((array)$field as $prop) {
+        foreach ((array) $field as $prop) {
             $this->_accessible[$prop] = $set;
         }
-
         return $this;
     }
-
     /**
      * Returns the raw accessible configuration for this entity.
      * The `*` wildcard refers to all fields.
      *
      * @return array<bool>
      */
-    public function getAccessible(): array
+    public function get_accessible(): array
     {
         return $this->_accessible;
     }
-
     /**
      * Checks if a field is accessible
      *
@@ -1388,34 +1193,29 @@ trait EntityTrait
      *
      * @param string $field Field name to check
      */
-    public function isAccessible(string $field): bool
+    public function is_accessible(string $field): bool
     {
         $value = $this->_accessible[$field] ?? null;
-
-        return ($value === null && !empty($this->_accessible['*'])) || $value;
+        return $value === null && !empty($this->_accessible['*']) || $value;
     }
-
     /**
      * Returns the alias of the repository from which this entity came from.
      */
-    public function getSource(): string
+    public function get_source(): string
     {
-        return $this->_registryAlias;
+        return $this->_registry_alias;
     }
-
     /**
      * Sets the source alias
      *
      * @param string $alias the alias of the repository
      * @return $this
      */
-    public function setSource(string $alias)
+    public function set_source(string $alias)
     {
-        $this->_registryAlias = $alias;
-
+        $this->_registry_alias = $alias;
         return $this;
     }
-
     /**
      * Returns a string representation of this object in a human-readable format.
      *
@@ -1423,15 +1223,9 @@ trait EntityTrait
      */
     public function __toString(): string
     {
-        deprecationWarning(
-            '5.2.0',
-            'Casting an entity to string is deprecated. ' .
-            'Use json_encode() instead to get a string representation of the entity.',
-        );
-
-        return (string)json_encode($this, JSON_PRETTY_PRINT);
+        deprecation_warning('5.2.0', 'Casting an entity to string is deprecated. ' . 'Use json_encode() instead to get a string representation of the entity.');
+        return (string) json_encode($this, JSON_PRETTY_PRINT);
     }
-
     /**
      * Returns an array that can be used to describe the internal state of this
      * object.
@@ -1442,20 +1236,8 @@ trait EntityTrait
     {
         $fields = $this->_fields;
         foreach ($this->_virtual as $field) {
-            $fields[$field] = $this->$field;
+            $fields[$field] = $this->{$field};
         }
-
-        return $fields + [
-            '[new]' => $this->isNew(),
-            '[accessible]' => $this->_accessible,
-            '[dirty]' => $this->_dirty,
-            '[original]' => $this->_original,
-            '[originalFields]' => $this->_originalFields,
-            '[virtual]' => $this->_virtual,
-            '[hasErrors]' => $this->hasErrors(),
-            '[errors]' => $this->_errors,
-            '[invalid]' => $this->_invalid,
-            '[repository]' => $this->_registryAlias,
-        ];
+        return $fields + ['[new]' => $this->is_new(), '[accessible]' => $this->_accessible, '[dirty]' => $this->_dirty, '[original]' => $this->_original, '[originalFields]' => $this->_original_fields, '[virtual]' => $this->_virtual, '[hasErrors]' => $this->has_errors(), '[errors]' => $this->_errors, '[invalid]' => $this->_invalid, '[repository]' => $this->_registry_alias];
     }
 }

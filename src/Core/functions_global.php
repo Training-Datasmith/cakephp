@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -16,21 +15,19 @@ declare(strict_types=1);
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 // phpcs:disable PSR1.Files.SideEffects
-
-use function Cake\Core\deprecationWarning as cakeDeprecationWarning;
+use function Cake\Core\Deprecation_Warning as cakeDeprecationWarning;
 use function Cake\Core\env as cakeEnv;
 use function Cake\Core\h as cakeH;
-use function Cake\Core\namespaceSplit as cakeNamespaceSplit;
-use function Cake\Core\pathCombine as cakePathCombine;
+use function Cake\Core\Namespace_Split as cakeNamespaceSplit;
+use function Cake\Core\Path_Combine as cakePathCombine;
 use function Cake\Core\pj as cakePj;
-use function Cake\Core\pluginSplit as cakePluginSplit;
+use function Cake\Core\Plugin_Split as cakePluginSplit;
 use function Cake\Core\pr as cakePr;
-use function Cake\Core\toBool as cakeToBool;
-use function Cake\Core\toFloat as cakeToFloat;
-use function Cake\Core\toInt as cakeToInt;
-use function Cake\Core\toString as cakeToString;
-use function Cake\Core\triggerWarning as cakeTriggerWarning;
-
+use function Cake\Core\To_Bool as cakeToBool;
+use function Cake\Core\To_Float as cakeToFloat;
+use function Cake\Core\To_Int as cakeToInt;
+use function Cake\Core\To_String as cakeToString;
+use function Cake\Core\Trigger_Warning as cakeTriggerWarning;
 if (!function_exists('pathCombine')) {
     /**
      * Combines parts with a forward-slash `/`.
@@ -43,12 +40,11 @@ if (!function_exists('pathCombine')) {
      *  - If false, ensures any trailing slash is removed
      *  - if null, ignores trailing slashes
      */
-    function pathCombine(array $parts, ?bool $trailing = null): string
+    function path_combine(array $parts, ?bool $trailing = null): string
     {
-        return cakePathCombine($parts, $trailing);
+        return cake_path_combine($parts, $trailing);
     }
 }
-
 if (!function_exists('h')) {
     /**
      * Convenience method for htmlspecialchars.
@@ -65,10 +61,9 @@ if (!function_exists('h')) {
      */
     function h(mixed $text, bool $double = true, ?string $charset = null): mixed
     {
-        return cakeH($text, $double, $charset);
+        return cake_h($text, $double, $charset);
     }
 }
-
 if (!function_exists('pluginSplit')) {
     /**
      * Splits a dot syntax plugin name into its plugin and class name.
@@ -86,12 +81,11 @@ if (!function_exists('pluginSplit')) {
      * @link https://book.cakephp.org/5/en/core-libraries/global-constants-and-functions.html#pluginsplit
      * @phpstan-return array{string|null, string}
      */
-    function pluginSplit(string $name, bool $dotAppend = false, ?string $plugin = null): array
+    function plugin_split(string $name, bool $dot_append = false, ?string $plugin = null): array
     {
-        return cakePluginSplit($name, $dotAppend, $plugin);
+        return cake_plugin_split($name, $dot_append, $plugin);
     }
 }
-
 if (!function_exists('namespaceSplit')) {
     /**
      * Split the namespace from the classname.
@@ -101,12 +95,11 @@ if (!function_exists('namespaceSplit')) {
      * @param string $class The full class name, ie `Cake\Core\App`.
      * @return array{0: string, 1: string} Array with 2 indexes. 0 => namespace, 1 => classname.
      */
-    function namespaceSplit(string $class): array
+    function namespace_split(string $class): array
     {
-        return cakeNamespaceSplit($class);
+        return cake_namespace_split($class);
     }
 }
-
 if (!function_exists('pr')) {
     /**
      * print_r() convenience function.
@@ -123,10 +116,9 @@ if (!function_exists('pr')) {
      */
     function pr(mixed $var): mixed
     {
-        return cakePr($var);
+        return cake_pr($var);
     }
 }
-
 if (!function_exists('pj')) {
     /**
      * JSON pretty print convenience function.
@@ -143,10 +135,9 @@ if (!function_exists('pj')) {
      */
     function pj(mixed $var): mixed
     {
-        return cakePj($var);
+        return cake_pj($var);
     }
 }
-
 if (!function_exists('env')) {
     /**
      * Gets an environment variable from available sources, and provides emulation
@@ -161,22 +152,20 @@ if (!function_exists('env')) {
      */
     function env(string $key, string|float|int|bool|null $default = null): string|float|int|bool|null
     {
-        return cakeEnv($key, $default);
+        return cake_env($key, $default);
     }
 }
-
 if (!function_exists('triggerWarning')) {
     /**
      * Triggers an E_USER_WARNING.
      *
      * @param string $message The warning message.
      */
-    function triggerWarning(string $message): void
+    function trigger_warning(string $message): void
     {
-        cakeTriggerWarning($message);
+        cake_trigger_warning($message);
     }
 }
-
 if (!function_exists('deprecationWarning')) {
     /**
      * Helper method for outputting deprecation warnings
@@ -186,12 +175,11 @@ if (!function_exists('deprecationWarning')) {
      * @param int $stackFrame The stack frame to include in the error. Defaults to 1
      *   as that should point to application/plugin code.
      */
-    function deprecationWarning(string $version, string $message, int $stackFrame = 1): void
+    function deprecation_warning(string $version, string $message, int $stack_frame = 1): void
     {
-        cakeDeprecationWarning($version, $message, $stackFrame + 1);
+        cake_deprecation_warning($version, $message, $stack_frame + 1);
     }
 }
-
 if (!function_exists('toString')) {
     /**
      * Converts the given value to a string.
@@ -204,12 +192,11 @@ if (!function_exists('toString')) {
      * @return ?string Returns the string representation of the value, or null if the value is not a string.
      * @since 5.1.1
      */
-    function toString(mixed $value): ?string
+    function to_string(mixed $value): ?string
     {
-        return cakeToString($value);
+        return cake_to_string($value);
     }
 }
-
 if (!function_exists('toInt')) {
     /**
      * Converts a value to an integer.
@@ -224,12 +211,11 @@ if (!function_exists('toInt')) {
      * @return int|null Returns the converted integer value or null if the conversion fails.
      * @since 5.1.1
      */
-    function toInt(mixed $value): ?int
+    function to_int(mixed $value): ?int
     {
-        return cakeToInt($value);
+        return cake_to_int($value);
     }
 }
-
 if (!function_exists('toFloat')) {
     /**
      * Converts a value to a float.
@@ -244,12 +230,11 @@ if (!function_exists('toFloat')) {
      * @return float|null Returns the converted float value or null if the conversion fails.
      * @since 5.1.1
      */
-    function toFloat(mixed $value): ?float
+    function to_float(mixed $value): ?float
     {
-        return cakeToFloat($value);
+        return cake_to_float($value);
     }
 }
-
 if (!function_exists('toBool')) {
     /**
      * Converts a value to boolean.
@@ -262,8 +247,8 @@ if (!function_exists('toBool')) {
      * @return bool|null Returns true if the value is truthy, false if it's falsy, or NULL otherwise.
      * @since 5.1.1
      */
-    function toBool(mixed $value): ?bool
+    function to_bool(mixed $value): ?bool
     {
-        return cakeToBool($value);
+        return cake_to_bool($value);
     }
 }

@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -13,34 +12,24 @@ declare(strict_types=1);
  * @since         4.3.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Controller\Exception;
 
-use Cake\Core\Exception\CakeException;
-use Cake\Core\Exception\HttpErrorCodeInterface;
+use Cake\Core\Exception\Cake_Exception;
+use Cake\Core\Exception\Http_Error_Code_Interface;
 use Throwable;
-
 /**
  * Used when a passed parameter or action parameter type declaration is missing or invalid.
  */
-class InvalidParameterException extends CakeException implements HttpErrorCodeInterface
+class Invalid_Parameter_Exception extends Cake_Exception implements Http_Error_Code_Interface
 {
     /**
      * @inheritDoc
      */
-    protected int $_defaultCode = 404;
-
+    protected int $_default_code = 404;
     /**
      * @var array<string, string>
      */
-    protected array $templates = [
-        'failed_coercion' => 'Unable to coerce `%s` to `%s` for `%s` in action `%s::%s()`.',
-        'missing_dependency' => 'Failed to inject dependency from service container for parameter `%s` ' .
-            'with type `%s` in action `%s::%s()`.',
-        'missing_parameter' => 'Missing passed parameter for `%s` in action `%s::%s()`.',
-        'unsupported_type' => 'Type declaration for `%s` in action `%s::%s()` is unsupported.',
-    ];
-
+    protected array $templates = ['failed_coercion' => 'Unable to coerce `%s` to `%s` for `%s` in action `%s::%s()`.', 'missing_dependency' => 'Failed to inject dependency from service container for parameter `%s` ' . 'with type `%s` in action `%s::%s()`.', 'missing_parameter' => 'Missing passed parameter for `%s` in action `%s::%s()`.', 'unsupported_type' => 'Type declaration for `%s` in action `%s::%s()` is unsupported.'];
     /**
      * Switches message template based on `template` key in message array.
      *
@@ -52,7 +41,7 @@ class InvalidParameterException extends CakeException implements HttpErrorCodeIn
     public function __construct(array|string $message = '', ?int $code = null, ?Throwable $previous = null)
     {
         if (is_array($message)) {
-            $this->_messageTemplate = $this->templates[$message['template']] ?? '';
+            $this->_message_template = $this->templates[$message['template']] ?? '';
             unset($message['template']);
         }
         parent::__construct($message, $code, $previous);

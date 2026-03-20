@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,12 +14,10 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Datasource;
 
 use Cake\Collection\Collection;
 use Cake\Core\Configure;
-
 /**
  * Generic ResultSet decorator. This will make any traversable object appear to
  * be a database result
@@ -30,16 +27,15 @@ use Cake\Core\Configure;
  * @extends \Cake\Collection\Collection<TKey, TValue>
  * @implements \Cake\Datasource\ResultSetInterface<TKey, TValue>
  */
-class ResultSetDecorator extends Collection implements ResultSetInterface
+class Result_Set_Decorator extends Collection implements Result_Set_Interface
 {
     /**
      * @inheritDoc
      */
     public function __debugInfo(): array
     {
-        $parentInfo = parent::__debugInfo();
+        $parent_info = parent::__debugInfo();
         $limit = Configure::read('App.ResultSetDebugLimit', 10);
-
-        return array_merge($parentInfo, ['items' => $this->take($limit)->toArray()]);
+        return array_merge($parent_info, ['items' => $this->take($limit)->to_array()]);
     }
 }

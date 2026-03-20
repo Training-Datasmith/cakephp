@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,53 +14,45 @@ declare(strict_types=1);
  * @since         2.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Console;
 
-use Cake\Console\Exception\ConsoleException;
-use Cake\Core\Exception\CakeException;
-use SimpleXMLElement;
-
+use Cake\Console\Exception\Console_Exception;
+use Cake\Core\Exception\Cake_Exception;
+use Simple_Xml_Element;
 /**
  * An object to represent a single argument used in the command line.
  * ConsoleOptionParser creates these when you use addArgument()
  *
  * @see \Cake\Console\ConsoleOptionParser::addArgument()
  */
-class ConsoleInputArgument
+class Console_Input_Argument
 {
     /**
      * Name of the argument.
      */
     protected string $_name;
-
     /**
      * Help string
      */
     protected string $_help;
-
     /**
      * Is this option required?
      */
     protected bool $_required;
-
     /**
      * An array of valid choices for this argument.
      *
      * @var array<string>
      */
     protected array $_choices;
-
     /**
      * Default value for this argument.
      */
     protected ?string $_default = null;
-
     /**
      * The multiple separator.
      */
     protected ?string $_separator = null;
-
     /**
      * Make a new Input Argument
      *
@@ -71,19 +62,12 @@ class ConsoleInputArgument
      * @param array<string> $choices Valid choices for this option.
      * @param string|null $default The default value for this argument.
      */
-    public function __construct(
-        array|string $name,
-        string $help = '',
-        bool $required = false,
-        array $choices = [],
-        ?string $default = null,
-        ?string $separator = null,
-    ) {
+    public function __construct(array|string $name, string $help = '', bool $required = false, array $choices = [], ?string $default = null, ?string $separator = null)
+    {
         if (is_array($name)) {
             if (!isset($name['name'])) {
-                throw new CakeException('You must provide a `name` for the argument.');
+                throw new Cake_Exception('You must provide a `name` for the argument.');
             }
-
             foreach ($name as $key => $value) {
                 $this->{'_' . $key} = $value;
             }
@@ -95,17 +79,10 @@ class ConsoleInputArgument
             $this->_default = $default;
             $this->_separator = $separator;
         }
-
         if ($this->_separator !== null && str_contains($this->_separator, ' ')) {
-            throw new ConsoleException(
-                sprintf(
-                    'The argument separator must not contain spaces for `%s`.',
-                    $this->_name,
-                ),
-            );
+            throw new Console_Exception(sprintf('The argument separator must not contain spaces for `%s`.', $this->_name));
         }
     }
-
     /**
      * Get the value of the name attribute.
      *
@@ -115,18 +92,15 @@ class ConsoleInputArgument
     {
         return $this->_name;
     }
-
     /**
      * Checks if this argument is equal to another argument.
      *
      * @param \Cake\Console\ConsoleInputArgument $argument ConsoleInputArgument to compare to.
      */
-    public function isEqualTo(ConsoleInputArgument $argument): bool
+    public function is_equal_to(Console_Input_Argument $argument): bool
     {
-        return $this->name() === $argument->name() &&
-            $this->usage() === $argument->usage();
+        return $this->name() === $argument->name() && $this->usage() === $argument->usage();
     }
-
     /**
      * Generate the help for this argument.
      *
@@ -139,7 +113,7 @@ class ConsoleInputArgument
             $name = str_pad($name, $width, ' ');
         }
         $optional = '';
-        if (!$this->isRequired()) {
+        if (!$this->is_required()) {
             $optional = ' <comment>(optional)</comment>';
         }
         if ($this->_choices) {
@@ -151,10 +125,8 @@ class ConsoleInputArgument
         if ($this->_separator) {
             $optional .= sprintf(' <comment>(separator: "%s")</comment>', $this->_separator);
         }
-
         return sprintf('%s%s%s', $name, $this->_help, $optional);
     }
-
     /**
      * Get the usage value for this argument
      */
@@ -165,29 +137,25 @@ class ConsoleInputArgument
             $name = implode('|', $this->_choices);
         }
         $name = '<' . $name . '>';
-        if (!$this->isRequired()) {
+        if (!$this->is_required()) {
             return '[' . $name . ']';
         }
-
         return $name;
     }
-
     /**
      * Get the default value for this argument
      */
-    public function defaultValue(): ?string
+    public function default_value(): ?string
     {
         return $this->_default;
     }
-
     /**
      * Check if this argument is a required argument
      */
-    public function isRequired(): bool
+    public function is_required(): bool
     {
         return $this->_required;
     }
-
     /**
      * Get the value of the separator.
      *
@@ -197,7 +165,6 @@ class ConsoleInputArgument
     {
         return $this->_separator;
     }
-
     /**
      * Check that $value is a valid choice for this argument.
      *
@@ -205,7 +172,7 @@ class ConsoleInputArgument
      * @return true
      * @throws \Cake\Console\Exception\ConsoleException
      */
-    public function validChoice(string $value): bool
+    public function valid_choice(string $value): bool
     {
         if ($this->_choices === []) {
             return true;
@@ -215,46 +182,35 @@ class ConsoleInputArgument
         } else {
             $values = [$value];
         }
-
-        $unwanted = array_filter($values, fn (string $value): bool => !in_array($value, $this->_choices, true));
+        $unwanted = array_filter($values, fn(string $value): bool => !in_array($value, $this->_choices, true));
         if ($unwanted) {
-            throw new ConsoleException(
-                sprintf(
-                    '`%s` is not a valid value for `%s`. Please use one of `%s`',
-                    $value,
-                    $this->_name,
-                    implode('|', $this->_choices),
-                ),
-            );
+            throw new Console_Exception(sprintf('`%s` is not a valid value for `%s`. Please use one of `%s`', $value, $this->_name, implode('|', $this->_choices)));
         }
-
         return true;
     }
-
     /**
      * Append this arguments XML representation to the passed in SimpleXml object.
      *
      * @param \SimpleXMLElement $parent The parent element.
      * @return \SimpleXMLElement The parent with this argument appended.
      */
-    public function xml(SimpleXMLElement $parent): SimpleXMLElement
+    public function xml(Simple_Xml_Element $parent): Simple_Xml_Element
     {
-        $option = $parent->addChild('argument');
+        $option = $parent->add_child('argument');
         assert($option !== null);
-        $option->addAttribute('name', $this->_name);
-        $option->addAttribute('help', $this->_help);
-        $option->addAttribute('required', (string)(int)$this->isRequired());
+        $option->add_attribute('name', $this->_name);
+        $option->add_attribute('help', $this->_help);
+        $option->add_attribute('required', (string) (int) $this->is_required());
         if ($this->separator() !== null) {
-            $option->addAttribute('separator', $this->separator());
+            $option->add_attribute('separator', $this->separator());
         }
-        $choices = $option->addChild('choices');
+        $choices = $option->add_child('choices');
         foreach ($this->_choices as $valid) {
-            $choices->addChild('choice', $valid);
+            $choices->add_child('choice', $valid);
         }
         if ($this->_default !== null) {
-            $option->addAttribute('default', $this->_default);
+            $option->add_attribute('default', $this->_default);
         }
-
         return $parent;
     }
 }

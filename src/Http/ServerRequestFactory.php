@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,18 +14,14 @@ declare(strict_types=1);
  * @since         3.3.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Http;
 
 use Cake\Core\Configure;
 use Cake\Utility\Hash;
-
-use function Laminas\Diactoros\normalizeServer;
-use function Laminas\Diactoros\normalizeUploadedFiles;
-
-use Psr\Http\Message\ServerRequestFactoryInterface;
-use Psr\Http\Message\ServerRequestInterface;
-
+use function Laminas\Diactoros\Normalize_Server;
+use function Laminas\Diactoros\Normalize_Uploaded_Files;
+use Psr\Http\Message\Server_Request_Factory_Interface;
+use Psr\Http\Message\Server_Request_Interface;
 /**
  * Factory for making ServerRequest instances.
  *
@@ -34,7 +29,7 @@ use Psr\Http\Message\ServerRequestInterface;
  * attributes. Furthermore the Uri's path is corrected to only contain the
  * 'virtual' path for the request.
  */
-class ServerRequestFactory implements ServerRequestFactoryInterface
+class Server_Request_Factory implements Server_Request_Factory_Interface
 {
     /**
      * Create a request from the supplied superglobal values.
@@ -49,44 +44,22 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
      * @param array|null $files $_FILES superglobal
      * @throws \InvalidArgumentException for invalid file values
      */
-    public static function fromGlobals(
-        ?array $server = null,
-        ?array $query = null,
-        ?array $parsedBody = null,
-        ?array $cookies = null,
-        ?array $files = null,
-    ): ServerRequest {
-        $server = normalizeServer($server ?? $_SERVER);
-        ['uri' => $uri, 'base' => $base, 'webroot' => $webroot] = UriFactory::marshalUriAndBaseFromSapi($server);
-
-        $sessionConfig = (array)Configure::read('Session') + [
-            'defaults' => 'php',
-            'cookiePath' => $webroot,
-        ];
-        $session = Session::create($sessionConfig);
-
-        $request = new ServerRequest([
-            'environment' => $server,
-            'uri' => $uri,
-            'cookies' => $cookies ?? $_COOKIE,
-            'query' => $query ?? $_GET,
-            'webroot' => $webroot,
-            'base' => $base,
-            'session' => $session,
-            'input' => $server['CAKEPHP_INPUT'] ?? null,
-        ]);
-
-        $request = static::marshalBodyAndRequestMethod($parsedBody ?? $_POST, $request);
+    public static function from_globals(?array $server = null, ?array $query = null, ?array $parsed_body = null, ?array $cookies = null, ?array $files = null): Server_Request
+    {
+        $server = normalize_server($server ?? $_SERVER);
+        ['uri' => $uri, 'base' => $base, 'webroot' => $webroot] = Uri_Factory::marshal_uri_and_base_from_sapi($server);
+        $session_config = (array) Configure::read('Session') + ['defaults' => 'php', 'cookiePath' => $webroot];
+        $session = Session::create($session_config);
+        $request = new Server_Request(['environment' => $server, 'uri' => $uri, 'cookies' => $cookies ?? $_COOKIE, 'query' => $query ?? $_GET, 'webroot' => $webroot, 'base' => $base, 'session' => $session, 'input' => $server['CAKEPHP_INPUT'] ?? null]);
+        $request = static::marshal_body_and_request_method($parsed_body ?? $_POST, $request);
         // This is required as `ServerRequest::scheme()` ignores the value of
         // `HTTP_X_FORWARDED_PROTO` unless `trustProxy` is enabled, while the
         // `Uri` instance initially created always takes values of `HTTP_X_FORWARDED_PROTO`
         // into account.
-        $uri = $request->getUri()->withScheme($request->scheme());
-        $request = $request->withUri($uri, true);
-
-        return static::marshalFiles($files ?? $_FILES, $request);
+        $uri = $request->get_uri()->with_scheme($request->scheme());
+        $request = $request->with_uri($uri, true);
+        return static::marshal_files($files ?? $_FILES, $request);
     }
-
     /**
      * Sets the REQUEST_METHOD environment variable based on the simulated _method
      * HTTP override value. The 'ORIGINAL_REQUEST_METHOD' is also preserved, if you
@@ -98,61 +71,46 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
      * @param array $parsedBody Parsed body.
      * @param \Cake\Http\ServerRequest $request Request instance.
      */
-    protected static function marshalBodyAndRequestMethod(array $parsedBody, ServerRequest $request): ServerRequest
+    protected static function marshal_body_and_request_method(array $parsed_body, Server_Request $request): Server_Request
     {
-        $method = $request->getMethod();
+        $method = $request->get_method();
         $override = false;
-
-        if (
-            in_array($method, ['PUT', 'DELETE', 'PATCH'], true) &&
-            str_starts_with((string)$request->contentType(), 'application/x-www-form-urlencoded')
-        ) {
-            $data = (string)$request->getBody();
-            parse_str($data, $parsedBody);
+        if (in_array($method, ['PUT', 'DELETE', 'PATCH'], true) && str_starts_with((string) $request->content_type(), 'application/x-www-form-urlencoded')) {
+            $data = (string) $request->get_body();
+            parse_str($data, $parsed_body);
         }
-        if ($request->hasHeader('X-Http-Method-Override')) {
-            $parsedBody['_method'] = $request->getHeaderLine('X-Http-Method-Override');
+        if ($request->has_header('X-Http-Method-Override')) {
+            $parsed_body['_method'] = $request->get_header_line('X-Http-Method-Override');
             $override = true;
         }
-
-        $request = $request->withEnv('ORIGINAL_REQUEST_METHOD', $method);
-        if (isset($parsedBody['_method'])) {
-            $request = $request->withEnv('REQUEST_METHOD', $parsedBody['_method']);
-            unset($parsedBody['_method']);
+        $request = $request->with_env('ORIGINAL_REQUEST_METHOD', $method);
+        if (isset($parsed_body['_method'])) {
+            $request = $request->with_env('REQUEST_METHOD', $parsed_body['_method']);
+            unset($parsed_body['_method']);
             $override = true;
         }
-
-        if (
-            $override &&
-            !in_array($request->getMethod(), ['PUT', 'POST', 'DELETE', 'PATCH'], true)
-        ) {
-            $parsedBody = [];
+        if ($override && !in_array($request->get_method(), ['PUT', 'POST', 'DELETE', 'PATCH'], true)) {
+            $parsed_body = [];
         }
-
-        return $request->withParsedBody($parsedBody);
+        return $request->with_parsed_body($parsed_body);
     }
-
     /**
      * Process uploaded files and move things onto the parsed body.
      *
      * @param array $files Files array for normalization and merging in parsed body.
      * @param \Cake\Http\ServerRequest $request Request instance.
      */
-    protected static function marshalFiles(array $files, ServerRequest $request): ServerRequest
+    protected static function marshal_files(array $files, Server_Request $request): Server_Request
     {
-        $files = normalizeUploadedFiles($files);
-        $request = $request->withUploadedFiles($files);
-
-        $parsedBody = $request->getParsedBody();
-        if (!is_array($parsedBody)) {
+        $files = normalize_uploaded_files($files);
+        $request = $request->with_uploaded_files($files);
+        $parsed_body = $request->get_parsed_body();
+        if (!is_array($parsed_body)) {
             return $request;
         }
-
-        $parsedBody = Hash::merge($parsedBody, $files);
-
-        return $request->withParsedBody($parsedBody);
+        $parsed_body = Hash::merge($parsed_body, $files);
+        return $request->with_parsed_body($parsed_body);
     }
-
     /**
      * Create a new server request.
      *
@@ -168,16 +126,14 @@ class ServerRequestFactory implements ServerRequestFactoryInterface
      *     the generated request instance.
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
      */
-    public function createServerRequest(string $method, $uri, array $serverParams = []): ServerRequestInterface
+    public function create_server_request(string $method, $uri, array $server_params = []): Server_Request_Interface
     {
-        $serverParams['REQUEST_METHOD'] = $method;
-        $options = ['environment' => $serverParams];
-
+        $server_params['REQUEST_METHOD'] = $method;
+        $options = ['environment' => $server_params];
         if (is_string($uri)) {
-            $uri = (new UriFactory())->createUri($uri);
+            $uri = (new Uri_Factory())->create_uri($uri);
         }
         $options['uri'] = $uri;
-
-        return new ServerRequest($options);
+        return new Server_Request($options);
     }
 }

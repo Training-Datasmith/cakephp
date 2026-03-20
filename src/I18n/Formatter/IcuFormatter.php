@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,17 +14,15 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\I18n\Formatter;
 
-use Cake\I18n\Exception\I18nException;
-use Cake\I18n\FormatterInterface;
-use MessageFormatter;
-
+use Cake\I18n\Exception\I18n_Exception;
+use Cake\I18n\Formatter_Interface;
+use Message_Formatter;
 /**
  * A formatter that will interpolate variables using the MessageFormatter class
  */
-class IcuFormatter implements FormatterInterface
+class Icu_Formatter implements Formatter_Interface
 {
     /**
      * Returns a string with all passed variables interpolated into the original
@@ -37,18 +34,16 @@ class IcuFormatter implements FormatterInterface
      * @return string The formatted message
      * @throws \Cake\I18n\Exception\I18nException
      */
-    public function format(string $locale, string $message, array $tokenValues): string
+    public function format(string $locale, string $message, array $token_values): string
     {
         if ($message === '') {
             return $message;
         }
-
-        $formatter = new MessageFormatter($locale, $message);
-        $result = $formatter->format($tokenValues);
+        $formatter = new Message_Formatter($locale, $message);
+        $result = $formatter->format($token_values);
         if ($result === false) {
-            throw new I18nException($formatter->getErrorMessage(), $formatter->getErrorCode());
+            throw new I18n_Exception($formatter->get_error_message(), $formatter->get_error_code());
         }
-
         return $result;
     }
 }

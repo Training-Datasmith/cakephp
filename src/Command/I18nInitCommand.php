@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,39 +14,35 @@ declare(strict_types=1);
  * @since         1.2.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Command;
 
 use Cake\Console\Arguments;
-use Cake\Console\ConsoleIo;
-use Cake\Console\ConsoleOptionParser;
+use Cake\Console\Console_Io;
+use Cake\Console\Console_Option_Parser;
 use Cake\Core\App;
-use Cake\Core\Exception\CakeException;
+use Cake\Core\Exception\Cake_Exception;
 use Cake\Core\Plugin;
 use Cake\Utility\Inflector;
-use DirectoryIterator;
-
+use Directory_Iterator;
 /**
  * Command for interactive I18N management.
  */
-class I18nInitCommand extends Command
+class I18n_Init_Command extends Command
 {
     /**
      * @inheritDoc
      */
-    public static function defaultName(): string
+    public static function default_name(): string
     {
         return 'i18n init';
     }
-
     /**
      * @inheritDoc
      */
-    public static function getDescription(): string
+    public static function get_description(): string
     {
         return 'Initialize a language PO file from the POT file.';
     }
-
     /**
      * Execute the command
      *
@@ -55,70 +50,54 @@ class I18nInitCommand extends Command
      * @param \Cake\Console\ConsoleIo $io The console io
      * @return int|null The exit code or null for success
      */
-    public function execute(Arguments $args, ConsoleIo $io): ?int
+    public function execute(Arguments $args, Console_Io $io): ?int
     {
-        $language = $args->getArgument('language');
+        $language = $args->get_argument('language');
         if (!$language) {
             $language = $io->ask('Please specify language code, e.g. `en`, `eng`, `en_US` etc.');
         }
         if (strlen($language) < 2) {
             $io->error('Invalid language code. Valid is `en`, `eng`, `en_US` etc.');
-
             return static::CODE_ERROR;
         }
-
         $paths = array_values(App::path('locales'));
-        if ($args->hasOption('plugin')) {
-            $plugin = Inflector::camelize((string)$args->getOption('plugin'));
+        if ($args->has_option('plugin')) {
+            $plugin = Inflector::camelize((string) $args->get_option('plugin'));
             $paths = [Plugin::path($plugin) . 'resources' . DIRECTORY_SEPARATOR . 'locales' . DIRECTORY_SEPARATOR];
         }
-
         $response = $io->ask('What folder?', rtrim($paths[0], DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR);
-        $sourceFolder = rtrim($response, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
-        $targetFolder = $sourceFolder . $language . DIRECTORY_SEPARATOR;
-        if (!is_dir($targetFolder)) {
-            mkdir($targetFolder, 0777 ^ umask(), true);
+        $source_folder = rtrim($response, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+        $target_folder = $source_folder . $language . DIRECTORY_SEPARATOR;
+        if (!is_dir($target_folder)) {
+            mkdir($target_folder, 0777 ^ umask(), true);
         }
-
         $count = 0;
-        $iterator = new DirectoryIterator($sourceFolder);
-        foreach ($iterator as $fileInfo) {
-            if (!$fileInfo->isFile()) {
+        $iterator = new Directory_Iterator($source_folder);
+        foreach ($iterator as $file_info) {
+            if (!$file_info->is_file()) {
                 continue;
             }
-            $filename = $fileInfo->getFilename();
-            $newFilename = $fileInfo->getBasename('.pot');
-            $newFilename .= '.po';
-
-            $content = file_get_contents($sourceFolder . $filename);
+            $filename = $file_info->get_filename();
+            $new_filename = $file_info->get_basename('.pot');
+            $new_filename .= '.po';
+            $content = file_get_contents($source_folder . $filename);
             if ($content === false) {
-                throw new CakeException(sprintf('Cannot read file content of `%s`', $sourceFolder . $filename));
+                throw new Cake_Exception(sprintf('Cannot read file content of `%s`', $source_folder . $filename));
             }
-            $io->createFile($targetFolder . $newFilename, $content);
+            $io->create_file($target_folder . $new_filename, $content);
             $count++;
         }
-
-        $io->out('Generated ' . $count . ' PO files in ' . $targetFolder);
-
+        $io->out('Generated ' . $count . ' PO files in ' . $target_folder);
         return static::CODE_SUCCESS;
     }
-
     /**
      * Gets the option parser instance and configures it.
      *
      * @param \Cake\Console\ConsoleOptionParser $parser The parser to update
      */
-    public function buildOptionParser(ConsoleOptionParser $parser): ConsoleOptionParser
+    public function build_option_parser(Console_Option_Parser $parser): Console_Option_Parser
     {
-        $parser->setDescription(static::getDescription())
-           ->addOption('plugin', [
-               'help' => 'The plugin to create a PO file in.',
-               'short' => 'p',
-           ])
-           ->addArgument('language', [
-               'help' => 'Two-letter language code to create PO files for.',
-           ]);
-
+        $parser->set_description(static::get_description())->add_option('plugin', ['help' => 'The plugin to create a PO file in.', 'short' => 'p'])->add_argument('language', ['help' => 'Two-letter language code to create PO files for.']);
         return $parser;
     }
 }

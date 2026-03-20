@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,20 +14,18 @@ declare(strict_types=1);
  * @since         3.6.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Database\Retry;
 
-use Cake\Core\Retry\RetryStrategyInterface;
+use Cake\Core\Retry\Retry_Strategy_Interface;
 use Cake\Database\Connection;
 use Exception;
-
 /**
  * Makes sure the connection to the database is alive before authorizing
  * the retry of an action.
  *
  * @internal
  */
-class ReconnectStrategy implements RetryStrategyInterface
+class Reconnect_Strategy implements Retry_Strategy_Interface
 {
     /**
      * The list of error strings to match when looking for a disconnection error.
@@ -37,23 +34,7 @@ class ReconnectStrategy implements RetryStrategyInterface
      *
      * @var array<string>
      */
-    protected static array $causes = [
-        'gone away',
-        'Lost connection',
-        'Transaction() on null',
-        'closed the connection unexpectedly',
-        'closed unexpectedly',
-        'deadlock avoided',
-        'decryption failed or bad record mac',
-        'is dead or not enabled',
-        'no connection to the server',
-        'query_wait_timeout',
-        'reset by peer',
-        'terminate due to client_idle_limit',
-        'while sending',
-        'writing data to the connection',
-    ];
-
+    protected static array $causes = ['gone away', 'Lost connection', 'Transaction() on null', 'closed the connection unexpectedly', 'closed unexpectedly', 'deadlock avoided', 'decryption failed or bad record mac', 'is dead or not enabled', 'no connection to the server', 'query_wait_timeout', 'reset by peer', 'terminate due to client_idle_limit', 'while sending', 'writing data to the connection'];
     /**
      * Creates the ReconnectStrategy object by storing a reference to the
      * passed connection. This reference will be used to automatically
@@ -66,28 +47,25 @@ class ReconnectStrategy implements RetryStrategyInterface
          * The connection to check for validity
          */
         protected Connection $connection
-    ) {
+    )
+    {
     }
-
     /**
      * {@inheritDoc}
      *
      * Checks whether the exception was caused by a lost connection,
      * and returns true if it was able to successfully reconnect.
      */
-    public function shouldRetry(Exception $exception, int $retryCount): bool
+    public function should_retry(Exception $exception, int $retry_count): bool
     {
-        $message = $exception->getMessage();
-
+        $message = $exception->get_message();
         foreach (static::$causes as $cause) {
             if (str_contains($message, $cause)) {
                 return $this->reconnect();
             }
         }
-
         return false;
     }
-
     /**
      * Tries to re-establish the connection to the server, if it is safe to do so
      *
@@ -95,24 +73,18 @@ class ReconnectStrategy implements RetryStrategyInterface
      */
     protected function reconnect(): bool
     {
-        if ($this->connection->inTransaction()) {
+        if ($this->connection->in_transaction()) {
             // It is not safe to blindly reconnect in the middle of a transaction
             return false;
         }
-
         try {
             // Make sure we free any resources associated with the old connection
-            $this->connection->getDriver()->disconnect();
+            $this->connection->get_driver()->disconnect();
         } catch (Exception) {
         }
-
         try {
-            $this->connection->getDriver()->connect();
-            $this->connection->getDriver()->log(
-                'connection={connection} [RECONNECT]',
-                ['connection' => $this->connection->configName()],
-            );
-
+            $this->connection->get_driver()->connect();
+            $this->connection->get_driver()->log('connection={connection} [RECONNECT]', ['connection' => $this->connection->config_name()]);
             return true;
         } catch (Exception) {
             // If there was an error connecting again, don't report it back,

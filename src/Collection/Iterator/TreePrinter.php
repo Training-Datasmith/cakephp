@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,14 +14,12 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Collection\Iterator;
 
-use Cake\Collection\CollectionInterface;
-use Cake\Collection\CollectionTrait;
-use RecursiveIterator;
-use RecursiveIteratorIterator;
-
+use Cake\Collection\Collection_Interface;
+use Cake\Collection\Collection_Trait;
+use Recursive_Iterator;
+use Recursive_Iterator_Iterator;
 /**
  * Iterator for flattening elements in a tree structure while adding some
  * visual markers for their relative position in the tree
@@ -32,30 +29,26 @@ use RecursiveIteratorIterator;
  * @template-extends \RecursiveIteratorIterator<\RecursiveIterator<TKey, TValue>>
  * @implements \Cake\Collection\CollectionInterface<TKey, string>
  */
-class TreePrinter extends RecursiveIteratorIterator implements CollectionInterface
+class Tree_Printer extends Recursive_Iterator_Iterator implements Collection_Interface
 {
     /** @use \Cake\Collection\CollectionTrait<TKey, string> */
-    use CollectionTrait;
-
+    use Collection_Trait;
     /**
      * A callable to generate the iteration key
      *
      * @var callable
      */
     protected $_key;
-
     /**
      * A callable to extract the display value
      *
      * @var callable
      */
     protected $_value;
-
     /**
      * Cached value for the current iteration element
      */
     protected mixed $_current = null;
-
     /**
      * Constructor
      *
@@ -70,42 +63,38 @@ class TreePrinter extends RecursiveIteratorIterator implements CollectionInterfa
      * @phpstan-param \RecursiveIteratorIterator::LEAVES_ONLY|\RecursiveIteratorIterator::SELF_FIRST|\RecursiveIteratorIterator::CHILD_FIRST $mode
      */
     public function __construct(
-        RecursiveIterator $items,
-        callable|string $valuePath,
-        callable|string $keyPath,
+        Recursive_Iterator $items,
+        callable|string $value_path,
+        callable|string $key_path,
         /**
          * The string to use for prefixing the values according to their depth in the tree.
          */
         protected string $_spacer,
-        int $mode = RecursiveIteratorIterator::SELF_FIRST,
-    ) {
+        int $mode = Recursive_Iterator_Iterator::SELF_FIRST
+    )
+    {
         parent::__construct($items, $mode);
-        $this->_value = $this->_propertyExtractor($valuePath);
-        $this->_key = $this->_propertyExtractor($keyPath);
+        $this->_value = $this->_property_extractor($value_path);
+        $this->_key = $this->_property_extractor($key_path);
     }
-
     /**
      * Returns the current iteration key
      */
     public function key(): mixed
     {
         $extractor = $this->_key;
-
-        return $extractor($this->_fetchCurrent(), parent::key(), $this);
+        return $extractor($this->_fetch_current(), parent::key(), $this);
     }
-
     /**
      * Returns the current iteration value
      */
     public function current(): string
     {
         $extractor = $this->_value;
-        $current = $this->_fetchCurrent();
-        $spacer = str_repeat($this->_spacer, $this->getDepth());
-
+        $current = $this->_fetch_current();
+        $spacer = str_repeat($this->_spacer, $this->get_depth());
         return $spacer . $extractor($current, parent::key(), $this);
     }
-
     /**
      * Advances the cursor one position
      */
@@ -114,16 +103,14 @@ class TreePrinter extends RecursiveIteratorIterator implements CollectionInterfa
         parent::next();
         $this->_current = null;
     }
-
     /**
      * Returns the current iteration element and caches its value
      */
-    protected function _fetchCurrent(): mixed
+    protected function _fetch_current(): mixed
     {
         if ($this->_current !== null) {
             return $this->_current;
         }
-
         return $this->_current = parent::current();
     }
 }

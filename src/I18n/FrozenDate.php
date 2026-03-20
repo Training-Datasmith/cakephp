@@ -1,11 +1,7 @@
 <?php
 
-declare(strict_types=1);
-
-use function Cake\Core\deprecationWarning;
-
+declare (strict_types=1);
+use function Cake\Core\Deprecation_Warning;
 use Cake\I18n\Date;
-
-deprecationWarning('5.0.0', 'Cake\I18n\FrozenDate is deprecated. Use Cake\I18n\Date instead');
-
+deprecation_warning('5.0.0', 'Cake\I18n\FrozenDate is deprecated. Use Cake\I18n\Date instead');
 class_exists(Date::class);

@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,20 +14,18 @@ declare(strict_types=1);
  * @since         3.2.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Datasource;
 
 /**
  * Describes the methods that any class representing a data storage should
  * comply with.
  */
-interface InvalidPropertyInterface
+interface Invalid_Property_Interface
 {
     /**
      * Get a list of invalid fields and their data for errors upon validation/patching
      */
-    public function getInvalid(): array;
-
+    public function get_invalid(): array;
     /**
      * Set fields as invalid and not patchable into the entity.
      *
@@ -40,16 +37,14 @@ interface InvalidPropertyInterface
      * @param bool $overwrite Whether to overwrite pre-existing values for $field.
      * @return $this
      */
-    public function setInvalid(array $fields, bool $overwrite = false);
-
+    public function set_invalid(array $fields, bool $overwrite = false);
     /**
      * Get a single value of an invalid field. Returns null if not set.
      *
      * @param string $field The name of the field.
      * @return mixed|null
      */
-    public function getInvalidField(string $field): mixed;
-
+    public function get_invalid_field(string $field): mixed;
     /**
      * Sets a field as invalid and not patchable into the entity.
      *
@@ -57,5 +52,5 @@ interface InvalidPropertyInterface
      * @param mixed $value The invalid value to be set for $field.
      * @return $this
      */
-    public function setInvalidField(string $field, mixed $value);
+    public function set_invalid_field(string $field, mixed $value);
 }

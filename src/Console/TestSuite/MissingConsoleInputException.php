@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP :  Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -14,30 +13,24 @@ declare(strict_types=1);
  * @link          https://cakephp.org CakePHP Project
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
-namespace Cake\Console\TestSuite;
+namespace Cake\Console\Test_Suite;
 
 use RuntimeException;
-
 /**
  * Exception class used to indicate missing console input.
  */
-class MissingConsoleInputException extends RuntimeException
+class Missing_Console_Input_Exception extends RuntimeException
 {
     /**
      * Update the exception message with the question text
      *
      * @param string $question The question text.
      */
-    public function setQuestion(string $question): void
+    public function set_question(string $question): void
     {
         $this->message .= "\nThe question asked was: " . $question;
     }
 }
-
 // phpcs:disable
-class_alias(
-    \Cake\Console\TestSuite\MissingConsoleInputException::class,
-    'Cake\TestSuite\Stub\MissingConsoleInputException'
-);
+class_alias(\Cake\Console\Test_Suite\Missing_Console_Input_Exception::class, 'Cake\TestSuite\Stub\MissingConsoleInputException');
 // phpcs:enable

@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,11 +14,9 @@ declare(strict_types=1);
  * @since         3.1
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Datasource;
 
 use Closure;
-
 /**
  * The basis for every query object
  *
@@ -28,7 +25,7 @@ use Closure;
  * @method \Cake\Datasource\EntityInterface|array firstOrFail() Get the first result from the executing query or raise an exception.
  *   {@see \Cake\Database\Query::firstOrFail()}
  */
-interface QueryInterface
+interface Query_Interface
 {
     /**
      * Adds fields to be selected from datasource.
@@ -44,7 +41,6 @@ interface QueryInterface
      * @return $this
      */
     public function select(Closure|array|string|float|int $fields, bool $overwrite = false);
-
     /**
      * Returns a key => value array representing a single aliased field
      * that can be passed directly to the select() method.
@@ -57,8 +53,7 @@ interface QueryInterface
      * @param string|null $alias the alias used to prefix the field
      * @return array<string, string>
      */
-    public function aliasField(string $field, ?string $alias = null): array;
-
+    public function alias_field(string $field, ?string $alias = null): array;
     /**
      * Runs `aliasField()` for each field in the provided list and returns
      * the result under a single array.
@@ -67,8 +62,7 @@ interface QueryInterface
      * @param string|null $defaultAlias The default alias
      * @return array<int|string, string|\Cake\Database\Expression\IdentifierExpression>
      */
-    public function aliasFields(array $fields, ?string $defaultAlias = null): array;
-
+    public function alias_fields(array $fields, ?string $default_alias = null): array;
     /**
      * Fetch the results for this query.
      *
@@ -82,8 +76,7 @@ interface QueryInterface
      * @template TValue of mixed
      * @return \Cake\Datasource\ResultSetInterface<TKey, TValue>
      */
-    public function all(): ResultSetInterface;
-
+    public function all(): Result_Set_Interface;
     /**
      * Populates or adds parts to current query clauses using an array.
      * This is handy for passing all query clauses at once. The option array accepts:
@@ -123,8 +116,7 @@ interface QueryInterface
      * @param array<string, mixed> $options list of query clauses to apply new parts to.
      * @return $this
      */
-    public function applyOptions(array $options);
-
+    public function apply_options(array $options);
     /**
      * Apply custom finds to against an existing query object.
      *
@@ -142,7 +134,6 @@ interface QueryInterface
      * @return static Returns a modified query.
      */
     public function find(string $finder, mixed ...$args): static;
-
     /**
      * Returns the first result out of executing this query, if the query has not been
      * executed before, it will set the limit clause to 1 for performance reasons.
@@ -156,12 +147,10 @@ interface QueryInterface
      * @return mixed the first result from the ResultSet
      */
     public function first(): mixed;
-
     /**
      * Returns the total amount of results for the query.
      */
     public function count(): int;
-
     /**
      * Sets the number of records that should be retrieved from database,
      * accepts an integer or an expression object that evaluates to an integer.
@@ -179,7 +168,6 @@ interface QueryInterface
      * @return $this
      */
     public function limit(?int $limit);
-
     /**
      * Sets the number of records that should be skipped from the original result set
      * This is commonly used for paginating large results. Accepts an integer or an
@@ -199,7 +187,6 @@ interface QueryInterface
      * @return $this
      */
     public function offset(?int $offset);
-
     /**
      * Adds a single or multiple fields to be used in the ORDER clause for this query.
      * Fields can be passed as an array of strings, array of expression
@@ -251,7 +238,6 @@ interface QueryInterface
      * @deprecated 5.0.0 Use orderBy() instead now that CollectionInterface methods are no longer proxied.
      */
     public function order(Closure|array|string $fields, bool $overwrite = false);
-
     /**
      * Adds a single or multiple fields to be used in the ORDER clause for this query.
      * Fields can be passed as an array of strings, array of expression
@@ -301,8 +287,7 @@ interface QueryInterface
      * @param bool $overwrite whether to reset order with field list or not
      * @return $this
      */
-    public function orderBy(Closure|array|string $fields, bool $overwrite = false);
-
+    public function order_by(Closure|array|string $fields, bool $overwrite = false);
     /**
      * Set the page of results you want.
      *
@@ -319,12 +304,10 @@ interface QueryInterface
      * @throws \InvalidArgumentException If page number < 1.
      */
     public function page(int $num, ?int $limit = null);
-
     /**
      * Returns an array representation of the results after executing the query.
      */
-    public function toArray(): array;
-
+    public function to_array(): array;
     /**
      * Set the default Table object that will be used by this query
      * and form the `FROM` clause.
@@ -332,16 +315,14 @@ interface QueryInterface
      * @param \Cake\Datasource\RepositoryInterface $repository The default repository object to use
      * @return $this
      */
-    public function setRepository(RepositoryInterface $repository);
-
+    public function set_repository(Repository_Interface $repository);
     /**
      * Returns the default repository object that will be used by this query,
      * that is, the repository that will appear in the "from" clause.
      *
      * @return \Cake\Datasource\RepositoryInterface|null $repository The default repository object to use
      */
-    public function getRepository(): ?RepositoryInterface;
-
+    public function get_repository(): ?Repository_Interface;
     /**
      * Adds a condition or set of conditions to be used in the WHERE clause for this
      * query. Conditions can be expressed as an array of fields as keys with

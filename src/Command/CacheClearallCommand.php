@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,35 +14,31 @@ declare(strict_types=1);
  * @since         4.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Command;
 
 use Cake\Cache\Cache;
 use Cake\Console\Arguments;
-use Cake\Console\ConsoleIo;
-use Cake\Console\ConsoleOptionParser;
-
+use Cake\Console\Console_Io;
+use Cake\Console\Console_Option_Parser;
 /**
  * CacheClearall command.
  */
-class CacheClearallCommand extends Command
+class Cache_Clearall_Command extends Command
 {
     /**
      * Get the command name.
      */
-    public static function defaultName(): string
+    public static function default_name(): string
     {
         return 'cache clear_all';
     }
-
     /**
      * @inheritDoc
      */
-    public static function getDescription(): string
+    public static function get_description(): string
     {
         return 'Clear all data in all configured cache engines.';
     }
-
     /**
      * Hook method for defining this command's option parser.
      *
@@ -51,14 +46,12 @@ class CacheClearallCommand extends Command
      * @param \Cake\Console\ConsoleOptionParser $parser The parser to be defined
      * @return \Cake\Console\ConsoleOptionParser The built parser.
      */
-    public function buildOptionParser(ConsoleOptionParser $parser): ConsoleOptionParser
+    public function build_option_parser(Console_Option_Parser $parser): Console_Option_Parser
     {
-        $parser = parent::buildOptionParser($parser);
-        $parser->setDescription(static::getDescription());
-
+        $parser = parent::build_option_parser($parser);
+        $parser->set_description(static::get_description());
         return $parser;
     }
-
     /**
      * Implement this method with your command's logic.
      *
@@ -66,12 +59,11 @@ class CacheClearallCommand extends Command
      * @param \Cake\Console\ConsoleIo $io The console io
      * @return int|null The exit code or null for success
      */
-    public function execute(Arguments $args, ConsoleIo $io): ?int
+    public function execute(Arguments $args, Console_Io $io): ?int
     {
         foreach (Cache::configured() as $engine) {
-            $this->executeCommand(CacheClearCommand::class, [$engine], $io);
+            $this->execute_command(Cache_Clear_Command::class, [$engine], $io);
         }
-
         return static::CODE_SUCCESS;
     }
 }

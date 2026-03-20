@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,45 +14,30 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Database;
 
-use Cake\Database\Exception\DatabaseException;
-use Cake\Database\Expression\FunctionExpression;
-
+use Cake\Database\Exception\Database_Exception;
+use Cake\Database\Expression\Function_Expression;
 /**
  * Responsible for compiling a Query object into its SQL representation
  * for SQL Server
  *
  * @internal
  */
-class SqlserverCompiler extends QueryCompiler
+class Sqlserver_Compiler extends Query_Compiler
 {
     /**
      * {@inheritDoc}
      *
      * @var array<string, string>
      */
-    protected array $_templates = [
-        'delete' => 'DELETE',
-        'where' => ' WHERE %s',
-        'group' => ' GROUP BY %s',
-        'order' => ' %s',
-        'offset' => ' OFFSET %s ROWS',
-        'epilog' => ' %s',
-        'comment' => '/* %s */ ',
-    ];
-
+    protected array $_templates = ['delete' => 'DELETE', 'where' => ' WHERE %s', 'group' => ' GROUP BY %s', 'order' => ' %s', 'offset' => ' OFFSET %s ROWS', 'epilog' => ' %s', 'comment' => '/* %s */ '];
     /**
      * {@inheritDoc}
      *
      * @var array<string>
      */
-    protected array $_selectParts = [
-        'comment', 'with', 'select', 'from', 'join', 'where', 'group', 'having', 'window', 'order',
-        'offset', 'limit', 'union', 'epilog', 'intersect',
-    ];
-
+    protected array $_select_parts = ['comment', 'with', 'select', 'from', 'join', 'where', 'group', 'having', 'window', 'order', 'offset', 'limit', 'union', 'epilog', 'intersect'];
     /**
      * Helper function used to build the string representation of a `WITH` clause,
      * it constructs the CTE definitions list without generating the `RECURSIVE`
@@ -63,16 +47,14 @@ class SqlserverCompiler extends QueryCompiler
      * @param \Cake\Database\Query $query The query that is being compiled
      * @param \Cake\Database\ValueBinder $binder Value binder used to generate parameter placeholder
      */
-    protected function _buildWithPart(array $parts, Query $query, ValueBinder $binder): string
+    protected function _build_with_part(array $parts, Query $query, Value_Binder $binder): string
     {
         $expressions = [];
         foreach ($parts as $cte) {
             $expressions[] = $cte->sql($binder);
         }
-
         return sprintf('WITH %s ', implode(', ', $expressions));
     }
-
     /**
      * Generates the INSERT part of a SQL query
      *
@@ -84,41 +66,29 @@ class SqlserverCompiler extends QueryCompiler
      * @param \Cake\Database\Query $query The query that is being compiled
      * @param \Cake\Database\ValueBinder $binder Value binder used to generate parameter placeholder
      */
-    protected function _buildInsertPart(array $parts, Query $query, ValueBinder $binder): string
+    protected function _build_insert_part(array $parts, Query $query, Value_Binder $binder): string
     {
         if (!isset($parts[0])) {
-            throw new DatabaseException(
-                'Could not compile insert query. No table was specified. ' .
-                'Use `into()` to define a table.',
-            );
+            throw new Database_Exception('Could not compile insert query. No table was specified. ' . 'Use `into()` to define a table.');
         }
         $table = $parts[0];
-        $columns = $this->_stringifyExpressions($parts[1], $binder);
-        $modifiers = $this->_buildModifierPart($query->clause('modifier'), $query, $binder);
-
-        return sprintf(
-            'INSERT%s INTO %s (%s) OUTPUT INSERTED.*',
-            $modifiers,
-            $table,
-            implode(', ', $columns),
-        );
+        $columns = $this->_stringify_expressions($parts[1], $binder);
+        $modifiers = $this->_build_modifier_part($query->clause('modifier'), $query, $binder);
+        return sprintf('INSERT%s INTO %s (%s) OUTPUT INSERTED.*', $modifiers, $table, implode(', ', $columns));
     }
-
     /**
      * Generates the LIMIT part of a SQL query
      *
      * @param int $limit the limit clause
      * @param \Cake\Database\Query $query The query that is being compiled
      */
-    protected function _buildLimitPart(int $limit, Query $query): string
+    protected function _build_limit_part(int $limit, Query $query): string
     {
         if ($query->clause('offset') === null) {
             return '';
         }
-
         return sprintf(' FETCH FIRST %d ROWS ONLY', $limit);
     }
-
     /**
      * Helper function used to build the string representation of a HAVING clause,
      * it constructs the field list taking care of aliasing and
@@ -128,36 +98,24 @@ class SqlserverCompiler extends QueryCompiler
      * @param \Cake\Database\Query $query The query that is being compiled
      * @param \Cake\Database\ValueBinder $binder Value binder used to generate parameter placeholder
      */
-    protected function _buildHavingPart(array $parts, Query $query, ValueBinder $binder): string
+    protected function _build_having_part(array $parts, Query $query, Value_Binder $binder): string
     {
-        $selectParts = $query->clause('select');
-
-        foreach ($selectParts as $selectKey => $selectPart) {
-            if (!$selectPart instanceof FunctionExpression) {
+        $select_parts = $query->clause('select');
+        foreach ($select_parts as $select_key => $select_part) {
+            if (!$select_part instanceof Function_Expression) {
                 continue;
             }
             foreach ($parts as $k => $p) {
                 if (!is_string($p)) {
                     continue;
                 }
-                preg_match_all(
-                    '/\b' . trim((string) $selectKey, '[]') . '\b/i',
-                    $p,
-                    $matches,
-                );
-
+                preg_match_all('/\b' . trim((string) $select_key, '[]') . '\b/i', $p, $matches);
                 if (empty($matches[0])) {
                     continue;
                 }
-
-                $parts[$k] = preg_replace(
-                    ['/\[|\]/', '/\b' . trim((string) $selectKey, '[]') . '\b/i'],
-                    ['', $selectPart->sql($binder)],
-                    $p,
-                );
+                $parts[$k] = preg_replace(['/\[|\]/', '/\b' . trim((string) $select_key, '[]') . '\b/i'], ['', $select_part->sql($binder)], $p);
             }
         }
-
         return sprintf(' HAVING %s', implode(', ', $parts));
     }
 }

@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,17 +14,15 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Datasource;
 
 use Closure;
-use Psr\SimpleCache\CacheInterface;
-
+use Psr\Simple_Cache\Cache_Interface;
 /**
  * Describes the methods that any class representing a data storage should
  * comply with.
  */
-interface RepositoryInterface
+interface Repository_Interface
 {
     /**
      * Sets the repository alias.
@@ -33,13 +30,11 @@ interface RepositoryInterface
      * @param string $alias Table alias
      * @return $this
      */
-    public function setAlias(string $alias);
-
+    public function set_alias(string $alias);
     /**
      * Returns the repository alias.
      */
-    public function getAlias(): string;
-
+    public function get_alias(): string;
     /**
      * Alias a field with the repository's current alias.
      *
@@ -48,29 +43,25 @@ interface RepositoryInterface
      * @param string $field The field to alias.
      * @return string The field prefixed with the repository alias.
      */
-    public function aliasField(string $field): string;
-
+    public function alias_field(string $field): string;
     /**
      * Sets the table registry key used to create this table instance.
      *
      * @param string $registryAlias The key used to access this object.
      * @return $this
      */
-    public function setRegistryAlias(string $registryAlias);
-
+    public function set_registry_alias(string $registry_alias);
     /**
      * Returns the table registry key used to create this table instance.
      */
-    public function getRegistryAlias(): string;
-
+    public function get_registry_alias(): string;
     /**
      * Test to see if a Repository has a specific field/column.
      *
      * @param string $field The field to check for.
      * @return bool True if the field exists, false if it does not.
      */
-    public function hasField(string $field): bool;
-
+    public function has_field(string $field): bool;
     /**
      * Creates a new Query for this repository and applies some defaults based on the
      * type of search that was selected.
@@ -78,8 +69,7 @@ interface RepositoryInterface
      * @param string $type the type of query to perform
      * @param mixed ...$args Arguments that match up to finder-specific parameters
      */
-    public function find(string $type = 'all', mixed ...$args): QueryInterface;
-
+    public function find(string $type = 'all', mixed ...$args): Query_Interface;
     /**
      * Returns a single record after finding it by its primary key, if no record is
      * found this method throws an exception.
@@ -103,19 +93,11 @@ interface RepositoryInterface
      * could not be found
      * @see \Cake\Datasource\RepositoryInterface::find()
      */
-    public function get(
-        mixed $primaryKey,
-        array|string $finder = 'all',
-        CacheInterface|string|null $cache = null,
-        Closure|string|null $cacheKey = null,
-        mixed ...$args,
-    ): EntityInterface;
-
+    public function get(mixed $primary_key, array|string $finder = 'all', Cache_Interface|string|null $cache = null, Closure|string|null $cache_key = null, mixed ...$args): Entity_Interface;
     /**
      * Creates a new Query instance for this repository
      */
-    public function query(): QueryInterface;
-
+    public function query(): Query_Interface;
     /**
      * Update all matching records.
      *
@@ -128,8 +110,7 @@ interface RepositoryInterface
      * can take.
      * @return int Count Returns the affected rows.
      */
-    public function updateAll(Closure|array|string $fields, Closure|array|string|null $conditions): int;
-
+    public function update_all(Closure|array|string $fields, Closure|array|string|null $conditions): int;
     /**
      * Deletes all records matching the provided conditions.
      *
@@ -145,8 +126,7 @@ interface RepositoryInterface
      * @return int Returns the number of affected rows.
      * @see \Cake\Datasource\RepositoryInterface::delete()
      */
-    public function deleteAll(Closure|array|string|null $conditions): int;
-
+    public function delete_all(Closure|array|string|null $conditions): int;
     /**
      * Returns true if there is any record in this repository matching the specified
      * conditions.
@@ -154,7 +134,6 @@ interface RepositoryInterface
      * @param \Closure|array|string|null $conditions list of conditions to pass to the query
      */
     public function exists(Closure|array|string|null $conditions): bool;
-
     /**
      * Persists an entity based on the fields that are marked as dirty and
      * returns the same entity after a successful save or false in case
@@ -164,8 +143,7 @@ interface RepositoryInterface
      * @param array<string, mixed> $options The options to use when saving.
      * @return \Cake\Datasource\EntityInterface|false
      */
-    public function save(EntityInterface $entity, array $options = []): EntityInterface|false;
-
+    public function save(Entity_Interface $entity, array $options = []): Entity_Interface|false;
     /**
      * Delete a single entity.
      *
@@ -176,8 +154,7 @@ interface RepositoryInterface
      * @param array<string, mixed> $options The options for the delete.
      * @return bool success
      */
-    public function delete(EntityInterface $entity, array $options = []): bool;
-
+    public function delete(Entity_Interface $entity, array $options = []): bool;
     /**
      * This creates a new entity object.
      *
@@ -185,8 +162,7 @@ interface RepositoryInterface
      * This entity can be persisted without validation error as empty record.
      * Always patch in required fields before saving.
      */
-    public function newEmptyEntity(): EntityInterface;
-
+    public function new_empty_entity(): Entity_Interface;
     /**
      * Create a new entity + associated entities from an array.
      *
@@ -204,8 +180,7 @@ interface RepositoryInterface
      * @param array $data The data to build an entity with.
      * @param array<string, mixed> $options A list of options for the object hydration.
      */
-    public function newEntity(array $data, array $options = []): EntityInterface;
-
+    public function new_entity(array $data, array $options = []): Entity_Interface;
     /**
      * Create a list of entities + associated entities from an array.
      *
@@ -222,8 +197,7 @@ interface RepositoryInterface
      * @param array<string, mixed> $options A list of options for the objects hydration.
      * @return array<\Cake\Datasource\EntityInterface> An array of hydrated records.
      */
-    public function newEntities(array $data, array $options = []): array;
-
+    public function new_entities(array $data, array $options = []): array;
     /**
      * Merges the passed `$data` into `$entity` respecting the accessible
      * fields configured on the entity. Returns the same entity after being
@@ -240,8 +214,7 @@ interface RepositoryInterface
      * @param array $data key value list of fields to be merged into the entity
      * @param array<string, mixed> $options A list of options for the object hydration.
      */
-    public function patchEntity(EntityInterface $entity, array $data, array $options = []): EntityInterface;
-
+    public function patch_entity(Entity_Interface $entity, array $data, array $options = []): Entity_Interface;
     /**
      * Merges each of the elements passed in `$data` into the entities
      * found in `$entities` respecting the accessible fields configured on the entities.
@@ -260,5 +233,5 @@ interface RepositoryInterface
      * @param array<string, mixed> $options A list of options for the objects hydration.
      * @return array<\Cake\Datasource\EntityInterface>
      */
-    public function patchEntities(iterable $entities, array $data, array $options = []): array;
+    public function patch_entities(iterable $entities, array $data, array $options = []): array;
 }

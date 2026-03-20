@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) :  Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,16 +14,14 @@ declare(strict_types=1);
  * @since         2.4.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Log\Engine;
 
-use Cake\Log\Formatter\DefaultFormatter;
+use Cake\Log\Formatter\Default_Formatter;
 use Stringable;
-
 /**
  * Syslog stream for Logging. Writes logs to the system logger
  */
-class SyslogLog extends BaseLog
+class Syslog_Log extends Base_Log
 {
     /**
      * Default config for this class
@@ -53,39 +50,17 @@ class SyslogLog extends BaseLog
      *
      * @var array<string, mixed>
      */
-    protected array $_defaultConfig = [
-        'levels' => [],
-        'scopes' => [],
-        'flag' => LOG_ODELAY,
-        'prefix' => '',
-        'facility' => LOG_USER,
-        'formatter' => [
-            'className' => DefaultFormatter::class,
-            'includeDate' => false,
-        ],
-    ];
-
+    protected array $_default_config = ['levels' => [], 'scopes' => [], 'flag' => LOG_ODELAY, 'prefix' => '', 'facility' => LOG_USER, 'formatter' => ['className' => Default_Formatter::class, 'includeDate' => false]];
     /**
      * Used to map the string names back to their LOG_* constants
      *
      * @var array<int>
      */
-    protected array $_levelMap = [
-        'emergency' => LOG_EMERG,
-        'alert' => LOG_ALERT,
-        'critical' => LOG_CRIT,
-        'error' => LOG_ERR,
-        'warning' => LOG_WARNING,
-        'notice' => LOG_NOTICE,
-        'info' => LOG_INFO,
-        'debug' => LOG_DEBUG,
-    ];
-
+    protected array $_level_map = ['emergency' => LOG_EMERG, 'alert' => LOG_ALERT, 'critical' => LOG_CRIT, 'error' => LOG_ERR, 'warning' => LOG_WARNING, 'notice' => LOG_NOTICE, 'info' => LOG_INFO, 'debug' => LOG_DEBUG];
     /**
      * Whether the logger connection is open or not
      */
     protected bool $_open = false;
-
     /**
      * Writes a message to syslog
      *
@@ -105,18 +80,15 @@ class SyslogLog extends BaseLog
             $this->_open($config['prefix'], $config['flag'], $config['facility']);
             $this->_open = true;
         }
-
         $priority = LOG_DEBUG;
-        if (isset($this->_levelMap[$level])) {
-            $priority = $this->_levelMap[$level];
+        if (isset($this->_level_map[$level])) {
+            $priority = $this->_level_map[$level];
         }
-
         $lines = explode("\n", $this->interpolate($message, $context));
         foreach ($lines as $line) {
             $this->_write($priority, $this->formatter->format($level, $line, $context));
         }
     }
-
     /**
      * Extracts the call to openlog() in order to run unit tests on it. This function
      * will initialize the connection to the system logger
@@ -129,7 +101,6 @@ class SyslogLog extends BaseLog
     {
         openlog($ident, $options, $facility);
     }
-
     /**
      * Extracts the call to syslog() in order to run unit tests on it. This function
      * will perform the actual write operation in the system logger
@@ -141,7 +112,6 @@ class SyslogLog extends BaseLog
     {
         return syslog($priority, $message);
     }
-
     /**
      * Closes the logger connection
      */

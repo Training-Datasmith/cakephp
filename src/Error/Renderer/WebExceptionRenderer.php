@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,44 +14,36 @@ declare(strict_types=1);
  * @since         4.4.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Error\Renderer;
 
 use Cake\Controller\Controller;
-use Cake\Controller\ControllerFactory;
+use Cake\Controller\Controller_Factory;
 use Cake\Core\App;
 use Cake\Core\Configure;
 use Cake\Core\Container;
-
-use function Cake\Core\deprecationWarning;
-
-use Cake\Core\Exception\CakeException;
-use Cake\Core\Exception\HttpErrorCodeInterface;
-use Cake\Core\Exception\MissingPluginException;
-
+use function Cake\Core\Deprecation_Warning;
+use Cake\Core\Exception\Cake_Exception;
+use Cake\Core\Exception\Http_Error_Code_Interface;
+use Cake\Core\Exception\Missing_Plugin_Exception;
 use function Cake\Core\h;
-use function Cake\Core\namespaceSplit;
-
+use function Cake\Core\Namespace_Split;
 use Cake\Error\Debugger;
-use Cake\Error\ExceptionRendererInterface;
-use Cake\Http\Exception\HttpException;
+use Cake\Error\Exception_Renderer_Interface;
+use Cake\Http\Exception\Http_Exception;
 use Cake\Http\Response;
-use Cake\Http\ResponseEmitter;
-use Cake\Http\ServerRequest;
-use Cake\Http\ServerRequestFactory;
-
+use Cake\Http\Response_Emitter;
+use Cake\Http\Server_Request;
+use Cake\Http\Server_Request_Factory;
 use function Cake\I18n\__d;
-
 use Cake\Log\Log;
 use Cake\Routing\Router;
 use Cake\Utility\Inflector;
-use Cake\View\Exception\MissingLayoutException;
-use Cake\View\Exception\MissingTemplateException;
+use Cake\View\Exception\Missing_Layout_Exception;
+use Cake\View\Exception\Missing_Template_Exception;
 use PDOException;
-use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\Response_Interface;
 use ReflectionMethod;
 use Throwable;
-
 /**
  * Web Exception Renderer.
  *
@@ -70,23 +61,20 @@ use Throwable;
  * Using a subclass of WebExceptionRenderer gives you full control over how Exceptions are rendered, you
  * can configure your class in your config/app.php.
  */
-class WebExceptionRenderer implements ExceptionRendererInterface
+class Web_Exception_Renderer implements Exception_Renderer_Interface
 {
     /**
      * Controller instance.
      */
     protected Controller $controller;
-
     /**
      * Template to render for {@link \Cake\Core\Exception\CakeException}
      */
     protected string $template = '';
-
     /**
      * The method corresponding to the Exception this object is for.
      */
     protected string $method = '';
-
     /**
      * Map of exceptions to http status codes.
      *
@@ -97,8 +85,7 @@ class WebExceptionRenderer implements ExceptionRendererInterface
      * @deprecated 5.2.0 Exceptions returning HTTP error codes should extend
      *   HttpErrorCodeInterface instead of using this array.
      */
-    protected array $exceptionHttpCodes = [];
-
+    protected array $exception_http_codes = [];
     /**
      * Creates the controller to perform rendering on the error response.
      *
@@ -106,18 +93,20 @@ class WebExceptionRenderer implements ExceptionRendererInterface
      * @param \Cake\Http\ServerRequest|null $request The request if this is set it will be used
      *   instead of creating a new one.
      */
-    public function __construct(/**
-     * The exception being handled.
-     */
-        protected Throwable $error, /**
-     * If set, this will be request used to create the controller that will render
-     * the error.
-     */
-        protected ?ServerRequest $request = null
-    ) {
-        $this->controller = $this->_getController();
+    public function __construct(
+        /**
+         * The exception being handled.
+         */
+        protected Throwable $error,
+        /**
+         * If set, this will be request used to create the controller that will render
+         * the error.
+         */
+        protected ?Server_Request $request = null
+    )
+    {
+        $this->controller = $this->_get_controller();
     }
-
     /**
      * Get the controller instance to handle the exception.
      * Override this method in subclasses to customize the controller used.
@@ -126,66 +115,52 @@ class WebExceptionRenderer implements ExceptionRendererInterface
      *
      * @triggers Controller.startup $controller
      */
-    protected function _getController(): Controller
+    protected function _get_controller(): Controller
     {
         $request = $this->request;
-        $routerRequest = Router::getRequest();
+        $router_request = Router::get_request();
         // Fallback to the request in the router or make a new one from
         // $_SERVER
-        $request ??= $routerRequest ?: ServerRequestFactory::fromGlobals();
-
+        $request ??= $router_request ?: Server_Request_Factory::from_globals();
         // If the current request doesn't have routing data, but we
         // found a request in the router context copy the params over
-        if ($request->getParam('controller') === null && $routerRequest !== null) {
-            $request = $request->withAttribute('params', $routerRequest->getAttribute('params'));
+        if ($request->get_param('controller') === null && $router_request !== null) {
+            $request = $request->with_attribute('params', $router_request->get_attribute('params'));
         }
-
         $class = '';
         try {
             /** @var array $params */
-            $params = $request->getAttribute('params');
+            $params = $request->get_attribute('params');
             $params['controller'] = 'Error';
-
-            $factory = new ControllerFactory(new Container());
+            $factory = new Controller_Factory(new Container());
             // Check including plugin + prefix
-            $class = $factory->getControllerClass($request->withAttribute('params', $params));
-
+            $class = $factory->get_controller_class($request->with_attribute('params', $params));
             if (!$class && !empty($params['prefix']) && !empty($params['plugin'])) {
                 unset($params['prefix']);
                 // Fallback to only plugin
-                $class = $factory->getControllerClass($request->withAttribute('params', $params));
+                $class = $factory->get_controller_class($request->with_attribute('params', $params));
             }
-
             if (!$class) {
                 // Fallback to app/core provided controller.
                 /** @var string $class */
-                $class = App::className('Error', 'Controller', 'Controller');
+                $class = App::class_name('Error', 'Controller', 'Controller');
             }
-
             assert(is_subclass_of($class, Controller::class));
             $controller = new $class($request);
-            $controller->startupProcess();
+            $controller->startup_process();
         } catch (Throwable $e) {
-            Log::warning(
-                "Failed to construct or call startup() on the resolved controller class of `{$class}`. " .
-                    "Using Fallback Controller instead. Error {$e->getMessage()}" .
-                    "\nStack Trace\n: {$e->getTraceAsString()}",
-                'cake.error',
-            );
+            Log::warning("Failed to construct or call startup() on the resolved controller class of `{$class}`. " . "Using Fallback Controller instead. Error {$e->get_message()}" . "\nStack Trace\n: {$e->get_trace_as_string()}", 'cake.error');
             $controller = null;
         }
-
         if ($controller === null) {
             return new Controller($request);
         }
-
         return $controller;
     }
-
     /**
      * Clear output buffers so error pages display properly.
      */
-    protected function clearOutput(): void
+    protected function clear_output(): void
     {
         if (in_array(PHP_SAPI, ['cli', 'phpdbg'])) {
             return;
@@ -194,96 +169,71 @@ class WebExceptionRenderer implements ExceptionRendererInterface
             ob_end_clean();
         }
     }
-
     /**
      * Renders the response for the exception.
      *
      * @return \Psr\Http\Message\ResponseInterface The response to be sent.
      */
-    public function render(): ResponseInterface
+    public function render(): Response_Interface
     {
         $exception = $this->error;
-        $code = $this->getHttpCode($exception);
+        $code = $this->get_http_code($exception);
         $method = $this->_method($exception);
         $template = $this->_template($exception, $method, $code);
-        $this->clearOutput();
-
+        $this->clear_output();
         if (method_exists($this, $method)) {
-            return $this->_customMethod($method, $exception);
+            return $this->_custom_method($method, $exception);
         }
-
         $message = $this->_message($exception, $code);
-        $url = $this->controller->getRequest()->getRequestTarget();
-        $response = $this->controller->getResponse();
-
-        if ($exception instanceof HttpException) {
-            foreach ($exception->getHeaders() as $name => $value) {
-                $response = $response->withHeader($name, $value);
+        $url = $this->controller->get_request()->get_request_target();
+        $response = $this->controller->get_response();
+        if ($exception instanceof Http_Exception) {
+            foreach ($exception->get_headers() as $name => $value) {
+                $response = $response->with_header($name, $value);
             }
         }
-        $response = $response->withStatus($code);
-
+        $response = $response->with_status($code);
         $exceptions = [$exception];
-        $previous = $exception->getPrevious();
+        $previous = $exception->get_previous();
         while ($previous !== null) {
             $exceptions[] = $previous;
-            $previous = $previous->getPrevious();
+            $previous = $previous->get_previous();
         }
-
-        $viewVars = [
-            'message' => $message,
-            'url' => h($url),
-            'error' => $exception,
-            'exceptions' => $exceptions,
-            'code' => $code,
-        ];
+        $view_vars = ['message' => $message, 'url' => h($url), 'error' => $exception, 'exceptions' => $exceptions, 'code' => $code];
         $serialize = ['message', 'url', 'code'];
-
-        $isDebug = Configure::read('debug');
-        if ($isDebug) {
-            $trace = (array)Debugger::formatTrace($exception->getTrace(), [
-                'format' => 'array',
-                'args' => true,
-            ]);
-            $origin = [
-                'file' => $exception->getFile() ?: 'null',
-                'line' => $exception->getLine() ?: 'null',
-            ];
+        $is_debug = Configure::read('debug');
+        if ($is_debug) {
+            $trace = (array) Debugger::format_trace($exception->get_trace(), ['format' => 'array', 'args' => true]);
+            $origin = ['file' => $exception->get_file() ?: 'null', 'line' => $exception->get_line() ?: 'null'];
             // Traces don't include the origin file/line.
             array_unshift($trace, $origin);
-            $viewVars['trace'] = $trace;
-            $viewVars += $origin;
+            $view_vars['trace'] = $trace;
+            $view_vars += $origin;
             $serialize[] = 'file';
             $serialize[] = 'line';
         }
-        $this->controller->set($viewVars);
-        $this->controller->viewBuilder()->setOption('serialize', $serialize);
-
-        if ($exception instanceof CakeException && $isDebug) {
-            $this->controller->set($exception->getAttributes());
+        $this->controller->set($view_vars);
+        $this->controller->view_builder()->set_option('serialize', $serialize);
+        if ($exception instanceof Cake_Exception && $is_debug) {
+            $this->controller->set($exception->get_attributes());
         }
-        $this->controller->setResponse($response);
-
-        return $this->_outputMessage($template);
+        $this->controller->set_response($response);
+        return $this->_output_message($template);
     }
-
     /**
      * Emit the response content
      *
      * @param \Psr\Http\Message\ResponseInterface|string $output The response to output.
      */
-    public function write(ResponseInterface|string $output): void
+    public function write(Response_Interface|string $output): void
     {
         if (is_string($output)) {
             echo $output;
-
             return;
         }
-
-        $emitter = new ResponseEmitter();
+        $emitter = new Response_Emitter();
         $emitter->emit($output);
     }
-
     /**
      * Render a custom error method/template.
      *
@@ -291,17 +241,15 @@ class WebExceptionRenderer implements ExceptionRendererInterface
      * @param \Throwable $exception The exception to render.
      * @return \Cake\Http\Response The response to send.
      */
-    protected function _customMethod(string $method, Throwable $exception): Response
+    protected function _custom_method(string $method, Throwable $exception): Response
     {
         $result = $this->{$method}($exception);
         $this->_shutdown();
         if (is_string($result)) {
-            return $this->controller->getResponse()->withStringBody($result);
+            return $this->controller->get_response()->with_string_body($result);
         }
-
         return $result;
     }
-
     /**
      * Get method name
      *
@@ -309,18 +257,14 @@ class WebExceptionRenderer implements ExceptionRendererInterface
      */
     protected function _method(Throwable $exception): string
     {
-        [, $baseClass] = namespaceSplit($exception::class);
-
-        if (str_ends_with($baseClass, 'Exception')) {
-            $baseClass = substr($baseClass, 0, -9);
+        [, $base_class] = namespace_split($exception::class);
+        if (str_ends_with($base_class, 'Exception')) {
+            $base_class = substr($base_class, 0, -9);
         }
-
         // $baseClass would be an empty string if the exception class is \Exception.
-        $method = $baseClass === '' ? 'error500' : Inflector::variable($baseClass);
-
+        $method = $base_class === '' ? 'error500' : Inflector::variable($base_class);
         return $this->method = $method;
     }
-
     /**
      * Get error message.
      *
@@ -330,22 +274,16 @@ class WebExceptionRenderer implements ExceptionRendererInterface
      */
     protected function _message(Throwable $exception, int $code): string
     {
-        $message = $exception->getMessage();
-
-        if (
-            !Configure::read('debug') &&
-            !($exception instanceof HttpException)
-        ) {
+        $message = $exception->get_message();
+        if (!Configure::read('debug') && !$exception instanceof Http_Exception) {
             if ($code < 500) {
                 $message = __d('cake', 'Not Found');
             } else {
                 $message = __d('cake', 'An Internal Error Has Occurred.');
             }
         }
-
         return $message;
     }
-
     /**
      * Get template for rendering exception info.
      *
@@ -356,42 +294,31 @@ class WebExceptionRenderer implements ExceptionRendererInterface
      */
     protected function _template(Throwable $exception, string $method, int $code): string
     {
-        if ($exception instanceof HttpException || !Configure::read('debug')) {
+        if ($exception instanceof Http_Exception || !Configure::read('debug')) {
             return $this->template = $code < 500 ? 'error400' : 'error500';
         }
-
         if ($exception instanceof PDOException) {
             return $this->template = 'pdo_error';
         }
-
         return $this->template = $method;
     }
-
     /**
      * Gets the appropriate http status code for exception.
      *
      * @param \Throwable $exception Exception.
      * @return int A valid HTTP status code.
      */
-    protected function getHttpCode(Throwable $exception): int
+    protected function get_http_code(Throwable $exception): int
     {
-        if ($exception instanceof HttpErrorCodeInterface) {
-            return $exception->getCode();
+        if ($exception instanceof Http_Error_Code_Interface) {
+            return $exception->get_code();
         }
-
-        if (isset($this->exceptionHttpCodes[$exception::class])) {
-            deprecationWarning(
-                '5.2.0',
-                'Exceptions returning a HTTP error code should implement HttpErrorCodeInterface,'
-                . ' instead of using the WebExceptionRenderer::$exceptionHttpCodes property.',
-            );
-
-            return $this->exceptionHttpCodes[$exception::class];
+        if (isset($this->exception_http_codes[$exception::class])) {
+            deprecation_warning('5.2.0', 'Exceptions returning a HTTP error code should implement HttpErrorCodeInterface,' . ' instead of using the WebExceptionRenderer::$exceptionHttpCodes property.');
+            return $this->exception_http_codes[$exception::class];
         }
-
         return 500;
     }
-
     /**
      * Generate the response using the controller object.
      *
@@ -400,77 +327,51 @@ class WebExceptionRenderer implements ExceptionRendererInterface
      *   method matching the exception name.
      * @return \Cake\Http\Response A response object that can be sent.
      */
-    protected function _outputMessage(string $template, bool $skipControllerCheck = false): Response
+    protected function _output_message(string $template, bool $skip_controller_check = false): Response
     {
         try {
             $method = $this->method ?: $this->_method($this->error);
-
-            if (!$skipControllerCheck && method_exists($this->controller, $method)) {
-                $this->controller->viewBuilder()->setTemplate($method);
-
-                $reflectionMethod = new ReflectionMethod($this->controller, $method);
-                $result = $reflectionMethod->invoke($this->controller, $this->error);
-
+            if (!$skip_controller_check && method_exists($this->controller, $method)) {
+                $this->controller->view_builder()->set_template($method);
+                $reflection_method = new ReflectionMethod($this->controller, $method);
+                $result = $reflection_method->invoke($this->controller, $this->error);
                 if ($result instanceof Response) {
-                    $this->controller->setResponse($result);
+                    $this->controller->set_response($result);
                 } else {
                     $this->controller->render();
                 }
             } else {
                 $this->controller->render($template);
             }
-
             return $this->_shutdown();
-        } catch (MissingTemplateException $e) {
-            Log::warning(
-                "MissingTemplateException - Failed to render error template `{$template}` . Error: {$e->getMessage()}" .
-                    "\nStack Trace\n: {$e->getTraceAsString()}",
-                'cake.error',
-            );
-            $attributes = $e->getAttributes();
-            if (
-                $e instanceof MissingLayoutException ||
-                str_contains($attributes['file'], 'error500')
-            ) {
-                return $this->_outputMessageSafe('error500');
+        } catch (Missing_Template_Exception $e) {
+            Log::warning("MissingTemplateException - Failed to render error template `{$template}` . Error: {$e->get_message()}" . "\nStack Trace\n: {$e->get_trace_as_string()}", 'cake.error');
+            $attributes = $e->get_attributes();
+            if ($e instanceof Missing_Layout_Exception || str_contains($attributes['file'], 'error500')) {
+                return $this->_output_message_safe('error500');
             }
-
             // If we have a prefix/plugin and the template is error400 or error500,
             // try to render from the base Error directory before falling back to error500
-            if (
-                ($template === 'error400' || $template === 'error500') &&
-                ($this->controller->getRequest()->getParam('prefix') || $this->controller->getPlugin())
-            ) {
-                return $this->_outputMessageSafe($template);
+            if (($template === 'error400' || $template === 'error500') && ($this->controller->get_request()->get_param('prefix') || $this->controller->get_plugin())) {
+                return $this->_output_message_safe($template);
             }
-
-            return $this->_outputMessage('error500', true);
-        } catch (MissingPluginException $e) {
-            Log::warning(
-                "MissingPluginException - Failed to render error template `{$template}`. Error: {$e->getMessage()}" .
-                    "\nStack Trace\n: {$e->getTraceAsString()}",
-                'cake.error',
-            );
-            $attributes = $e->getAttributes();
-            if (isset($attributes['plugin']) && $attributes['plugin'] === $this->controller->getPlugin()) {
-                $this->controller->setPlugin(null);
+            return $this->_output_message('error500', true);
+        } catch (Missing_Plugin_Exception $e) {
+            Log::warning("MissingPluginException - Failed to render error template `{$template}`. Error: {$e->get_message()}" . "\nStack Trace\n: {$e->get_trace_as_string()}", 'cake.error');
+            $attributes = $e->get_attributes();
+            if (isset($attributes['plugin']) && $attributes['plugin'] === $this->controller->get_plugin()) {
+                $this->controller->set_plugin(null);
             }
-
-            return $this->_outputMessageSafe('error500');
+            return $this->_output_message_safe('error500');
         } catch (Throwable $outer) {
-            Log::warning(
-                "Throwable - Failed to render error template `{$template}`. Error: {$outer->getMessage()}" .
-                    "\nStack Trace\n: {$outer->getTraceAsString()}",
-                'cake.error',
-            );
+            Log::warning("Throwable - Failed to render error template `{$template}`. Error: {$outer->get_message()}" . "\nStack Trace\n: {$outer->get_trace_as_string()}", 'cake.error');
             try {
-                return $this->_outputMessageSafe('error500');
+                return $this->_output_message_safe('error500');
             } catch (Throwable) {
                 throw $outer;
             }
         }
     }
-
     /**
      * A safer way to render error messages, replaces all helpers, with basics
      * and doesn't call component methods.
@@ -478,23 +379,15 @@ class WebExceptionRenderer implements ExceptionRendererInterface
      * @param string $template The template to render.
      * @return \Cake\Http\Response A response object that can be sent.
      */
-    protected function _outputMessageSafe(string $template): Response
+    protected function _output_message_safe(string $template): Response
     {
-        $builder = $this->controller->viewBuilder();
-        $builder
-            ->setHelpers([])
-            ->setLayoutPath('')
-            ->setTemplatePath('Error');
-        $view = $this->controller->createView('View');
-
-        $response = $this->controller->getResponse()
-            ->withType('html')
-            ->withStringBody($view->render($template, 'error'));
-        $this->controller->setResponse($response);
-
+        $builder = $this->controller->view_builder();
+        $builder->set_helpers([])->set_layout_path('')->set_template_path('Error');
+        $view = $this->controller->create_view('View');
+        $response = $this->controller->get_response()->with_type('html')->with_string_body($view->render($template, 'error'));
+        $this->controller->set_response($response);
         return $response;
     }
-
     /**
      * Run the shutdown events.
      *
@@ -504,11 +397,9 @@ class WebExceptionRenderer implements ExceptionRendererInterface
      */
     protected function _shutdown(): Response
     {
-        $this->controller->dispatchEvent('Controller.shutdown');
-
-        return $this->controller->getResponse();
+        $this->controller->dispatch_event('Controller.shutdown');
+        return $this->controller->get_response();
     }
-
     /**
      * Returns an array that can be used to describe the internal state of this
      * object.
@@ -517,12 +408,6 @@ class WebExceptionRenderer implements ExceptionRendererInterface
      */
     public function __debugInfo(): array
     {
-        return [
-            'error' => $this->error,
-            'request' => $this->request,
-            'controller' => $this->controller,
-            'template' => $this->template,
-            'method' => $this->method,
-        ];
+        return ['error' => $this->error, 'request' => $this->request, 'controller' => $this->controller, 'template' => $this->template, 'method' => $this->method];
     }
 }

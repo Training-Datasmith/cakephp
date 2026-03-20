@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,15 +14,13 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Collection\Iterator;
 
 use ArrayIterator;
 use Cake\Collection\Collection;
-use Cake\Collection\CollectionInterface;
+use Cake\Collection\Collection_Interface;
 use Iterator;
 use Traversable;
-
 /**
  * Creates an iterator from another iterator that will verify a condition on each
  * step. If the condition evaluates to false, the iterator will not yield more
@@ -35,7 +32,7 @@ use Traversable;
  * @template TValue
  * @extends \Cake\Collection\Collection<TKey, TValue>
  */
-class StoppableIterator extends Collection
+class Stoppable_Iterator extends Collection
 {
     /**
      * The condition to evaluate for each item of the collection
@@ -43,12 +40,10 @@ class StoppableIterator extends Collection
      * @var callable
      */
     protected $_condition;
-
     /**
      * A reference to the internal iterator this object is wrapping.
      */
-    protected Traversable $_innerIterator;
-
+    protected Traversable $_inner_iterator;
     /**
      * Creates an iterator that can be stopped based on a condition provided by a callback.
      *
@@ -65,9 +60,8 @@ class StoppableIterator extends Collection
     {
         $this->_condition = $condition;
         parent::__construct($items);
-        $this->_innerIterator = $this->getInnerIterator();
+        $this->_inner_iterator = $this->get_inner_iterator();
     }
-
     /**
      * Evaluates the condition and returns its result, this controls
      * whether more results will be yielded.
@@ -77,42 +71,33 @@ class StoppableIterator extends Collection
         if (!parent::valid()) {
             return false;
         }
-
         $current = $this->current();
         $key = $this->key();
         $condition = $this->_condition;
-
-        return !$condition($current, $key, $this->_innerIterator);
+        return !$condition($current, $key, $this->_inner_iterator);
     }
-
     /**
      * @inheritDoc
      */
     public function unwrap(): Iterator
     {
-        $iterator = $this->_innerIterator;
-
-        if ($iterator instanceof CollectionInterface) {
+        $iterator = $this->_inner_iterator;
+        if ($iterator instanceof Collection_Interface) {
             $iterator = $iterator->unwrap();
         }
-
         if ($iterator::class !== ArrayIterator::class) {
             return $this;
         }
-
         // ArrayIterator can be traversed strictly.
         // Let's do that for performance gains
-
         $callback = $this->_condition;
         $res = [];
-
         foreach ($iterator as $k => $v) {
             if ($callback($v, $k, $iterator)) {
                 break;
             }
             $res[$k] = $v;
         }
-
         return new ArrayIterator($res);
     }
 }

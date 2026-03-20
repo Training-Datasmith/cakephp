@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,16 +14,14 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Database;
 
 use IteratorAggregate;
 use PDO;
-
 /**
  * @template-extends \IteratorAggregate<array>
  */
-interface StatementInterface extends IteratorAggregate
+interface Statement_Interface extends IteratorAggregate
 {
     /**
      * Maps to PDO::FETCH_NUM.
@@ -33,7 +30,6 @@ interface StatementInterface extends IteratorAggregate
      * @link https://www.php.net/manual/en/pdo.constants.php
      */
     public const FETCH_TYPE_NUM = 'num';
-
     /**
      * Maps to PDO::FETCH_ASSOC.
      *
@@ -41,7 +37,6 @@ interface StatementInterface extends IteratorAggregate
      * @link https://www.php.net/manual/en/pdo.constants.php
      */
     public const FETCH_TYPE_ASSOC = 'assoc';
-
     /**
      * Maps to PDO::FETCH_OBJ.
      *
@@ -49,7 +44,6 @@ interface StatementInterface extends IteratorAggregate
      * @link https://www.php.net/manual/en/pdo.constants.php
      */
     public const FETCH_TYPE_OBJ = 'obj';
-
     /**
      * Assign a value to a positional or named variable in prepared query. If using
      * positional variables you need to start with index one, if using named params then
@@ -69,15 +63,13 @@ interface StatementInterface extends IteratorAggregate
      * @param mixed $value The value to bind to variable in query
      * @param string|int|null $type name of configured Type class
      */
-    public function bindValue(string|int $column, mixed $value, string|int|null $type = 'string'): void;
-
+    public function bind_value(string|int $column, mixed $value, string|int|null $type = 'string'): void;
     /**
      * Closes the cursor, enabling the statement to be executed again.
      *
      * This behaves the same as `PDOStatement::closeCursor()`.
      */
-    public function closeCursor(): void;
-
+    public function close_cursor(): void;
     /**
      * Returns the number of columns in the result set.
      *
@@ -85,8 +77,7 @@ interface StatementInterface extends IteratorAggregate
      *
      * @link https://php.net/manual/en/pdostatement.columncount.php
      */
-    public function columnCount(): int;
-
+    public function column_count(): int;
     /**
      * Fetch the SQLSTATE associated with the last operation on the statement handle.
      *
@@ -94,8 +85,7 @@ interface StatementInterface extends IteratorAggregate
      *
      * @link https://www.php.net/manual/en/pdostatement.errorcode.php
      */
-    public function errorCode(): string;
-
+    public function error_code(): string;
     /**
      * Fetch extended error information associated with the last operation on the statement handle.
      *
@@ -103,8 +93,7 @@ interface StatementInterface extends IteratorAggregate
      *
      * @link https://www.php.net/manual/en/pdostatement.errorinfo.php
      */
-    public function errorInfo(): array;
-
+    public function error_info(): array;
     /**
      * Executes the statement by sending the SQL query to the database. It can optionally
      * take an array or arguments to be bound to the query variables. Please note
@@ -115,7 +104,6 @@ interface StatementInterface extends IteratorAggregate
      * @return bool true on success, false otherwise
      */
     public function execute(?array $params = null): bool;
-
     /**
      * Fetches the next row from a result set
      * and converts fields to types based on TypeMap.
@@ -128,7 +116,6 @@ interface StatementInterface extends IteratorAggregate
      * @link https://www.php.net/manual/en/pdo.constants.php
      */
     public function fetch(string|int $mode = PDO::FETCH_NUM): mixed;
-
     /**
      * Fetches the remaining rows from a result set
      * and converts fields to types based on TypeMap.
@@ -140,8 +127,7 @@ interface StatementInterface extends IteratorAggregate
      * @throws \InvalidArgumentException
      * @link https://www.php.net/manual/en/pdo.constants.php
      */
-    public function fetchAll(string|int $mode = PDO::FETCH_NUM): array;
-
+    public function fetch_all(string|int $mode = PDO::FETCH_NUM): array;
     /**
      * Fetches the next row from a result set using PDO::FETCH_NUM
      * and converts fields to types based on TypeMap.
@@ -151,8 +137,7 @@ interface StatementInterface extends IteratorAggregate
      *
      * @param int $position Column index in result row.
      */
-    public function fetchColumn(int $position): mixed;
-
+    public function fetch_column(int $position): mixed;
     /**
      * Fetches the next row from a result set using PDO::FETCH_ASSOC
      * and converts fields to types based on TypeMap.
@@ -160,8 +145,7 @@ interface StatementInterface extends IteratorAggregate
      * This behaves the same as `PDOStatement::fetch()` except an
      * empty array is returned instead of false.
      */
-    public function fetchAssoc(): array;
-
+    public function fetch_assoc(): array;
     /**
      * Returns the number of rows affected by the last SQL statement.
      *
@@ -169,8 +153,7 @@ interface StatementInterface extends IteratorAggregate
      *
      * @link https://www.php.net/manual/en/pdostatement.rowcount.php
      */
-    public function rowCount(): int;
-
+    public function row_count(): int;
     /**
      * Binds a set of values to statement object with corresponding type.
      *
@@ -178,22 +161,19 @@ interface StatementInterface extends IteratorAggregate
      * @param array $types list of types to be used, keys should match those in $params
      */
     public function bind(array $params, array $types): void;
-
     /**
      * Returns the latest primary inserted using this statement.
      *
      * @param string|null $table table name or sequence to get last insert value from
      * @param string|null $column the name of the column representing the primary key
      */
-    public function lastInsertId(?string $table = null, ?string $column = null): string|int;
-
+    public function last_insert_id(?string $table = null, ?string $column = null): string|int;
     /**
      * Returns prepared query string.
      */
-    public function queryString(): string;
-
+    public function query_string(): string;
     /**
      * Get the bound params.
      */
-    public function getBoundParams(): array;
+    public function get_bound_params(): array;
 }

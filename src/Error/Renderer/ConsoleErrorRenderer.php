@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,24 +14,20 @@ declare(strict_types=1);
  * @since         4.4.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Error\Renderer;
 
-use Cake\Console\ConsoleOutput;
-use Cake\Error\ErrorRendererInterface;
-use Cake\Error\PhpError;
-
+use Cake\Console\Console_Output;
+use Cake\Error\Error_Renderer_Interface;
+use Cake\Error\Php_Error;
 /**
  * Plain text error rendering with a stack trace.
  *
  * Writes to STDERR via a Cake\Console\ConsoleOutput instance for console environments
  */
-class ConsoleErrorRenderer implements ErrorRendererInterface
+class Console_Error_Renderer implements Error_Renderer_Interface
 {
-    protected ConsoleOutput $output;
-
+    protected Console_Output $output;
     protected bool $trace = false;
-
     /**
      * Constructor.
      *
@@ -45,10 +40,9 @@ class ConsoleErrorRenderer implements ErrorRendererInterface
      */
     public function __construct(array $config)
     {
-        $this->output = $config['stderr'] ?? new ConsoleOutput('php://stderr');
-        $this->trace = (bool)($config['trace'] ?? false);
+        $this->output = $config['stderr'] ?? new Console_Output('php://stderr');
+        $this->trace = (bool) ($config['trace'] ?? false);
     }
-
     /**
      * @inheritDoc
      */
@@ -56,25 +50,15 @@ class ConsoleErrorRenderer implements ErrorRendererInterface
     {
         $this->output->write($out);
     }
-
     /**
      * @inheritDoc
      */
-    public function render(PhpError $error, bool $debug): string
+    public function render(Php_Error $error, bool $debug): string
     {
         $trace = '';
         if ($this->trace) {
-            $trace = "\n<info>Stack Trace:</info>\n\n" . $error->getTraceAsString();
+            $trace = "\n<info>Stack Trace:</info>\n\n" . $error->get_trace_as_string();
         }
-
-        return sprintf(
-            '<error>%s: %s :: %s</error> on line %s of %s%s',
-            $error->getLabel(),
-            $error->getCode(),
-            $error->getMessage(),
-            $error->getLine() ?? '',
-            $error->getFile() ?? '',
-            $trace,
-        );
+        return sprintf('<error>%s: %s :: %s</error> on line %s of %s%s', $error->get_label(), $error->get_code(), $error->get_message(), $error->get_line() ?? '', $error->get_file() ?? '', $trace);
     }
 }

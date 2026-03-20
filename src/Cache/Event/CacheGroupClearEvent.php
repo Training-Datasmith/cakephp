@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,24 +14,20 @@ declare(strict_types=1);
  * @since         5.3.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Cache\Event;
 
-use Cake\Cache\CacheEngine;
+use Cake\Cache\Cache_Engine;
 use Cake\Event\Event;
-
 /**
  * Class GroupClearCache Event
  *
  * @template TEngine of \Cake\Cache\CacheEngine
  * @extends \Cake\Event\Event<TEngine>
  */
-class CacheGroupClearEvent extends Event
+class Cache_Group_Clear_Event extends Event
 {
     public const NAME = 'Cache.clearedGroup';
-
     protected string $group;
-
     /**
      * Constructor
      *
@@ -40,20 +35,18 @@ class CacheGroupClearEvent extends Event
      * @param TEngine $subject The Cache engine instance this event applies to.
      * @param array $data Any value you wish to be transported with this event to it can be read by listeners.
      */
-    public function __construct(string $name, CacheEngine $subject, array $data = [])
+    public function __construct(string $name, Cache_Engine $subject, array $data = [])
     {
         if (isset($data['group'])) {
             $this->group = $data['group'];
             unset($data['group']);
         }
-
         parent::__construct($name, $subject, $data);
     }
-
     /**
      * Get the group name
      */
-    public function getGroup(): string
+    public function get_group(): string
     {
         return $this->group;
     }

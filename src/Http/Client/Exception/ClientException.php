@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -14,15 +13,13 @@ declare(strict_types=1);
  * @since         4.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Http\Client\Exception;
 
-use Psr\Http\Client\ClientExceptionInterface;
+use Psr\Http\Client\Client_Exception_Interface;
 use RuntimeException;
-
 /**
  * Thrown when a request cannot be sent or response cannot be parsed into a PSR-7 response object.
  */
-class ClientException extends RuntimeException implements ClientExceptionInterface
+class Client_Exception extends RuntimeException implements Client_Exception_Interface
 {
 }

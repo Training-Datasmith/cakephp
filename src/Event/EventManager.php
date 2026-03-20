@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,56 +14,47 @@ declare(strict_types=1);
  * @since         2.1.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Event;
 
-use function Cake\Core\deprecationWarning;
-
-use Cake\Core\Exception\CakeException;
+use function Cake\Core\Deprecation_Warning;
+use Cake\Core\Exception\Cake_Exception;
 use Closure;
 use InvalidArgumentException;
 use ReflectionFunction;
-
 /**
  * The event manager is responsible for keeping track of event listeners, passing the correct
  * data to them, and firing them in the correct order, when associated events are triggered. You
  * can create multiple instances of this object to manage local events or keep a single instance
  * and pass it around to manage all events in your app.
  */
-class EventManager implements EventManagerInterface
+class Event_Manager implements Event_Manager_Interface
 {
     /**
      * The default priority queue value for new, attached listeners
      */
-    public static int $defaultPriority = 10;
-
+    public static int $default_priority = 10;
     /**
      * The globally available instance, used for dispatching events attached from any scope
      */
-    protected static ?EventManager $_generalManager = null;
-
+    protected static ?Event_Manager $_general_manager = null;
     /**
      * List of listener callbacks associated to
      */
     protected array $_listeners = [];
-
     /**
      * Internal flag to distinguish a common manager from the singleton
      */
-    protected bool $_isGlobal = false;
-
+    protected bool $_is_global = false;
     /**
      * The event list object.
      *
      * @var \Cake\Event\EventList<object>|null
      */
-    protected ?EventList $_eventList = null;
-
+    protected ?Event_List $_event_list = null;
     /**
      * Enables automatic adding of events to the event list object if it is present.
      */
-    protected bool $_trackEvents = false;
-
+    protected bool $_track_events = false;
     /**
      * Returns the globally available instance of a Cake\Event\EventManager
      * this is used for dispatching events attached from outside the scope
@@ -76,146 +66,112 @@ class EventManager implements EventManagerInterface
      * @param \Cake\Event\EventManager|null $manager Event manager instance.
      * @return \Cake\Event\EventManager The global event manager
      */
-    public static function instance(?EventManager $manager = null): EventManager
+    public static function instance(?Event_Manager $manager = null): Event_Manager
     {
-        if ($manager === null && static::$_generalManager) {
-            return static::$_generalManager;
+        if ($manager === null && static::$_general_manager) {
+            return static::$_general_manager;
         }
-
-        if ($manager instanceof EventManager) {
-            static::$_generalManager = $manager;
+        if ($manager instanceof Event_Manager) {
+            static::$_general_manager = $manager;
         }
-        static::$_generalManager ??= new static();
-        static::$_generalManager->_isGlobal = true;
-
-        return static::$_generalManager;
+        static::$_general_manager ??= new static();
+        static::$_general_manager->_is_global = true;
+        return static::$_general_manager;
     }
-
     /**
      * @inheritDoc
      */
-    public function on(
-        EventListenerInterface|string $eventKey,
-        callable|array $options = [],
-        ?callable $callable = null,
-    ): static {
-        if ($eventKey instanceof EventListenerInterface) {
-            $this->_attachSubscriber($eventKey);
-
+    public function on(Event_Listener_Interface|string $event_key, callable|array $options = [], ?callable $callable = null): static
+    {
+        if ($event_key instanceof Event_Listener_Interface) {
+            $this->_attach_subscriber($event_key);
             return $this;
         }
-
         if ($callable === null && !is_callable($options)) {
-            throw new InvalidArgumentException(
-                'Second argument of `EventManager::on()` must be a callable if `$callable` is null.',
-            );
+            throw new InvalidArgumentException('Second argument of `EventManager::on()` must be a callable if `$callable` is null.');
         }
-
         if ($callable === null) {
             /** @var callable $options */
-            $this->_listeners[$eventKey][static::$defaultPriority][] = [
-                'callable' => $options(...),
-            ];
-
+            $this->_listeners[$event_key][static::$default_priority][] = ['callable' => $options(...)];
             return $this;
         }
-
         /** @var array $options */
-        $priority = $options['priority'] ?? static::$defaultPriority;
-        $this->_listeners[$eventKey][$priority][] = [
-            'callable' => $callable(...),
-        ];
-
+        $priority = $options['priority'] ?? static::$default_priority;
+        $this->_listeners[$event_key][$priority][] = ['callable' => $callable(...)];
         return $this;
     }
-
     /**
      * Auxiliary function to attach all implemented callbacks of a Cake\Event\EventListenerInterface class instance
      * as individual methods on this manager
      *
      * @param \Cake\Event\EventListenerInterface $subscriber Event listener.
      */
-    protected function _attachSubscriber(EventListenerInterface $subscriber): void
+    protected function _attach_subscriber(Event_Listener_Interface $subscriber): void
     {
-        foreach ($subscriber->implementedEvents() as $eventKey => $handlers) {
-            foreach ($this->normalizeHandlers($subscriber, $handlers) as $handler) {
-                $this->on($eventKey, $handler['settings'], $handler['callable']);
+        foreach ($subscriber->implemented_events() as $event_key => $handlers) {
+            foreach ($this->normalize_handlers($subscriber, $handlers) as $handler) {
+                $this->on($event_key, $handler['settings'], $handler['callable']);
             }
         }
     }
-
     /**
      * @inheritDoc
      */
-    public function off(
-        EventListenerInterface|callable|string $eventKey,
-        EventListenerInterface|callable|null $callable = null,
-    ): static {
-        if ($eventKey instanceof EventListenerInterface) {
-            $this->_detachSubscriber($eventKey);
-
+    public function off(Event_Listener_Interface|callable|string $event_key, Event_Listener_Interface|callable|null $callable = null): static
+    {
+        if ($event_key instanceof Event_Listener_Interface) {
+            $this->_detach_subscriber($event_key);
             return $this;
         }
-
-        if (!is_string($eventKey)) {
+        if (!is_string($event_key)) {
             foreach (array_keys($this->_listeners) as $name) {
-                $this->off($name, $eventKey);
+                $this->off($name, $event_key);
             }
-
             return $this;
         }
-
-        if ($callable instanceof EventListenerInterface) {
-            $this->_detachSubscriber($callable, $eventKey);
-
+        if ($callable instanceof Event_Listener_Interface) {
+            $this->_detach_subscriber($callable, $event_key);
             return $this;
         }
-
         if ($callable === null) {
-            unset($this->_listeners[$eventKey]);
-
+            unset($this->_listeners[$event_key]);
             return $this;
         }
-
-        if (empty($this->_listeners[$eventKey])) {
+        if (empty($this->_listeners[$event_key])) {
             return $this;
         }
-
         $callable = $callable(...);
-        foreach ($this->_listeners[$eventKey] as $priority => $callables) {
+        foreach ($this->_listeners[$event_key] as $priority => $callables) {
             foreach ($callables as $k => $callback) {
                 if ($callback['callable'] == $callable) {
-                    unset($this->_listeners[$eventKey][$priority][$k]);
+                    unset($this->_listeners[$event_key][$priority][$k]);
                     break;
                 }
             }
         }
-
         return $this;
     }
-
     /**
      * Auxiliary function to help detach all listeners provided by an object implementing EventListenerInterface
      *
      * @param \Cake\Event\EventListenerInterface $subscriber the subscriber to be detached
      * @param string|null $eventKey optional event key name to unsubscribe the listener from
      */
-    protected function _detachSubscriber(EventListenerInterface $subscriber, ?string $eventKey = null): void
+    protected function _detach_subscriber(Event_Listener_Interface $subscriber, ?string $event_key = null): void
     {
-        $events = $subscriber->implementedEvents();
-        if ($eventKey && empty($events[$eventKey])) {
+        $events = $subscriber->implemented_events();
+        if ($event_key && empty($events[$event_key])) {
             return;
         }
-        if ($eventKey) {
-            $events = [$eventKey => $events[$eventKey]];
+        if ($event_key) {
+            $events = [$event_key => $events[$event_key]];
         }
         foreach ($events as $key => $handlers) {
-            foreach ($this->normalizeHandlers($subscriber, $handlers) as $handler) {
+            foreach ($this->normalize_handlers($subscriber, $handlers) as $handler) {
                 $this->off($key, $handler['callable']);
             }
         }
     }
-
     /**
      * Builds an array of normalized handlers.
      *
@@ -227,22 +183,17 @@ class EventManager implements EventManagerInterface
      * @param \Cake\Event\EventListenerInterface $subscriber Event subscriber
      * @param callable|array|string $handlers Event handlers
      */
-    protected function normalizeHandlers(
-        EventListenerInterface $subscriber,
-        callable|array|string $handlers,
-    ): array {
+    protected function normalize_handlers(Event_Listener_Interface $subscriber, callable|array|string $handlers): array
+    {
         // Check if an array of handlers not single handler config array
         if (is_array($handlers) && !isset($handlers['callable'])) {
             foreach ($handlers as &$handler) {
-                $handler = $this->normalizeHandler($subscriber, $handler);
+                $handler = $this->normalize_handler($subscriber, $handler);
             }
-
             return $handlers;
         }
-
-        return [$this->normalizeHandler($subscriber, $handlers)];
+        return [$this->normalize_handler($subscriber, $handlers)];
     }
-
     /**
      * Builds a single normalized handler.
      *
@@ -254,60 +205,46 @@ class EventManager implements EventManagerInterface
      * @param \Cake\Event\EventListenerInterface $subscriber Event subscriber
      * @param callable|array|string $handler Event handler
      */
-    protected function normalizeHandler(
-        EventListenerInterface $subscriber,
-        callable|array|string $handler,
-    ): array {
+    protected function normalize_handler(Event_Listener_Interface $subscriber, callable|array|string $handler): array
+    {
         $callable = $handler;
         $settings = [];
-
         if (is_array($handler)) {
             $callable = $handler['callable'];
             $settings = $handler;
             unset($settings['callable']);
         }
-
         if (is_string($callable)) {
-            $callable = $subscriber->$callable(...);
+            $callable = $subscriber->{$callable}(...);
         }
-
         return ['callable' => $callable, 'settings' => $settings];
     }
-
     /**
      * @inheritDoc
      */
-    public function dispatch(EventInterface|string $event): EventInterface
+    public function dispatch(Event_Interface|string $event): Event_Interface
     {
         if (is_string($event)) {
             $event = new Event($event);
         }
-
-        $listeners = $this->listeners($event->getName());
-
-        if ($this->_trackEvents) {
-            $this->addEventToList($event);
+        $listeners = $this->listeners($event->get_name());
+        if ($this->_track_events) {
+            $this->add_event_to_list($event);
         }
-
-        if (!$this->_isGlobal && static::instance()->isTrackingEvents()) {
-            static::instance()->addEventToList($event);
+        if (!$this->_is_global && static::instance()->is_tracking_events()) {
+            static::instance()->add_event_to_list($event);
         }
-
         if (!$listeners) {
             return $event;
         }
-
         foreach ($listeners as $listener) {
-            if ($event->isStopped()) {
+            if ($event->is_stopped()) {
                 break;
             }
-
-            $this->_callListener($listener['callable'], $event);
+            $this->_call_listener($listener['callable'], $event);
         }
-
         return $event;
     }
-
     /**
      * Calls a listener.
      *
@@ -315,108 +252,85 @@ class EventManager implements EventManagerInterface
      * @param callable $listener The listener to trigger.
      * @param \Cake\Event\EventInterface<TSubject> $event Event instance.
      */
-    protected function _callListener(callable $listener, EventInterface $event): void
+    protected function _call_listener(callable $listener, Event_Interface $event): void
     {
-        $result = $listener($event, ...array_values($event->getData()));
-
+        $result = $listener($event, ...array_values($event->get_data()));
         if ($result !== null) {
             try {
-                $class = $event->getSubject()::class;
-            } catch (CakeException) {
+                $class = $event->get_subject()::class;
+            } catch (Cake_Exception) {
                 $class = 'unknown subject';
             }
-
             if ($listener instanceof Closure) {
                 $ref = new ReflectionFunction($listener);
-                $closureClass = $ref->getClosureScopeClass();
-                $closureMethod = $ref->getName();
-                if ($closureClass && $closureClass->name && $closureMethod) {
-                    $class = $closureClass->name . '::' . $closureMethod . '()';
+                $closure_class = $ref->get_closure_scope_class();
+                $closure_method = $ref->get_name();
+                if ($closure_class && $closure_class->name && $closure_method) {
+                    $class = $closure_class->name . '::' . $closure_method . '()';
                 }
             }
-
-            deprecationWarning(
-                '5.2.0',
-                'Returning a value from event listeners is deprecated. ' .
-                'Use `$event->setResult()` instead in `' . $event->getName() . '` of `' . $class . '`',
-            );
-            $event->setResult($result);
+            deprecation_warning('5.2.0', 'Returning a value from event listeners is deprecated. ' . 'Use `$event->setResult()` instead in `' . $event->get_name() . '` of `' . $class . '`');
+            $event->set_result($result);
         }
-
-        if ($event->getResult() === false) {
-            $event->stopPropagation();
+        if ($event->get_result() === false) {
+            $event->stop_propagation();
         }
     }
-
     /**
      * @inheritDoc
      */
-    public function listeners(string $eventKey): array
+    public function listeners(string $event_key): array
     {
-        $localListeners = [];
-        if (!$this->_isGlobal) {
-            $localListeners = $this->prioritisedListeners($eventKey);
+        $local_listeners = [];
+        if (!$this->_is_global) {
+            $local_listeners = $this->prioritised_listeners($event_key);
         }
-        $globalListeners = static::instance()->prioritisedListeners($eventKey);
-
-        $priorities = array_merge(array_keys($globalListeners), array_keys($localListeners));
+        $global_listeners = static::instance()->prioritised_listeners($event_key);
+        $priorities = array_merge(array_keys($global_listeners), array_keys($local_listeners));
         $priorities = array_unique($priorities);
         asort($priorities);
-
         $result = [];
         foreach ($priorities as $priority) {
-            if (isset($globalListeners[$priority])) {
-                $result = array_merge($result, $globalListeners[$priority]);
+            if (isset($global_listeners[$priority])) {
+                $result = array_merge($result, $global_listeners[$priority]);
             }
-            if (isset($localListeners[$priority])) {
-                $result = array_merge($result, $localListeners[$priority]);
+            if (isset($local_listeners[$priority])) {
+                $result = array_merge($result, $local_listeners[$priority]);
             }
         }
-
         return $result;
     }
-
     /**
      * Returns the listeners for the specified event key indexed by priority
      *
      * @param string $eventKey Event key.
      */
-    public function prioritisedListeners(string $eventKey): array
+    public function prioritised_listeners(string $event_key): array
     {
-        if (empty($this->_listeners[$eventKey])) {
+        if (empty($this->_listeners[$event_key])) {
             return [];
         }
-
-        return $this->_listeners[$eventKey];
+        return $this->_listeners[$event_key];
     }
-
     /**
      * Returns the listeners matching a specified pattern
      *
      * @param string $eventKeyPattern Pattern to match.
      */
-    public function matchingListeners(string $eventKeyPattern): array
+    public function matching_listeners(string $event_key_pattern): array
     {
-        $matchPattern = '/' . preg_quote($eventKeyPattern, '/') . '/';
-
-        return array_intersect_key(
-            $this->_listeners,
-            array_flip(
-                preg_grep($matchPattern, array_keys($this->_listeners), 0) ?: [],
-            ),
-        );
+        $match_pattern = '/' . preg_quote($event_key_pattern, '/') . '/';
+        return array_intersect_key($this->_listeners, array_flip(preg_grep($match_pattern, array_keys($this->_listeners), 0) ?: []));
     }
-
     /**
      * Returns the event list.
      *
      * @return \Cake\Event\EventList<object>|null
      */
-    public function getEventList(): ?EventList
+    public function get_event_list(): ?Event_List
     {
-        return $this->_eventList;
+        return $this->_event_list;
     }
-
     /**
      * Adds an event to the list if the event list object is present.
      *
@@ -424,61 +338,52 @@ class EventManager implements EventManagerInterface
      * @param \Cake\Event\EventInterface<TSubject> $event An event to add to the list.
      * @return $this
      */
-    public function addEventToList(EventInterface $event): static
+    public function add_event_to_list(Event_Interface $event): static
     {
-        $this->_eventList?->add($event);
-
+        $this->_event_list?->add($event);
         return $this;
     }
-
     /**
      * Enables / disables event tracking at runtime.
      *
      * @param bool $enabled True or false to enable / disable it.
      * @return $this
      */
-    public function trackEvents(bool $enabled): static
+    public function track_events(bool $enabled): static
     {
-        $this->_trackEvents = $enabled;
-
+        $this->_track_events = $enabled;
         return $this;
     }
-
     /**
      * Returns whether this manager is set up to track events
      */
-    public function isTrackingEvents(): bool
+    public function is_tracking_events(): bool
     {
-        return $this->_trackEvents && $this->_eventList;
+        return $this->_track_events && $this->_event_list;
     }
-
     /**
      * Enables the listing of dispatched events.
      *
      * @param \Cake\Event\EventList<object> $eventList The event list object to use.
      * @return $this
      */
-    public function setEventList(EventList $eventList): static
+    public function set_event_list(Event_List $event_list): static
     {
-        $this->_eventList = $eventList;
-        $this->_trackEvents = true;
-
+        $this->_event_list = $event_list;
+        $this->_track_events = true;
         return $this;
     }
-
     /**
      * Disables the listing of dispatched events.
      *
      * @return $this
      */
-    public function unsetEventList(): static
+    public function unset_event_list(): static
     {
-        $this->_eventList = null;
-        $this->_trackEvents = false;
-
+        $this->_event_list = null;
+        $this->_track_events = false;
         return $this;
     }
-
     /**
      * Debug friendly object properties.
      *
@@ -490,26 +395,25 @@ class EventManager implements EventManagerInterface
         $properties['_generalManager'] = '(object) EventManager';
         $properties['_listeners'] = [];
         foreach ($this->_listeners as $key => $priorities) {
-            $listenerCount = 0;
+            $listener_count = 0;
             foreach ($priorities as $listeners) {
-                $listenerCount += count($listeners);
+                $listener_count += count($listeners);
             }
-            $properties['_listeners'][$key] = $listenerCount . ' listener(s)';
+            $properties['_listeners'][$key] = $listener_count . ' listener(s)';
         }
-        if ($this->_eventList !== null) {
-            foreach ($this->_eventList as $event) {
+        if ($this->_event_list !== null) {
+            foreach ($this->_event_list as $event) {
                 try {
-                    $subject = $event->getSubject();
-                    $properties['_dispatchedEvents'][] = $event->getName() . ' with subject ' . $subject::class;
-                } catch (CakeException) {
-                    $properties['_dispatchedEvents'][] = $event->getName() . ' with no subject';
+                    $subject = $event->get_subject();
+                    $properties['_dispatchedEvents'][] = $event->get_name() . ' with subject ' . $subject::class;
+                } catch (Cake_Exception) {
+                    $properties['_dispatchedEvents'][] = $event->get_name() . ' with no subject';
                 }
             }
         } else {
             $properties['_dispatchedEvents'] = null;
         }
         unset($properties['_eventList']);
-
         return $properties;
     }
 }

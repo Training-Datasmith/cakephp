@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,17 +14,15 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Collection;
 
 use ArrayAccess;
 use Closure;
-
 /**
  * Provides utility protected methods for extracting a property or column
  * from an array or object.
  */
-trait ExtractTrait
+trait Extract_Trait
 {
     /**
      * Returns a callable that can be used to extract a property or column from
@@ -35,27 +32,22 @@ trait ExtractTrait
      * so that the final one can be returned or a callable that will take care
      * of doing that.
      */
-    protected function _propertyExtractor(callable|string $path): Closure
+    protected function _property_extractor(callable|string $path): Closure
     {
         if (!is_string($path)) {
             return $path(...);
         }
-
         $parts = explode('.', $path);
-
         if (str_contains($path, '{*}')) {
-            return fn ($element) => $this->_extract($element, $parts);
+            return fn($element) => $this->_extract($element, $parts);
         }
-
         return function ($element) use ($parts) {
             if (!is_array($element) && !$element instanceof ArrayAccess) {
                 return null;
             }
-
-            return $this->_simpleExtract($element, $parts);
+            return $this->_simple_extract($element, $parts);
         };
     }
-
     /**
      * Returns a column from $data that can be extracted
      * by iterating over the column names contained in $path.
@@ -67,38 +59,27 @@ trait ExtractTrait
     protected function _extract(ArrayAccess|array $data, array $parts): mixed
     {
         $value = null;
-        $collectionTransform = false;
-
+        $collection_transform = false;
         foreach ($parts as $i => $column) {
             if ($column === '{*}') {
-                $collectionTransform = true;
+                $collection_transform = true;
                 continue;
             }
-
-            if (
-                $collectionTransform &&
-                !is_iterable($data)
-            ) {
+            if ($collection_transform && !is_iterable($data)) {
                 return null;
             }
-
-            if ($collectionTransform) {
+            if ($collection_transform) {
                 $rest = implode('.', array_slice($parts, $i));
-
                 return (new Collection($data))->extract($rest);
             }
-
             if (!isset($data[$column])) {
                 return null;
             }
-
             $value = $data[$column];
             $data = $value;
         }
-
         return $value;
     }
-
     /**
      * Returns a column from $data that can be extracted
      * by iterating over the column names contained in $path
@@ -106,7 +87,7 @@ trait ExtractTrait
      * @param \ArrayAccess<string|int, mixed>|array $data Data.
      * @param array<string> $parts Path to extract from.
      */
-    protected function _simpleExtract(ArrayAccess|array $data, array $parts): mixed
+    protected function _simple_extract(ArrayAccess|array $data, array $parts): mixed
     {
         $value = null;
         foreach ($parts as $column) {
@@ -116,10 +97,8 @@ trait ExtractTrait
             $value = $data[$column];
             $data = $value;
         }
-
         return $value;
     }
-
     /**
      * Returns a callable that receives a value and will return whether
      * it matches certain condition.
@@ -128,21 +107,19 @@ trait ExtractTrait
      * key is the property path to get from the current item and the value is the
      * value to be compared the item with.
      */
-    protected function _createMatcherFilter(array $conditions): Closure
+    protected function _create_matcher_filter(array $conditions): Closure
     {
         $matchers = [];
         foreach ($conditions as $property => $value) {
-            $extractor = $this->_propertyExtractor($property);
-            $matchers[] = (fn ($v): bool => $extractor($v) == $value);
+            $extractor = $this->_property_extractor($property);
+            $matchers[] = fn($v): bool => $extractor($v) == $value;
         }
-
         return function ($value) use ($matchers): bool {
             foreach ($matchers as $match) {
                 if (!$match($value)) {
                     return false;
                 }
             }
-
             return true;
         };
     }

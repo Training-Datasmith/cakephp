@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,20 +14,18 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Database\Log;
 
-use Cake\Log\Engine\BaseLog;
+use Cake\Log\Engine\Base_Log;
 use Cake\Log\Log;
 use Stringable;
-
 /**
  * This class is a bridge used to write LoggedQuery objects into a real log.
  * by default this class use the built-in CakePHP Log class to accomplish this
  *
  * @internal
  */
-class QueryLogger extends BaseLog
+class Query_Logger extends Base_Log
 {
     /**
      * Constructor.
@@ -37,27 +34,20 @@ class QueryLogger extends BaseLog
      */
     public function __construct(array $config = [])
     {
-        $this->_defaultConfig['scopes'] = ['queriesLog', 'cake.database.queries'];
-        $this->_defaultConfig['connection'] = '';
-
+        $this->_default_config['scopes'] = ['queriesLog', 'cake.database.queries'];
+        $this->_default_config['connection'] = '';
         parent::__construct($config);
     }
-
     /**
      * @inheritDoc
      */
     public function log($level, string|Stringable $message, array $context = []): void
     {
-        $context += [
-            'scope' => $this->scopes() ?: ['queriesLog', 'cake.database.queries'],
-            'connection' => $this->getConfig('connection'),
-            'query' => null,
-        ];
-
-        if ($context['query'] instanceof LoggedQuery) {
-            $context = $context['query']->getContext() + $context;
+        $context += ['scope' => $this->scopes() ?: ['queriesLog', 'cake.database.queries'], 'connection' => $this->get_config('connection'), 'query' => null];
+        if ($context['query'] instanceof Logged_Query) {
+            $context = $context['query']->get_context() + $context;
             $message = 'connection={connection} role={role} duration={took} rows={numRows} ' . $message;
         }
-        Log::write('debug', (string)$message, $context);
+        Log::write('debug', (string) $message, $context);
     }
 }

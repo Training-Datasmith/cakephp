@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,46 +14,40 @@ declare(strict_types=1);
  * @since         3.3.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Event\Decorator;
 
-use Cake\Event\EventInterface;
+use Cake\Event\Event_Interface;
 use InvalidArgumentException;
-
 /**
  * Event Condition Decorator
  *
  * Use this decorator to allow your event listener to only
  * be invoked if the `if` and/or `unless` conditions pass.
  */
-class ConditionDecorator extends AbstractDecorator
+class Condition_Decorator extends Abstract_Decorator
 {
     /**
      * @inheritDoc
      */
     public function __invoke(mixed ...$args): mixed
     {
-        if (!$this->canTrigger($args[0])) {
+        if (!$this->can_trigger($args[0])) {
             return null;
         }
-
         return $this->_call($args);
     }
-
     /**
      * Checks if the event is triggered for this listener.
      *
      * @template TSubject of object
      * @param \Cake\Event\EventInterface<TSubject> $event Event object.
      */
-    public function canTrigger(EventInterface $event): bool
+    public function can_trigger(Event_Interface $event): bool
     {
-        $if = $this->_evaluateCondition('if', $event);
-        $unless = $this->_evaluateCondition('unless', $event);
-
+        $if = $this->_evaluate_condition('if', $event);
+        $unless = $this->_evaluate_condition('unless', $event);
         return $if && !$unless;
     }
-
     /**
      * Evaluates the filter conditions
      *
@@ -62,7 +55,7 @@ class ConditionDecorator extends AbstractDecorator
      * @param string $condition Condition type
      * @param \Cake\Event\EventInterface<TSubject> $event Event object
      */
-    protected function _evaluateCondition(string $condition, EventInterface $event): bool
+    protected function _evaluate_condition(string $condition, Event_Interface $event): bool
     {
         if (!isset($this->_options[$condition])) {
             return $condition !== 'unless';
@@ -70,7 +63,6 @@ class ConditionDecorator extends AbstractDecorator
         if (!is_callable($this->_options[$condition])) {
             throw new InvalidArgumentException(self::class . ' the `' . $condition . '` condition is not a callable!');
         }
-
-        return (bool)$this->_options[$condition]($event);
+        return (bool) $this->_options[$condition]($event);
     }
 }

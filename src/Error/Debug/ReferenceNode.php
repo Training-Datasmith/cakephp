@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,7 +14,6 @@ declare(strict_types=1);
  * @since         4.1.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Error\Debug;
 
 /**
@@ -25,7 +23,7 @@ namespace Cake\Error\Debug;
  * a reference node can be used after an object has been seen the
  * first time.
  */
-class ReferenceNode implements NodeInterface
+class Reference_Node implements Node_Interface
 {
     /**
      * Constructor
@@ -36,27 +34,24 @@ class ReferenceNode implements NodeInterface
     public function __construct(private readonly string $class, private readonly int $id)
     {
     }
-
     /**
      * Get the class name/value
      */
-    public function getValue(): string
+    public function get_value(): string
     {
         return $this->class;
     }
-
     /**
      * Get the reference id for this node.
      */
-    public function getId(): int
+    public function get_id(): int
     {
         return $this->id;
     }
-
     /**
      * @inheritDoc
      */
-    public function getChildren(): array
+    public function get_children(): array
     {
         return [];
     }

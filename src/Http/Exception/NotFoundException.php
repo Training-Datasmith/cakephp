@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -13,21 +12,18 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Http\Exception;
 
 use Throwable;
-
 /**
  * Represents an HTTP 404 error.
  */
-class NotFoundException extends HttpException
+class Not_Found_Exception extends Http_Exception
 {
     /**
      * @inheritDoc
      */
-    protected int $_defaultCode = 404;
-
+    protected int $_default_code = 404;
     /**
      * Constructor
      *

@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (http://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (http://cakefoundation.org)
@@ -15,12 +14,10 @@ declare(strict_types=1);
  * @since         5.0.0
  * @license       http://www.opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Datasource\Paging;
 
 use Countable;
 use Traversable;
-
 /**
  * This interface describes the methods for pagination instance.
  *
@@ -29,52 +26,44 @@ use Traversable;
  * @template-extends \Traversable<TKey, TValue>
  * @method array<mixed> toArray() Get the paginated items as an array
  */
-interface PaginatedInterface extends Countable, Traversable
+interface Paginated_Interface extends Countable, Traversable
 {
     /**
      * Get current page number.
      */
-    public function currentPage(): int;
-
+    public function current_page(): int;
     /**
      * Get items per page.
      */
-    public function perPage(): int;
-
+    public function per_page(): int;
     /**
      * Get Total items counts.
      */
-    public function totalCount(): ?int;
-
+    public function total_count(): ?int;
     /**
      * Get total page count.
      */
-    public function pageCount(): ?int;
-
+    public function page_count(): ?int;
     /**
      * Get whether there's a previous page.
      */
-    public function hasPrevPage(): bool;
-
+    public function has_prev_page(): bool;
     /**
      * Get whether there's a next page.
      */
-    public function hasNextPage(): bool;
-
+    public function has_next_page(): bool;
     /**
      * Get paginated items.
      *
      * @return iterable<TKey, TValue>
      */
     public function items(): iterable;
-
     /**
      * Get paging param.
      */
-    public function pagingParam(string $name): mixed;
-
+    public function paging_param(string $name): mixed;
     /**
      * Get all paging params.
      */
-    public function pagingParams(): array;
+    public function paging_params(): array;
 }

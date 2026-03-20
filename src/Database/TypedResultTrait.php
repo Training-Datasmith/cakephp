@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,37 +14,33 @@ declare(strict_types=1);
  * @since         3.2.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Database;
 
 /**
  * Implements the TypedResultInterface
  */
-trait TypedResultTrait
+trait Typed_Result_Trait
 {
     /**
      * The type name this expression will return when executed
      */
-    protected string $_returnType = 'string';
-
+    protected string $_return_type = 'string';
     /**
      * Gets the type of the value this object will generate.
      */
-    public function getReturnType(): string
+    public function get_return_type(): string
     {
-        return $this->_returnType;
+        return $this->_return_type;
     }
-
     /**
      * Sets the type of the value this object will generate.
      *
      * @param string $type The name of the type that is to be returned
      * @return $this
      */
-    public function setReturnType(string $type)
+    public function set_return_type(string $type)
     {
-        $this->_returnType = $type;
-
+        $this->_return_type = $type;
         return $this;
     }
 }

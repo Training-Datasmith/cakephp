@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) :  Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,18 +14,16 @@ declare(strict_types=1);
  * @since         1.3.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Log\Engine;
 
-use Cake\Log\Formatter\DefaultFormatter;
+use Cake\Log\Formatter\Default_Formatter;
 use Cake\Utility\Text;
 use Stringable;
-
 /**
  * File Storage stream for Logging. Writes logs to different files
  * based on the level of log it is.
  */
-class FileLog extends BaseLog
+class File_Log extends Base_Log
 {
     /**
      * Default config for this class
@@ -47,36 +44,31 @@ class FileLog extends BaseLog
      *
      * @var array<string, mixed>
      */
-    protected array $_defaultConfig = [
+    protected array $_default_config = [
         'path' => null,
         'file' => null,
         'types' => null,
         'levels' => [],
         'scopes' => [],
         'rotate' => 10,
-        'size' => 10485760, // 10MB
+        'size' => 10485760,
+        // 10MB
         'mask' => null,
         'dirMask' => 0777,
-        'formatter' => [
-            'className' => DefaultFormatter::class,
-        ],
+        'formatter' => ['className' => Default_Formatter::class],
     ];
-
     /**
      * Path to save log files on.
      */
     protected string $_path;
-
     /**
      * The name of the file to save logs into.
      */
     protected ?string $_file = null;
-
     /**
      * Max file size, used for log file rotation.
      */
     protected ?int $_size = null;
-
     /**
      * Sets protected properties based on config provided
      *
@@ -85,28 +77,24 @@ class FileLog extends BaseLog
     public function __construct(array $config = [])
     {
         parent::__construct($config);
-
-        $this->_path = $this->getConfig('path', sys_get_temp_dir() . DIRECTORY_SEPARATOR);
+        $this->_path = $this->get_config('path', sys_get_temp_dir() . DIRECTORY_SEPARATOR);
         if (!is_dir($this->_path)) {
             mkdir($this->_path, $this->_config['dirMask'] ^ umask(), true);
         }
-
         if (!empty($this->_config['file'])) {
             $this->_file = $this->_config['file'];
             if (!str_ends_with($this->_file, '.log')) {
                 $this->_file .= '.log';
             }
         }
-
         if (!empty($this->_config['size'])) {
             if (is_numeric($this->_config['size'])) {
-                $this->_size = (int)$this->_config['size'];
+                $this->_size = (int) $this->_config['size'];
             } else {
-                $this->_size = Text::parseFileSize($this->_config['size']);
+                $this->_size = Text::parse_file_size($this->_config['size']);
             }
         }
     }
-
     /**
      * Implements writing to log files.
      *
@@ -120,57 +108,45 @@ class FileLog extends BaseLog
     {
         $message = $this->interpolate($message, $context);
         $message = $this->formatter->format($level, $message, $context);
-
-        $filename = $this->_getFilename($level);
+        $filename = $this->_get_filename($level);
         if ($this->_size) {
-            $this->_rotateFile($filename);
+            $this->_rotate_file($filename);
         }
-
         $pathname = $this->_path . $filename;
         $mask = $this->_config['mask'];
         if (!$mask) {
             file_put_contents($pathname, $message . "\n", FILE_APPEND);
-
             return;
         }
-
         $exists = is_file($pathname);
         file_put_contents($pathname, $message . "\n", FILE_APPEND);
-        static $selfError = false;
-
-        if (!$selfError && !$exists && !chmod($pathname, (int)$mask)) {
-            $selfError = true;
-            trigger_error(vsprintf(
-                'Could not apply permission mask `%s` on log file `%s`',
-                [$mask, $pathname],
-            ), E_USER_WARNING);
-            $selfError = false;
+        static $self_error = false;
+        if (!$self_error && !$exists && !chmod($pathname, (int) $mask)) {
+            $self_error = true;
+            trigger_error(vsprintf('Could not apply permission mask `%s` on log file `%s`', [$mask, $pathname]), E_USER_WARNING);
+            $self_error = false;
         }
     }
-
     /**
      * Get filename
      *
      * @param string $level The level of log.
      * @return string File name
      */
-    protected function _getFilename(string $level): string
+    protected function _get_filename(string $level): string
     {
-        $debugTypes = ['notice', 'info', 'debug'];
-
+        $debug_types = ['notice', 'info', 'debug'];
         if ($this->_file) {
             $filename = $this->_file;
         } elseif ($level === 'error' || $level === 'warning') {
             $filename = 'error.log';
-        } elseif (in_array($level, $debugTypes, true)) {
+        } elseif (in_array($level, $debug_types, true)) {
             $filename = 'debug.log';
         } else {
             $filename = $level . '.log';
         }
-
         return $filename;
     }
-
     /**
      * Rotate log file if size specified in config is reached.
      * Also if `rotate` count is reached oldest file is removed.
@@ -179,34 +155,27 @@ class FileLog extends BaseLog
      * @return bool|null True if rotated successfully or false in case of error.
      *   Null if file doesn't need to be rotated.
      */
-    protected function _rotateFile(string $filename): ?bool
+    protected function _rotate_file(string $filename): ?bool
     {
-        $filePath = $this->_path . $filename;
-        clearstatcache(true, $filePath);
-
-        if (
-            !is_file($filePath) ||
-            filesize($filePath) < $this->_size
-        ) {
+        $file_path = $this->_path . $filename;
+        clearstatcache(true, $file_path);
+        if (!is_file($file_path) || filesize($file_path) < $this->_size) {
             return null;
         }
-
         $rotate = $this->_config['rotate'];
         if ($rotate === 0) {
-            $result = unlink($filePath);
+            $result = unlink($file_path);
         } else {
-            $result = rename($filePath, $filePath . '.' . time());
+            $result = rename($file_path, $file_path . '.' . time());
         }
-
-        $files = glob($filePath . '.*');
+        $files = glob($file_path . '.*');
         if ($files) {
-            $filesToDelete = count($files) - $rotate;
-            while ($filesToDelete > 0) {
-                unlink((string)array_shift($files));
-                $filesToDelete--;
+            $files_to_delete = count($files) - $rotate;
+            while ($files_to_delete > 0) {
+                unlink((string) array_shift($files));
+                $files_to_delete--;
             }
         }
-
         return $result;
     }
 }

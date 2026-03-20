@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,13 +14,12 @@ declare(strict_types=1);
  * @since         4.2.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Core;
 
 /**
  * Interface for applications that configure and use a dependency injection container.
  */
-interface ContainerApplicationInterface
+interface Container_Application_Interface
 {
     /**
      * Register services to the container
@@ -32,8 +30,7 @@ interface ContainerApplicationInterface
      *
      * @param \Cake\Core\ContainerInterface $container The container to add services to
      */
-    public function services(ContainerInterface $container): void;
-
+    public function services(Container_Interface $container): void;
     /**
      * Create a new container and register services.
      *
@@ -42,5 +39,5 @@ interface ContainerApplicationInterface
      *
      * @return \Cake\Core\ContainerInterface A populated container
      */
-    public function getContainer(): ContainerInterface;
+    public function get_container(): Container_Interface;
 }

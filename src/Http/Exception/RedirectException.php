@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,7 +14,6 @@ declare(strict_types=1);
  * @since         4.1.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Http\Exception;
 
 /**
@@ -31,7 +29,7 @@ namespace Cake\Http\Exception;
  * Additional headers can also be provided in the constructor, or
  * using the setHeaders() method.
  */
-class RedirectException extends HttpException
+class Redirect_Exception extends Http_Exception
 {
     /**
      * Constructor
@@ -43,9 +41,8 @@ class RedirectException extends HttpException
     public function __construct(string $target, int $code = 302, array $headers = [])
     {
         parent::__construct($target, $code);
-
         foreach ($headers as $key => $value) {
-            $this->setHeader($key, (array)$value);
+            $this->set_header($key, (array) $value);
         }
     }
 }

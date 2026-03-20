@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,27 +14,22 @@ declare(strict_types=1);
  * @since         4.1.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Database\Expression;
 
-use function Cake\Core\deprecationWarning;
-
-use Cake\Database\ExpressionInterface;
-use Cake\Database\ValueBinder;
+use function Cake\Core\Deprecation_Warning;
+use Cake\Database\Expression_Interface;
+use Cake\Database\Value_Binder;
 use Closure;
-
 /**
  * This represents an SQL aggregate function expression in an SQL statement.
  * Calls can be constructed by passing the name of the function and a list of params.
  * For security reasons, all params passed are quoted by default unless
  * explicitly told otherwise.
  */
-class AggregateExpression extends FunctionExpression implements WindowInterface
+class Aggregate_Expression extends Function_Expression implements Window_Interface
 {
-    protected ?QueryExpression $filter = null;
-
-    protected ?WindowExpression $window = null;
-
+    protected ?Query_Expression $filter = null;
+    protected ?Window_Expression $window = null;
     /**
      * Adds conditions to the FILTER clause. The conditions are the same format as
      * `Query::where()`.
@@ -45,19 +39,15 @@ class AggregateExpression extends FunctionExpression implements WindowInterface
      * @return $this
      * @see \Cake\Database\Query::where()
      */
-    public function filter(ExpressionInterface|Closure|array|string $conditions, array $types = []): static
+    public function filter(Expression_Interface|Closure|array|string $conditions, array $types = []): static
     {
-        $this->filter ??= new QueryExpression();
-
+        $this->filter ??= new Query_Expression();
         if ($conditions instanceof Closure) {
-            $conditions = $conditions(new QueryExpression());
+            $conditions = $conditions(new Query_Expression());
         }
-
         $this->filter->add($conditions, $types);
-
         return $this;
     }
-
     /**
      * Adds an empty `OVER()` window expression or a named window expression.
      *
@@ -66,151 +56,118 @@ class AggregateExpression extends FunctionExpression implements WindowInterface
      */
     public function over(?string $name = null): static
     {
-        $window = $this->getWindow();
+        $window = $this->get_window();
         if ($name) {
             // Set name manually in case this was chained from FunctionsBuilder wrapper
             $window->name($name);
         }
-
         return $this;
     }
-
     /**
      * @inheritDoc
      */
-    public function partition(ExpressionInterface|Closure|array|string $partitions): static
+    public function partition(Expression_Interface|Closure|array|string $partitions): static
     {
-        $this->getWindow()->partition($partitions);
-
+        $this->get_window()->partition($partitions);
         return $this;
     }
-
     /**
      * @inheritDoc
      */
-    public function order(ExpressionInterface|Closure|array|string $fields)
+    public function order(Expression_Interface|Closure|array|string $fields)
     {
-        deprecationWarning(
-            '5.0.0',
-            'AggregateExpression::order() is deprecated. Use AggregateExpression::orderBy() instead.',
-        );
-
-        return $this->orderBy($fields);
+        deprecation_warning('5.0.0', 'AggregateExpression::order() is deprecated. Use AggregateExpression::orderBy() instead.');
+        return $this->order_by($fields);
     }
-
     /**
      * @inheritDoc
      */
-    public function orderBy(ExpressionInterface|Closure|array|string $fields): static
+    public function order_by(Expression_Interface|Closure|array|string $fields): static
     {
-        $this->getWindow()->orderBy($fields);
-
+        $this->get_window()->order_by($fields);
         return $this;
     }
-
     /**
      * @inheritDoc
      */
-    public function range(ExpressionInterface|string|int|null $start, ExpressionInterface|string|int|null $end = 0): static
+    public function range(Expression_Interface|string|int|null $start, Expression_Interface|string|int|null $end = 0): static
     {
-        $this->getWindow()->range($start, $end);
-
+        $this->get_window()->range($start, $end);
         return $this;
     }
-
     /**
      * @inheritDoc
      */
     public function rows(?int $start, ?int $end = 0): static
     {
-        $this->getWindow()->rows($start, $end);
-
+        $this->get_window()->rows($start, $end);
         return $this;
     }
-
     /**
      * @inheritDoc
      */
     public function groups(?int $start, ?int $end = 0): static
     {
-        $this->getWindow()->groups($start, $end);
-
+        $this->get_window()->groups($start, $end);
         return $this;
     }
-
     /**
      * @inheritDoc
      */
-    public function frame(
-        string $type,
-        ExpressionInterface|string|int|null $startOffset,
-        string $startDirection,
-        ExpressionInterface|string|int|null $endOffset,
-        string $endDirection,
-    ): static {
-        $this->getWindow()->frame($type, $startOffset, $startDirection, $endOffset, $endDirection);
-
-        return $this;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function excludeCurrent(): static
+    public function frame(string $type, Expression_Interface|string|int|null $start_offset, string $start_direction, Expression_Interface|string|int|null $end_offset, string $end_direction): static
     {
-        $this->getWindow()->excludeCurrent();
-
+        $this->get_window()->frame($type, $start_offset, $start_direction, $end_offset, $end_direction);
         return $this;
     }
-
     /**
      * @inheritDoc
      */
-    public function excludeGroup(): static
+    public function exclude_current(): static
     {
-        $this->getWindow()->excludeGroup();
-
+        $this->get_window()->exclude_current();
         return $this;
     }
-
     /**
      * @inheritDoc
      */
-    public function excludeTies(): static
+    public function exclude_group(): static
     {
-        $this->getWindow()->excludeTies();
-
+        $this->get_window()->exclude_group();
         return $this;
     }
-
+    /**
+     * @inheritDoc
+     */
+    public function exclude_ties(): static
+    {
+        $this->get_window()->exclude_ties();
+        return $this;
+    }
     /**
      * Returns or creates WindowExpression for function.
      */
-    protected function getWindow(): WindowExpression
+    protected function get_window(): Window_Expression
     {
-        return $this->window ??= new WindowExpression();
+        return $this->window ??= new Window_Expression();
     }
-
     /**
      * @inheritDoc
      */
-    public function sql(ValueBinder $binder): string
+    public function sql(Value_Binder $binder): string
     {
         $sql = parent::sql($binder);
         if ($this->filter !== null) {
             $sql .= ' FILTER (WHERE ' . $this->filter->sql($binder) . ')';
         }
         if ($this->window !== null) {
-            if ($this->window->isNamedOnly()) {
+            if ($this->window->is_named_only()) {
                 $sql .= ' OVER ' . $this->window->sql($binder);
             } else {
                 $sql .= ' OVER (' . $this->window->sql($binder) . ')';
             }
         }
-
         return $sql;
     }
-
     /**
      * @inheritDoc
      */
@@ -225,10 +182,8 @@ class AggregateExpression extends FunctionExpression implements WindowInterface
             $callback($this->window);
             $this->window->traverse($callback);
         }
-
         return $this;
     }
-
     /**
      * @inheritDoc
      */
@@ -238,10 +193,8 @@ class AggregateExpression extends FunctionExpression implements WindowInterface
         if ($this->window !== null) {
             $count += 1;
         }
-
         return $count;
     }
-
     /**
      * Clone this object and its subtree of expressions.
      */

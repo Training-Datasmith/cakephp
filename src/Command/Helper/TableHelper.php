@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -14,79 +13,66 @@ declare(strict_types=1);
  * @since         3.1.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Command\Helper;
 
 use Cake\Console\Helper;
 use UnexpectedValueException;
-
 /**
  * Create a visually pleasing ASCII art table
  * from 2-dimensional array data.
  */
-class TableHelper extends Helper
+class Table_Helper extends Helper
 {
     /**
      * Default config for this helper.
      *
      * @var array<string, mixed>
      */
-    protected array $_defaultConfig = [
-        'headers' => true,
-        'rowSeparator' => false,
-        'headerStyle' => 'info',
-    ];
-
+    protected array $_default_config = ['headers' => true, 'rowSeparator' => false, 'headerStyle' => 'info'];
     /**
      * Calculate the column widths
      *
      * @param array $rows The rows on which the column's width will be calculated on.
      * @return array<int>
      */
-    protected function _calculateWidths(array $rows): array
+    protected function _calculate_widths(array $rows): array
     {
         $widths = [];
         foreach ($rows as $line) {
             foreach (array_values($line) as $k => $v) {
-                $columnLength = $this->_cellWidth((string)$v);
-                if ($columnLength >= ($widths[$k] ?? 0)) {
-                    $widths[$k] = $columnLength;
+                $column_length = $this->_cell_width((string) $v);
+                if ($column_length >= ($widths[$k] ?? 0)) {
+                    $widths[$k] = $column_length;
                 }
             }
         }
-
         return $widths;
     }
-
     /**
      * Get the width of a cell exclusive of style tags.
      *
      * @param string $text The text to calculate a width for.
      * @return int The width of the textual content in visible characters.
      */
-    protected function _cellWidth(string $text): int
+    protected function _cell_width(string $text): int
     {
         if ($text === '') {
             return 0;
         }
-
         if (!str_contains($text, '<') && !str_contains($text, '>')) {
             return mb_strwidth($text);
         }
-
         $styles = $this->_io->styles();
         $tags = implode('|', array_keys($styles));
-        $text = (string)preg_replace('#</?(?:' . $tags . ')>#', '', $text);
-
+        $text = (string) preg_replace('#</?(?:' . $tags . ')>#', '', $text);
         return mb_strwidth($text);
     }
-
     /**
      * Output a row separator.
      *
      * @param array<int> $widths The widths of each column to output.
      */
-    protected function _rowSeparator(array $widths): void
+    protected function _row_separator(array $widths): void
     {
         $out = '';
         foreach ($widths as $column) {
@@ -95,7 +81,6 @@ class TableHelper extends Helper
         $out .= '+';
         $this->_io->out($out);
     }
-
     /**
      * Output a row.
      *
@@ -108,13 +93,12 @@ class TableHelper extends Helper
         if ($row === []) {
             return;
         }
-
         $out = '';
         foreach (array_values($row) as $i => $column) {
-            $column = (string)$column;
-            $pad = $widths[$i] - $this->_cellWidth($column);
+            $column = (string) $column;
+            $pad = $widths[$i] - $this->_cell_width($column);
             if (!empty($options['style'])) {
-                $column = $this->_addStyle($column, $options['style']);
+                $column = $this->_add_style($column, $options['style']);
             }
             if ($column !== '' && preg_match('#(.*)<text-right>.+</text-right>(.*)#', $column, $matches)) {
                 if ($matches[1] !== '' || $matches[2] !== '') {
@@ -129,7 +113,6 @@ class TableHelper extends Helper
         $out .= '|';
         $this->_io->out($out);
     }
-
     /**
      * Output a table.
      *
@@ -143,40 +126,34 @@ class TableHelper extends Helper
         if (!$args) {
             return;
         }
-
-        $this->_io->setStyle('text-right', ['text' => null]);
-
-        $config = $this->getConfig();
-        $widths = $this->_calculateWidths($args);
-
-        $this->_rowSeparator($widths);
+        $this->_io->set_style('text-right', ['text' => null]);
+        $config = $this->get_config();
+        $widths = $this->_calculate_widths($args);
+        $this->_row_separator($widths);
         if ($config['headers'] === true) {
             $this->_render(array_shift($args), $widths, ['style' => $config['headerStyle']]);
-            $this->_rowSeparator($widths);
+            $this->_row_separator($widths);
         }
-
         if (!$args) {
             return;
         }
-
         foreach ($args as $line) {
             $this->_render($line, $widths);
             if ($config['rowSeparator'] === true) {
-                $this->_rowSeparator($widths);
+                $this->_row_separator($widths);
             }
         }
         if ($config['rowSeparator'] !== true) {
-            $this->_rowSeparator($widths);
+            $this->_row_separator($widths);
         }
     }
-
     /**
      * Add style tags
      *
      * @param string $text The text to be surrounded
      * @param string $style The style to be applied
      */
-    protected function _addStyle(string $text, string $style): string
+    protected function _add_style(string $text, string $style): string
     {
         return '<' . $style . '>' . $text . '</' . $style . '>';
     }

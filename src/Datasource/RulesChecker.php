@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,12 +14,10 @@ declare(strict_types=1);
  * @since         3.0.7
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Datasource;
 
-use Cake\Core\Exception\CakeException;
+use Cake\Core\Exception\Cake_Exception;
 use InvalidArgumentException;
-
 /**
  * Contains logic for storing and checking rules on entities
  *
@@ -42,7 +39,7 @@ use InvalidArgumentException;
  * invoke the checks by calling RulesChecker::checkCreate(), RulesChecker::checkUpdate() or
  * RulesChecker::checkDelete().
  */
-class RulesChecker
+class Rules_Checker
 {
     /**
      * Indicates that the checking rules to apply are those used for creating entities
@@ -50,67 +47,60 @@ class RulesChecker
      * @var string
      */
     public const CREATE = 'create';
-
     /**
      * Indicates that the checking rules to apply are those used for updating entities
      *
      * @var string
      */
     public const UPDATE = 'update';
-
     /**
      * Indicates that the checking rules to apply are those used for deleting entities
      *
      * @var string
      */
     public const DELETE = 'delete';
-
     /**
      * The list of rules to be checked on both create and update operations
      *
      * @var array<\Cake\Datasource\RuleInvoker>
      */
     protected array $_rules = [];
-
     /**
      * The list of rules to check during create operations
      *
      * @var array<\Cake\Datasource\RuleInvoker>
      */
-    protected array $_createRules = [];
-
+    protected array $_create_rules = [];
     /**
      * The list of rules to check during update operations
      *
      * @var array<\Cake\Datasource\RuleInvoker>
      */
-    protected array $_updateRules = [];
-
+    protected array $_update_rules = [];
     /**
      * The list of rules to check during delete operations
      *
      * @var array<\Cake\Datasource\RuleInvoker>
      */
-    protected array $_deleteRules = [];
-
+    protected array $_delete_rules = [];
     /**
      * Whether to use I18n functions for translating default error messages
      */
-    protected bool $_useI18n = false;
-
+    protected bool $_use_i18n = false;
     /**
      * Constructor. Takes the options to be passed to all rules.
      *
      * @param array<string, mixed> $_options The options to pass to every rule
      */
-    public function __construct(/**
-     * List of options to pass to every callable rule
-     */
+    public function __construct(
+        /**
+         * List of options to pass to every callable rule
+         */
         protected array $_options = []
-    ) {
-        $this->_useI18n = function_exists('\Cake\I18n\__d');
+    )
+    {
+        $this->_use_i18n = function_exists('\Cake\I18n\__d');
     }
-
     /**
      * Adds a rule that will be applied to the entity on create, update and delete
      * operations.
@@ -134,15 +124,13 @@ class RulesChecker
     public function add(callable $rule, array|string|null $name = null, array $options = []): static
     {
         if (is_string($name)) {
-            $this->checkName($name, $this->_rules);
-            $this->_rules[$name] = $this->_addError($rule, $name, $options);
+            $this->check_name($name, $this->_rules);
+            $this->_rules[$name] = $this->_add_error($rule, $name, $options);
         } else {
-            $this->_rules[] = $this->_addError($rule, $name, $options);
+            $this->_rules[] = $this->_add_error($rule, $name, $options);
         }
-
         return $this;
     }
-
     /**
      * Removes a rule from the set.
      *
@@ -153,10 +141,8 @@ class RulesChecker
     public function remove(string $name): static
     {
         unset($this->_rules[$name]);
-
         return $this;
     }
-
     /**
      * Adds a rule that will be applied to the entity on create operations.
      *
@@ -176,18 +162,16 @@ class RulesChecker
      * @return $this
      * @throws \Cake\Core\Exception\CakeException If a rule with the same name already exists
      */
-    public function addCreate(callable $rule, array|string|null $name = null, array $options = []): static
+    public function add_create(callable $rule, array|string|null $name = null, array $options = []): static
     {
         if (is_string($name)) {
-            $this->checkName($name, $this->_createRules);
-            $this->_createRules[$name] = $this->_addError($rule, $name, $options);
+            $this->check_name($name, $this->_create_rules);
+            $this->_create_rules[$name] = $this->_add_error($rule, $name, $options);
         } else {
-            $this->_createRules[] = $this->_addError($rule, $name, $options);
+            $this->_create_rules[] = $this->_add_error($rule, $name, $options);
         }
-
         return $this;
     }
-
     /**
      * Removes a rule from the create set.
      *
@@ -195,13 +179,11 @@ class RulesChecker
      * @return $this
      * @since 5.1.0
      */
-    public function removeCreate(string $name): static
+    public function remove_create(string $name): static
     {
-        unset($this->_createRules[$name]);
-
+        unset($this->_create_rules[$name]);
         return $this;
     }
-
     /**
      * Adds a rule that will be applied to the entity on update operations.
      *
@@ -221,18 +203,16 @@ class RulesChecker
      * @return $this
      * @throws \Cake\Core\Exception\CakeException If a rule with the same name already exists
      */
-    public function addUpdate(callable $rule, array|string|null $name = null, array $options = []): static
+    public function add_update(callable $rule, array|string|null $name = null, array $options = []): static
     {
         if (is_string($name)) {
-            $this->checkName($name, $this->_updateRules);
-            $this->_updateRules[$name] = $this->_addError($rule, $name, $options);
+            $this->check_name($name, $this->_update_rules);
+            $this->_update_rules[$name] = $this->_add_error($rule, $name, $options);
         } else {
-            $this->_updateRules[] = $this->_addError($rule, $name, $options);
+            $this->_update_rules[] = $this->_add_error($rule, $name, $options);
         }
-
         return $this;
     }
-
     /**
      * Removes a rule from the update set.
      *
@@ -240,13 +220,11 @@ class RulesChecker
      * @return $this
      * @since 5.1.0
      */
-    public function removeUpdate(string $name): static
+    public function remove_update(string $name): static
     {
-        unset($this->_updateRules[$name]);
-
+        unset($this->_update_rules[$name]);
         return $this;
     }
-
     /**
      * Adds a rule that will be applied to the entity on delete operations.
      *
@@ -266,18 +244,16 @@ class RulesChecker
      * @return $this
      * @throws \Cake\Core\Exception\CakeException If a rule with the same name already exists
      */
-    public function addDelete(callable $rule, array|string|null $name = null, array $options = []): static
+    public function add_delete(callable $rule, array|string|null $name = null, array $options = []): static
     {
         if (is_string($name)) {
-            $this->checkName($name, $this->_deleteRules);
-            $this->_deleteRules[$name] = $this->_addError($rule, $name, $options);
+            $this->check_name($name, $this->_delete_rules);
+            $this->_delete_rules[$name] = $this->_add_error($rule, $name, $options);
         } else {
-            $this->_deleteRules[] = $this->_addError($rule, $name, $options);
+            $this->_delete_rules[] = $this->_add_error($rule, $name, $options);
         }
-
         return $this;
     }
-
     /**
      * Removes a rule from the delete set.
      *
@@ -285,13 +261,11 @@ class RulesChecker
      * @return $this
      * @since 5.1.0
      */
-    public function removeDelete(string $name): static
+    public function remove_delete(string $name): static
     {
-        unset($this->_deleteRules[$name]);
-
+        unset($this->_delete_rules[$name]);
         return $this;
     }
-
     /**
      * Runs each of the rules by passing the provided entity and returns true if all
      * of them pass. The rules to be applied are depended on the $mode parameter which
@@ -302,16 +276,15 @@ class RulesChecker
      * @param array<string, mixed> $options Extra options to pass to checker functions.
      * @throws \InvalidArgumentException if an invalid mode is passed.
      */
-    public function check(EntityInterface $entity, string $mode, array $options = []): bool
+    public function check(Entity_Interface $entity, string $mode, array $options = []): bool
     {
         return match ($mode) {
-            self::CREATE => $this->checkCreate($entity, $options),
-            self::UPDATE => $this->checkUpdate($entity, $options),
-            self::DELETE => $this->checkDelete($entity, $options),
+            self::CREATE => $this->check_create($entity, $options),
+            self::UPDATE => $this->check_update($entity, $options),
+            self::DELETE => $this->check_delete($entity, $options),
             default => throw new InvalidArgumentException('Wrong checking mode: ' . $mode),
         };
     }
-
     /**
      * Runs each of the rules by passing the provided entity and returns true if all
      * of them pass. The rules selected will be only those specified to be run on 'create'
@@ -319,15 +292,10 @@ class RulesChecker
      * @param \Cake\Datasource\EntityInterface $entity The entity to check for validity.
      * @param array<string, mixed> $options Extra options to pass to checker functions.
      */
-    public function checkCreate(EntityInterface $entity, array $options = []): bool
+    public function check_create(Entity_Interface $entity, array $options = []): bool
     {
-        return $this->_checkRules(
-            $entity,
-            $options,
-            array_merge(array_values($this->_rules), array_values($this->_createRules)),
-        );
+        return $this->_check_rules($entity, $options, array_merge(array_values($this->_rules), array_values($this->_create_rules)));
     }
-
     /**
      * Runs each of the rules by passing the provided entity and returns true if all
      * of them pass. The rules selected will be only those specified to be run on 'update'
@@ -335,15 +303,10 @@ class RulesChecker
      * @param \Cake\Datasource\EntityInterface $entity The entity to check for validity.
      * @param array<string, mixed> $options Extra options to pass to checker functions.
      */
-    public function checkUpdate(EntityInterface $entity, array $options = []): bool
+    public function check_update(Entity_Interface $entity, array $options = []): bool
     {
-        return $this->_checkRules(
-            $entity,
-            $options,
-            array_merge(array_values($this->_rules), array_values($this->_updateRules)),
-        );
+        return $this->_check_rules($entity, $options, array_merge(array_values($this->_rules), array_values($this->_update_rules)));
     }
-
     /**
      * Runs each of the rules by passing the provided entity and returns true if all
      * of them pass. The rules selected will be only those specified to be run on 'delete'
@@ -351,11 +314,10 @@ class RulesChecker
      * @param \Cake\Datasource\EntityInterface $entity The entity to check for validity.
      * @param array<string, mixed> $options Extra options to pass to checker functions.
      */
-    public function checkDelete(EntityInterface $entity, array $options = []): bool
+    public function check_delete(Entity_Interface $entity, array $options = []): bool
     {
-        return $this->_checkRules($entity, $options, $this->_deleteRules);
+        return $this->_check_rules($entity, $options, $this->_delete_rules);
     }
-
     /**
      * Used by top level functions checkDelete, checkCreate and checkUpdate, this function
      * iterates an array containing the rules to be checked and checks them all.
@@ -364,17 +326,15 @@ class RulesChecker
      * @param array<string, mixed> $options Extra options to pass to checker functions.
      * @param array<\Cake\Datasource\RuleInvoker> $rules The list of rules that must be checked.
      */
-    protected function _checkRules(EntityInterface $entity, array $options = [], array $rules = []): bool
+    protected function _check_rules(Entity_Interface $entity, array $options = [], array $rules = []): bool
     {
         $success = true;
         $options += $this->_options;
         foreach ($rules as $rule) {
             $success = $rule($entity, $options) && $success;
         }
-
         return $success;
     }
-
     /**
      * Utility method for decorating any callable so that if it returns false, the correct
      * property in the entity is marked as invalid.
@@ -383,22 +343,19 @@ class RulesChecker
      * @param array|string|null $name The alias for a rule or an array of options
      * @param array<string, mixed> $options The options containing the error message and field.
      */
-    protected function _addError(callable $rule, array|string|null $name = null, array $options = []): RuleInvoker
+    protected function _add_error(callable $rule, array|string|null $name = null, array $options = []): Rule_Invoker
     {
         if (is_array($name)) {
             $options = $name;
             $name = null;
         }
-
-        if (!($rule instanceof RuleInvoker)) {
-            $rule = new RuleInvoker($rule, $name, $options);
+        if (!$rule instanceof Rule_Invoker) {
+            $rule = new Rule_Invoker($rule, $name, $options);
         } else {
-            $rule->setOptions($options)->setName($name);
+            $rule->set_options($options)->set_name($name);
         }
-
         return $rule;
     }
-
     /**
      * Checks that a rule with the same name doesn't already exist
      *
@@ -406,10 +363,10 @@ class RulesChecker
      * @param array<\Cake\Datasource\RuleInvoker> $rules The rules array to check
      * @throws \Cake\Core\Exception\CakeException
      */
-    protected function checkName(string $name, array $rules): void
+    protected function check_name(string $name, array $rules): void
     {
         if (array_key_exists($name, $rules)) {
-            throw new CakeException('A rule with the same name already exists');
+            throw new Cake_Exception('A rule with the same name already exists');
         }
     }
 }

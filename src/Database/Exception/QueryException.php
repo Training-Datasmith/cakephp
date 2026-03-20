@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,53 +14,44 @@ declare(strict_types=1);
  * @since         5.1.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Database\Exception;
 
-use Cake\Database\Log\LoggedQuery;
+use Cake\Database\Log\Logged_Query;
 use PDOException;
-
-class QueryException extends PDOException
+class Query_Exception extends PDOException
 {
     /**
      * Constructor
      */
-    public function __construct(protected LoggedQuery|string $query, PDOException $previous)
+    public function __construct(protected Logged_Query|string $query, PDOException $previous)
     {
-        $message = $previous->getMessage();
-
+        $message = $previous->get_message();
         // Prefix with connection name if available
-        $connectionName = $this->getConnectionName();
-        if ($connectionName !== '') {
-            $message = "[{$connectionName}] " . $message;
+        $connection_name = $this->get_connection_name();
+        if ($connection_name !== '') {
+            $message = "[{$connection_name}] " . $message;
         }
-
-        $message .= "\nQuery: " . $this->getQueryString();
-
-        parent::__construct($message, (int)$previous->getCode(), $previous);
+        $message .= "\nQuery: " . $this->get_query_string();
+        parent::__construct($message, (int) $previous->get_code(), $previous);
     }
-
     /**
      * Get the connection name that caused this exception.
      */
-    public function getConnectionName(): string
+    public function get_connection_name(): string
     {
-        if ($this->query instanceof LoggedQuery) {
-            return $this->query->getConnectionName();
+        if ($this->query instanceof Logged_Query) {
+            return $this->query->get_connection_name();
         }
-
         return '';
     }
-
     /**
      * Get the query string that caused this exception.
      */
-    public function getQueryString(): string
+    public function get_query_string(): string
     {
-        if ($this->query instanceof LoggedQuery) {
-            return (string)$this->query;
+        if ($this->query instanceof Logged_Query) {
+            return (string) $this->query;
         }
-
         return $this->query;
     }
 }

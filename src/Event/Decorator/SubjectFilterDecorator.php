@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,12 +14,10 @@ declare(strict_types=1);
  * @since         3.3.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Event\Decorator;
 
-use Cake\Core\Exception\CakeException;
-use Cake\Event\EventInterface;
-
+use Cake\Core\Exception\Cake_Exception;
+use Cake\Event\Event_Interface;
 /**
  * Event Subject Filter Decorator
  *
@@ -30,41 +27,37 @@ use Cake\Event\EventInterface;
  * The `allowedSubject` option can be a list of class names, if you want
  * to check multiple classes.
  */
-class SubjectFilterDecorator extends AbstractDecorator
+class Subject_Filter_Decorator extends Abstract_Decorator
 {
     /**
      * @inheritDoc
      */
     public function __invoke(mixed ...$args): mixed
     {
-        if (!$this->canTrigger($args[0])) {
+        if (!$this->can_trigger($args[0])) {
             return null;
         }
-
         return $this->_call($args);
     }
-
     /**
      * Checks if the event is triggered for this listener.
      *
      * @template TSubject of object
      * @param \Cake\Event\EventInterface<TSubject> $event Event object.
      */
-    public function canTrigger(EventInterface $event): bool
+    public function can_trigger(Event_Interface $event): bool
     {
         if (!isset($this->_options['allowedSubject'])) {
-            throw new CakeException(self::class . ' Missing subject filter options!');
+            throw new Cake_Exception(self::class . ' Missing subject filter options!');
         }
         if (is_string($this->_options['allowedSubject'])) {
             $this->_options['allowedSubject'] = [$this->_options['allowedSubject']];
         }
-
         try {
-            $subject = $event->getSubject();
-        } catch (CakeException) {
+            $subject = $event->get_subject();
+        } catch (Cake_Exception) {
             return false;
         }
-
         return in_array($subject::class, $this->_options['allowedSubject'], true);
     }
 }

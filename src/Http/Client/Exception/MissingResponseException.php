@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -14,15 +13,13 @@ declare(strict_types=1);
  * @since         4.3.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Http\Client\Exception;
 
-use Cake\Core\Exception\CakeException;
-
+use Cake\Core\Exception\Cake_Exception;
 /**
  * Used to indicate that a request did not have a matching mock response.
  */
-class MissingResponseException extends CakeException
+class Missing_Response_Exception extends Cake_Exception
 {
-    protected string $_messageTemplate = 'Unable to find a mocked response for `%s` to `%s`.';
+    protected string $_message_template = 'Unable to find a mocked response for `%s` to `%s`.';
 }

@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,14 +14,13 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\ORM;
 
 /**
  * Contains methods for parsing the associated tables array that is typically
  * passed to a save operation
  */
-trait AssociationsNormalizerTrait
+trait Associations_Normalizer_Trait
 {
     /**
      * Returns an array out of the original passed associations list where dot notation
@@ -31,42 +29,35 @@ trait AssociationsNormalizerTrait
      * @param array|string $associations The array of included associations.
      * @return array An array having dot notation transformed into nested arrays
      */
-    protected function _normalizeAssociations(array|string $associations): array
+    protected function _normalize_associations(array|string $associations): array
     {
         $result = [];
-        foreach ((array)$associations as $table => $options) {
-            $pointer = &$result;
-
+        foreach ((array) $associations as $table => $options) {
+            $pointer =& $result;
             if (is_int($table)) {
                 $table = $options;
                 $options = [];
             }
-
             if (!str_contains((string) $table, '.')) {
                 $result[$table] = $options;
                 continue;
             }
-
             $path = explode('.', (string) $table);
             $table = array_pop($path);
             $first = array_shift($path);
             assert(is_string($first));
-
             $pointer += [$first => []];
-            $pointer = &$pointer[$first];
+            $pointer =& $pointer[$first];
             $pointer += ['associated' => []];
-
             foreach ($path as $t) {
                 $pointer += ['associated' => []];
                 $pointer['associated'] += [$t => []];
                 $pointer['associated'][$t] += ['associated' => []];
-                $pointer = &$pointer['associated'][$t];
+                $pointer =& $pointer['associated'][$t];
             }
-
             $pointer['associated'] += [$table => []];
             $pointer['associated'][$table] = $options + $pointer['associated'][$table];
         }
-
         return $result['associated'] ?? $result;
     }
 }

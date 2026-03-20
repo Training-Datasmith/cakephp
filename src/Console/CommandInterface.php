@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,14 +14,13 @@ declare(strict_types=1);
  * @since         4.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Console;
 
 /**
  * Describe the interface between a command
  * and the surrounding console libraries.
  */
-interface CommandInterface
+interface Command_Interface
 {
     /**
      * Default error code
@@ -30,14 +28,12 @@ interface CommandInterface
      * @var int
      */
     public const CODE_ERROR = 1;
-
     /**
      * Default success code
      *
      * @var int
      */
     public const CODE_SUCCESS = 0;
-
     /**
      * Set the name this command uses in the collection.
      *
@@ -48,8 +44,7 @@ interface CommandInterface
      * @param string $name The name the command uses in the collection.
      * @return $this
      */
-    public function setName(string $name);
-
+    public function set_name(string $name);
     /**
      * Run the command.
      *
@@ -57,5 +52,5 @@ interface CommandInterface
      * @param \Cake\Console\ConsoleIo $io The console io
      * @return int|null Exit code or null for success.
      */
-    public function run(array $argv, ConsoleIo $io): ?int;
+    public function run(array $argv, Console_Io $io): ?int;
 }

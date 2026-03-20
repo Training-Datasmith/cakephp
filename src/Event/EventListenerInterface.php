@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,14 +14,13 @@ declare(strict_types=1);
  * @since         2.1.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Event;
 
 /**
  * Objects implementing this interface should declare the `implementedEvents()` method
  * to notify the event manager what methods should be called when an event is triggered.
  */
-interface EventListenerInterface
+interface Event_Listener_Interface
 {
     /**
      * Returns a list of events this object is implementing. When the class is registered
@@ -44,5 +42,5 @@ interface EventListenerInterface
      * @return array<string, mixed> Associative array or event key names pointing to the function
      * that should be called in the object when the respective event is fired
      */
-    public function implementedEvents(): array;
+    public function implemented_events(): array;
 }

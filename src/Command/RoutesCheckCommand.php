@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,38 +14,34 @@ declare(strict_types=1);
  * @since         3.1.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Command;
 
 use Cake\Console\Arguments;
-use Cake\Console\ConsoleIo;
-use Cake\Console\ConsoleOptionParser;
-use Cake\Http\Exception\RedirectException;
-use Cake\Http\ServerRequest;
-use Cake\Routing\Exception\MissingRouteException;
+use Cake\Console\Console_Io;
+use Cake\Console\Console_Option_Parser;
+use Cake\Http\Exception\Redirect_Exception;
+use Cake\Http\Server_Request;
+use Cake\Routing\Exception\Missing_Route_Exception;
 use Cake\Routing\Router;
-
 /**
  * Provides interactive CLI tool for testing routes.
  */
-class RoutesCheckCommand extends Command
+class Routes_Check_Command extends Command
 {
     /**
      * @inheritDoc
      */
-    public static function defaultName(): string
+    public static function default_name(): string
     {
         return 'routes check';
     }
-
     /**
      * @inheritDoc
      */
-    public static function getDescription(): string
+    public static function get_description(): string
     {
         return 'Check a URL string against the routes.';
     }
-
     /**
      * Display all routes in an application
      *
@@ -55,55 +50,36 @@ class RoutesCheckCommand extends Command
      * @return int|null The exit code or null for success
      * @throws \JsonException
      */
-    public function execute(Arguments $args, ConsoleIo $io): ?int
+    public function execute(Arguments $args, Console_Io $io): ?int
     {
-        $url = $args->getArgument('url');
+        $url = $args->get_argument('url');
         try {
-            $parsed = Router::parseRequest(new ServerRequest(['url' => $url]));
-            $name = $parsed['_name'] ?? $parsed['_route']->getName();
-
+            $parsed = Router::parse_request(new Server_Request(['url' => $url]));
+            $name = $parsed['_name'] ?? $parsed['_route']->get_name();
             unset($parsed['_route'], $parsed['_matchedRoute']);
             ksort($parsed);
-
-            $output = [
-                ['Route name', 'URI template', 'Defaults'],
-                [$name, $url, json_encode($parsed, JSON_THROW_ON_ERROR)],
-            ];
+            $output = [['Route name', 'URI template', 'Defaults'], [$name, $url, json_encode($parsed, JSON_THROW_ON_ERROR)]];
             $io->helper('table')->output($output);
             $io->out();
-        } catch (RedirectException $e) {
-            $output = [
-                ['URI template', 'Redirect'],
-                [$url, $e->getMessage()],
-            ];
+        } catch (Redirect_Exception $e) {
+            $output = [['URI template', 'Redirect'], [$url, $e->get_message()]];
             $io->helper('table')->output($output);
             $io->out();
-        } catch (MissingRouteException) {
+        } catch (Missing_Route_Exception) {
             $io->warning("'{$url}' did not match any routes.");
             $io->out();
-
             return static::CODE_ERROR;
         }
-
         return static::CODE_SUCCESS;
     }
-
     /**
      * Get the option parser.
      *
      * @param \Cake\Console\ConsoleOptionParser $parser The option parser to update
      */
-    public function buildOptionParser(ConsoleOptionParser $parser): ConsoleOptionParser
+    public function build_option_parser(Console_Option_Parser $parser): Console_Option_Parser
     {
-        $parser->setDescription([
-            static::getDescription(),
-            'Will output the routing parameters the route resolves to.',
-        ])
-        ->addArgument('url', [
-            'help' => 'The URL to check.',
-            'required' => true,
-        ]);
-
+        $parser->set_description([static::get_description(), 'Will output the routing parameters the route resolves to.'])->add_argument('url', ['help' => 'The URL to check.', 'required' => true]);
         return $parser;
     }
 }

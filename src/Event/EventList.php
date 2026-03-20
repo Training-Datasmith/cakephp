@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,18 +14,14 @@ declare(strict_types=1);
  * @since         3.3.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Event;
 
 use ArrayAccess;
 use ArrayIterator;
-
-use function Cake\Core\deprecationWarning;
-
+use function Cake\Core\Deprecation_Warning;
 use Countable;
 use IteratorAggregate;
 use Traversable;
-
 /**
  * The Event List
  *
@@ -34,7 +29,7 @@ use Traversable;
  * @implements \ArrayAccess<int, \Cake\Event\EventInterface<Tsubject>>
  * @implements \IteratorAggregate<\Cake\Event\EventInterface<Tsubject>>
  */
-class EventList implements ArrayAccess, Countable, IteratorAggregate
+class Event_List implements ArrayAccess, Countable, IteratorAggregate
 {
     /**
      * Events list
@@ -42,7 +37,6 @@ class EventList implements ArrayAccess, Countable, IteratorAggregate
      * @var array<\Cake\Event\EventInterface<Tsubject>>
      */
     protected array $_events = [];
-
     /**
      * Empties the list of dispatched events.
      */
@@ -50,17 +44,15 @@ class EventList implements ArrayAccess, Countable, IteratorAggregate
     {
         $this->_events = [];
     }
-
     /**
      * Adds an event to the list when event listing is enabled.
      *
      * @param \Cake\Event\EventInterface<Tsubject> $event An event to the list of dispatched events.
      */
-    public function add(EventInterface $event): void
+    public function add(Event_Interface $event): void
     {
         $this->_events[] = $event;
     }
-
     /**
      * Whether a offset exists
      *
@@ -71,14 +63,9 @@ class EventList implements ArrayAccess, Countable, IteratorAggregate
      */
     public function offsetExists(mixed $offset): bool
     {
-        deprecationWarning(
-            '5.3.0',
-            'Array access for `EventList` is deprecated, use `EventList::hasEvent()` instead.',
-        );
-
+        deprecation_warning('5.3.0', 'Array access for `EventList` is deprecated, use `EventList::hasEvent()` instead.');
         return isset($this->_events[$offset]);
     }
-
     /**
      * Offset to retrieve
      *
@@ -87,16 +74,11 @@ class EventList implements ArrayAccess, Countable, IteratorAggregate
      * @param mixed $offset The offset to retrieve.
      * @return \Cake\Event\EventInterface<Tsubject>|null
      */
-    public function offsetGet(mixed $offset): ?EventInterface
+    public function offsetGet(mixed $offset): ?Event_Interface
     {
-        deprecationWarning(
-            '5.3.0',
-            'Array access for `EventList` is deprecated, you can iterate the instance instead.',
-        );
-
+        deprecation_warning('5.3.0', 'Array access for `EventList` is deprecated, you can iterate the instance instead.');
         return $this->_events[$offset] ?? null;
     }
-
     /**
      * Offset to set
      *
@@ -107,14 +89,9 @@ class EventList implements ArrayAccess, Countable, IteratorAggregate
      */
     public function offsetSet(mixed $offset, mixed $value): void
     {
-        deprecationWarning(
-            '5.3.0',
-            'Array access for `EventList` is deprecated, use `EventList::add() instead.',
-        );
-
+        deprecation_warning('5.3.0', 'Array access for `EventList` is deprecated, use `EventList::add() instead.');
         $this->_events[$offset] = $value;
     }
-
     /**
      * Offset to unset
      *
@@ -125,14 +102,9 @@ class EventList implements ArrayAccess, Countable, IteratorAggregate
      */
     public function offsetUnset(mixed $offset): void
     {
-        deprecationWarning(
-            '5.3.0',
-            'Array access for `EventList` is deprecated.'
-            . ' Individual events cannot be unset anymore, use `EventList::flush()` to clear the list.',
-        );
+        deprecation_warning('5.3.0', 'Array access for `EventList` is deprecated.' . ' Individual events cannot be unset anymore, use `EventList::flush()` to clear the list.');
         unset($this->_events[$offset]);
     }
-
     /**
      * Retrieve an external iterator
      *
@@ -142,7 +114,6 @@ class EventList implements ArrayAccess, Countable, IteratorAggregate
     {
         return new ArrayIterator($this->_events);
     }
-
     /**
      * Count elements of an object
      *
@@ -153,20 +124,18 @@ class EventList implements ArrayAccess, Countable, IteratorAggregate
     {
         return count($this->_events);
     }
-
     /**
      * Checks if an event is in the list.
      *
      * @param string $name Event name.
      */
-    public function hasEvent(string $name): bool
+    public function has_event(string $name): bool
     {
         foreach ($this->_events as $event) {
-            if ($event->getName() === $name) {
+            if ($event->get_name() === $name) {
                 return true;
             }
         }
-
         return false;
     }
 }

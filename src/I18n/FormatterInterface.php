@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -16,13 +15,12 @@ declare(strict_types=1);
  * @since         4.2.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\I18n;
 
 /**
  * Formatter Interface
  */
-interface FormatterInterface
+interface Formatter_Interface
 {
     /**
      * Returns a string with all passed variables interpolated into the original
@@ -33,5 +31,5 @@ interface FormatterInterface
      * @param array $tokenValues The list of values to interpolate in the message
      * @return string The formatted message
      */
-    public function format(string $locale, string $message, array $tokenValues): string;
+    public function format(string $locale, string $message, array $token_values): string;
 }

@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,17 +14,15 @@ declare(strict_types=1);
  * @since         4.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Database;
 
-use Cake\Datasource\ConnectionInterface;
-
+use Cake\Datasource\Connection_Interface;
 /**
  * Defines the interface for a fixture that needs to manage constraints.
  *
  * @deprecated 5.2.5 This interface is no longer used.
  */
-interface ConstraintsInterface
+interface Constraints_Interface
 {
     /**
      * Build and execute SQL queries necessary to create the constraints for the
@@ -35,8 +32,7 @@ interface ConstraintsInterface
      *  into which the constraints will be created.
      * @return bool on success or if there are no constraints to create, or false on failure
      */
-    public function createConstraints(ConnectionInterface $connection): bool;
-
+    public function create_constraints(Connection_Interface $connection): bool;
     /**
      * Build and execute SQL queries necessary to drop the constraints for the
      * fixture
@@ -45,5 +41,5 @@ interface ConstraintsInterface
      *  into which the constraints will be dropped.
      * @return bool on success or if there are no constraints to drop, or false on failure
      */
-    public function dropConstraints(ConnectionInterface $connection): bool;
+    public function drop_constraints(Connection_Interface $connection): bool;
 }

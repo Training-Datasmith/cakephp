@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,24 +14,20 @@ declare(strict_types=1);
  * @since         4.2.0
  * @license       https://www.opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Http\Middleware;
 
 use ArrayAccess;
-use Cake\Core\Exception\CakeException;
-use Cake\Http\Exception\InvalidCsrfTokenException;
-use Cake\Http\ServerRequest;
+use Cake\Core\Exception\Cake_Exception;
+use Cake\Http\Exception\Invalid_Csrf_Token_Exception;
+use Cake\Http\Server_Request;
 use Cake\Http\Session;
-
 use function Cake\I18n\__d;
-
 use Cake\Utility\Hash;
 use Cake\Utility\Security;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\MiddlewareInterface;
-use Psr\Http\Server\RequestHandlerInterface;
-
+use Psr\Http\Message\Response_Interface;
+use Psr\Http\Message\Server_Request_Interface;
+use Psr\Http\Server\Middleware_Interface;
+use Psr\Http\Server\Request_Handler_Interface;
 /**
  * Provides CSRF protection via session based tokens.
  *
@@ -51,7 +46,7 @@ use Psr\Http\Server\RequestHandlerInterface;
  *
  * @see https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html#synchronizer-token-pattern
  */
-class SessionCsrfProtectionMiddleware implements MiddlewareInterface
+class Session_Csrf_Protection_Middleware implements Middleware_Interface
 {
     /**
      * Config for the CSRF handling.
@@ -62,11 +57,7 @@ class SessionCsrfProtectionMiddleware implements MiddlewareInterface
      *
      * @var array<string, mixed>
      */
-    protected array $_config = [
-        'key' => 'csrfToken',
-        'field' => '_csrfToken',
-    ];
-
+    protected array $_config = ['key' => 'csrfToken', 'field' => '_csrfToken'];
     /**
      * Callback for deciding whether to skip the token check for particular request.
      *
@@ -74,13 +65,11 @@ class SessionCsrfProtectionMiddleware implements MiddlewareInterface
      *
      * @var callable|null
      */
-    protected $skipCheckCallback;
-
+    protected $skip_check_callback;
     /**
      * @var int
      */
     public const TOKEN_VALUE_LENGTH = 32;
-
     /**
      * Constructor
      *
@@ -90,7 +79,6 @@ class SessionCsrfProtectionMiddleware implements MiddlewareInterface
     {
         $this->_config = $config + $this->_config;
     }
-
     /**
      * Checks and sets the CSRF token depending on the HTTP verb.
      *
@@ -98,46 +86,33 @@ class SessionCsrfProtectionMiddleware implements MiddlewareInterface
      * @param \Psr\Http\Server\RequestHandlerInterface $handler The request handler.
      * @return \Psr\Http\Message\ResponseInterface A response.
      */
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
+    public function process(Server_Request_Interface $request, Request_Handler_Interface $handler): Response_Interface
     {
-        $method = $request->getMethod();
-        $hasData = in_array($method, ['PUT', 'POST', 'DELETE', 'PATCH'], true)
-            || $request->getParsedBody();
-
-        if (
-            $hasData
-            && $this->skipCheckCallback !== null
-            && call_user_func($this->skipCheckCallback, $request) === true
-        ) {
-            $request = $this->unsetTokenField($request);
-
+        $method = $request->get_method();
+        $has_data = in_array($method, ['PUT', 'POST', 'DELETE', 'PATCH'], true) || $request->get_parsed_body();
+        if ($has_data && $this->skip_check_callback !== null && call_user_func($this->skip_check_callback, $request) === true) {
+            $request = $this->unset_token_field($request);
             return $handler->handle($request);
         }
-
-        $session = $request->getAttribute('session');
-        if (!($session instanceof Session)) {
-            throw new CakeException('You must have a `session` attribute to use session based CSRF tokens');
+        $session = $request->get_attribute('session');
+        if (!$session instanceof Session) {
+            throw new Cake_Exception('You must have a `session` attribute to use session based CSRF tokens');
         }
-
         $token = $session->read($this->_config['key']);
         if ($token === null) {
-            $token = $this->createToken();
+            $token = $this->create_token();
             $session->write($this->_config['key'], $token);
         }
-        $request = $request->withAttribute('csrfToken', $this->saltToken($token));
-
+        $request = $request->with_attribute('csrfToken', $this->salt_token($token));
         if ($method === 'GET') {
             return $handler->handle($request);
         }
-
-        if ($hasData) {
-            $this->validateToken($request, $session);
-            $request = $this->unsetTokenField($request);
+        if ($has_data) {
+            $this->validate_token($request, $session);
+            $request = $this->unset_token_field($request);
         }
-
         return $handler->handle($request);
     }
-
     /**
      * Set callback for allowing to skip token check for particular request.
      *
@@ -147,13 +122,11 @@ class SessionCsrfProtectionMiddleware implements MiddlewareInterface
      * @param callable $callback A callable.
      * @return $this
      */
-    public function skipCheckCallback(callable $callback): static
+    public function skip_check_callback(callable $callback): static
     {
-        $this->skipCheckCallback = $callback;
-
+        $this->skip_check_callback = $callback;
         return $this;
     }
-
     /**
      * Apply entropy to a CSRF token
      *
@@ -164,20 +137,18 @@ class SessionCsrfProtectionMiddleware implements MiddlewareInterface
      * @param string $token The token to salt.
      * @return string The salted token with the salt appended.
      */
-    public function saltToken(string $token): string
+    public function salt_token(string $token): string
     {
         $decoded = base64_decode($token);
         $length = strlen($decoded);
-        $salt = Security::randomBytes($length);
+        $salt = Security::random_bytes($length);
         $salted = '';
         for ($i = 0; $i < $length; $i++) {
             // XOR the token and salt together so that we can reverse it later.
             $salted .= chr(ord($decoded[$i]) ^ ord($salt[$i]));
         }
-
         return base64_encode($salted . $salt);
     }
-
     /**
      * Remove the salt from a CSRF token.
      *
@@ -187,7 +158,7 @@ class SessionCsrfProtectionMiddleware implements MiddlewareInterface
      * @param string $token The token that could be salty.
      * @return string An unsalted token.
      */
-    protected function unsaltToken(string $token): string
+    protected function unsalt_token(string $token): string
     {
         $decoded = base64_decode($token, true);
         if ($decoded === false || strlen($decoded) !== static::TOKEN_VALUE_LENGTH * 2) {
@@ -195,16 +166,13 @@ class SessionCsrfProtectionMiddleware implements MiddlewareInterface
         }
         $salted = substr($decoded, 0, static::TOKEN_VALUE_LENGTH);
         $salt = substr($decoded, static::TOKEN_VALUE_LENGTH);
-
         $unsalted = '';
         for ($i = 0; $i < static::TOKEN_VALUE_LENGTH; $i++) {
             // Reverse the XOR to desalt.
             $unsalted .= chr(ord($salted[$i]) ^ ord($salt[$i]));
         }
-
         return base64_encode($unsalted);
     }
-
     /**
      * Remove CSRF protection token from request data.
      *
@@ -213,28 +181,25 @@ class SessionCsrfProtectionMiddleware implements MiddlewareInterface
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request object.
      */
-    protected function unsetTokenField(ServerRequestInterface $request): ServerRequestInterface
+    protected function unset_token_field(Server_Request_Interface $request): Server_Request_Interface
     {
-        $body = $request->getParsedBody();
+        $body = $request->get_parsed_body();
         if (is_array($body)) {
             unset($body[$this->_config['field']]);
-            $request = $request->withParsedBody($body);
+            $request = $request->with_parsed_body($body);
         }
-
         return $request;
     }
-
     /**
      * Create a new token to be used for CSRF protection
      *
      * This token is a simple unique random value as the compare
      * value is stored in the session where it cannot be tampered with.
      */
-    public function createToken(): string
+    public function create_token(): string
     {
-        return base64_encode(Security::randomBytes(static::TOKEN_VALUE_LENGTH));
+        return base64_encode(Security::random_bytes(static::TOKEN_VALUE_LENGTH));
     }
-
     /**
      * Validate the request data against the cookie token.
      *
@@ -242,34 +207,27 @@ class SessionCsrfProtectionMiddleware implements MiddlewareInterface
      * @param \Cake\Http\Session $session The session instance.
      * @throws \Cake\Http\Exception\InvalidCsrfTokenException When the CSRF token is invalid or missing.
      */
-    protected function validateToken(ServerRequestInterface $request, Session $session): void
+    protected function validate_token(Server_Request_Interface $request, Session $session): void
     {
         $token = $session->read($this->_config['key']);
         if (!$token || !is_string($token)) {
-            throw new InvalidCsrfTokenException(__d('cake', 'Missing or incorrect CSRF session key'));
+            throw new Invalid_Csrf_Token_Exception(__d('cake', 'Missing or incorrect CSRF session key'));
         }
-
-        $body = $request->getParsedBody();
+        $body = $request->get_parsed_body();
         if (is_array($body) || $body instanceof ArrayAccess) {
-            $post = (string)Hash::get($body, $this->_config['field']);
-            $post = $this->unsaltToken($post);
+            $post = (string) Hash::get($body, $this->_config['field']);
+            $post = $this->unsalt_token($post);
             if (hash_equals($post, $token)) {
                 return;
             }
         }
-
-        $header = $request->getHeaderLine('X-CSRF-Token');
-        $header = $this->unsaltToken($header);
+        $header = $request->get_header_line('X-CSRF-Token');
+        $header = $this->unsalt_token($header);
         if (hash_equals($header, $token)) {
             return;
         }
-
-        throw new InvalidCsrfTokenException(__d(
-            'cake',
-            'CSRF token from either the request body or request headers did not match or is missing.',
-        ));
+        throw new Invalid_Csrf_Token_Exception(__d('cake', 'CSRF token from either the request body or request headers did not match or is missing.'));
     }
-
     /**
      * Replace the token in the provided request.
      *
@@ -280,13 +238,11 @@ class SessionCsrfProtectionMiddleware implements MiddlewareInterface
      * @param string $key The session key/attribute to set.
      * @return \Cake\Http\ServerRequest An updated request.
      */
-    public static function replaceToken(ServerRequest $request, string $key = 'csrfToken'): ServerRequest
+    public static function replace_token(Server_Request $request, string $key = 'csrfToken'): Server_Request
     {
-        $middleware = new SessionCsrfProtectionMiddleware(['key' => $key]);
-
-        $token = $middleware->createToken();
-        $request->getSession()->write($key, $token);
-
-        return $request->withAttribute($key, $middleware->saltToken($token));
+        $middleware = new Session_Csrf_Protection_Middleware(['key' => $key]);
+        $token = $middleware->create_token();
+        $request->get_session()->write($key, $token);
+        return $request->with_attribute($key, $middleware->salt_token($token));
     }
 }

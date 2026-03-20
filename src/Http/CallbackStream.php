@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,11 +14,9 @@ declare(strict_types=1);
  * @since         3.3.4
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Http;
 
-use Laminas\Diactoros\CallbackStream as BaseCallbackStream;
-
+use Laminas\Diactoros\Callback_Stream as BaseCallbackStream;
 /**
  * Implementation of PSR HTTP streams.
  *
@@ -33,12 +30,12 @@ use Laminas\Diactoros\CallbackStream as BaseCallbackStream;
  *
  * @internal
  */
-class CallbackStream extends BaseCallbackStream
+class Callback_Stream extends Base_Callback_Stream
 {
     /**
      * @inheritDoc
      */
-    public function getContents(): string
+    public function get_contents(): string
     {
         $callback = $this->detach();
         $result = '';
@@ -48,7 +45,6 @@ class CallbackStream extends BaseCallbackStream
         if (!is_string($result)) {
             return '';
         }
-
         return $result;
     }
 }

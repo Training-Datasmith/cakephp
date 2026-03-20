@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -16,17 +15,15 @@ declare(strict_types=1);
  * @since         4.2.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\I18n;
 
-use Cake\I18n\Exception\I18nException;
-
+use Cake\I18n\Exception\I18n_Exception;
 /**
  * A ServiceLocator implementation for loading and retaining formatter objects.
  *
  * @internal
  */
-class FormatterLocator
+class Formatter_Locator
 {
     /**
      * A registry to retain formatter objects.
@@ -34,7 +31,6 @@ class FormatterLocator
      * @var array<string, \Cake\I18n\FormatterInterface|class-string<\Cake\I18n\FormatterInterface>>
      */
     protected array $registry = [];
-
     /**
      * Tracks whether a registry entry has been converted from a
      * FQCN to a formatter object.
@@ -42,7 +38,6 @@ class FormatterLocator
      * @var array<bool>
      */
     protected array $converted = [];
-
     /**
      * Constructor.
      *
@@ -55,19 +50,17 @@ class FormatterLocator
             $this->set($name, $spec);
         }
     }
-
     /**
      * Sets a formatter into the registry by name.
      *
      * @param string $name The formatter name.
      * @param class-string<\Cake\I18n\FormatterInterface> $className A FQCN for a formatter.
      */
-    public function set(string $name, string $className): void
+    public function set(string $name, string $class_name): void
     {
-        $this->registry[$name] = $className;
+        $this->registry[$name] = $class_name;
         $this->converted[$name] = false;
     }
-
     /**
      * Gets a formatter from the registry by name.
      *
@@ -75,19 +68,17 @@ class FormatterLocator
      * @return \Cake\I18n\FormatterInterface A formatter object.
      * @throws \Cake\I18n\Exception\I18nException
      */
-    public function get(string $name): FormatterInterface
+    public function get(string $name): Formatter_Interface
     {
         if (!isset($this->registry[$name])) {
-            throw new I18nException(sprintf('Formatter named `%s` has not been registered.', $name));
+            throw new I18n_Exception(sprintf('Formatter named `%s` has not been registered.', $name));
         }
-
         if (!$this->converted[$name]) {
             /** @var class-string<\Cake\I18n\FormatterInterface> $formatter */
             $formatter = $this->registry[$name];
             $this->registry[$name] = new $formatter();
             $this->converted[$name] = true;
         }
-
         return $this->registry[$name];
     }
 }

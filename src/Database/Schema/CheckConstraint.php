@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,32 +14,26 @@ declare(strict_types=1);
  * @since         5.3.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Database\Schema;
 
 use InvalidArgumentException;
-
 /**
  * Check constraint value object
  *
  * Models a check constraint.
  */
-class CheckConstraint extends Constraint
+class Check_Constraint extends Constraint
 {
     protected string $type = self::CHECK;
-
     /**
      * Constructor
      *
      * @param string $name Constraint name.
      * @param string $expression The check constraint expression (e.g., "age >= 18")
      */
-    public function __construct(
-        protected string $name,
-        protected string $expression,
-    ) {
+    public function __construct(protected string $name, protected string $expression)
+    {
     }
-
     /**
      * Set the check constraint expression.
      *
@@ -48,37 +41,29 @@ class CheckConstraint extends Constraint
      * @return $this
      * @throws \InvalidArgumentException
      */
-    public function setExpression(string $expression): static
+    public function set_expression(string $expression): static
     {
         if (trim($expression) === '') {
             throw new InvalidArgumentException('Check constraint expression cannot be empty');
         }
-
         $this->expression = trim($expression);
-
         return $this;
     }
-
     /**
      * Get the check constraint expression.
      */
-    public function getExpression(): string
+    public function get_expression(): string
     {
         return $this->expression;
     }
-
     /**
      * Converts a constraint to an array that is compatible
      * with the constructor.
      *
      * @return array<string, mixed>
      */
-    public function toArray(): array
+    public function to_array(): array
     {
-        return [
-            'name' => $this->name,
-            'type' => $this->type,
-            'expression' => $this->expression,
-        ];
+        return ['name' => $this->name, 'type' => $this->type, 'expression' => $this->expression];
     }
 }

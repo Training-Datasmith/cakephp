@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,23 +14,20 @@ declare(strict_types=1);
  * @since         3.4.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Error;
 
-use Psr\Http\Message\ResponseInterface;
-
+use Psr\Http\Message\Response_Interface;
 /**
  * Interface ExceptionRendererInterface
  */
-interface ExceptionRendererInterface
+interface Exception_Renderer_Interface
 {
     /**
      * Renders the response for the exception.
      *
      * @return \Psr\Http\Message\ResponseInterface|string The response to be sent.
      */
-    public function render(): ResponseInterface|string;
-
+    public function render(): Response_Interface|string;
     /**
      * Write the output to the output stream.
      *
@@ -39,5 +35,5 @@ interface ExceptionRendererInterface
      *
      * @param \Psr\Http\Message\ResponseInterface|string $output Response instance or string for output.
      */
-    public function write(ResponseInterface|string $output): void;
+    public function write(Response_Interface|string $output): void;
 }

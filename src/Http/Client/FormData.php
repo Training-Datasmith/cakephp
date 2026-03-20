@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -14,14 +13,12 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Http\Client;
 
 use Countable;
 use finfo;
-use Psr\Http\Message\UploadedFileInterface;
+use Psr\Http\Message\Uploaded_File_Interface;
 use Stringable;
-
 /**
  * Provides an interface for building
  * multipart/form-encoded message bodies.
@@ -29,30 +26,26 @@ use Stringable;
  * Used by Http\Client to upload POST/PUT data
  * and files.
  */
-class FormData implements Countable, Stringable
+class Form_Data implements Countable, Stringable
 {
     /**
      * Boundary marker.
      */
     protected string $_boundary = '';
-
     /**
      * Whether this formdata object has attached files.
      */
-    protected bool $_hasFile = false;
-
+    protected bool $_has_file = false;
     /**
      * Whether this formdata object has a complex part.
      */
-    protected bool $_hasComplexPart = false;
-
+    protected bool $_has_complex_part = false;
     /**
      * The parts in the form data.
      *
      * @var array<\Cake\Http\Client\FormDataPart>
      */
     protected array $_parts = [];
-
     /**
      * Get the boundary marker
      */
@@ -61,22 +54,19 @@ class FormData implements Countable, Stringable
         if ($this->_boundary) {
             return $this->_boundary;
         }
-        $this->_boundary = hash('xxh128', uniqid((string)time()));
-
+        $this->_boundary = hash('xxh128', uniqid((string) time()));
         return $this->_boundary;
     }
-
     /**
      * Method for creating new instances of Part
      *
      * @param string $name The name of the part.
      * @param string $value The value to add.
      */
-    public function newPart(string $name, string $value): FormDataPart
+    public function new_part(string $name, string $value): Form_Data_Part
     {
-        return new FormDataPart($name, $value);
+        return new Form_Data_Part($name, $value);
     }
-
     /**
      * Add a new part to the data.
      *
@@ -91,24 +81,22 @@ class FormData implements Countable, Stringable
      * @param mixed $value The value for the part.
      * @return $this
      */
-    public function add(FormDataPart|string $name, mixed $value = null): static
+    public function add(Form_Data_Part|string $name, mixed $value = null): static
     {
         if (is_string($name)) {
             if (is_array($value)) {
-                $this->addRecursive($name, $value);
-            } elseif (is_resource($value) || $value instanceof UploadedFileInterface) {
-                $this->addFile($name, $value);
+                $this->add_recursive($name, $value);
+            } elseif (is_resource($value) || $value instanceof Uploaded_File_Interface) {
+                $this->add_file($name, $value);
             } else {
-                $this->_parts[] = $this->newPart($name, (string)$value);
+                $this->_parts[] = $this->new_part($name, (string) $value);
             }
         } else {
-            $this->_hasComplexPart = true;
+            $this->_has_complex_part = true;
             $this->_parts[] = $name;
         }
-
         return $this;
     }
-
     /**
      * Add multiple parts at once.
      *
@@ -117,15 +105,13 @@ class FormData implements Countable, Stringable
      * @param array $data Array of data to add.
      * @return $this
      */
-    public function addMany(array $data): static
+    public function add_many(array $data): static
     {
         foreach ($data as $name => $value) {
             $this->add($name, $value);
         }
-
         return $this;
     }
-
     /**
      * Add either a file reference (string starting with @)
      * or a file handle.
@@ -134,65 +120,53 @@ class FormData implements Countable, Stringable
      * @param \Psr\Http\Message\UploadedFileInterface|resource|string $value Either a string filename, or a filehandle,
      *  or a UploadedFileInterface instance.
      */
-    public function addFile(string $name, mixed $value): FormDataPart
+    public function add_file(string $name, mixed $value): Form_Data_Part
     {
-        $this->_hasFile = true;
-
+        $this->_has_file = true;
         $filename = false;
-        $contentType = 'application/octet-stream';
-        if ($value instanceof UploadedFileInterface) {
-            $content = (string)$value->getStream();
-            $contentType = $value->getClientMediaType();
-            $filename = $value->getClientFilename();
+        $content_type = 'application/octet-stream';
+        if ($value instanceof Uploaded_File_Interface) {
+            $content = (string) $value->get_stream();
+            $content_type = $value->get_client_media_type();
+            $filename = $value->get_client_filename();
         } elseif (is_resource($value)) {
-            $content = (string)stream_get_contents($value);
+            $content = (string) stream_get_contents($value);
             if (stream_is_local($value)) {
                 $finfo = new finfo(FILEINFO_MIME);
                 $metadata = stream_get_meta_data($value);
                 $uri = $metadata['uri'] ?? '';
-                $contentType = (string)$finfo->file($uri);
+                $content_type = (string) $finfo->file($uri);
                 $filename = basename($uri);
             }
         } else {
-            assert(
-                is_string($value),
-                sprintf(
-                    '`$value` must be a string, a resource or an instance of `Psr\Http\Message\UploadedFileInterface`.'
-                    . ' `%s` given.',
-                    get_debug_type($value),
-                ),
-            );
-
+            assert(is_string($value), sprintf('`$value` must be a string, a resource or an instance of `Psr\Http\Message\UploadedFileInterface`.' . ' `%s` given.', get_debug_type($value)));
             $finfo = new finfo(FILEINFO_MIME);
             $value = substr($value, 1);
             $filename = basename($value);
-            $content = (string)file_get_contents($value);
-            $contentType = (string)$finfo->file($value);
+            $content = (string) file_get_contents($value);
+            $content_type = (string) $finfo->file($value);
         }
-        $part = $this->newPart($name, $content);
-        $part->type($contentType);
+        $part = $this->new_part($name, $content);
+        $part->type($content_type);
         if ($filename) {
             $part->filename($filename);
         }
         $this->add($part);
-
         return $part;
     }
-
     /**
      * Recursively add data.
      *
      * @param string $name The name to use.
      * @param mixed $value The value to add.
      */
-    public function addRecursive(string $name, mixed $value): void
+    public function add_recursive(string $name, mixed $value): void
     {
         foreach ($value as $key => $item) {
             $key = $name . '[' . $key . ']';
             $this->add($key, $item);
         }
     }
-
     /**
      * Returns the count of parts inside this object.
      */
@@ -200,18 +174,16 @@ class FormData implements Countable, Stringable
     {
         return count($this->_parts);
     }
-
     /**
      * Check whether the current payload
      * has any files.
      *
      * @return bool Whether there is a file in this payload.
      */
-    public function hasFile(): bool
+    public function has_file(): bool
     {
-        return $this->_hasFile;
+        return $this->_has_file;
     }
-
     /**
      * Check whether the current payload
      * is multipart.
@@ -221,51 +193,46 @@ class FormData implements Countable, Stringable
      *
      * @return bool Whether the payload is multipart.
      */
-    public function isMultipart(): bool
+    public function is_multipart(): bool
     {
-        if ($this->hasFile()) {
+        if ($this->has_file()) {
             return true;
         }
-        return $this->_hasComplexPart;
+        return $this->_has_complex_part;
     }
-
     /**
      * Get the content type for this payload.
      *
      * If this object contains files, `multipart/form-data` will be used,
      * otherwise `application/x-www-form-urlencoded` will be used.
      */
-    public function contentType(): string
+    public function content_type(): string
     {
-        if (!$this->isMultipart()) {
+        if (!$this->is_multipart()) {
             return 'application/x-www-form-urlencoded';
         }
-
         return 'multipart/form-data; boundary=' . $this->boundary();
     }
-
     /**
      * Converts the FormData and its parts into a string suitable
      * for use in an HTTP request.
      */
     public function __toString(): string
     {
-        if ($this->isMultipart()) {
+        if ($this->is_multipart()) {
             $boundary = $this->boundary();
             $out = '';
             foreach ($this->_parts as $part) {
                 $out .= "--{$boundary}\r\n";
-                $out .= (string)$part;
+                $out .= (string) $part;
                 $out .= "\r\n";
             }
-
             return $out . "--{$boundary}--\r\n";
         }
         $data = [];
         foreach ($this->_parts as $part) {
             $data[$part->name()] = $part->value();
         }
-
         return http_build_query($data);
     }
 }

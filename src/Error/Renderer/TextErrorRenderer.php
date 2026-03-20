@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,18 +14,16 @@ declare(strict_types=1);
  * @since         4.4.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Error\Renderer;
 
-use Cake\Error\ErrorRendererInterface;
-use Cake\Error\PhpError;
-
+use Cake\Error\Error_Renderer_Interface;
+use Cake\Error\Php_Error;
 /**
  * Plain text error rendering with a stack trace.
  *
  * Useful in CLI environments.
  */
-class TextErrorRenderer implements ErrorRendererInterface
+class Text_Error_Renderer implements Error_Renderer_Interface
 {
     /**
      * @inheritDoc
@@ -35,24 +32,14 @@ class TextErrorRenderer implements ErrorRendererInterface
     {
         echo $out;
     }
-
     /**
      * @inheritDoc
      */
-    public function render(PhpError $error, bool $debug): string
+    public function render(Php_Error $error, bool $debug): string
     {
         if (!$debug) {
             return '';
         }
-
-        return sprintf(
-            "%s: %s :: %s on line %s of %s\nTrace:\n%s",
-            $error->getLabel(),
-            $error->getCode(),
-            $error->getMessage(),
-            $error->getLine() ?? '',
-            $error->getFile() ?? '',
-            $error->getTraceAsString(),
-        );
+        return sprintf("%s: %s :: %s on line %s of %s\nTrace:\n%s", $error->get_label(), $error->get_code(), $error->get_message(), $error->get_line() ?? '', $error->get_file() ?? '', $error->get_trace_as_string());
     }
 }

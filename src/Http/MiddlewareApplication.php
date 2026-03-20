@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,13 +14,11 @@ declare(strict_types=1);
  * @since         4.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Http;
 
-use Cake\Core\HttpApplicationInterface;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-
+use Cake\Core\Http_Application_Interface;
+use Psr\Http\Message\Response_Interface;
+use Psr\Http\Message\Server_Request_Interface;
 /**
  * Base class for standalone HTTP applications
  *
@@ -32,26 +29,23 @@ use Psr\Http\Message\ServerRequestInterface;
  * You can overload the `handle` method to provide your own logic
  * to run when no middleware generates a response.
  */
-abstract class MiddlewareApplication implements HttpApplicationInterface
+abstract class Middleware_Application implements Http_Application_Interface
 {
     /**
      * @inheritDoc
      */
     abstract public function bootstrap(): void;
-
     /**
      * @inheritDoc
      */
-    abstract public function middleware(MiddlewareQueue $middlewareQueue): MiddlewareQueue;
-
+    abstract public function middleware(Middleware_Queue $middleware_queue): Middleware_Queue;
     /**
      * Generate a 404 response as no middleware handled the request.
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request
      */
-    public function handle(
-        ServerRequestInterface $request,
-    ): ResponseInterface {
+    public function handle(Server_Request_Interface $request): Response_Interface
+    {
         return new Response(['body' => 'Not found', 'status' => 404]);
     }
 }

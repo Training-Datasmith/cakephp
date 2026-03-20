@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,18 +14,16 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Database\Expression;
 
-use Cake\Database\ExpressionInterface;
-use Cake\Database\TypeMap;
-use Cake\Database\ValueBinder;
+use Cake\Database\Expression_Interface;
+use Cake\Database\Type_Map;
+use Cake\Database\Value_Binder;
 use InvalidArgumentException;
-
 /**
  * An expression object for ORDER BY clauses
  */
-class OrderByExpression extends QueryExpression
+class Order_By_Expression extends Query_Expression
 {
     /**
      * Constructor
@@ -35,30 +32,24 @@ class OrderByExpression extends QueryExpression
      * @param \Cake\Database\TypeMap|array<string, string> $types The types for each column.
      * @param string $conjunction The glue used to join conditions together.
      */
-    public function __construct(
-        ExpressionInterface|array|string $conditions = [],
-        TypeMap|array $types = [],
-        string $conjunction = '',
-    ) {
+    public function __construct(Expression_Interface|array|string $conditions = [], Type_Map|array $types = [], string $conjunction = '')
+    {
         parent::__construct($conditions, $types, $conjunction);
     }
-
     /**
      * @inheritDoc
      */
-    public function sql(ValueBinder $binder): string
+    public function sql(Value_Binder $binder): string
     {
         $order = [];
         foreach ($this->_conditions as $k => $direction) {
-            if ($direction instanceof ExpressionInterface) {
+            if ($direction instanceof Expression_Interface) {
                 $direction = $direction->sql($binder);
             }
             $order[] = is_numeric($k) ? $direction : sprintf('%s %s', $k, $direction);
         }
-
         return sprintf('ORDER BY %s', implode(', ', $order));
     }
-
     /**
      * Auxiliary function used for decomposing a nested array of conditions and
      * building a tree structure inside this object to represent the full SQL expression.
@@ -68,26 +59,13 @@ class OrderByExpression extends QueryExpression
      * @param array $conditions list of order by expressions
      * @param array $types list of types associated on fields referenced in $conditions
      */
-    protected function _addConditions(array $conditions, array $types): void
+    protected function _add_conditions(array $conditions, array $types): void
     {
         foreach ($conditions as $key => $val) {
-            if (
-                is_string($key) &&
-                is_string($val) &&
-                !in_array(strtoupper($val), ['ASC', 'DESC'], true)
-            ) {
-                throw new InvalidArgumentException(
-                    sprintf(
-                        "Passing extra expressions by associative array (`'%s' => '%s'`) " .
-                        'is not allowed to avoid potential SQL injection. ' .
-                        'Use QueryExpression or numeric array instead.',
-                        $key,
-                        $val,
-                    ),
-                );
+            if (is_string($key) && is_string($val) && !in_array(strtoupper($val), ['ASC', 'DESC'], true)) {
+                throw new InvalidArgumentException(sprintf("Passing extra expressions by associative array (`'%s' => '%s'`) " . 'is not allowed to avoid potential SQL injection. ' . 'Use QueryExpression or numeric array instead.', $key, $val));
             }
         }
-
         $this->_conditions = array_merge($this->_conditions, $conditions);
     }
 }

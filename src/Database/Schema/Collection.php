@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,11 +14,9 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Database\Schema;
 
 use Cake\Database\Connection;
-
 /**
  * Represents a database schema collection
  *
@@ -28,13 +25,12 @@ use Cake\Database\Connection;
  *
  * @see \Cake\Database\Schema\SchemaDialect For lower level schema reflection API
  */
-class Collection implements CollectionInterface
+class Collection implements Collection_Interface
 {
     /**
      * Schema dialect instance.
      */
-    protected ?SchemaDialect $_dialect = null;
-
+    protected ?Schema_Dialect $_dialect = null;
     /**
      * Constructor.
      *
@@ -45,29 +41,27 @@ class Collection implements CollectionInterface
          * Connection object
          */
         protected Connection $_connection
-    ) {
+    )
+    {
     }
-
     /**
      * Get the list of tables, excluding any views, available in the current connection.
      *
      * @return array<string> The list of tables in the connected database/schema.
      */
-    public function listTablesWithoutViews(): array
+    public function list_tables_without_views(): array
     {
-        return $this->getDialect()->listTablesWithoutViews();
+        return $this->get_dialect()->list_tables_without_views();
     }
-
     /**
      * Get the list of tables and views available in the current connection.
      *
      * @return array<string> The list of tables and views in the connected database/schema.
      */
-    public function listTables(): array
+    public function list_tables(): array
     {
-        return $this->getDialect()->listTables();
+        return $this->get_dialect()->list_tables();
     }
-
     /**
      * Get the column metadata for a table.
      *
@@ -78,16 +72,15 @@ class Collection implements CollectionInterface
      * @return \Cake\Database\Schema\TableSchemaInterface Object with column metadata.
      * @throws \Cake\Database\Exception\DatabaseException when table cannot be described.
      */
-    public function describe(string $name, array $options = []): TableSchemaInterface
+    public function describe(string $name, array $options = []): Table_Schema_Interface
     {
-        return $this->getDialect()->describe($name);
+        return $this->get_dialect()->describe($name);
     }
-
     /**
      * Setups the schema dialect to be used for this collection.
      */
-    protected function getDialect(): SchemaDialect
+    protected function get_dialect(): Schema_Dialect
     {
-        return $this->_dialect ??= $this->_connection->getWriteDriver()->schemaDialect();
+        return $this->_dialect ??= $this->_connection->get_write_driver()->schema_dialect();
     }
 }

@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,11 +14,9 @@ declare(strict_types=1);
  * @since         5.3.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\ORM\Attribute;
 
 use Attribute;
-
 /**
  * Attribute to specify the DTO class for array collections.
  *
@@ -40,13 +37,12 @@ use Attribute;
  * ```
  */
 #[Attribute(Attribute::TARGET_PARAMETER | Attribute::TARGET_PROPERTY)]
-class CollectionOf
+class Collection_Of
 {
     /**
      * @param class-string $class The DTO class for collection elements
      */
-    public function __construct(
-        public string $class,
-    ) {
+    public function __construct(public string $class)
+    {
     }
 }

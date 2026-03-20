@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,26 +14,21 @@ declare(strict_types=1);
  * @since         3.5.0
  * @license       https://www.opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Datasource\Paging;
 
-use Cake\Core\Exception\CakeException;
-use Cake\Core\InstanceConfigTrait;
-
-use function Cake\Core\triggerWarning;
-
-use Cake\Datasource\Paging\Exception\PageOutOfBoundsException;
-use Cake\Datasource\QueryInterface;
-use Cake\Datasource\RepositoryInterface;
-use Cake\Datasource\ResultSetInterface;
-
+use Cake\Core\Exception\Cake_Exception;
+use Cake\Core\Instance_Config_Trait;
+use function Cake\Core\Trigger_Warning;
+use Cake\Datasource\Paging\Exception\Page_Out_Of_Bounds_Exception;
+use Cake\Datasource\Query_Interface;
+use Cake\Datasource\Repository_Interface;
+use Cake\Datasource\Result_Set_Interface;
 /**
  * This class is used to handle automatic model data pagination.
  */
-class NumericPaginator implements PaginatorInterface
+class Numeric_Paginator implements Paginator_Interface
 {
-    use InstanceConfigTrait;
-
+    use Instance_Config_Trait;
     /**
      * Default pagination settings.
      *
@@ -85,41 +79,11 @@ class NumericPaginator implements PaginatorInterface
      *
      * @var array<string, mixed>
      */
-    protected array $_defaultConfig = [
-        'page' => 1,
-        'limit' => 20,
-        'maxLimit' => 100,
-        'allowedParameters' => ['limit', 'sort', 'page', 'direction'],
-        'sortableFields' => null,
-        'finder' => 'all',
-        'scope' => null,
-    ];
-
+    protected array $_default_config = ['page' => 1, 'limit' => 20, 'maxLimit' => 100, 'allowedParameters' => ['limit', 'sort', 'page', 'direction'], 'sortableFields' => null, 'finder' => 'all', 'scope' => null];
     /**
      * Calculated paging params.
      */
-    protected array $pagingParams = [
-        'limit' => null,
-        'maxLimit' => null,
-        'count' => null,
-        'totalCount' => null,
-        'perPage' => null,
-        'pageCount' => null,
-        'currentPage' => null,
-        'requestedPage' => null,
-        'start' => null,
-        'end' => null,
-        'hasPrevPage' => null,
-        'hasNextPage' => null,
-        'sort' => null,
-        'sortDefault' => null,
-        'direction' => null,
-        'directionDefault' => null,
-        'completeSort' => null,
-        'alias' => null,
-        'scope' => null,
-    ];
-
+    protected array $paging_params = ['limit' => null, 'maxLimit' => null, 'count' => null, 'totalCount' => null, 'perPage' => null, 'pageCount' => null, 'currentPage' => null, 'requestedPage' => null, 'start' => null, 'end' => null, 'hasPrevPage' => null, 'hasNextPage' => null, 'sort' => null, 'sortDefault' => null, 'direction' => null, 'directionDefault' => null, 'completeSort' => null, 'alias' => null, 'scope' => null];
     /**
      * Handles automatic pagination of model records.
      *
@@ -226,56 +190,39 @@ class NumericPaginator implements PaginatorInterface
      * @return \Cake\Datasource\Paging\PaginatedInterface<int, mixed>
      * @throws \Cake\Datasource\Paging\Exception\PageOutOfBoundsException
      */
-    public function paginate(
-        mixed $target,
-        array $params = [],
-        array $settings = [],
-    ): PaginatedInterface {
+    public function paginate(mixed $target, array $params = [], array $settings = []): Paginated_Interface
+    {
         $query = null;
-        if ($target instanceof QueryInterface) {
+        if ($target instanceof Query_Interface) {
             $query = $target;
-            $target = $query->getRepository();
+            $target = $query->get_repository();
             if ($target === null) {
-                throw new CakeException('No repository set for query.');
+                throw new Cake_Exception('No repository set for query.');
             }
         }
-
-        assert(
-            $target instanceof RepositoryInterface,
-            'Pagination target must be an instance of `' . QueryInterface::class
-                . '` or `' . RepositoryInterface::class . '`.',
-        );
-
-        $data = $this->extractData($target, $params, $settings);
-        $query = $this->getQuery($target, $query, $data);
-
-        $countQuery = clone $query;
-        $items = $this->getItems($query, $data);
-        $this->pagingParams['count'] = count($items);
-        $this->pagingParams['totalCount'] = $this->getCount($countQuery, $data);
-
-        $pagingParams = $this->buildParams($data);
-        if ($pagingParams['requestedPage'] > $pagingParams['currentPage']) {
-            throw new PageOutOfBoundsException([
-                'requestedPage' => $pagingParams['requestedPage'],
-                'pagingParams' => $pagingParams,
-            ]);
+        assert($target instanceof Repository_Interface, 'Pagination target must be an instance of `' . Query_Interface::class . '` or `' . Repository_Interface::class . '`.');
+        $data = $this->extract_data($target, $params, $settings);
+        $query = $this->get_query($target, $query, $data);
+        $count_query = clone $query;
+        $items = $this->get_items($query, $data);
+        $this->paging_params['count'] = count($items);
+        $this->paging_params['totalCount'] = $this->get_count($count_query, $data);
+        $paging_params = $this->build_params($data);
+        if ($paging_params['requestedPage'] > $paging_params['currentPage']) {
+            throw new Page_Out_Of_Bounds_Exception(['requestedPage' => $paging_params['requestedPage'], 'pagingParams' => $paging_params]);
         }
-
-        return $this->buildPaginated($items, $pagingParams);
+        return $this->build_paginated($items, $paging_params);
     }
-
     /**
      * Build paginated result set.
      *
      * @param \Cake\Datasource\ResultSetInterface<int, mixed> $items
      * @return \Cake\Datasource\Paging\PaginatedInterface<int, mixed>
      */
-    protected function buildPaginated(ResultSetInterface $items, array $pagingParams): PaginatedInterface
+    protected function build_paginated(Result_Set_Interface $items, array $paging_params): Paginated_Interface
     {
-        return new PaginatedResultSet($items, $pagingParams);
+        return new Paginated_Result_Set($items, $paging_params);
     }
-
     /**
      * Get query for fetching paginated results.
      *
@@ -283,32 +230,24 @@ class NumericPaginator implements PaginatorInterface
      * @param \Cake\Datasource\QueryInterface|null $query Query Instance.
      * @param array<string, mixed> $data Pagination data.
      */
-    protected function getQuery(RepositoryInterface $object, ?QueryInterface $query, array $data): QueryInterface
+    protected function get_query(Repository_Interface $object, ?Query_Interface $query, array $data): Query_Interface
     {
         $options = $data['options'];
-        $queryOptions = array_intersect_key(
-            $options,
-            ['order' => null, 'page' => null, 'limit' => null],
-        );
-
+        $query_options = array_intersect_key($options, ['order' => null, 'page' => null, 'limit' => null]);
         $args = [];
         $type = $options['finder'] ?? null;
         if (is_array($type)) {
-            $args = (array)current($type);
+            $args = (array) current($type);
             $type = key($type);
         }
-
         if ($query === null) {
             $query = $object->find($type ?? 'all', ...$args);
         } elseif ($type !== null) {
             $query->find($type, ...$args);
         }
-
-        $query->applyOptions($queryOptions);
-
+        $query->apply_options($query_options);
         return $query;
     }
-
     /**
      * Get paginated items.
      *
@@ -316,22 +255,20 @@ class NumericPaginator implements PaginatorInterface
      * @param array $data Paging data.
      * @return \Cake\Datasource\ResultSetInterface<int, mixed>
      */
-    protected function getItems(QueryInterface $query, array $data): ResultSetInterface
+    protected function get_items(Query_Interface $query, array $data): Result_Set_Interface
     {
         return $query->all();
     }
-
     /**
      * Get total count of records.
      *
      * @param \Cake\Datasource\QueryInterface $query Query instance.
      * @param array $data Pagination data.
      */
-    protected function getCount(QueryInterface $query, array $data): ?int
+    protected function get_count(Query_Interface $query, array $data): ?int
     {
         return $query->count();
     }
-
     /**
      * Extract pagination data needed
      *
@@ -339,31 +276,22 @@ class NumericPaginator implements PaginatorInterface
      * @param array<string, mixed> $params Request params
      * @param array<string, mixed> $settings The settings/configuration used for pagination.
      */
-    protected function extractData(RepositoryInterface $object, array $params, array $settings): array
+    protected function extract_data(Repository_Interface $object, array $params, array $settings): array
     {
-        $alias = $object->getAlias();
-        $defaults = $this->getDefaults($alias, $settings);
-
-        $validSettings = array_keys($this->_defaultConfig);
-        $validSettings[] = 'order';
-        $extraSettings = array_diff_key($defaults, array_flip($validSettings));
-        if ($extraSettings) {
-            triggerWarning(
-                'Passing query options as paginator settings is no longer supported.'
-                . ' Use a custom finder through the `finder` config or pass a SelectQuery instance to paginate().'
-                . ' Extra keys found are: `' . implode('`, `', array_keys($extraSettings)) . '`.',
-            );
+        $alias = $object->get_alias();
+        $defaults = $this->get_defaults($alias, $settings);
+        $valid_settings = array_keys($this->_default_config);
+        $valid_settings[] = 'order';
+        $extra_settings = array_diff_key($defaults, array_flip($valid_settings));
+        if ($extra_settings) {
+            trigger_warning('Passing query options as paginator settings is no longer supported.' . ' Use a custom finder through the `finder` config or pass a SelectQuery instance to paginate().' . ' Extra keys found are: `' . implode('`, `', array_keys($extra_settings)) . '`.');
         }
-
-        $options = $this->mergeOptions($params, $defaults);
-        $options = $this->validateSort($object, $options);
-        $options = $this->checkLimit($options);
-
-        $options['page'] = max((int)$options['page'], 1);
-
+        $options = $this->merge_options($params, $defaults);
+        $options = $this->validate_sort($object, $options);
+        $options = $this->check_limit($options);
+        $options['page'] = max((int) $options['page'], 1);
         return compact('defaults', 'options', 'alias');
     }
-
     /**
      * Build pagination params.
      *
@@ -371,122 +299,93 @@ class NumericPaginator implements PaginatorInterface
      *  'defaults', 'alias'.
      * @return array<string, mixed> Paging params.
      */
-    protected function buildParams(array $data): array
+    protected function build_params(array $data): array
     {
-        $this->pagingParams = [
-            'perPage' => $data['options']['limit'],
-            'requestedPage' => $data['options']['page'],
-            'alias' => $data['alias'],
-            'scope' => $data['options']['scope'],
-            'maxLimit' => $data['options']['maxLimit'],
-        ] + $this->pagingParams;
-
-        $this->addPageCountParams($data);
-        $this->addStartEndParams($data);
-        $this->addPrevNextParams($data);
-        $this->addSortingParams($data);
-
-        $this->pagingParams['limit'] = (int)$data['defaults']['limit'] !== (int)$data['options']['limit']
-            ? $data['options']['limit']
-            : null;
-
+        $this->paging_params = ['perPage' => $data['options']['limit'], 'requestedPage' => $data['options']['page'], 'alias' => $data['alias'], 'scope' => $data['options']['scope'], 'maxLimit' => $data['options']['maxLimit']] + $this->paging_params;
+        $this->add_page_count_params($data);
+        $this->add_start_end_params($data);
+        $this->add_prev_next_params($data);
+        $this->add_sorting_params($data);
+        $this->paging_params['limit'] = (int) $data['defaults']['limit'] !== (int) $data['options']['limit'] ? $data['options']['limit'] : null;
         // Add sortableFields configuration for view helpers
         if (isset($data['options']['sortableFields'])) {
-            $sortableFields = $data['options']['sortableFields'];
-            if ($sortableFields instanceof SortableFieldsBuilder) {
-                $this->pagingParams['sortableFields'] = $sortableFields->toArray();
+            $sortable_fields = $data['options']['sortableFields'];
+            if ($sortable_fields instanceof Sortable_Fields_Builder) {
+                $this->paging_params['sortableFields'] = $sortable_fields->to_array();
             }
         }
-
-        return $this->pagingParams;
+        return $this->paging_params;
     }
-
     /**
      * Add "currentPage" and "pageCount" params.
      *
      * @param array $data Paginator data.
      */
-    protected function addPageCountParams(array $data): void
+    protected function add_page_count_params(array $data): void
     {
         $page = $data['options']['page'];
-        $pageCount = null;
-
-        if ($this->pagingParams['totalCount'] !== null) {
-            $pageCount = max((int)ceil($this->pagingParams['totalCount'] / $this->pagingParams['perPage']), 1);
-            $page = min($page, $pageCount);
-        } elseif ($this->pagingParams['count'] === 0 && $this->pagingParams['requestedPage'] > 1) {
+        $page_count = null;
+        if ($this->paging_params['totalCount'] !== null) {
+            $page_count = max((int) ceil($this->paging_params['totalCount'] / $this->paging_params['perPage']), 1);
+            $page = min($page, $page_count);
+        } elseif ($this->paging_params['count'] === 0 && $this->paging_params['requestedPage'] > 1) {
             $page = 1;
         }
-
-        $this->pagingParams['currentPage'] = $page;
-        $this->pagingParams['pageCount'] = $pageCount;
+        $this->paging_params['currentPage'] = $page;
+        $this->paging_params['pageCount'] = $page_count;
     }
-
     /**
      * Add "start" and "end" params.
      *
      * @param array $data Paginator data.
      */
-    protected function addStartEndParams(array $data): void
+    protected function add_start_end_params(array $data): void
     {
         $start = 0;
         $end = 0;
-        if ($this->pagingParams['count'] > 0) {
-            $start = (($this->pagingParams['currentPage'] - 1) * $this->pagingParams['perPage']) + 1;
-            $end = $start + $this->pagingParams['count'] - 1;
+        if ($this->paging_params['count'] > 0) {
+            $start = ($this->paging_params['currentPage'] - 1) * $this->paging_params['perPage'] + 1;
+            $end = $start + $this->paging_params['count'] - 1;
         }
-
-        $this->pagingParams['start'] = $start;
-        $this->pagingParams['end'] = $end;
+        $this->paging_params['start'] = $start;
+        $this->paging_params['end'] = $end;
     }
-
     /**
      * Add "prevPage" and "nextPage" params.
      *
      * @param array $data Paging data.
      */
-    protected function addPrevNextParams(array $data): void
+    protected function add_prev_next_params(array $data): void
     {
-        $this->pagingParams['hasPrevPage'] = $this->pagingParams['currentPage'] > 1;
-        if ($this->pagingParams['totalCount'] === null) {
-            $this->pagingParams['hasNextPage'] = true;
+        $this->paging_params['hasPrevPage'] = $this->paging_params['currentPage'] > 1;
+        if ($this->paging_params['totalCount'] === null) {
+            $this->paging_params['hasNextPage'] = true;
         } else {
-            $this->pagingParams['hasNextPage'] = $this->pagingParams['totalCount']
-                > $this->pagingParams['currentPage'] * $this->pagingParams['perPage'];
+            $this->paging_params['hasNextPage'] = $this->paging_params['totalCount'] > $this->paging_params['currentPage'] * $this->paging_params['perPage'];
         }
     }
-
     /**
      * Add sorting / ordering params.
      *
      * @param array $data Paging data.
      */
-    protected function addSortingParams(array $data): void
+    protected function add_sorting_params(array $data): void
     {
         $defaults = $data['defaults'];
-        $order = (array)$data['options']['order'];
-        $sortDefault = false;
-        $directionDefault = false;
-
+        $order = (array) $data['options']['order'];
+        $sort_default = false;
+        $direction_default = false;
         if (!empty($defaults['order']) && count($defaults['order']) >= 1) {
-            $sortDefault = key($defaults['order']);
-            $directionDefault = current($defaults['order']);
+            $sort_default = key($defaults['order']);
+            $direction_default = current($defaults['order']);
         }
         if (isset($data['options']['sortDirection'])) {
             $direction = $data['options']['sortDirection'];
         } else {
             $direction = isset($data['options']['sort']) && count($order) ? current($order) : null;
         }
-
-        $this->pagingParams = [
-            'sort' => $data['options']['sort'],
-            'direction' => $direction,
-            'sortDefault' => $sortDefault,
-            'directionDefault' => $directionDefault,
-            'completeSort' => $order,
-        ] + $this->pagingParams;
+        $this->paging_params = ['sort' => $data['options']['sort'], 'direction' => $direction, 'sortDefault' => $sort_default, 'directionDefault' => $direction_default, 'completeSort' => $order] + $this->paging_params;
     }
-
     /**
      * Merges the various options that Paginator uses.
      * Pulls settings together from the following places:
@@ -503,17 +402,15 @@ class NumericPaginator implements PaginatorInterface
      * @param array $settings The settings to merge with the request data.
      * @return array<string, mixed> Array of merged options.
      */
-    protected function mergeOptions(array $params, array $settings): array
+    protected function merge_options(array $params, array $settings): array
     {
         if (!empty($settings['scope'])) {
             $scope = $settings['scope'];
-            $params = (array)($params[$scope] ?? []);
+            $params = (array) ($params[$scope] ?? []);
         }
-        $params = array_intersect_key($params, array_flip($this->getConfig('allowedParameters')));
-
+        $params = array_intersect_key($params, array_flip($this->get_config('allowedParameters')));
         return array_merge($settings, $params);
     }
-
     /**
      * Get the settings for a $model. If there are no settings for a specific
      * repository, the general settings will be used.
@@ -523,138 +420,107 @@ class NumericPaginator implements PaginatorInterface
      * @return array<string, mixed> An array of pagination settings for a model,
      *   or the general settings.
      */
-    protected function getDefaults(string $alias, array $settings): array
+    protected function get_defaults(string $alias, array $settings): array
     {
         if (isset($settings[$alias])) {
             $settings = $settings[$alias];
         }
-
-        $defaults = $this->getConfig();
-
-        $maxLimit = $settings['maxLimit'] ?? $defaults['maxLimit'];
+        $defaults = $this->get_config();
+        $max_limit = $settings['maxLimit'] ?? $defaults['maxLimit'];
         $limit = $settings['limit'] ?? $defaults['limit'];
-
-        if ($limit > $maxLimit) {
-            $limit = $maxLimit;
+        if ($limit > $max_limit) {
+            $limit = $max_limit;
         }
-
-        $settings['maxLimit'] = $maxLimit;
+        $settings['maxLimit'] = $max_limit;
         $settings['limit'] = $limit;
-
         return $settings + $defaults;
     }
-
     /**
-     * Validate that the desired sorting can be performed on the $object.
-     *
-     * Only fields or virtualFields can be sorted on. The direction param will
-     * also be sanitized. Lastly sort + direction keys will be converted into
-     * the model friendly order key.
-     *
-     /**
-     * You can use the allowedParameters option to control which columns/fields are
-     * available for sorting via URL parameters. This helps prevent users from ordering large
-     * result sets on un-indexed values.
-     *
-     * If you need to sort on associated columns or synthetic properties you
-     * will need to use the `sortableFields` option.
-     *
-     * Any columns listed in the allowed sort fields will be implicitly trusted.
-     * You can use this to sort on synthetic columns, or columns added in custom
-     * find operations that may not exist in the schema.
-     *
-     * The default order options provided to paginate() will be merged with the user's
-     * requested sorting field/direction.
-     *
-     * @param \Cake\Datasource\RepositoryInterface $object Repository object.
-     * @param array<string, mixed> $options The pagination options being used for this request.
-     * @return array<string, mixed> An array of options with sort + direction removed and
-     *   replaced with order if possible.
-     */
-    protected function validateSort(RepositoryInterface $object, array $options): array
+    * Validate that the desired sorting can be performed on the $object.
+    *
+    * Only fields or virtualFields can be sorted on. The direction param will
+    * also be sanitized. Lastly sort + direction keys will be converted into
+    * the model friendly order key.
+    *
+    /**
+    * You can use the allowedParameters option to control which columns/fields are
+    * available for sorting via URL parameters. This helps prevent users from ordering large
+    * result sets on un-indexed values.
+    *
+    * If you need to sort on associated columns or synthetic properties you
+    * will need to use the `sortableFields` option.
+    *
+    * Any columns listed in the allowed sort fields will be implicitly trusted.
+    * You can use this to sort on synthetic columns, or columns added in custom
+    * find operations that may not exist in the schema.
+    *
+    * The default order options provided to paginate() will be merged with the user's
+    * requested sorting field/direction.
+    *
+    * @param \Cake\Datasource\RepositoryInterface $object Repository object.
+    * @param array<string, mixed> $options The pagination options being used for this request.
+    * @return array<string, mixed> An array of options with sort + direction removed and
+    *   replaced with order if possible.
+    */
+    protected function validate_sort(Repository_Interface $object, array $options): array
     {
         // Check if we have sortableFields configured
-        $sortableFields = $options['sortableFields'] ?? null;
-        $builder = $sortableFields instanceof SortableFieldsBuilder
-            ? $sortableFields
-            : SortableFieldsBuilder::create($sortableFields);
-
+        $sortable_fields = $options['sortableFields'] ?? null;
+        $builder = $sortable_fields instanceof Sortable_Fields_Builder ? $sortable_fields : Sortable_Fields_Builder::create($sortable_fields);
         // Store the converted builder for later use in paging params
         if ($builder !== null) {
             $options['sortableFields'] = $builder;
         }
-
-        $sortAllowed = $builder !== null;
-
+        $sort_allowed = $builder !== null;
         if (isset($options['sort'])) {
             // Parse sort and direction parameters
-            $sortParams = $this->parseSortParams($options);
-
+            $sort_params = $this->parse_sort_params($options);
             // Update options with parsed sort key (handles combined format)
-            $options['sort'] = $sortParams['sortKey'];
-
+            $options['sort'] = $sort_params['sortKey'];
             if ($builder !== null) {
                 // Use builder to resolve sort key
-                $order = $builder->resolve(
-                    $sortParams['sortKey'],
-                    $sortParams['direction'],
-                    $sortParams['directionSpecified'],
-                );
-
+                $order = $builder->resolve($sort_params['sortKey'], $sort_params['direction'], $sort_params['directionSpecified']);
                 if ($order === null) {
                     // Invalid sort key, clear sort
                     $options['order'] = [];
                     $options['sort'] = null;
                     unset($options['direction']);
-
                     return $options;
                 }
-
                 // Merge with existing order - existing order comes AFTER our resolved order
-                $existingOrder = isset($options['order']) && is_array($options['order']) ? $options['order'] : [];
+                $existing_order = isset($options['order']) && is_array($options['order']) ? $options['order'] : [];
                 // Only keep fields from existing order that aren't already in our resolved order
-                foreach ($existingOrder as $field => $dir) {
+                foreach ($existing_order as $field => $dir) {
                     if (!isset($order[$field])) {
                         $order[$field] = $dir;
                     }
                 }
                 $options['order'] = $order;
-                $options['sortDirection'] = $sortParams['direction'];
+                $options['sortDirection'] = $sort_params['direction'];
             } else {
                 // No sortableFields configured - allow any field (default behavior)
                 $order = isset($options['order']) && is_array($options['order']) ? $options['order'] : [];
-                if ($order && $sortParams['sortKey'] && !str_contains($sortParams['sortKey'], '.')) {
-                    $order = $this->_removeAliases($order, $object->getAlias());
+                if ($order && $sort_params['sortKey'] && !str_contains($sort_params['sortKey'], '.')) {
+                    $order = $this->_remove_aliases($order, $object->get_alias());
                 }
-
-                $options['order'] = [$sortParams['sortKey'] => $sortParams['direction']] + $order;
+                $options['order'] = [$sort_params['sortKey'] => $sort_params['direction']] + $order;
             }
         } else {
             $options['sort'] = null;
         }
-
         unset($options['direction']);
-
         if (empty($options['order'])) {
             $options['order'] = [];
         }
         if (!is_array($options['order'])) {
             return $options;
         }
-
-        if (
-            $options['sort'] === null
-            && count($options['order']) >= 1
-            && !is_numeric(key($options['order']))
-        ) {
+        if ($options['sort'] === null && count($options['order']) >= 1 && !is_numeric(key($options['order']))) {
             $options['sort'] = key($options['order']);
         }
-
-        $options['order'] = $this->_prefix($object, $options['order'], $sortAllowed);
-
+        $options['order'] = $this->_prefix($object, $options['order'], $sort_allowed);
         return $options;
     }
-
     /**
      * Remove alias if needed.
      *
@@ -662,35 +528,26 @@ class NumericPaginator implements PaginatorInterface
      * @param string $model Current model alias
      * @return array<string, mixed> $fields Unaliased fields where applicable
      */
-    protected function _removeAliases(array $fields, string $model): array
+    protected function _remove_aliases(array $fields, string $model): array
     {
         $result = [];
         foreach ($fields as $field => $sort) {
             if (is_int($field)) {
-                throw new CakeException(sprintf(
-                    'The `order` config must be an associative array. Found invalid value with numeric key: `%s`',
-                    $sort,
-                ));
+                throw new Cake_Exception(sprintf('The `order` config must be an associative array. Found invalid value with numeric key: `%s`', $sort));
             }
-
             if (!str_contains($field, '.')) {
                 $result[$field] = $sort;
                 continue;
             }
-
-            [$alias, $currentField] = explode('.', $field);
-
+            [$alias, $current_field] = explode('.', $field);
             if ($alias === $model) {
-                $result[$currentField] = $sort;
+                $result[$current_field] = $sort;
                 continue;
             }
-
             $result[$field] = $sort;
         }
-
         return $result;
     }
-
     /**
      * Prefixes the field with the table alias if possible.
      *
@@ -699,39 +556,35 @@ class NumericPaginator implements PaginatorInterface
      * @param bool $allowed Whether the field was allowed.
      * @return array Final order array.
      */
-    protected function _prefix(RepositoryInterface $object, array $order, bool $allowed = false): array
+    protected function _prefix(Repository_Interface $object, array $order, bool $allowed = false): array
     {
-        $tableAlias = $object->getAlias();
-        $tableOrder = [];
+        $table_alias = $object->get_alias();
+        $table_order = [];
         foreach ($order as $key => $value) {
             if (is_numeric($key)) {
-                $tableOrder[] = $value;
+                $table_order[] = $value;
                 continue;
             }
             $field = $key;
-            $alias = $tableAlias;
-
+            $alias = $table_alias;
             if (str_contains($key, '.')) {
                 [$alias, $field] = explode('.', $key);
             }
-            $correctAlias = ($tableAlias === $alias);
-
-            if ($correctAlias && $allowed) {
+            $correct_alias = $table_alias === $alias;
+            if ($correct_alias && $allowed) {
                 // Disambiguate fields in schema. As id is quite common.
-                if ($object->hasField($field)) {
+                if ($object->has_field($field)) {
                     $field = $alias . '.' . $field;
                 }
-                $tableOrder[$field] = $value;
-            } elseif ($correctAlias && $object->hasField($field)) {
-                $tableOrder[$tableAlias . '.' . $field] = $value;
-            } elseif (!$correctAlias && $allowed) {
-                $tableOrder[$alias . '.' . $field] = $value;
+                $table_order[$field] = $value;
+            } elseif ($correct_alias && $object->has_field($field)) {
+                $table_order[$table_alias . '.' . $field] = $value;
+            } elseif (!$correct_alias && $allowed) {
+                $table_order[$alias . '.' . $field] = $value;
             }
         }
-
-        return $tableOrder;
+        return $table_order;
     }
-
     /**
      * Parse sort parameters from options.
      *
@@ -742,45 +595,36 @@ class NumericPaginator implements PaginatorInterface
      * @param array<string, mixed> $options The options array
      * @return array{sortKey: string, direction: string, directionSpecified: bool}
      */
-    protected function parseSortParams(array $options): array
+    protected function parse_sort_params(array $options): array
     {
-        $sortKey = $options['sort'];
-        $direction = isset($options['direction']) ? strtolower((string) $options['direction']) : SortField::ASC;
-        $directionSpecified = isset($options['direction']);
-
+        $sort_key = $options['sort'];
+        $direction = isset($options['direction']) ? strtolower((string) $options['direction']) : Sort_Field::ASC;
+        $direction_specified = isset($options['direction']);
         // Check for combined sort-direction format (e.g., 'title-asc' or 'title-desc')
-        if (preg_match('/^(.+)-(asc|desc)$/i', (string) $sortKey, $matches)) {
-            $sortKey = $matches[1];
+        if (preg_match('/^(.+)-(asc|desc)$/i', (string) $sort_key, $matches)) {
+            $sort_key = $matches[1];
             $direction = strtolower($matches[2]);
-            $directionSpecified = true;
+            $direction_specified = true;
         }
-
         // Validate direction
-        if (!in_array($direction, [SortField::ASC, SortField::DESC], true)) {
-            $direction = SortField::ASC;
+        if (!in_array($direction, [Sort_Field::ASC, Sort_Field::DESC], true)) {
+            $direction = Sort_Field::ASC;
         }
-
-        return [
-            'sortKey' => $sortKey,
-            'direction' => $direction,
-            'directionSpecified' => $directionSpecified,
-        ];
+        return ['sortKey' => $sort_key, 'direction' => $direction, 'directionSpecified' => $direction_specified];
     }
-
     /**
      * Check the limit parameter and ensure it's within the maxLimit bounds.
      *
      * @param array<string, mixed> $options An array of options with a limit key to be checked.
      * @return array<string, mixed> An array of options for pagination.
      */
-    protected function checkLimit(array $options): array
+    protected function check_limit(array $options): array
     {
-        $options['limit'] = (int)$options['limit'];
+        $options['limit'] = (int) $options['limit'];
         if ($options['limit'] < 1) {
             $options['limit'] = 1;
         }
         $options['limit'] = max(min($options['limit'], $options['maxLimit']), 1);
-
         return $options;
     }
 }

@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * Database Session save handler. Allows saving session information into a model.
  *
@@ -17,30 +16,25 @@ declare(strict_types=1);
  * @since         2.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Http\Session;
 
-use Cake\ORM\Locator\LocatorAwareTrait;
+use Cake\ORM\Locator\Locator_Aware_Trait;
 use Cake\ORM\Table;
-use SessionHandlerInterface;
-
+use Session_Handler_Interface;
 /**
  * DatabaseSession provides methods to be used with Session.
  */
-class DatabaseSession implements SessionHandlerInterface
+class Database_Session implements Session_Handler_Interface
 {
-    use LocatorAwareTrait;
-
+    use Locator_Aware_Trait;
     /**
      * Reference to the table handling the session data
      */
     protected Table $_table;
-
     /**
      * Number of seconds to mark the session as expired
      */
     protected int $_timeout;
-
     /**
      * Constructor. Looks at Session configuration information and
      * sets up the session model.
@@ -51,20 +45,17 @@ class DatabaseSession implements SessionHandlerInterface
     public function __construct(array $config = [])
     {
         if (isset($config['tableLocator'])) {
-            $this->setTableLocator($config['tableLocator']);
+            $this->set_table_locator($config['tableLocator']);
         }
-        $tableLocator = $this->getTableLocator();
-
+        $table_locator = $this->get_table_locator();
         if (empty($config['model'])) {
-            $config = $tableLocator->exists('Sessions') ? [] : ['table' => 'sessions', 'allowFallbackClass' => true];
-            $this->_table = $tableLocator->get('Sessions', $config);
+            $config = $table_locator->exists('Sessions') ? [] : ['table' => 'sessions', 'allowFallbackClass' => true];
+            $this->_table = $table_locator->get('Sessions', $config);
         } else {
-            $this->_table = $tableLocator->get($config['model']);
+            $this->_table = $table_locator->get($config['model']);
         }
-
-        $this->_timeout = (int)ini_get('session.gc_maxlifetime');
+        $this->_timeout = (int) ini_get('session.gc_maxlifetime');
     }
-
     /**
      * Set the timeout value for sessions.
      *
@@ -73,13 +64,11 @@ class DatabaseSession implements SessionHandlerInterface
      * @param int $timeout The timeout duration.
      * @return $this
      */
-    public function setTimeout(int $timeout): static
+    public function set_timeout(int $timeout): static
     {
         $this->_timeout = $timeout;
-
         return $this;
     }
-
     /**
      * Method called on open of a database session.
      *
@@ -91,7 +80,6 @@ class DatabaseSession implements SessionHandlerInterface
     {
         return true;
     }
-
     /**
      * Method called on close of a database session.
      *
@@ -101,7 +89,6 @@ class DatabaseSession implements SessionHandlerInterface
     {
         return true;
     }
-
     /**
      * Method used to read from a database session.
      *
@@ -110,32 +97,21 @@ class DatabaseSession implements SessionHandlerInterface
      */
     public function read(string $id): string|false
     {
-        $pkField = $this->_table->getPrimaryKey();
-        assert(is_string($pkField));
-        $result = $this->_table
-            ->find('all')
-            ->select(['data'])
-            ->where([$pkField => $id])
-            ->disableHydration()
-            ->first();
-
+        $pk_field = $this->_table->get_primary_key();
+        assert(is_string($pk_field));
+        $result = $this->_table->find('all')->select(['data'])->where([$pk_field => $id])->disable_hydration()->first();
         if (!$result) {
             return '';
         }
-
         if (is_string($result['data'])) {
             return $result['data'];
         }
-
         $session = stream_get_contents($result['data']);
-
         if ($session === false) {
             return '';
         }
-
         return $session;
     }
-
     /**
      * Helper function called on write for database sessions.
      *
@@ -148,18 +124,11 @@ class DatabaseSession implements SessionHandlerInterface
         if (!$id) {
             return false;
         }
-
         /** @var string $pkField */
-        $pkField = $this->_table->getPrimaryKey();
-        $session = $this->_table->newEntity([
-            $pkField => $id,
-            'data' => $data,
-            'expires' => time() + $this->_timeout,
-        ], ['accessibleFields' => [$pkField => true]]);
-
-        return (bool)$this->_table->save($session);
+        $pk_field = $this->_table->get_primary_key();
+        $session = $this->_table->new_entity([$pk_field => $id, 'data' => $data, 'expires' => time() + $this->_timeout], ['accessibleFields' => [$pk_field => true]]);
+        return (bool) $this->_table->save($session);
     }
-
     /**
      * Method called on the destruction of a database session.
      *
@@ -169,12 +138,10 @@ class DatabaseSession implements SessionHandlerInterface
     public function destroy(string $id): bool
     {
         /** @var string $pkField */
-        $pkField = $this->_table->getPrimaryKey();
-        $this->_table->deleteAll([$pkField => $id]);
-
+        $pk_field = $this->_table->get_primary_key();
+        $this->_table->delete_all([$pk_field => $id]);
         return true;
     }
-
     /**
      * Helper function called on gc for database sessions.
      *
@@ -183,6 +150,6 @@ class DatabaseSession implements SessionHandlerInterface
      */
     public function gc(int $max_lifetime): int|false
     {
-        return $this->_table->deleteAll(['expires <' => time()]);
+        return $this->_table->delete_all(['expires <' => time()]);
     }
 }

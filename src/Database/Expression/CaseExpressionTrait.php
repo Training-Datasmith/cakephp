@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,23 +14,21 @@ declare(strict_types=1);
  * @since         4.3.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Database\Expression;
 
-use Cake\Chronos\ChronosDate;
-use Cake\Database\ExpressionInterface;
+use Cake\Chronos\Chronos_Date;
+use Cake\Database\Expression_Interface;
 use Cake\Database\Query;
-use Cake\Database\TypedResultInterface;
-use Cake\Database\ValueBinder;
+use Cake\Database\Typed_Result_Interface;
+use Cake\Database\Value_Binder;
 use DateTimeInterface;
 use Stringable;
-
 /**
  * Trait that holds shared functionality for case related expressions.
  *
  * @internal
  */
-trait CaseExpressionTrait
+trait Case_Expression_Trait
 {
     /**
      * Infers the abstract type for the given value.
@@ -39,10 +36,9 @@ trait CaseExpressionTrait
      * @param mixed $value The value for which to infer the type.
      * @return string|null The abstract type, or `null` if it could not be inferred.
      */
-    protected function inferType(mixed $value): ?string
+    protected function infer_type(mixed $value): ?string
     {
         $type = null;
-
         if (is_string($value)) {
             $type = 'string';
         } elseif (is_int($value)) {
@@ -51,26 +47,19 @@ trait CaseExpressionTrait
             $type = 'float';
         } elseif (is_bool($value)) {
             $type = 'boolean';
-        } elseif ($value instanceof ChronosDate) {
+        } elseif ($value instanceof Chronos_Date) {
             $type = 'date';
         } elseif ($value instanceof DateTimeInterface) {
             $type = 'datetime';
-        } elseif (
-            $value instanceof Stringable
-        ) {
+        } elseif ($value instanceof Stringable) {
             $type = 'string';
-        } elseif (
-            $this->_typeMap !== null &&
-            $value instanceof IdentifierExpression
-        ) {
-            $type = $this->_typeMap->type($value->getIdentifier());
-        } elseif ($value instanceof TypedResultInterface) {
-            $type = $value->getReturnType();
+        } elseif ($this->_type_map !== null && $value instanceof Identifier_Expression) {
+            $type = $this->_type_map->type($value->get_identifier());
+        } elseif ($value instanceof Typed_Result_Interface) {
+            $type = $value->get_return_type();
         }
-
         return $type;
     }
-
     /**
      * Compiles a nullable value to SQL.
      *
@@ -78,27 +67,22 @@ trait CaseExpressionTrait
      * @param \Cake\Database\ExpressionInterface|object|scalar|null $value The value to compile.
      * @param string|null $type The value type.
      */
-    protected function compileNullableValue(ValueBinder $binder, mixed $value, ?string $type = null): string
+    protected function compile_nullable_value(Value_Binder $binder, mixed $value, ?string $type = null): string
     {
-        if (
-            $type !== null &&
-            !($value instanceof ExpressionInterface)
-        ) {
-            $value = $this->_castToExpression($value, $type);
+        if ($type !== null && !$value instanceof Expression_Interface) {
+            $value = $this->_cast_to_expression($value, $type);
         }
-
         if ($value === null) {
             $value = 'NULL';
         } elseif ($value instanceof Query) {
             $value = sprintf('(%s)', $value->sql($binder));
-        } elseif ($value instanceof ExpressionInterface) {
+        } elseif ($value instanceof Expression_Interface) {
             $value = $value->sql($binder);
         } else {
             $placeholder = $binder->placeholder('c');
             $binder->bind($placeholder, $value, $type);
             $value = $placeholder;
         }
-
         return $value;
     }
 }

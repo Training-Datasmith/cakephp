@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,13 +14,11 @@ declare(strict_types=1);
  * @since         1.2.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Controller;
 
-use Cake\Core\InstanceConfigTrait;
-use Cake\Event\EventListenerInterface;
-use Cake\Log\LogTrait;
-
+use Cake\Core\Instance_Config_Trait;
+use Cake\Event\Event_Listener_Interface;
+use Cake\Log\Log_Trait;
 /**
  * Base class for an individual Component. Components provide reusable bits of
  * controller logic that can be composed into a controller. Components also
@@ -60,16 +57,14 @@ use Cake\Log\LogTrait;
  * @link https://book.cakephp.org/5/en/controllers/components.html
  * @see \Cake\Controller\Controller::$components
  */
-class Component implements EventListenerInterface
+class Component implements Event_Listener_Interface
 {
-    use InstanceConfigTrait;
-    use LogTrait;
-
+    use Instance_Config_Trait;
+    use Log_Trait;
     /**
      * Other Components this component uses.
      */
     protected array $components = [];
-
     /**
      * Default config
      *
@@ -77,15 +72,13 @@ class Component implements EventListenerInterface
      *
      * @var array<string, mixed>
      */
-    protected array $_defaultConfig = [];
-
+    protected array $_default_config = [];
     /**
      * Loaded component instances.
      *
      * @var array<string, \Cake\Controller\Component>
      */
-    protected array $componentInstances = [];
-
+    protected array $component_instances = [];
     /**
      * Constructor
      *
@@ -93,30 +86,29 @@ class Component implements EventListenerInterface
      *  this component can use to lazy load its components.
      * @param array<string, mixed> $config Array of configuration settings.
      */
-    public function __construct(/**
-     * Component registry class used to lazy load components.
-     */
-        protected ComponentRegistry $_registry,
+    public function __construct(
+        /**
+         * Component registry class used to lazy load components.
+         */
+        protected Component_Registry $_registry,
         array $config = []
-    ) {
-        $this->setConfig($config);
-
+    )
+    {
+        $this->set_config($config);
         if ($this->components) {
-            $this->components = $this->_registry->normalizeArray($this->components);
+            $this->components = $this->_registry->normalize_array($this->components);
         }
         $this->initialize($config);
     }
-
     /**
      * Get the controller this component is bound to.
      *
      * @return \Cake\Controller\Controller The bound controller.
      */
-    public function getController(): Controller
+    public function get_controller(): Controller
     {
-        return $this->_registry->getController();
+        return $this->_registry->get_controller();
     }
-
     /**
      * Constructor hook method.
      *
@@ -128,7 +120,6 @@ class Component implements EventListenerInterface
     public function initialize(array $config): void
     {
     }
-
     /**
      * Magic method for lazy loading $components.
      *
@@ -137,22 +128,15 @@ class Component implements EventListenerInterface
      */
     public function __get(string $name): ?Component
     {
-        if (isset($this->componentInstances[$name])) {
-            return $this->componentInstances[$name];
+        if (isset($this->component_instances[$name])) {
+            return $this->component_instances[$name];
         }
-
         if (isset($this->components[$name])) {
             $config = $this->components[$name] + ['enabled' => false];
-
-            return $this->componentInstances[$name] = $this->_registry->load(
-                $name,
-                $config,
-            );
+            return $this->component_instances[$name] = $this->_registry->load($name, $config);
         }
-
         return null;
     }
-
     /**
      * Get the Controller callbacks this Component is interested in.
      *
@@ -165,25 +149,17 @@ class Component implements EventListenerInterface
      *
      * @return array<string, mixed>
      */
-    public function implementedEvents(): array
+    public function implemented_events(): array
     {
-        $eventMap = [
-            'Controller.initialize' => 'beforeFilter',
-            'Controller.startup' => 'startup',
-            'Controller.beforeRender' => 'beforeRender',
-            'Controller.beforeRedirect' => 'beforeRedirect',
-            'Controller.shutdown' => 'afterFilter',
-        ];
+        $event_map = ['Controller.initialize' => 'beforeFilter', 'Controller.startup' => 'startup', 'Controller.beforeRender' => 'beforeRender', 'Controller.beforeRedirect' => 'beforeRedirect', 'Controller.shutdown' => 'afterFilter'];
         $events = [];
-        foreach ($eventMap as $event => $method) {
+        foreach ($event_map as $event => $method) {
             if (method_exists($this, $method)) {
                 $events[$event] = $method;
             }
         }
-
         return $events;
     }
-
     /**
      * Returns an array that can be used to describe the internal state of this
      * object.
@@ -192,10 +168,6 @@ class Component implements EventListenerInterface
      */
     public function __debugInfo(): array
     {
-        return [
-            'components' => $this->components,
-            'implementedEvents' => $this->implementedEvents(),
-            '_config' => $this->getConfig(),
-        ];
+        return ['components' => $this->components, 'implementedEvents' => $this->implemented_events(), '_config' => $this->get_config()];
     }
 }

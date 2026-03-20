@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -14,17 +13,15 @@ declare(strict_types=1);
  * @since         3.7.0
  * @license       https://www.opensource.org/licenses/mit-license.php MIT License
  */
+namespace Cake\Console\Test_Suite\Constraint;
 
-namespace Cake\Console\TestSuite\Constraint;
-
-use PHPUnit\Framework\Constraint\Constraint;
-
+use Php_Unit\Framework\Constraint\Constraint;
 /**
  * ExitCode constraint
  *
  * @internal
  */
-class ExitCode extends Constraint
+class Exit_Code extends Constraint
 {
     /**
      * Constructor
@@ -33,10 +30,9 @@ class ExitCode extends Constraint
      * @param array $out stdout stream
      * @param array $err stderr stream
      */
-    public function __construct(private readonly ?int $exitCode, private readonly array $out, private readonly array $err)
+    public function __construct(private readonly ?int $exit_code, private readonly array $out, private readonly array $err)
     {
     }
-
     /**
      * Checks if event is in fired array
      *
@@ -44,43 +40,32 @@ class ExitCode extends Constraint
      */
     public function matches(mixed $other): bool
     {
-        return $other === $this->exitCode;
+        return $other === $this->exit_code;
     }
-
     /**
      * Assertion message string
      */
-    public function toString(): string
+    public function to_string(): string
     {
-        return sprintf('matches exit code `%s`', $this->exitCode ?? 'null');
+        return sprintf('matches exit code `%s`', $this->exit_code ?? 'null');
     }
-
     /**
      * Returns the description of the failure.
      *
      * @param mixed $other Expected
      */
-    public function failureDescription(mixed $other): string
+    public function failure_description(mixed $other): string
     {
-        return '`' . $other . '` ' . $this->toString();
+        return '`' . $other . '` ' . $this->to_string();
     }
-
     /**
      * @inheritDoc
      */
-    public function additionalFailureDescription(mixed $other): string
+    public function additional_failure_description(mixed $other): string
     {
-        return sprintf(
-            "STDOUT\n%s\n\nSTDERR\n%s\n",
-            implode("\n", $this->out),
-            implode("\n", $this->err),
-        );
+        return sprintf("STDOUT\n%s\n\nSTDERR\n%s\n", implode("\n", $this->out), implode("\n", $this->err));
     }
 }
-
 // phpcs:disable
-class_alias(
-    \Cake\Console\TestSuite\Constraint\ExitCode::class,
-    'Cake\TestSuite\Constraint\Console\ExitCode'
-);
+class_alias(\Cake\Console\Test_Suite\Constraint\Exit_Code::class, 'Cake\TestSuite\Constraint\Console\ExitCode');
 // phpcs:enable

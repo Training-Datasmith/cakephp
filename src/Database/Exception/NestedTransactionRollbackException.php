@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,16 +14,14 @@ declare(strict_types=1);
  * @since         3.4.3
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Database\Exception;
 
-use Cake\Core\Exception\CakeException;
+use Cake\Core\Exception\Cake_Exception;
 use Throwable;
-
 /**
  * Class NestedTransactionRollbackException
  */
-class NestedTransactionRollbackException extends CakeException
+class Nested_Transaction_Rollback_Exception extends Cake_Exception
 {
     /**
      * Constructor

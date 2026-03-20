@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -13,16 +12,15 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Core\Exception;
 
 /**
  * Exception raised when a plugin could not be found
  */
-class MissingPluginException extends CakeException
+class Missing_Plugin_Exception extends Cake_Exception
 {
     /**
      * @inheritDoc
      */
-    protected string $_messageTemplate = 'Plugin `%s` could not be found.';
+    protected string $_message_template = 'Plugin `%s` could not be found.';
 }

@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -14,25 +13,23 @@ declare(strict_types=1);
  * @since         3.7.0
  * @license       https://www.opensource.org/licenses/mit-license.php MIT License
  */
+namespace Cake\Console\Test_Suite;
 
-namespace Cake\Console\TestSuite;
-
-use Cake\Console\CommandInterface;
-use Cake\Console\CommandRunner;
-use Cake\Console\ConsoleIo;
-use Cake\Console\ConsoleOutput;
-use Cake\Console\Exception\StopException;
-use Cake\Console\TestSuite\Constraint\ContentsContain;
-use Cake\Console\TestSuite\Constraint\ContentsContainRow;
-use Cake\Console\TestSuite\Constraint\ContentsEmpty;
-use Cake\Console\TestSuite\Constraint\ContentsNotContain;
-use Cake\Console\TestSuite\Constraint\ContentsRegExp;
-use Cake\Console\TestSuite\Constraint\ExitCode;
-use Cake\Core\ConsoleApplicationInterface;
-use Cake\Core\TestSuite\ContainerStubTrait;
+use Cake\Console\Command_Interface;
+use Cake\Console\Command_Runner;
+use Cake\Console\Console_Io;
+use Cake\Console\Console_Output;
+use Cake\Console\Exception\Stop_Exception;
+use Cake\Console\Test_Suite\Constraint\Contents_Contain;
+use Cake\Console\Test_Suite\Constraint\Contents_Contain_Row;
+use Cake\Console\Test_Suite\Constraint\Contents_Empty;
+use Cake\Console\Test_Suite\Constraint\Contents_Not_Contain;
+use Cake\Console\Test_Suite\Constraint\Contents_Reg_Exp;
+use Cake\Console\Test_Suite\Constraint\Exit_Code;
+use Cake\Core\Console_Application_Interface;
+use Cake\Core\Test_Suite\Container_Stub_Trait;
 use Cake\Error\Debugger;
-use PHPUnit\Framework\Attributes\After;
-
+use Php_Unit\Framework\Attributes\After;
 /**
  * A bundle of methods that makes testing commands
  * and shell classes easier.
@@ -40,30 +37,25 @@ use PHPUnit\Framework\Attributes\After;
  * Enables you to call commands/shells with a
  * full application context.
  */
-trait ConsoleIntegrationTestTrait
+trait Console_Integration_Test_Trait
 {
-    use ContainerStubTrait;
-
+    use Container_Stub_Trait;
     /**
      * Last exit code
      */
-    protected ?int $_exitCode = null;
-
+    protected ?int $_exit_code = null;
     /**
      * Console output stub
      */
-    protected ?StubConsoleOutput $_out = null;
-
+    protected ?Stub_Console_Output $_out = null;
     /**
      * Console error output stub
      */
-    protected ?StubConsoleOutput $_err = null;
-
+    protected ?Stub_Console_Output $_err = null;
     /**
      * Console input mock
      */
-    protected ?StubConsoleInput $_in = null;
-
+    protected ?Stub_Console_Input $_in = null;
     /**
      * Runs CLI integration test
      *
@@ -74,181 +66,153 @@ trait ConsoleIntegrationTestTrait
      */
     public function exec(string $command, array $input = []): void
     {
-        $runner = $this->makeRunner();
-
-        $this->_out ??= new StubConsoleOutput();
-        $this->_err ??= new StubConsoleOutput();
+        $runner = $this->make_runner();
+        $this->_out ??= new Stub_Console_Output();
+        $this->_err ??= new Stub_Console_Output();
         if ($this->_in === null || $input) {
-            $this->_in = new StubConsoleInput($input);
+            $this->_in = new Stub_Console_Input($input);
         }
         $this->_out->clear();
         $this->_err->clear();
-
-        $args = $this->commandStringToArgs("cake {$command}");
-        $io = new ConsoleIo($this->_out, $this->_err, $this->_in);
-
+        $args = $this->command_string_to_args("cake {$command}");
+        $io = new Console_Io($this->_out, $this->_err, $this->_in);
         try {
-            $this->_exitCode = $runner->run($args, $io);
-        } catch (MissingConsoleInputException $e) {
+            $this->_exit_code = $runner->run($args, $io);
+        } catch (Missing_Console_Input_Exception $e) {
             $messages = $this->_out->messages();
             if ($messages !== []) {
-                $e->setQuestion($messages[count($messages) - 1]);
+                $e->set_question($messages[count($messages) - 1]);
             }
             throw $e;
-        } catch (StopException $exception) {
-            $this->_exitCode = $exception->getCode();
+        } catch (Stop_Exception $exception) {
+            $this->_exit_code = $exception->get_code();
         }
     }
-
     /**
      * Cleans state to get ready for the next test
      */
     #[After]
-    public function cleanupConsoleTrait(): void
+    public function cleanup_console_trait(): void
     {
-        $this->_exitCode = null;
+        $this->_exit_code = null;
         $this->_out = null;
         $this->_err = null;
         $this->_in = null;
     }
-
     /**
      * Asserts shell exited with the expected code
      *
      * @param int $expected Expected exit code
      * @param string $message Failure message
      */
-    public function assertExitCode(int $expected, string $message = ''): void
+    public function assert_exit_code(int $expected, string $message = ''): void
     {
-        $this->assertThat(
-            $expected,
-            new ExitCode($this->_exitCode, $this->_out->messages(), $this->_err->messages()),
-            $message,
-        );
+        $this->assert_that($expected, new Exit_Code($this->_exit_code, $this->_out->messages(), $this->_err->messages()), $message);
     }
-
     /**
      * Asserts shell exited with the CommandInterface::CODE_SUCCESS
      *
      * @param string $message Failure message
      */
-    public function assertExitSuccess(string $message = ''): void
+    public function assert_exit_success(string $message = ''): void
     {
-        $this->assertThat(
-            CommandInterface::CODE_SUCCESS,
-            new ExitCode($this->_exitCode, $this->_out->messages(), $this->_err->messages()),
-            $message,
-        );
+        $this->assert_that(Command_Interface::CODE_SUCCESS, new Exit_Code($this->_exit_code, $this->_out->messages(), $this->_err->messages()), $message);
     }
-
     /**
      * Asserts shell exited with CommandInterface::CODE_ERROR
      *
      * @param string $message Failure message
      */
-    public function assertExitError(string $message = ''): void
+    public function assert_exit_error(string $message = ''): void
     {
-        $this->assertThat(
-            CommandInterface::CODE_ERROR,
-            new ExitCode($this->_exitCode, $this->_out->messages(), $this->_err->messages()),
-            $message,
-        );
+        $this->assert_that(Command_Interface::CODE_ERROR, new Exit_Code($this->_exit_code, $this->_out->messages(), $this->_err->messages()), $message);
     }
-
     /**
      * Asserts that `stdout` is empty
      *
      * @param string $message The message to output when the assertion fails.
      */
-    public function assertOutputEmpty(string $message = ''): void
+    public function assert_output_empty(string $message = ''): void
     {
-        $this->assertThat(null, new ContentsEmpty($this->_out->messages(), 'output'), $message);
+        $this->assert_that(null, new Contents_Empty($this->_out->messages(), 'output'), $message);
     }
-
     /**
      * Asserts `stdout` contains expected output
      *
      * @param string $expected Expected output
      * @param string $message Failure message
      */
-    public function assertOutputContains(string $expected, string $message = ''): void
+    public function assert_output_contains(string $expected, string $message = ''): void
     {
-        $this->assertThat($expected, new ContentsContain($this->_out->messages(), 'output'), $message);
+        $this->assert_that($expected, new Contents_Contain($this->_out->messages(), 'output'), $message);
     }
-
     /**
      * Asserts `stdout` does not contain expected output
      *
      * @param string $expected Expected output
      * @param string $message Failure message
      */
-    public function assertOutputNotContains(string $expected, string $message = ''): void
+    public function assert_output_not_contains(string $expected, string $message = ''): void
     {
-        $this->assertThat($expected, new ContentsNotContain($this->_out->messages(), 'output'), $message);
+        $this->assert_that($expected, new Contents_Not_Contain($this->_out->messages(), 'output'), $message);
     }
-
     /**
      * Asserts `stdout` contains expected regexp
      *
      * @param string $pattern Expected pattern
      * @param string $message Failure message
      */
-    public function assertOutputRegExp(string $pattern, string $message = ''): void
+    public function assert_output_reg_exp(string $pattern, string $message = ''): void
     {
-        $this->assertThat($pattern, new ContentsRegExp($this->_out->messages(), 'output'), $message);
+        $this->assert_that($pattern, new Contents_Reg_Exp($this->_out->messages(), 'output'), $message);
     }
-
     /**
      * Check that a row of cells exists in the output.
      *
      * @param array $row Row of cells to ensure exist in the output.
      * @param string $message Failure message.
      */
-    protected function assertOutputContainsRow(array $row, string $message = ''): void
+    protected function assert_output_contains_row(array $row, string $message = ''): void
     {
-        $this->assertThat($row, new ContentsContainRow($this->_out->messages(), 'output'), $message);
+        $this->assert_that($row, new Contents_Contain_Row($this->_out->messages(), 'output'), $message);
     }
-
     /**
      * Asserts `stderr` contains expected output
      *
      * @param string $expected Expected output
      * @param string $message Failure message
      */
-    public function assertErrorContains(string $expected, string $message = ''): void
+    public function assert_error_contains(string $expected, string $message = ''): void
     {
-        $this->assertThat($expected, new ContentsContain($this->_err->messages(), 'error output'), $message);
+        $this->assert_that($expected, new Contents_Contain($this->_err->messages(), 'error output'), $message);
     }
-
     /**
      * Asserts `stderr` contains expected regexp
      *
      * @param string $pattern Expected pattern
      * @param string $message Failure message
      */
-    public function assertErrorRegExp(string $pattern, string $message = ''): void
+    public function assert_error_reg_exp(string $pattern, string $message = ''): void
     {
-        $this->assertThat($pattern, new ContentsRegExp($this->_err->messages(), 'error output'), $message);
+        $this->assert_that($pattern, new Contents_Reg_Exp($this->_err->messages(), 'error output'), $message);
     }
-
     /**
      * Asserts that `stderr` is empty
      *
      * @param string $message The message to output when the assertion fails.
      */
-    public function assertErrorEmpty(string $message = ''): void
+    public function assert_error_empty(string $message = ''): void
     {
-        $this->assertThat(null, new ContentsEmpty($this->_err->messages(), 'error output'), $message);
+        $this->assert_that(null, new Contents_Empty($this->_err->messages(), 'error output'), $message);
     }
-
     /**
      * Dump the exit code, stdout and stderr from the most recently run command
      *
      * @param resource|null $stream The stream to write to. Defaults to STDOUT
      */
-    public function debugOutput($stream = null): void
+    public function debug_output($stream = null): void
     {
-        $output = new ConsoleOutput($stream ?? 'php://stdout');
+        $output = new Console_Output($stream ?? 'php://stdout');
         if (class_exists(Debugger::class)) {
             $trace = Debugger::trace(['start' => 0, 'depth' => 1, 'format' => 'array']);
             $file = $trace[0]['file'];
@@ -256,90 +220,74 @@ trait ConsoleIntegrationTestTrait
             $output->write("{$file} on {$line}");
         }
         $output->write('########## debugOutput() ##########');
-
-        if ($this->_exitCode !== null) {
+        if ($this->_exit_code !== null) {
             $output->write('<info>Exit Code</info>');
-            $output->write((string)$this->_exitCode, 2);
+            $output->write((string) $this->_exit_code, 2);
         }
         $output->write('<info>STDOUT</info>');
         $output->write($this->_out->messages(), 2);
-
         $output->write('<info>STDERR</info>');
         $output->write($this->_err->messages());
         $output->write('###################################');
     }
-
     /**
      * Builds the appropriate command dispatcher
      */
-    protected function makeRunner(): CommandRunner
+    protected function make_runner(): Command_Runner
     {
-        $app = $this->createApp();
-        assert($app instanceof ConsoleApplicationInterface);
-
-        return new CommandRunner($app);
+        $app = $this->create_app();
+        assert($app instanceof Console_Application_Interface);
+        return new Command_Runner($app);
     }
-
     /**
      * Creates an $argv array from a command string
      *
      * @param string $command Command string
      * @return array<string>
      */
-    protected function commandStringToArgs(string $command): array
+    protected function command_string_to_args(string $command): array
     {
-        $charCount = strlen($command);
+        $char_count = strlen($command);
         $argv = [];
         $arg = '';
-        $inDQuote = false;
-        $inSQuote = false;
-        for ($i = 0; $i < $charCount; $i++) {
+        $in_d_quote = false;
+        $in_s_quote = false;
+        for ($i = 0; $i < $char_count; $i++) {
             $char = substr($command, $i, 1);
-
             // end of argument
-            if ($char === ' ' && !$inDQuote && !$inSQuote) {
+            if ($char === ' ' && !$in_d_quote && !$in_s_quote) {
                 if ($arg !== '') {
                     $argv[] = $arg;
                 }
                 $arg = '';
                 continue;
             }
-
             // exiting single quote
-            if ($inSQuote && $char === "'") {
-                $inSQuote = false;
+            if ($in_s_quote && $char === "'") {
+                $in_s_quote = false;
                 continue;
             }
-
             // exiting double quote
-            if ($inDQuote && $char === '"') {
-                $inDQuote = false;
+            if ($in_d_quote && $char === '"') {
+                $in_d_quote = false;
                 continue;
             }
-
             // entering double quote
-            if ($char === '"' && !$inSQuote) {
-                $inDQuote = true;
+            if ($char === '"' && !$in_s_quote) {
+                $in_d_quote = true;
                 continue;
             }
-
             // entering single quote
-            if ($char === "'" && !$inDQuote) {
-                $inSQuote = true;
+            if ($char === "'" && !$in_d_quote) {
+                $in_s_quote = true;
                 continue;
             }
-
             $arg .= $char;
         }
         $argv[] = $arg;
-
         return $argv;
     }
 }
-
 // phpcs:disable
-class_alias(
-    \Cake\Console\TestSuite\ConsoleIntegrationTestTrait::class,
-    'Cake\TestSuite\ConsoleIntegrationTestTrait'
-);
+class_alias(\Cake\Console\Test_Suite\Console_Integration_Test_Trait::class, 'Cake\TestSuite\ConsoleIntegrationTestTrait');
 // phpcs:enable

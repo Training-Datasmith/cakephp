@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,58 +14,50 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Database\Driver;
 
 use Cake\Database\Driver;
-use Cake\Database\DriverFeatureEnum;
-use Cake\Database\Expression\FunctionExpression;
-use Cake\Database\Expression\OrderByExpression;
-use Cake\Database\Expression\OrderClauseExpression;
-use Cake\Database\Expression\TupleComparison;
-use Cake\Database\Expression\UnaryExpression;
-use Cake\Database\ExpressionInterface;
+use Cake\Database\Driver_Feature_Enum;
+use Cake\Database\Expression\Function_Expression;
+use Cake\Database\Expression\Order_By_Expression;
+use Cake\Database\Expression\Order_Clause_Expression;
+use Cake\Database\Expression\Tuple_Comparison;
+use Cake\Database\Expression\Unary_Expression;
+use Cake\Database\Expression_Interface;
 use Cake\Database\Query;
-use Cake\Database\Query\SelectQuery;
-use Cake\Database\QueryCompiler;
-use Cake\Database\Schema\SchemaDialect;
-use Cake\Database\Schema\SqlserverSchemaDialect;
-use Cake\Database\SqlserverCompiler;
-use Cake\Database\Statement\SqlserverStatement;
-use Cake\Database\StatementInterface;
+use Cake\Database\Query\Select_Query;
+use Cake\Database\Query_Compiler;
+use Cake\Database\Schema\Schema_Dialect;
+use Cake\Database\Schema\Sqlserver_Schema_Dialect;
+use Cake\Database\Sqlserver_Compiler;
+use Cake\Database\Statement\Sqlserver_Statement;
+use Cake\Database\Statement_Interface;
 use InvalidArgumentException;
 use PDO;
-
 /**
  * SQLServer driver.
  */
 class Sqlserver extends Driver
 {
-    use TupleComparisonTranslatorTrait;
-
+    use Tuple_Comparison_Translator_Trait;
     /**
      * @inheritDoc
      */
     protected const MAX_ALIAS_LENGTH = 128;
-
     /**
      * @inheritDoc
      */
-    protected const RETRY_ERROR_CODES = [
-        40613, // Azure Sql Database paused
-    ];
-
+    protected const RETRY_ERROR_CODES = [40613];
     /**
      * @inheritDoc
      */
-    protected const STATEMENT_CLASS = SqlserverStatement::class;
-
+    protected const STATEMENT_CLASS = Sqlserver_Statement::class;
     /**
      * Base configuration settings for Sqlserver driver
      *
      * @var array<string, mixed>
      */
-    protected array $_baseConfig = [
+    protected array $_base_config = [
         'host' => 'localhost\SQLEXPRESS',
         'username' => '',
         'password' => '',
@@ -88,17 +79,14 @@ class Sqlserver extends Driver
         'accessToken' => null,
         'authentication' => null,
     ];
-
     /**
      * String used to start a database identifier quoting to make it safe
      */
-    protected string $_startQuote = '[';
-
+    protected string $_start_quote = '[';
     /**
      * String used to end a database identifier quoting to make it safe
      */
-    protected string $_endQuote = ']';
-
+    protected string $_end_quote = ']';
     /**
      * Establishes a connection to the database server.
      *
@@ -115,18 +103,10 @@ class Sqlserver extends Driver
             return;
         }
         $config = $this->_config;
-
         if (isset($config['persistent']) && $config['persistent']) {
-            throw new InvalidArgumentException(
-                'Config setting "persistent" cannot be set to true, '
-                . 'as the Sqlserver PDO driver does not support PDO::ATTR_PERSISTENT',
-            );
+            throw new InvalidArgumentException('Config setting "persistent" cannot be set to true, ' . 'as the Sqlserver PDO driver does not support PDO::ATTR_PERSISTENT');
         }
-
-        $config['flags'] += [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        ];
-
+        $config['flags'] += [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION];
         if (!empty($config['encoding'])) {
             $config['flags'][PDO::SQLSRV_ATTR_ENCODING] = $config['encoding'];
         }
@@ -134,7 +114,6 @@ class Sqlserver extends Driver
         if ($config['port']) {
             $port = ',' . $config['port'];
         }
-
         $dsn = "sqlsrv:Server={$config['host']}{$port};Database={$config['database']};MultipleActiveResultSets=false";
         if ($config['app'] !== null) {
             $dsn .= ";APP={$config['app']}";
@@ -163,10 +142,9 @@ class Sqlserver extends Driver
         if ($config['authentication'] !== null) {
             $dsn .= ";Authentication={$config['authentication']}";
         }
-
-        $this->pdo = $this->createPdo($dsn, $config);
+        $this->pdo = $this->create_pdo($dsn, $config);
         if (!empty($config['init'])) {
-            foreach ((array)$config['init'] as $command) {
+            foreach ((array) $config['init'] as $command) {
                 $this->pdo->exec($command);
             }
         }
@@ -177,11 +155,10 @@ class Sqlserver extends Driver
         }
         if (!empty($config['attributes']) && is_array($config['attributes'])) {
             foreach ($config['attributes'] as $key => $value) {
-                $this->pdo->setAttribute($key, $value);
+                $this->pdo->set_attribute($key, $value);
             }
         }
     }
-
     /**
      * Returns whether PHP is able to use this driver for connecting to database
      *
@@ -189,147 +166,113 @@ class Sqlserver extends Driver
      */
     public function enabled(): bool
     {
-        return in_array('sqlsrv', PDO::getAvailableDrivers(), true);
+        return in_array('sqlsrv', PDO::get_available_drivers(), true);
     }
-
     /**
      * @inheritDoc
      */
-    public function prepare(Query|string $query): StatementInterface
+    public function prepare(Query|string $query): Statement_Interface
     {
-        $options = [
-            PDO::ATTR_CURSOR => PDO::CURSOR_SCROLL,
-            PDO::SQLSRV_ATTR_CURSOR_SCROLL_TYPE => PDO::SQLSRV_CURSOR_BUFFERED,
-        ];
-
+        $options = [PDO::ATTR_CURSOR => PDO::CURSOR_SCROLL, PDO::SQLSRV_ATTR_CURSOR_SCROLL_TYPE => PDO::SQLSRV_CURSOR_BUFFERED];
         $sql = $query;
         if ($query instanceof Query) {
             $sql = $query->sql();
-            if (count($query->getValueBinder()->bindings()) > 2100) {
-                throw new InvalidArgumentException(
-                    'Exceeded maximum number of parameters (2100) for prepared statements in Sql Server. ' .
-                    'This is probably due to a very large WHERE IN () clause which generates a parameter ' .
-                    'for each value in the array. ' .
-                    'If using an Association, try changing the `strategy` from select to subquery.',
-                );
+            if (count($query->get_value_binder()->bindings()) > 2100) {
+                throw new InvalidArgumentException('Exceeded maximum number of parameters (2100) for prepared statements in Sql Server. ' . 'This is probably due to a very large WHERE IN () clause which generates a parameter ' . 'for each value in the array. ' . 'If using an Association, try changing the `strategy` from select to subquery.');
             }
-
-            if ($query instanceof SelectQuery && !$query->isBufferedResultsEnabled()) {
+            if ($query instanceof Select_Query && !$query->is_buffered_results_enabled()) {
                 $options = [];
             }
         }
-
         /** @var string $sql */
-        $statement = $this->getPdo()->prepare(
-            $sql,
-            $options,
-        );
-
-        return new (static::STATEMENT_CLASS)($statement, $this, $this->getResultSetDecorators($query));
+        $statement = $this->get_pdo()->prepare($sql, $options);
+        return new (static::STATEMENT_CLASS)($statement, $this, $this->get_result_set_decorators($query));
     }
-
     /**
      * @inheritDoc
      */
-    public function savePointSQL($name): string
+    public function save_point_sql($name): string
     {
         return 'SAVE TRANSACTION t' . $name;
     }
-
     /**
      * @inheritDoc
      */
-    public function releaseSavePointSQL($name): string
+    public function release_save_point_sql($name): string
     {
         // SQLServer has no release save point operation.
         return '';
     }
-
     /**
      * @inheritDoc
      */
-    public function rollbackSavePointSQL($name): string
+    public function rollback_save_point_sql($name): string
     {
         return 'ROLLBACK TRANSACTION t' . $name;
     }
-
     /**
      * @inheritDoc
      */
-    public function disableForeignKeySQL(): string
+    public function disable_foreign_key_sql(): string
     {
         return 'EXEC sp_MSforeachtable "ALTER TABLE ? NOCHECK CONSTRAINT all"';
     }
-
     /**
      * @inheritDoc
      */
-    public function enableForeignKeySQL(): string
+    public function enable_foreign_key_sql(): string
     {
         return 'EXEC sp_MSforeachtable "ALTER TABLE ? WITH CHECK CHECK CONSTRAINT all"';
     }
-
     /**
      * @inheritDoc
      */
-    public function supports(DriverFeatureEnum $feature): bool
+    public function supports(Driver_Feature_Enum $feature): bool
     {
         return match ($feature) {
-            DriverFeatureEnum::CTE,
-            DriverFeatureEnum::DISABLE_CONSTRAINT_WITHOUT_TRANSACTION,
-            DriverFeatureEnum::SAVEPOINT,
-            DriverFeatureEnum::TRUNCATE_WITH_CONSTRAINTS,
-            DriverFeatureEnum::WINDOW => true,
-            DriverFeatureEnum::INTERSECT => true,
-            DriverFeatureEnum::INTERSECT_ALL => false,
-            DriverFeatureEnum::JSON => false,
-            DriverFeatureEnum::SET_OPERATIONS_ORDER_BY => false,
-            DriverFeatureEnum::OPTIMIZER_HINT_COMMENT => false,
-            DriverFeatureEnum::CHECK_CONSTRAINTS => false,
+            Driver_Feature_Enum::CTE, Driver_Feature_Enum::DISABLE_CONSTRAINT_WITHOUT_TRANSACTION, Driver_Feature_Enum::SAVEPOINT, Driver_Feature_Enum::TRUNCATE_WITH_CONSTRAINTS, Driver_Feature_Enum::WINDOW => true,
+            Driver_Feature_Enum::INTERSECT => true,
+            Driver_Feature_Enum::INTERSECT_ALL => false,
+            Driver_Feature_Enum::JSON => false,
+            Driver_Feature_Enum::SET_OPERATIONS_ORDER_BY => false,
+            Driver_Feature_Enum::OPTIMIZER_HINT_COMMENT => false,
+            Driver_Feature_Enum::CHECK_CONSTRAINTS => false,
         };
     }
-
     /**
      * @inheritDoc
      */
-    public function schemaDialect(): SchemaDialect
+    public function schema_dialect(): Schema_Dialect
     {
-        return $this->_schemaDialect ??= new SqlserverSchemaDialect($this);
+        return $this->_schema_dialect ??= new Sqlserver_Schema_Dialect($this);
     }
-
     /**
      * {@inheritDoc}
      *
      * @return \Cake\Database\SqlserverCompiler
      */
-    public function newCompiler(): QueryCompiler
+    public function new_compiler(): Query_Compiler
     {
-        return new SqlserverCompiler();
+        return new Sqlserver_Compiler();
     }
-
     /**
      * @inheritDoc
      */
-    protected function _selectQueryTranslator(SelectQuery $query): SelectQuery
+    protected function _select_query_translator(Select_Query $query): Select_Query
     {
         $limit = $query->clause('limit');
         $offset = $query->clause('offset');
-
         if ($limit && $offset === null) {
             $query->modifier(['_auto_top_' => sprintf('TOP %d', $limit)]);
         }
-
         if ($offset !== null && !$query->clause('order')) {
-            $query->orderBy($query->expr()->add('(SELECT NULL)'));
+            $query->order_by($query->expr()->add('(SELECT NULL)'));
         }
-
         if ($this->version() < 11 && $offset !== null) {
-            return $this->_pagingSubquery($query, $limit, $offset);
+            return $this->_paging_subquery($query, $limit, $offset);
         }
-
-        return $this->_transformDistinct($query);
+        return $this->_transform_distinct($query);
     }
-
     /**
      * Generate a paging subquery for older versions of SQLserver.
      *
@@ -341,173 +284,127 @@ class Sqlserver extends Driver
      * @param int|null $offset The number of rows to offset.
      * @return \Cake\Database\Query\SelectQuery<mixed> Modified query object.
      */
-    protected function _pagingSubquery(SelectQuery $original, ?int $limit, ?int $offset): SelectQuery
+    protected function _paging_subquery(Select_Query $original, ?int $limit, ?int $offset): Select_Query
     {
         $field = '_cake_paging_._cake_page_rownum_';
-
         /** @var \Cake\Database\Expression\OrderByExpression $originalOrder */
-        $originalOrder = $original->clause('order');
-        if ($originalOrder) {
+        $original_order = $original->clause('order');
+        if ($original_order) {
             // SQL server does not support column aliases in OVER clauses.  But
             // the only practical way to specify the use of calculated columns
             // is with their alias.  So substitute the select SQL in place of
             // any column aliases for those entries in the order clause.
             $select = $original->clause('select');
-            $order = new OrderByExpression();
-            $originalOrder
-                ->iterateParts(function ($direction, $orderBy) use ($select, $order) {
-                    $key = $orderBy;
-                    if (
-                        isset($select[$orderBy]) &&
-                        $select[$orderBy] instanceof ExpressionInterface
-                    ) {
-                        $order->add(new OrderClauseExpression($select[$orderBy], $direction));
-                    } else {
-                        $order->add([$key => $direction]);
-                    }
-
-                    // Leave original order clause unchanged.
-                    return $orderBy;
-                });
+            $order = new Order_By_Expression();
+            $original_order->iterate_parts(function ($direction, $order_by) use ($select, $order) {
+                $key = $order_by;
+                if (isset($select[$order_by]) && $select[$order_by] instanceof Expression_Interface) {
+                    $order->add(new Order_Clause_Expression($select[$order_by], $direction));
+                } else {
+                    $order->add([$key => $direction]);
+                }
+                // Leave original order clause unchanged.
+                return $order_by;
+            });
         } else {
-            $order = new OrderByExpression('(SELECT NULL)');
+            $order = new Order_By_Expression('(SELECT NULL)');
         }
-
         $query = clone $original;
-        $query->select([
-                '_cake_page_rownum_' => new UnaryExpression('ROW_NUMBER() OVER', $order),
-            ])->limit(null)
-            ->offset(null)
-            ->orderBy([], true);
-
-        $outer = $query->getConnection()->selectQuery();
-        $outer->select('*')
-            ->from(['_cake_paging_' => $query]);
-
+        $query->select(['_cake_page_rownum_' => new Unary_Expression('ROW_NUMBER() OVER', $order)])->limit(null)->offset(null)->order_by([], true);
+        $outer = $query->get_connection()->select_query();
+        $outer->select('*')->from(['_cake_paging_' => $query]);
         if ($offset) {
             $outer->where(["{$field} > " . $offset]);
         }
         if ($limit) {
-            $value = (int)$offset + $limit;
+            $value = (int) $offset + $limit;
             $outer->where(["{$field} <= {$value}"]);
         }
-
         // Decorate the original query as that is what the
         // end developer will be calling execute() on originally.
-        $original->decorateResults(function (array $row): array {
+        $original->decorate_results(function (array $row): array {
             if (isset($row['_cake_page_rownum_'])) {
                 unset($row['_cake_page_rownum_']);
             }
-
             return $row;
         });
-
         return $outer;
     }
-
     /**
      * @inheritDoc
      */
-    protected function _transformDistinct(SelectQuery $query): SelectQuery
+    protected function _transform_distinct(Select_Query $query): Select_Query
     {
         if (!is_array($query->clause('distinct'))) {
             return $query;
         }
-
         $original = $query;
         $query = clone $original;
-
         $distinct = $query->clause('distinct');
         $query->distinct(false);
-
-        $order = new OrderByExpression($distinct);
-        $query
-            ->select(function (Query $q) use ($distinct, $order): array {
-                $over = $q->expr('ROW_NUMBER() OVER')
-                    ->add('(PARTITION BY')
-                    ->add($q->expr()->add($distinct)->setConjunction(','))
-                    ->add($order)
-                    ->add(')')
-                    ->setConjunction(' ');
-
-                return [
-                    '_cake_distinct_pivot_' => $over,
-                ];
-            })
-            ->limit(null)
-            ->offset(null)
-            ->orderBy([], true);
-
-        $outer = new SelectQuery($query->getConnection());
-        $outer->select('*')
-            ->from(['_cake_distinct_' => $query])
-            ->where(['_cake_distinct_pivot_' => 1]);
-
+        $order = new Order_By_Expression($distinct);
+        $query->select(function (Query $q) use ($distinct, $order): array {
+            $over = $q->expr('ROW_NUMBER() OVER')->add('(PARTITION BY')->add($q->expr()->add($distinct)->set_conjunction(','))->add($order)->add(')')->set_conjunction(' ');
+            return ['_cake_distinct_pivot_' => $over];
+        })->limit(null)->offset(null)->order_by([], true);
+        $outer = new Select_Query($query->get_connection());
+        $outer->select('*')->from(['_cake_distinct_' => $query])->where(['_cake_distinct_pivot_' => 1]);
         // Decorate the original query as that is what the
         // end developer will be calling execute() on originally.
-        $original->decorateResults(function (array $row): array {
+        $original->decorate_results(function (array $row): array {
             if (isset($row['_cake_distinct_pivot_'])) {
                 unset($row['_cake_distinct_pivot_']);
             }
-
             return $row;
         });
-
         return $outer;
     }
-
     /**
      * @inheritDoc
      */
-    protected function _expressionTranslators(): array
+    protected function _expression_translators(): array
     {
-        return [
-            FunctionExpression::class => '_transformFunctionExpression',
-            TupleComparison::class => '_transformTupleComparison',
-        ];
+        return [Function_Expression::class => '_transformFunctionExpression', Tuple_Comparison::class => '_transformTupleComparison'];
     }
-
     /**
      * Receives a FunctionExpression and changes it so that it conforms to this
      * SQL dialect.
      *
      * @param \Cake\Database\Expression\FunctionExpression $expression The function expression to convert to TSQL.
      */
-    protected function _transformFunctionExpression(FunctionExpression $expression): void
+    protected function _transform_function_expression(Function_Expression $expression): void
     {
-        switch ($expression->getName()) {
+        switch ($expression->get_name()) {
             case 'CONCAT':
                 // CONCAT function is expressed as exp1 + exp2
-                $expression->setName('')->setConjunction(' +');
+                $expression->set_name('')->set_conjunction(' +');
                 break;
             case 'DATEDIFF':
-                $hasDay = false;
-                $visitor = function ($value) use (&$hasDay) {
+                $has_day = false;
+                $visitor = function ($value) use (&$has_day) {
                     if ($value === 'day') {
-                        $hasDay = true;
+                        $has_day = true;
                     }
-
                     return $value;
                 };
-                $expression->iterateParts($visitor);
-
-                if (!$hasDay) {
+                $expression->iterate_parts($visitor);
+                if (!$has_day) {
                     $expression->add(['day' => 'literal'], [], true);
                 }
                 break;
             case 'CURRENT_DATE':
-                $time = new FunctionExpression('GETUTCDATE');
-                $expression->setName('CONVERT')->add(['date' => 'literal', $time]);
+                $time = new Function_Expression('GETUTCDATE');
+                $expression->set_name('CONVERT')->add(['date' => 'literal', $time]);
                 break;
             case 'CURRENT_TIME':
-                $time = new FunctionExpression('GETUTCDATE');
-                $expression->setName('CONVERT')->add(['time' => 'literal', $time]);
+                $time = new Function_Expression('GETUTCDATE');
+                $expression->set_name('CONVERT')->add(['time' => 'literal', $time]);
                 break;
             case 'NOW':
-                $expression->setName('GETUTCDATE');
+                $expression->set_name('GETUTCDATE');
                 break;
             case 'EXTRACT':
-                $expression->setName('DATEPART')->setConjunction(' ,');
+                $expression->set_name('DATEPART')->set_conjunction(' ,');
                 break;
             case 'DATE_ADD':
                 $params = [];
@@ -515,41 +412,28 @@ class Sqlserver extends Driver
                     if ($key === 0) {
                         $params[2] = $p;
                     } else {
-                        $valueUnit = explode(' ', $p);
-                        $params[0] = rtrim($valueUnit[1], 's');
-                        $params[1] = $valueUnit[0];
+                        $value_unit = explode(' ', $p);
+                        $params[0] = rtrim($value_unit[1], 's');
+                        $params[1] = $value_unit[0];
                     }
-
                     return $p;
                 };
                 $manipulator = function ($p, $key) use (&$params) {
                     return $params[$key];
                 };
-
-                $expression
-                    ->setName('DATEADD')
-                    ->setConjunction(',')
-                    ->iterateParts($visitor)
-                    ->iterateParts($manipulator)
-                    ->add([$params[2] => 'literal']);
+                $expression->set_name('DATEADD')->set_conjunction(',')->iterate_parts($visitor)->iterate_parts($manipulator)->add([$params[2] => 'literal']);
                 break;
             case 'DAYOFWEEK':
-                $expression
-                    ->setName('DATEPART')
-                    ->setConjunction(' ')
-                    ->add(['weekday, ' => 'literal'], [], true);
+                $expression->set_name('DATEPART')->set_conjunction(' ')->add(['weekday, ' => 'literal'], [], true);
                 break;
             case 'SUBSTR':
-                $expression->setName('SUBSTRING');
+                $expression->set_name('SUBSTRING');
                 if (count($expression) < 4) {
                     $params = [];
-                    $expression
-                        ->iterateParts(function ($p) use (&$params) {
-                            return $params[] = $p;
-                        })
-                        ->add([new FunctionExpression('LEN', [$params[0]]), ['string']]);
+                    $expression->iterate_parts(function ($p) use (&$params) {
+                        return $params[] = $p;
+                    })->add([new Function_Expression('LEN', [$params[0]]), ['string']]);
                 }
-
                 break;
         }
     }

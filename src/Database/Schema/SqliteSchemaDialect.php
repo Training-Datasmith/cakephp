@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,25 +14,22 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Database\Schema;
 
 use Cake\Core\Configure;
-use Cake\Database\Exception\DatabaseException;
+use Cake\Database\Exception\Database_Exception;
 use PDO;
-
 /**
  * Schema management/reflection features for Sqlite
  *
  * @internal
  */
-class SqliteSchemaDialect extends SchemaDialect
+class Sqlite_Schema_Dialect extends Schema_Dialect
 {
     /**
      * Whether there is any table in this connection to SQLite containing sequences.
      */
-    protected bool $_hasSequences;
-
+    protected bool $_has_sequences;
     /**
      * Convert a column definition to the abstract types.
      *
@@ -44,22 +40,19 @@ class SqliteSchemaDialect extends SchemaDialect
      * @throws \Cake\Database\Exception\DatabaseException when unable to parse column type
      * @return array<string, mixed> Array of column information.
      */
-    protected function _convertColumn(string $column): array
+    protected function _convert_column(string $column): array
     {
         if ($column === '') {
-            return ['type' => TableSchemaInterface::TYPE_TEXT, 'length' => null];
+            return ['type' => Table_Schema_Interface::TYPE_TEXT, 'length' => null];
         }
-
         preg_match('/(unsigned)?\s*([a-z]+)(?:\(([0-9,]+)\))?/i', $column, $matches);
         if (!$matches) {
-            throw new DatabaseException(sprintf('Unable to parse column type from `%s`', $column));
+            throw new Database_Exception(sprintf('Unable to parse column type from `%s`', $column));
         }
-
         $unsigned = false;
         if (strtolower($matches[1]) === 'unsigned') {
             $unsigned = true;
         }
-
         $col = strtolower($matches[2]);
         $length = null;
         $precision = null;
@@ -69,103 +62,63 @@ class SqliteSchemaDialect extends SchemaDialect
             if (str_contains($length, ',')) {
                 [$length, $precision] = explode(',', $length);
             }
-            $length = (int)$length;
-            $precision = (int)$precision;
+            $length = (int) $length;
+            $precision = (int) $precision;
         }
-
-        $type = $this->_applyTypeSpecificColumnConversion(
-            $col,
-            compact('length', 'precision', 'scale'),
-        );
+        $type = $this->_apply_type_specific_column_conversion($col, compact('length', 'precision', 'scale'));
         if ($type !== null) {
             return $type;
         }
-
         if ($col === 'bigint') {
-            return ['type' => TableSchemaInterface::TYPE_BIGINTEGER, 'length' => $length, 'unsigned' => $unsigned];
+            return ['type' => Table_Schema_Interface::TYPE_BIGINTEGER, 'length' => $length, 'unsigned' => $unsigned];
         }
         if ($col === 'smallint') {
-            return ['type' => TableSchemaInterface::TYPE_SMALLINTEGER, 'length' => $length, 'unsigned' => $unsigned];
+            return ['type' => Table_Schema_Interface::TYPE_SMALLINTEGER, 'length' => $length, 'unsigned' => $unsigned];
         }
         if ($col === 'tinyint') {
-            return ['type' => TableSchemaInterface::TYPE_TINYINTEGER, 'length' => $length, 'unsigned' => $unsigned];
+            return ['type' => Table_Schema_Interface::TYPE_TINYINTEGER, 'length' => $length, 'unsigned' => $unsigned];
         }
         if (str_contains($col, 'int') && $col !== 'point') {
-            return ['type' => TableSchemaInterface::TYPE_INTEGER, 'length' => $length, 'unsigned' => $unsigned];
+            return ['type' => Table_Schema_Interface::TYPE_INTEGER, 'length' => $length, 'unsigned' => $unsigned];
         }
         if (str_contains($col, 'decimal')) {
-            return [
-                'type' => TableSchemaInterface::TYPE_DECIMAL,
-                'length' => $length,
-                'precision' => $precision,
-                'unsigned' => $unsigned,
-            ];
+            return ['type' => Table_Schema_Interface::TYPE_DECIMAL, 'length' => $length, 'precision' => $precision, 'unsigned' => $unsigned];
         }
         if (in_array($col, ['float', 'real', 'double'])) {
-            return [
-                'type' => TableSchemaInterface::TYPE_FLOAT,
-                'length' => $length,
-                'precision' => $precision,
-                'unsigned' => $unsigned,
-            ];
+            return ['type' => Table_Schema_Interface::TYPE_FLOAT, 'length' => $length, 'precision' => $precision, 'unsigned' => $unsigned];
         }
-
         if (str_contains($col, 'boolean')) {
-            return ['type' => TableSchemaInterface::TYPE_BOOLEAN, 'length' => null];
+            return ['type' => Table_Schema_Interface::TYPE_BOOLEAN, 'length' => null];
         }
-
-        if (($col === 'binary' && $length === 16) || strtolower($column) === 'uuid_blob') {
-            return ['type' => TableSchemaInterface::TYPE_BINARY_UUID, 'length' => null];
+        if ($col === 'binary' && $length === 16 || strtolower($column) === 'uuid_blob') {
+            return ['type' => Table_Schema_Interface::TYPE_BINARY_UUID, 'length' => null];
         }
-        if (($col === 'char' && $length === 36) || $col === 'uuid') {
-            return ['type' => TableSchemaInterface::TYPE_UUID, 'length' => null];
+        if ($col === 'char' && $length === 36 || $col === 'uuid') {
+            return ['type' => Table_Schema_Interface::TYPE_UUID, 'length' => null];
         }
         if ($col === 'char') {
-            return ['type' => TableSchemaInterface::TYPE_CHAR, 'length' => $length];
+            return ['type' => Table_Schema_Interface::TYPE_CHAR, 'length' => $length];
         }
         if (str_contains($col, 'char')) {
-            return ['type' => TableSchemaInterface::TYPE_STRING, 'length' => $length];
+            return ['type' => Table_Schema_Interface::TYPE_STRING, 'length' => $length];
         }
-
         if (in_array($col, ['blob', 'clob', 'binary', 'varbinary'])) {
-            return ['type' => TableSchemaInterface::TYPE_BINARY, 'length' => $length];
+            return ['type' => Table_Schema_Interface::TYPE_BINARY, 'length' => $length];
         }
-
-        $datetimeTypes = [
-            'date',
-            'time',
-            'timestamp',
-            'timestampfractional',
-            'timestamptimezone',
-            'datetime',
-            'datetimefractional',
-        ];
-        if (in_array($col, $datetimeTypes)) {
+        $datetime_types = ['date', 'time', 'timestamp', 'timestampfractional', 'timestamptimezone', 'datetime', 'datetimefractional'];
+        if (in_array($col, $datetime_types)) {
             return ['type' => $col, 'length' => null];
         }
-
-        if (
-            Configure::read('ORM.mapJsonTypeForSqlite') === true &&
-            (
-                str_contains($col, TableSchemaInterface::TYPE_JSON) &&
-                !str_contains($col, 'jsonb')
-            )
-        ) {
-            return ['type' => TableSchemaInterface::TYPE_JSON, 'length' => null];
+        if (Configure::read('ORM.mapJsonTypeForSqlite') === true && (str_contains($col, Table_Schema_Interface::TYPE_JSON) && !str_contains($col, 'jsonb'))) {
+            return ['type' => Table_Schema_Interface::TYPE_JSON, 'length' => null];
         }
-
-        if (in_array($col, TableSchemaInterface::GEOSPATIAL_TYPES)) {
+        if (in_array($col, Table_Schema_Interface::GEOSPATIAL_TYPES)) {
             // TODO how can srid be preserved? It doesn't come back
             // in the output of show full columns from ...
-            return [
-                'type' => $col,
-                'length' => null,
-            ];
+            return ['type' => $col, 'length' => null];
         }
-
-        return ['type' => TableSchemaInterface::TYPE_TEXT, 'length' => null];
+        return ['type' => Table_Schema_Interface::TYPE_TEXT, 'length' => null];
     }
-
     /**
      * Generate the SQL to list the tables and views.
      *
@@ -173,16 +126,10 @@ class SqliteSchemaDialect extends SchemaDialect
      *    getting tables from.
      * @return array An array of (sql, params) to execute.
      */
-    public function listTablesSql(array $config): array
+    public function list_tables_sql(array $config): array
     {
-        return [
-            'SELECT name FROM sqlite_master ' .
-            'WHERE (type="table" OR type="view") ' .
-            'AND name != "sqlite_sequence" ORDER BY name',
-            [],
-        ];
+        return ['SELECT name FROM sqlite_master ' . 'WHERE (type="table" OR type="view") ' . 'AND name != "sqlite_sequence" ORDER BY name', []];
     }
-
     /**
      * Generate the SQL to list the tables, excluding all views.
      *
@@ -190,101 +137,72 @@ class SqliteSchemaDialect extends SchemaDialect
      *    getting tables from.
      * @return array<mixed> An array of (sql, params) to execute.
      */
-    public function listTablesWithoutViewsSql(array $config): array
+    public function list_tables_without_views_sql(array $config): array
     {
-        return [
-            'SELECT name FROM sqlite_master WHERE type="table" ' .
-            'AND name != "sqlite_sequence" ORDER BY name',
-            [],
-        ];
+        return ['SELECT name FROM sqlite_master WHERE type="table" ' . 'AND name != "sqlite_sequence" ORDER BY name', []];
     }
-
     /**
      * @inheritDoc
      */
-    public function describeColumnSql(string $tableName, array $config): array
+    public function describe_column_sql(string $table_name, array $config): array
     {
-        $sql = $this->describeColumnQuery($tableName);
-
+        $sql = $this->describe_column_query($table_name);
         return [$sql, []];
     }
-
     /**
      * @inheritDoc
      */
-    public function convertColumnDescription(TableSchema $schema, array $row): void
+    public function convert_column_description(Table_Schema $schema, array $row): void
     {
-        $field = $this->_convertColumn($row['type']);
-        $field += [
-            'null' => !$row['notnull'],
-            'default' => $this->_defaultValue($row['dflt_value'], $row['type']),
-        ];
-        $primary = $schema->getConstraint('primary');
-
+        $field = $this->_convert_column($row['type']);
+        $field += ['null' => !$row['notnull'], 'default' => $this->_default_value($row['dflt_value'], $row['type'])];
+        $primary = $schema->get_constraint('primary');
         if ($row['pk'] && empty($primary)) {
             $field['null'] = false;
             $field['autoIncrement'] = true;
         }
-
         // SQLite does not support autoincrement on composite keys.
         if ($row['pk'] && !empty($primary)) {
-            $existingColumn = $primary['columns'][0];
-            $schema->addColumn($existingColumn, ['autoIncrement' => null] + $schema->getColumn($existingColumn));
+            $existing_column = $primary['columns'][0];
+            $schema->add_column($existing_column, ['autoIncrement' => null] + $schema->get_column($existing_column));
         }
-
-        $schema->addColumn($row['name'], $field);
+        $schema->add_column($row['name'], $field);
         if ($row['pk']) {
-            $constraint = (array)$schema->getConstraint('primary') + [
-                'type' => TableSchema::CONSTRAINT_PRIMARY,
-                'columns' => [],
-            ];
+            $constraint = (array) $schema->get_constraint('primary') + ['type' => Table_Schema::CONSTRAINT_PRIMARY, 'columns' => []];
             $constraint['columns'] = array_merge($constraint['columns'], [$row['name']]);
-            $schema->addConstraint('primary', $constraint);
+            $schema->add_constraint('primary', $constraint);
         }
     }
-
     /**
      * Helper method for creating SQL to describe columns in a table.
      *
      * @param string $tableName The table to describe.
      * @return string SQL to reflect columns
      */
-    private function describeColumnQuery(string $tableName): string
+    private function describe_column_query(string $table_name): string
     {
         $pragma = 'table_xinfo';
         if (version_compare($this->_driver->version(), '3.26.0', '<')) {
             $pragma = 'table_info';
         }
-
-        return sprintf(
-            'PRAGMA %s(%s)',
-            $pragma,
-            $this->_driver->quoteIdentifier($tableName),
-        );
+        return sprintf('PRAGMA %s(%s)', $pragma, $this->_driver->quote_identifier($table_name));
     }
-
     /**
      * @inheritDoc
      */
-    public function describeColumns(string $tableName): array
+    public function describe_columns(string $table_name): array
     {
-        if (str_contains($tableName, '.')) {
-            [, $tableName] = explode('.', $tableName);
+        if (str_contains($table_name, '.')) {
+            [, $table_name] = explode('.', $table_name);
         }
-        $sql = $this->describeColumnQuery($tableName);
+        $sql = $this->describe_column_query($table_name);
         $columns = [];
         $statement = $this->_driver->execute($sql);
         $primary = [];
-        foreach ($statement->fetchAll('assoc') as $i => $row) {
+        foreach ($statement->fetch_all('assoc') as $i => $row) {
             $name = $row['name'];
-            $field = $this->_convertColumn($row['type']);
-            $field += [
-                'name' => $name,
-                'null' => !$row['notnull'],
-                'default' => $this->_defaultValue($row['dflt_value'], $row['type']),
-                'comment' => null,
-                'length' => null,
-            ];
+            $field = $this->_convert_column($row['type']);
+            $field += ['name' => $name, 'null' => !$row['notnull'], 'default' => $this->_default_value($row['dflt_value'], $row['type']), 'comment' => null, 'length' => null];
             if ($row['pk']) {
                 $primary[] = $i;
             }
@@ -296,10 +214,8 @@ class SqliteSchemaDialect extends SchemaDialect
             $columns[$offset]['autoIncrement'] = true;
             $columns[$offset]['null'] = false;
         }
-
         return $columns;
     }
-
     /**
      * Manipulate the default value.
      *
@@ -309,80 +225,66 @@ class SqliteSchemaDialect extends SchemaDialect
      * @param string|int|null $default The default value.
      * @param string|null $type The column type.
      */
-    protected function _defaultValue(string|int|null $default, ?string $type = null): string|int|null
+    protected function _default_value(string|int|null $default, ?string $type = null): string|int|null
     {
         if ($default === 'NULL' || $default === null) {
             return null;
         }
-
-        if ($type !== null && strtolower($type) === TableSchemaInterface::TYPE_BOOLEAN) {
+        if ($type !== null && strtolower($type) === Table_Schema_Interface::TYPE_BOOLEAN) {
             if ($default === '0' || $default === '1') {
-                return (int)$default;
+                return (int) $default;
             }
-
-            return (int)filter_var($default, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+            return (int) filter_var($default, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
         }
-
         // Remove quotes
-        if (is_string($default) && preg_match("/^'(.*)'$/", $default, $matches)) {
+        if (is_string($default) && preg_match("/^'(.*)'\$/", $default, $matches)) {
             return str_replace("''", "'", $matches[1]);
         }
-
         return $default;
     }
-
     /**
      * @inheritDoc
      */
-    public function describeIndexSql(string $tableName, array $config): array
+    public function describe_index_sql(string $table_name, array $config): array
     {
-        $sql = $this->describeIndexQuery($tableName);
-
+        $sql = $this->describe_index_query($table_name);
         return [$sql, []];
     }
-
     /**
      * Generates a regular expression to match identifiers that may or
      * may not be quoted with any of the supported quotes.
      *
      * @param string $identifier The identifier to match.
      */
-    protected function possiblyQuotedIdentifierRegex(string $identifier): string
+    protected function possibly_quoted_identifier_regex(string $identifier): string
     {
         // Trim all quoting characters from the provided identifier,
         // and double all quotes up because that's how sqlite returns them.
         $identifier = trim($identifier, '\'"`[]');
         $identifier = str_replace(["'", '"', '`'], ["''", '""', '``'], $identifier);
         $quoted = preg_quote($identifier, '/');
-
-        return "[\['\"`]?{$quoted}[\]'\"`]?";
+        return "[\\['\"`]?{$quoted}[\\]'\"`]?";
     }
-
     /**
      * Removes possible escape characters and surrounding quotes from
      * identifiers.
      *
      * @param string $value The identifier to normalize.
      */
-    protected function normalizePossiblyQuotedIdentifier(string $value): string
+    protected function normalize_possibly_quoted_identifier(string $value): string
     {
         $value = trim($value);
-
         if (str_starts_with($value, '[') && str_ends_with($value, ']')) {
             return mb_substr($value, 1, -1);
         }
-
         foreach (['`', "'", '"'] as $quote) {
             if (str_starts_with($value, $quote) && str_ends_with($value, $quote)) {
                 $value = str_replace($quote . $quote, $quote, $value);
-
                 return mb_substr($value, 1, -1);
             }
         }
-
         return $value;
     }
-
     /**
      * {@inheritDoc}
      *
@@ -396,57 +298,41 @@ class SqliteSchemaDialect extends SchemaDialect
      * @param array $row The row data from `describeIndexSql`.
      * @deprecated 5.2.0 Use `describeIndexes` instead.
      */
-    public function convertIndexDescription(TableSchema $schema, array $row): void
+    public function convert_index_description(Table_Schema $schema, array $row): void
     {
         // Skip auto-indexes created for non-ROWID primary keys.
         if (($row['origin'] ?? null) === 'pk') {
             return;
         }
-
-        $sql = sprintf(
-            'PRAGMA index_info(%s)',
-            $this->_driver->quoteIdentifier($row['name']),
-        );
+        $sql = sprintf('PRAGMA index_info(%s)', $this->_driver->quote_identifier($row['name']));
         $statement = $this->_driver->execute($sql);
         $columns = [];
-        foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $column) {
+        foreach ($statement->fetch_all(PDO::FETCH_ASSOC) as $column) {
             $columns[] = $column['name'];
         }
         if ($row['unique']) {
             if (($row['origin'] ?? null) === 'u') {
-                $createTableSql = $this->getCreateTableSql($schema->name());
-                $name = $this->extractIndexName($createTableSql, 'UNIQUE', $columns);
+                $create_table_sql = $this->get_create_table_sql($schema->name());
+                $name = $this->extract_index_name($create_table_sql, 'UNIQUE', $columns);
                 if ($name !== null) {
                     $row['name'] = $name;
                 }
             }
-
-            $schema->addConstraint($row['name'], [
-                'type' => TableSchema::CONSTRAINT_UNIQUE,
-                'columns' => $columns,
-            ]);
+            $schema->add_constraint($row['name'], ['type' => Table_Schema::CONSTRAINT_UNIQUE, 'columns' => $columns]);
         } else {
-            $schema->addIndex($row['name'], [
-                'type' => TableSchema::INDEX_INDEX,
-                'columns' => $columns,
-            ]);
+            $schema->add_index($row['name'], ['type' => Table_Schema::INDEX_INDEX, 'columns' => $columns]);
         }
     }
-
     /**
      * Helper method for creating SQL to reflect indexes in a table.
      *
      * @param string $tableName The table to get indexes from.
      * @return string SQL to reflect indexes
      */
-    private function describeIndexQuery(string $tableName): string
+    private function describe_index_query(string $table_name): string
     {
-        return sprintf(
-            'PRAGMA index_list(%s)',
-            $this->_driver->quoteIdentifier($tableName),
-        );
+        return sprintf('PRAGMA index_list(%s)', $this->_driver->quote_identifier($table_name));
     }
-
     /**
      * Try to extract the original constraint name from table sql.
      *
@@ -455,24 +341,15 @@ class SqliteSchemaDialect extends SchemaDialect
      * @param array $columns The columns in the index.
      * @return string|null The name of the unique index if it could be inferred.
      */
-    private function extractIndexName(string $tableSql, string $type, array $columns): ?string
+    private function extract_index_name(string $table_sql, string $type, array $columns): ?string
     {
-        $columnsPattern = implode(
-            '\s*,\s*',
-            array_map(
-                fn (string $column): string => '(?:' . $this->possiblyQuotedIdentifierRegex($column) . ')',
-                $columns,
-            ),
-        );
-
-        $regex = "/CONSTRAINT\s*(?<name>.+?)\s*{$type}\s*\(\s*{$columnsPattern}\s*\)/i";
-        if (preg_match($regex, $tableSql, $matches)) {
-            return $this->normalizePossiblyQuotedIdentifier($matches['name']);
+        $columns_pattern = implode('\s*,\s*', array_map(fn(string $column): string => '(?:' . $this->possibly_quoted_identifier_regex($column) . ')', $columns));
+        $regex = "/CONSTRAINT\\s*(?<name>.+?)\\s*{$type}\\s*\\(\\s*{$columns_pattern}\\s*\\)/i";
+        if (preg_match($regex, $table_sql, $matches)) {
+            return $this->normalize_possibly_quoted_identifier($matches['name']);
         }
-
         return null;
     }
-
     /**
      * Try to extract the deferrable clause from the table SQL.
      *
@@ -480,258 +357,183 @@ class SqliteSchemaDialect extends SchemaDialect
      * @param array $columns The columns in the index.
      * @return string|null The name of the unique index if it could be inferred.
      */
-    private function extractDeferrable(string $tableSql, array $columns): ?string
+    private function extract_deferrable(string $table_sql, array $columns): ?string
     {
-        $columnsPattern = implode(
-            '\s*,\s*',
-            array_map(
-                fn (string $column): string => '(?:' . $this->possiblyQuotedIdentifierRegex($column) . ')',
-                $columns,
-            ),
-        );
-        $regex = "/CONSTRAINT\s*(?<name>.+?)\s*FOREIGN\s+KEY\s*\(\s*{$columnsPattern}\s*\).*?' .
-            '(?<deferable>((?:NOT\s+)?DEFERRABLE)?(?:\s+INITIALLY\s+(DEFERRED|IMMEDIATE)))?/i";
-
-        if (preg_match($regex, $tableSql, $matches)) {
+        $columns_pattern = implode('\s*,\s*', array_map(fn(string $column): string => '(?:' . $this->possibly_quoted_identifier_regex($column) . ')', $columns));
+        $regex = "/CONSTRAINT\\s*(?<name>.+?)\\s*FOREIGN\\s+KEY\\s*\\(\\s*{$columns_pattern}\\s*\\).*?' .\n            '(?<deferable>((?:NOT\\s+)?DEFERRABLE)?(?:\\s+INITIALLY\\s+(DEFERRED|IMMEDIATE)))?/i";
+        if (preg_match($regex, $table_sql, $matches)) {
             return match ($matches['deferable']) {
-                'NOT DEFERRABLE' => ForeignKey::NOT_DEFERRED,
-                'DEFERRABLE INITIALLY DEFERRED' => ForeignKey::DEFERRED,
-                'DEFERRABLE INITIALLY IMMEDIATE' => ForeignKey::IMMEDIATE,
+                'NOT DEFERRABLE' => Foreign_Key::NOT_DEFERRED,
+                'DEFERRABLE INITIALLY DEFERRED' => Foreign_Key::DEFERRED,
+                'DEFERRABLE INITIALLY IMMEDIATE' => Foreign_Key::IMMEDIATE,
                 default => null,
             };
         }
-
         return null;
     }
-
     /**
      * Get the normalized SQL query used to create a table.
      *
      * @param string $tableName The tablename
      */
-    private function getCreateTableSql(string $tableName): string
+    private function get_create_table_sql(string $table_name): string
     {
-        $masterSql = "SELECT sql FROM sqlite_master WHERE \"type\" = 'table' AND \"name\" = ?";
-        $statement = $this->_driver->execute($masterSql, [$tableName]);
-        $result = $statement->fetchColumn(0);
-
+        $master_sql = "SELECT sql FROM sqlite_master WHERE \"type\" = 'table' AND \"name\" = ?";
+        $statement = $this->_driver->execute($master_sql, [$table_name]);
+        $result = $statement->fetch_column(0);
         return $result ?: '';
     }
-
     /**
      * @inheritDoc
      */
-    public function describeIndexes(string $tableName): array
+    public function describe_indexes(string $table_name): array
     {
-        if (str_contains($tableName, '.')) {
-            [, $tableName] = explode('.', $tableName);
+        if (str_contains($table_name, '.')) {
+            [, $table_name] = explode('.', $table_name);
         }
-        $sql = $this->describeIndexQuery($tableName);
+        $sql = $this->describe_index_query($table_name);
         $statement = $this->_driver->execute($sql);
         $indexes = [];
-        $createTableSql = $this->getCreateTableSql($tableName);
-
-        $foundPrimary = false;
-        foreach ($statement->fetchAll('assoc') as $row) {
-            $indexName = $row['name'];
-            $indexSql = sprintf(
-                'PRAGMA index_info(%s)',
-                $this->_driver->quoteIdentifier($indexName),
-            );
+        $create_table_sql = $this->get_create_table_sql($table_name);
+        $found_primary = false;
+        foreach ($statement->fetch_all('assoc') as $row) {
+            $index_name = $row['name'];
+            $index_sql = sprintf('PRAGMA index_info(%s)', $this->_driver->quote_identifier($index_name));
             $columns = [];
-            $indexData = $this->_driver->execute($indexSql)->fetchAll('assoc');
-            foreach ($indexData as $indexItem) {
-                $columns[] = $indexItem['name'];
+            $index_data = $this->_driver->execute($index_sql)->fetch_all('assoc');
+            foreach ($index_data as $index_item) {
+                $columns[] = $index_item['name'];
             }
-
-            $indexType = TableSchema::INDEX_INDEX;
+            $index_type = Table_Schema::INDEX_INDEX;
             if ($row['unique']) {
-                $indexType = TableSchema::CONSTRAINT_UNIQUE;
+                $index_type = Table_Schema::CONSTRAINT_UNIQUE;
             }
             if (($row['origin'] ?? null) === 'pk') {
-                $indexType = TableSchema::CONSTRAINT_PRIMARY;
-                $foundPrimary = true;
+                $index_type = Table_Schema::CONSTRAINT_PRIMARY;
+                $found_primary = true;
             }
-            if ($indexType == TableSchema::CONSTRAINT_UNIQUE) {
-                $name = $this->extractIndexName($createTableSql, 'UNIQUE', $columns);
+            if ($index_type == Table_Schema::CONSTRAINT_UNIQUE) {
+                $name = $this->extract_index_name($create_table_sql, 'UNIQUE', $columns);
                 if ($name !== null) {
-                    $indexName = $name;
+                    $index_name = $name;
                 }
             }
-
-            $indexes[$indexName] = [
-                'name' => $indexName,
-                'type' => $indexType,
-                'columns' => $columns,
-                'length' => [],
-            ];
+            $indexes[$index_name] = ['name' => $index_name, 'type' => $index_type, 'columns' => $columns, 'length' => []];
         }
         // Primary keys aren't always available from the index_info pragma
         // instead we have to read the columns again.
-        if (!$foundPrimary) {
-            $sql = $this->describeColumnQuery($tableName);
+        if (!$found_primary) {
+            $sql = $this->describe_column_query($table_name);
             $statement = $this->_driver->execute($sql);
-            foreach ($statement->fetchAll('assoc') as $row) {
+            foreach ($statement->fetch_all('assoc') as $row) {
                 if (!$row['pk']) {
                     continue;
                 }
                 if (!isset($indexes['primary'])) {
-                    $indexes['primary'] = [
-                        'name' => 'primary',
-                        'type' => TableSchema::CONSTRAINT_PRIMARY,
-                        'columns' => [],
-                        'length' => [],
-                    ];
+                    $indexes['primary'] = ['name' => 'primary', 'type' => Table_Schema::CONSTRAINT_PRIMARY, 'columns' => [], 'length' => []];
                 }
                 $indexes['primary']['columns'][] = $row['name'];
             }
         }
-
         return array_values($indexes);
     }
-
     /**
      * @inheritDoc
      */
-    public function describeForeignKeySql(string $tableName, array $config): array
+    public function describe_foreign_key_sql(string $table_name, array $config): array
     {
-        $sql = sprintf(
-            'SELECT id FROM pragma_foreign_key_list(%s) GROUP BY id',
-            $this->_driver->quoteIdentifier($tableName),
-        );
-
+        $sql = sprintf('SELECT id FROM pragma_foreign_key_list(%s) GROUP BY id', $this->_driver->quote_identifier($table_name));
         return [$sql, []];
     }
-
     /**
      * @inheritDoc
      */
-    public function convertForeignKeyDescription(TableSchema $schema, array $row): void
+    public function convert_foreign_key_description(Table_Schema $schema, array $row): void
     {
-        $sql = sprintf(
-            'SELECT * FROM pragma_foreign_key_list(%s) WHERE id = %d ORDER BY seq',
-            $this->_driver->quoteIdentifier($schema->name()),
-            $row['id'],
-        );
+        $sql = sprintf('SELECT * FROM pragma_foreign_key_list(%s) WHERE id = %d ORDER BY seq', $this->_driver->quote_identifier($schema->name()), $row['id']);
         $statement = $this->_driver->prepare($sql);
         $statement->execute();
-
-        $data = [
-            'type' => TableSchema::CONSTRAINT_FOREIGN,
-            'columns' => [],
-            'references' => [],
-        ];
-
-        $foreignKey = null;
-        foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $foreignKey) {
-            $data['columns'][] = $foreignKey['from'];
-            $data['references'][] = $foreignKey['to'];
+        $data = ['type' => Table_Schema::CONSTRAINT_FOREIGN, 'columns' => [], 'references' => []];
+        $foreign_key = null;
+        foreach ($statement->fetch_all(PDO::FETCH_ASSOC) as $foreign_key) {
+            $data['columns'][] = $foreign_key['from'];
+            $data['references'][] = $foreign_key['to'];
         }
-
         if (count($data['references']) === 1) {
-            $data['references'] = [$foreignKey['table'], $data['references'][0]];
+            $data['references'] = [$foreign_key['table'], $data['references'][0]];
         } else {
-            $data['references'] = [$foreignKey['table'], $data['references']];
+            $data['references'] = [$foreign_key['table'], $data['references']];
         }
-        $data['update'] = $this->_convertOnClause($foreignKey['on_update'] ?? '');
-        $data['delete'] = $this->_convertOnClause($foreignKey['on_delete'] ?? '');
-
+        $data['update'] = $this->_convert_on_clause($foreign_key['on_update'] ?? '');
+        $data['delete'] = $this->_convert_on_clause($foreign_key['on_delete'] ?? '');
         $name = implode('_', $data['columns']) . '_' . $row['id'] . '_fk';
-
-        $schema->addConstraint($name, $data);
+        $schema->add_constraint($name, $data);
     }
-
     /**
      * @inheritDoc
      */
-    public function describeForeignKeys(string $tableName): array
+    public function describe_foreign_keys(string $table_name): array
     {
-        if (str_contains($tableName, '.')) {
-            [, $tableName] = explode('.', $tableName);
+        if (str_contains($table_name, '.')) {
+            [, $table_name] = explode('.', $table_name);
         }
-
         $keys = [];
-        $sql = sprintf('PRAGMA foreign_key_list(%s)', $this->_driver->quoteIdentifier($tableName));
+        $sql = sprintf('PRAGMA foreign_key_list(%s)', $this->_driver->quote_identifier($table_name));
         $statement = $this->_driver->execute($sql);
-        foreach ($statement->fetchAll('assoc') as $row) {
+        foreach ($statement->fetch_all('assoc') as $row) {
             $id = $row['id'];
             if (!isset($keys[$id])) {
-                $keys[$id] = [
-                    'name' => $id,
-                    'type' => TableSchema::CONSTRAINT_FOREIGN,
-                    'columns' => [],
-                    'references' => [$row['table'], []],
-                    'update' => $this->_convertOnClause($row['on_update'] ?? ''),
-                    'delete' => $this->_convertOnClause($row['on_delete'] ?? ''),
-                    'deferrable' => null,
-                ];
+                $keys[$id] = ['name' => $id, 'type' => Table_Schema::CONSTRAINT_FOREIGN, 'columns' => [], 'references' => [$row['table'], []], 'update' => $this->_convert_on_clause($row['on_update'] ?? ''), 'delete' => $this->_convert_on_clause($row['on_delete'] ?? ''), 'deferrable' => null];
             }
             $keys[$id]['columns'][$row['seq']] = $row['from'];
             $keys[$id]['references'][1][$row['seq']] = $row['to'];
         }
-
-        $createTableSql = $this->getCreateTableSql($tableName);
+        $create_table_sql = $this->get_create_table_sql($table_name);
         foreach ($keys as $id => $data) {
             // sqlite doesn't provide a simple way to get foreign key names, but we
             // can extract them from the normalized create table sql.
-            $name = $this->extractIndexName($createTableSql, 'FOREIGN\s*KEY', $data['columns']);
+            $name = $this->extract_index_name($create_table_sql, 'FOREIGN\s*KEY', $data['columns']);
             if ($name === null) {
                 $name = implode('_', $data['columns']) . '_' . $id . '_fk';
             }
             $keys[$id]['name'] = $name;
-
             // Collapse single columns to a string.
             // Long term this should go away, as we can narrow the types on `references`
             if (count($data['references'][1]) === 1) {
                 $keys[$id]['references'][1] = $data['references'][1][0];
             }
-
             // sqlite doesn't provide a simple way to get foreign key names, but we
             // can extract them from the normalized create table sql.
-            $keys[$id]['deferrable'] = $this->extractDeferrable($createTableSql, $data['columns']);
+            $keys[$id]['deferrable'] = $this->extract_deferrable($create_table_sql, $data['columns']);
         }
-
         return array_values($keys);
     }
-
     /**
      * @inheritDoc
      */
-    public function describeCheckConstraints(string $tableName): array
+    public function describe_check_constraints(string $table_name): array
     {
         $constraints = [];
-        $createSql = $this->getCreateTableSql($tableName);
-
+        $create_sql = $this->get_create_table_sql($table_name);
         // Parse CHECK constraints from CREATE TABLE statement
         // Match CONSTRAINT name CHECK (expression) or just CHECK (expression)
         $pattern = '/(?:CONSTRAINT\s+([^\s]+)\s+)?CHECK\s*\(([^)]+(?:\([^)]*\)[^)]*)*)\)/is';
-
-        if (preg_match_all($pattern, $createSql, $matches, PREG_SET_ORDER)) {
+        if (preg_match_all($pattern, $create_sql, $matches, PREG_SET_ORDER)) {
             foreach ($matches as $index => $match) {
-                $name = !empty($match[1])
-                    ? trim($match[1], '"`[]')
-                    : 'check_' . $index;
+                $name = !empty($match[1]) ? trim($match[1], '"`[]') : 'check_' . $index;
                 $expression = trim($match[2]);
-
-                $constraints[] = [
-                    'name' => $name,
-                    'type' => TableSchema::CONSTRAINT_CHECK,
-                    'expression' => $expression,
-                ];
+                $constraints[] = ['name' => $name, 'type' => Table_Schema::CONSTRAINT_CHECK, 'expression' => $expression];
             }
         }
-
         return $constraints;
     }
-
     /**
      * @inheritDoc
      */
-    public function describeOptions(string $tableName): array
+    public function describe_options(string $table_name): array
     {
         return [];
     }
-
     /**
      * {@inheritDoc}
      *
@@ -740,38 +542,26 @@ class SqliteSchemaDialect extends SchemaDialect
      * @return string SQL fragment.
      * @throws \Cake\Database\Exception\DatabaseException when the column type is unknown
      */
-    public function columnSql(TableSchema $schema, string $name): string
+    public function column_sql(Table_Schema $schema, string $name): string
     {
-        $data = $schema->getColumn($name);
+        $data = $schema->get_column($name);
         assert($data !== null);
-
-        $sql = $this->_getTypeSpecificColumnSql($data['type'], $schema, $name);
+        $sql = $this->_get_type_specific_column_sql($data['type'], $schema, $name);
         if ($sql !== null) {
             return $sql;
         }
-
         $data['name'] = $name;
-        $autoIncrementTypes = [
-            TableSchemaInterface::TYPE_TINYINTEGER,
-            TableSchemaInterface::TYPE_SMALLINTEGER,
-            TableSchemaInterface::TYPE_INTEGER,
-            TableSchemaInterface::TYPE_BIGINTEGER,
-        ];
-        $primaryKey = $schema->getPrimaryKey();
-        if (
-            in_array($data['type'], $autoIncrementTypes, true) &&
-            $primaryKey === [$name]
-        ) {
+        $auto_increment_types = [Table_Schema_Interface::TYPE_TINYINTEGER, Table_Schema_Interface::TYPE_SMALLINTEGER, Table_Schema_Interface::TYPE_INTEGER, Table_Schema_Interface::TYPE_BIGINTEGER];
+        $primary_key = $schema->get_primary_key();
+        if (in_array($data['type'], $auto_increment_types, true) && $primary_key === [$name]) {
             $data['autoIncrement'] = true;
         }
         // Composite autoincrement columns are not supported.
-        if (count($primaryKey) > 1) {
+        if (count($primary_key) > 1) {
             unset($data['autoIncrement']);
         }
-
-        return $this->columnDefinitionSql($data);
+        return $this->column_definition_sql($data);
     }
-
     /**
      * Create a SQL snippet for a column based on the array shape
      * that `describeColumns()` creates.
@@ -779,133 +569,61 @@ class SqliteSchemaDialect extends SchemaDialect
      * @param array $column The column metadata
      * @return string Generated SQL fragment for a column
      */
-    public function columnDefinitionSql(array $column): string
+    public function column_definition_sql(array $column): string
     {
         $name = $column['name'];
-        $column += [
-            'length' => null,
-            'precision' => null,
-        ];
-        $typeMap = [
-            TableSchemaInterface::TYPE_BINARY_UUID => ' BINARY(16)',
-            TableSchemaInterface::TYPE_BINARY => ' BLOB',
-            TableSchemaInterface::TYPE_UUID => ' CHAR(36)',
-            TableSchemaInterface::TYPE_CHAR => ' CHAR',
-            TableSchemaInterface::TYPE_STRING => ' VARCHAR',
-            TableSchemaInterface::TYPE_TINYINTEGER => ' TINYINT',
-            TableSchemaInterface::TYPE_SMALLINTEGER => ' SMALLINT',
-            TableSchemaInterface::TYPE_INTEGER => ' INTEGER',
-            TableSchemaInterface::TYPE_BIGINTEGER => ' BIGINT',
-            TableSchemaInterface::TYPE_BOOLEAN => ' BOOLEAN',
-            TableSchemaInterface::TYPE_FLOAT => ' FLOAT',
-            TableSchemaInterface::TYPE_DECIMAL => ' DECIMAL',
-            TableSchemaInterface::TYPE_DATE => ' DATE',
-            TableSchemaInterface::TYPE_TIME => ' TIME',
-            TableSchemaInterface::TYPE_DATETIME => ' DATETIME',
-            TableSchemaInterface::TYPE_DATETIME_FRACTIONAL => ' DATETIMEFRACTIONAL',
-            TableSchemaInterface::TYPE_TIMESTAMP => ' TIMESTAMP',
-            TableSchemaInterface::TYPE_TIMESTAMP_FRACTIONAL => ' TIMESTAMPFRACTIONAL',
-            TableSchemaInterface::TYPE_TIMESTAMP_TIMEZONE => ' TIMESTAMPTIMEZONE',
-            TableSchemaInterface::TYPE_JSON => ' TEXT',
-            TableSchemaInterface::TYPE_GEOMETRY => ' GEOMETRY_TEXT',
-            TableSchemaInterface::TYPE_POINT => ' POINT_TEXT',
-            TableSchemaInterface::TYPE_LINESTRING => ' LINESTRING_TEXT',
-            TableSchemaInterface::TYPE_POLYGON => ' POLYGON_TEXT',
-        ];
-
-        $out = $this->_driver->quoteIdentifier($name);
-        $hasUnsigned = [
-            TableSchemaInterface::TYPE_TINYINTEGER,
-            TableSchemaInterface::TYPE_SMALLINTEGER,
-            TableSchemaInterface::TYPE_INTEGER,
-            TableSchemaInterface::TYPE_BIGINTEGER,
-            TableSchemaInterface::TYPE_FLOAT,
-            TableSchemaInterface::TYPE_DECIMAL,
-        ];
-
-        $autoIncrement = (bool)($column['autoIncrement'] ?? false);
-        if (
-            !$autoIncrement &&
-            isset($column['unsigned']) && $column['unsigned'] === true &&
-            in_array($column['type'], $hasUnsigned, true)
-        ) {
+        $column += ['length' => null, 'precision' => null];
+        $type_map = [Table_Schema_Interface::TYPE_BINARY_UUID => ' BINARY(16)', Table_Schema_Interface::TYPE_BINARY => ' BLOB', Table_Schema_Interface::TYPE_UUID => ' CHAR(36)', Table_Schema_Interface::TYPE_CHAR => ' CHAR', Table_Schema_Interface::TYPE_STRING => ' VARCHAR', Table_Schema_Interface::TYPE_TINYINTEGER => ' TINYINT', Table_Schema_Interface::TYPE_SMALLINTEGER => ' SMALLINT', Table_Schema_Interface::TYPE_INTEGER => ' INTEGER', Table_Schema_Interface::TYPE_BIGINTEGER => ' BIGINT', Table_Schema_Interface::TYPE_BOOLEAN => ' BOOLEAN', Table_Schema_Interface::TYPE_FLOAT => ' FLOAT', Table_Schema_Interface::TYPE_DECIMAL => ' DECIMAL', Table_Schema_Interface::TYPE_DATE => ' DATE', Table_Schema_Interface::TYPE_TIME => ' TIME', Table_Schema_Interface::TYPE_DATETIME => ' DATETIME', Table_Schema_Interface::TYPE_DATETIME_FRACTIONAL => ' DATETIMEFRACTIONAL', Table_Schema_Interface::TYPE_TIMESTAMP => ' TIMESTAMP', Table_Schema_Interface::TYPE_TIMESTAMP_FRACTIONAL => ' TIMESTAMPFRACTIONAL', Table_Schema_Interface::TYPE_TIMESTAMP_TIMEZONE => ' TIMESTAMPTIMEZONE', Table_Schema_Interface::TYPE_JSON => ' TEXT', Table_Schema_Interface::TYPE_GEOMETRY => ' GEOMETRY_TEXT', Table_Schema_Interface::TYPE_POINT => ' POINT_TEXT', Table_Schema_Interface::TYPE_LINESTRING => ' LINESTRING_TEXT', Table_Schema_Interface::TYPE_POLYGON => ' POLYGON_TEXT'];
+        $out = $this->_driver->quote_identifier($name);
+        $has_unsigned = [Table_Schema_Interface::TYPE_TINYINTEGER, Table_Schema_Interface::TYPE_SMALLINTEGER, Table_Schema_Interface::TYPE_INTEGER, Table_Schema_Interface::TYPE_BIGINTEGER, Table_Schema_Interface::TYPE_FLOAT, Table_Schema_Interface::TYPE_DECIMAL];
+        $auto_increment = (bool) ($column['autoIncrement'] ?? false);
+        if (!$auto_increment && isset($column['unsigned']) && $column['unsigned'] === true && in_array($column['type'], $has_unsigned, true)) {
             $out .= ' UNSIGNED';
         }
-
-        $foundType = false;
-        if (isset($typeMap[$column['type']])) {
-            $out .= $typeMap[$column['type']];
-            $foundType = true;
+        $found_type = false;
+        if (isset($type_map[$column['type']])) {
+            $out .= $type_map[$column['type']];
+            $found_type = true;
         }
-
-        $hasLength = [
-            TableSchemaInterface::TYPE_BINARY,
-            TableSchemaInterface::TYPE_STRING,
-            TableSchemaInterface::TYPE_CHAR,
-            TableSchemaInterface::TYPE_TINYINTEGER,
-            TableSchemaInterface::TYPE_SMALLINTEGER,
-            TableSchemaInterface::TYPE_INTEGER,
-        ];
-        if ($column['type'] === TableSchemaInterface::TYPE_TEXT && $column['length'] !== TableSchema::LENGTH_TINY) {
+        $has_length = [Table_Schema_Interface::TYPE_BINARY, Table_Schema_Interface::TYPE_STRING, Table_Schema_Interface::TYPE_CHAR, Table_Schema_Interface::TYPE_TINYINTEGER, Table_Schema_Interface::TYPE_SMALLINTEGER, Table_Schema_Interface::TYPE_INTEGER];
+        if ($column['type'] === Table_Schema_Interface::TYPE_TEXT && $column['length'] !== Table_Schema::LENGTH_TINY) {
             $out .= ' TEXT';
-            $foundType = true;
-        } elseif (
-            $column['type'] === TableSchemaInterface::TYPE_TEXT &&
-            $column['length'] === TableSchema::LENGTH_TINY
-        ) {
+            $found_type = true;
+        } elseif ($column['type'] === Table_Schema_Interface::TYPE_TEXT && $column['length'] === Table_Schema::LENGTH_TINY) {
             $out .= ' VARCHAR';
-            $hasLength[] = $column['type'];
-            $foundType = true;
+            $has_length[] = $column['type'];
+            $found_type = true;
         }
-        if (!$foundType) {
+        if (!$found_type) {
             $out .= ' ' . strtoupper((string) $column['type']);
-            $hasLength[] = $column['type'];
+            $has_length[] = $column['type'];
         }
-
-        if (in_array($column['type'], $hasLength, true) && isset($column['length']) && !$autoIncrement) {
-            $out .= '(' . (int)$column['length'] . ')';
+        if (in_array($column['type'], $has_length, true) && isset($column['length']) && !$auto_increment) {
+            $out .= '(' . (int) $column['length'] . ')';
         }
-
-        $hasPrecision = [TableSchemaInterface::TYPE_FLOAT, TableSchemaInterface::TYPE_DECIMAL];
-        if (
-            in_array($column['type'], $hasPrecision, true) &&
-            (
-                isset($column['length']) ||
-                isset($column['precision'])
-            )
-        ) {
-            $out .= '(' . (int)$column['length'] . ',' . (int)$column['precision'] . ')';
+        $has_precision = [Table_Schema_Interface::TYPE_FLOAT, Table_Schema_Interface::TYPE_DECIMAL];
+        if (in_array($column['type'], $has_precision, true) && (isset($column['length']) || isset($column['precision']))) {
+            $out .= '(' . (int) $column['length'] . ',' . (int) $column['precision'] . ')';
         }
-
         if (isset($column['null']) && $column['null'] === false) {
             $out .= ' NOT NULL';
         }
-
-        if ($column['type'] === TableSchemaInterface::TYPE_INTEGER && $autoIncrement) {
+        if ($column['type'] === Table_Schema_Interface::TYPE_INTEGER && $auto_increment) {
             $out .= ' PRIMARY KEY AUTOINCREMENT';
             unset($column['default']);
         }
-
-        $timestampTypes = [
-            TableSchemaInterface::TYPE_DATETIME,
-            TableSchemaInterface::TYPE_DATETIME_FRACTIONAL,
-            TableSchemaInterface::TYPE_TIMESTAMP,
-            TableSchemaInterface::TYPE_TIMESTAMP_FRACTIONAL,
-            TableSchemaInterface::TYPE_TIMESTAMP_TIMEZONE,
-        ];
-        if (isset($column['null']) && $column['null'] === true && in_array($column['type'], $timestampTypes, true)) {
+        $timestamp_types = [Table_Schema_Interface::TYPE_DATETIME, Table_Schema_Interface::TYPE_DATETIME_FRACTIONAL, Table_Schema_Interface::TYPE_TIMESTAMP, Table_Schema_Interface::TYPE_TIMESTAMP_FRACTIONAL, Table_Schema_Interface::TYPE_TIMESTAMP_TIMEZONE];
+        if (isset($column['null']) && $column['null'] === true && in_array($column['type'], $timestamp_types, true)) {
             $out .= ' DEFAULT NULL';
         }
         if (isset($column['default'])) {
-            $out .= ' DEFAULT ' . $this->_driver->schemaValue($column['default']);
+            $out .= ' DEFAULT ' . $this->_driver->schema_value($column['default']);
         }
         if (isset($column['comment']) && $column['comment']) {
             $out .= " /* {$column['comment']} */";
         }
-
         return $out;
     }
-
     /**
      * {@inheritDoc}
      *
@@ -916,62 +634,35 @@ class SqliteSchemaDialect extends SchemaDialect
      * @param string $name The name of the column.
      * @return string SQL fragment.
      */
-    public function constraintSql(TableSchema $schema, string $name): string
+    public function constraint_sql(Table_Schema $schema, string $name): string
     {
-        $data = $schema->getConstraint($name);
+        $data = $schema->get_constraint($name);
         assert($data !== null, 'Data does not exist');
-
         $columns = '';
         if (isset($data['columns'])) {
-            $column = $schema->getColumn($data['columns'][0]);
+            $column = $schema->get_column($data['columns'][0]);
             assert($column !== null, 'Data does not exist');
-
-            if (
-                $data['type'] === TableSchema::CONSTRAINT_PRIMARY &&
-                count($data['columns']) === 1 &&
-                $column['type'] === TableSchemaInterface::TYPE_INTEGER
-            ) {
+            if ($data['type'] === Table_Schema::CONSTRAINT_PRIMARY && count($data['columns']) === 1 && $column['type'] === Table_Schema_Interface::TYPE_INTEGER) {
                 return '';
             }
-
-            $aliased = array_map(
-                $this->_driver->quoteIdentifier(...),
-                $data['columns'],
-            );
+            $aliased = array_map($this->_driver->quote_identifier(...), $data['columns']);
             $columns = implode(', ', $aliased);
         }
-
         $clause = '';
         $type = '';
-        if ($data['type'] === TableSchema::CONSTRAINT_PRIMARY) {
+        if ($data['type'] === Table_Schema::CONSTRAINT_PRIMARY) {
             $type = 'PRIMARY KEY';
-        } elseif ($data['type'] === TableSchema::CONSTRAINT_UNIQUE) {
+        } elseif ($data['type'] === Table_Schema::CONSTRAINT_UNIQUE) {
             $type = 'UNIQUE';
-        } elseif ($data['type'] === TableSchema::CONSTRAINT_FOREIGN) {
+        } elseif ($data['type'] === Table_Schema::CONSTRAINT_FOREIGN) {
             $type = 'FOREIGN KEY';
-
-            $clause = rtrim(sprintf(
-                ' REFERENCES %s (%s) ON UPDATE %s ON DELETE %s %s',
-                $this->_driver->quoteIdentifier($data['references'][0]),
-                $this->_convertConstraintColumns($data['references'][1]),
-                $this->_foreignOnClause($data['update']),
-                $this->_foreignOnClause($data['delete']),
-                $data['deferrable'] ?? null,
-            ));
-        } elseif ($data['type'] === TableSchema::CONSTRAINT_CHECK) {
+            $clause = rtrim(sprintf(' REFERENCES %s (%s) ON UPDATE %s ON DELETE %s %s', $this->_driver->quote_identifier($data['references'][0]), $this->_convert_constraint_columns($data['references'][1]), $this->_foreign_on_clause($data['update']), $this->_foreign_on_clause($data['delete']), $data['deferrable'] ?? null));
+        } elseif ($data['type'] === Table_Schema::CONSTRAINT_CHECK) {
             $type = 'CHECK';
             $columns = $data['expression'];
         }
-
-        return sprintf(
-            'CONSTRAINT %s %s (%s)%s',
-            $this->_driver->quoteIdentifier($name),
-            $type,
-            $columns,
-            $clause,
-        );
+        return sprintf('CONSTRAINT %s %s (%s)%s', $this->_driver->quote_identifier($name), $type, $columns, $clause);
     }
-
     /**
      * {@inheritDoc}
      *
@@ -981,11 +672,10 @@ class SqliteSchemaDialect extends SchemaDialect
      * @param \Cake\Database\Schema\TableSchema $schema The table instance the foreign key constraints are.
      * @return array SQL fragment.
      */
-    public function addConstraintSql(TableSchema $schema): array
+    public function add_constraint_sql(Table_Schema $schema): array
     {
         return [];
     }
-
     /**
      * {@inheritDoc}
      *
@@ -995,76 +685,57 @@ class SqliteSchemaDialect extends SchemaDialect
      * @param \Cake\Database\Schema\TableSchema $schema The table instance the foreign key constraints are.
      * @return array SQL fragment.
      */
-    public function dropConstraintSql(TableSchema $schema): array
+    public function drop_constraint_sql(Table_Schema $schema): array
     {
         return [];
     }
-
     /**
      * @inheritDoc
      */
-    public function indexSql(TableSchema $schema, string $name): string
+    public function index_sql(Table_Schema $schema, string $name): string
     {
-        $data = $schema->getIndex($name);
+        $data = $schema->get_index($name);
         assert($data !== null);
-        $columns = array_map(
-            $this->_driver->quoteIdentifier(...),
-            $data['columns'],
-        );
-
-        return sprintf(
-            'CREATE INDEX %s ON %s (%s)',
-            $this->_driver->quoteIdentifier($name),
-            $this->_driver->quoteIdentifier($schema->name()),
-            implode(', ', $columns),
-        );
+        $columns = array_map($this->_driver->quote_identifier(...), $data['columns']);
+        return sprintf('CREATE INDEX %s ON %s (%s)', $this->_driver->quote_identifier($name), $this->_driver->quote_identifier($schema->name()), implode(', ', $columns));
     }
-
     /**
      * @inheritDoc
      */
-    public function createTableSql(TableSchema $schema, array $columns, array $constraints, array $indexes): array
+    public function create_table_sql(Table_Schema $schema, array $columns, array $constraints, array $indexes): array
     {
         $lines = array_merge($columns, $constraints);
         $content = implode(",\n", array_filter($lines));
-        $temporary = $schema->isTemporary() ? ' TEMPORARY ' : ' ';
+        $temporary = $schema->is_temporary() ? ' TEMPORARY ' : ' ';
         $table = sprintf("CREATE%sTABLE \"%s\" (\n%s\n)", $temporary, $schema->name(), $content);
         $out = [$table];
         foreach ($indexes as $index) {
             $out[] = $index;
         }
-
         return $out;
     }
-
     /**
      * @inheritDoc
      */
-    public function truncateTableSql(TableSchema $schema): array
+    public function truncate_table_sql(Table_Schema $schema): array
     {
         $name = $schema->name();
         $sql = [];
-        if ($this->hasSequences()) {
+        if ($this->has_sequences()) {
             $sql[] = sprintf('DELETE FROM sqlite_sequence WHERE name="%s"', $name);
         }
-
         $sql[] = sprintf('DELETE FROM "%s"', $name);
-
         return $sql;
     }
-
     /**
      * Returns whether there is any table in this connection to SQLite containing
      * sequences
      */
-    public function hasSequences(): bool
+    public function has_sequences(): bool
     {
-        $result = $this->_driver->prepare(
-            'SELECT 1 FROM sqlite_master WHERE name = "sqlite_sequence"',
-        );
+        $result = $this->_driver->prepare('SELECT 1 FROM sqlite_master WHERE name = "sqlite_sequence"');
         $result->execute();
-        $this->_hasSequences = (bool)$result->fetch();
-
-        return $this->_hasSequences;
+        $this->_has_sequences = (bool) $result->fetch();
+        return $this->_has_sequences;
     }
 }

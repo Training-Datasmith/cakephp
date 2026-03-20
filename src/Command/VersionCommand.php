@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,62 +14,51 @@ declare(strict_types=1);
  * @since         3.6.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Command;
 
 use Cake\Console\Arguments;
-use Cake\Console\ConsoleIo;
+use Cake\Console\Console_Io;
 use Cake\Core\Configure;
-
 /**
  * Print out the version of CakePHP in use.
  */
-class VersionCommand extends Command
+class Version_Command extends Command
 {
     /**
      * @inheritDoc
      */
-    public static function getDescription(): string
+    public static function get_description(): string
     {
         return 'Show the CakePHP version.';
     }
-
     /**
      * Print out the version of CakePHP in use.
      *
      * @param \Cake\Console\Arguments $args The command arguments.
      * @param \Cake\Console\ConsoleIo $io The console io
      */
-    public function execute(Arguments $args, ConsoleIo $io): ?int
+    public function execute(Arguments $args, Console_Io $io): ?int
     {
         $version = Configure::version();
         $io->out($version);
-
-        if ($args->getOption('verbose')) {
-            $this->outputVerbose($io, $version);
+        if ($args->get_option('verbose')) {
+            $this->output_verbose($io, $version);
         }
-
         return static::CODE_SUCCESS;
     }
-
     /**
      * Output verbose version information.
      *
      * @param \Cake\Console\ConsoleIo $io The console io
      * @param string $version The CakePHP version
      */
-    protected function outputVerbose(ConsoleIo $io, string $version): void
+    protected function output_verbose(Console_Io $io, string $version): void
     {
         $io->out();
-
         // Show release link for stable and RC versions, but not dev
         if (!str_contains($version, '-dev')) {
-            $io->out(sprintf(
-                '<info>Release:</info> https://github.com/cakephp/cakephp/releases/tag/%s',
-                $version,
-            ));
+            $io->out(sprintf('<info>Release:</info> https://github.com/cakephp/cakephp/releases/tag/%s', $version));
         }
-
         $io->out(sprintf('<info>PHP:</info> %s (%s)', PHP_VERSION, PHP_SAPI));
     }
 }

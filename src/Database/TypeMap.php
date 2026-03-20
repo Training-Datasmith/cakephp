@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,13 +14,12 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Database;
 
 /**
  * Implements default and single-use mappings for columns to their associated types
  */
-class TypeMap
+class Type_Map
 {
     /**
      * Array with the default fields and the related types this query might contain.
@@ -32,7 +30,6 @@ class TypeMap
      * @var array<int|string, string>
      */
     protected array $_defaults = [];
-
     /**
      * Array with the fields and the related types that override defaults this query might contain
      *
@@ -42,7 +39,6 @@ class TypeMap
      * @var array<int|string, string>
      */
     protected array $_types = [];
-
     /**
      * Creates an instance with the given defaults
      *
@@ -50,9 +46,8 @@ class TypeMap
      */
     public function __construct(array $defaults = [])
     {
-        $this->setDefaults($defaults);
+        $this->set_defaults($defaults);
     }
-
     /**
      * Configures a map of fields and associated type.
      *
@@ -75,23 +70,20 @@ class TypeMap
      * are the correspondent type.
      * @return $this
      */
-    public function setDefaults(array $defaults): static
+    public function set_defaults(array $defaults): static
     {
         $this->_defaults = $defaults;
-
         return $this;
     }
-
     /**
      * Returns the currently configured types.
      *
      * @return array<int|string, string>
      */
-    public function getDefaults(): array
+    public function get_defaults(): array
     {
         return $this->_defaults;
     }
-
     /**
      * Add additional default types into the type map.
      *
@@ -99,11 +91,10 @@ class TypeMap
      *
      * @param array<int|string, string> $types The additional types to add.
      */
-    public function addDefaults(array $types): void
+    public function add_defaults(array $types): void
     {
         $this->_defaults += $types;
     }
-
     /**
      * Sets a map of fields and their associated types for single-use.
      *
@@ -119,23 +110,20 @@ class TypeMap
      * are the correspondent type.
      * @return $this
      */
-    public function setTypes(array $types): static
+    public function set_types(array $types): static
     {
         $this->_types = $types;
-
         return $this;
     }
-
     /**
      * Gets a map of fields and their associated types for single-use.
      *
      * @return array<int|string, string>
      */
-    public function getTypes(): array
+    public function get_types(): array
     {
         return $this->_types;
     }
-
     /**
      * Returns the type of the given column. If there is no single use type is configured,
      * the column type will be looked for inside the default mapping. If neither exist,
@@ -147,13 +135,12 @@ class TypeMap
     {
         return $this->_types[$column] ?? $this->_defaults[$column] ?? null;
     }
-
     /**
      * Returns an array of all types mapped types
      *
      * @return array<int|string, string>
      */
-    public function toArray(): array
+    public function to_array(): array
     {
         return $this->_types + $this->_defaults;
     }

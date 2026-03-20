@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,11 +14,9 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Datasource;
 
-use Cake\Collection\CollectionInterface;
-
+use Cake\Collection\Collection_Interface;
 /**
  * Describes how a collection of datasource results should look like
  *
@@ -27,6 +24,6 @@ use Cake\Collection\CollectionInterface;
  * @template-covariant TValue
  * @extends \Cake\Collection\CollectionInterface<TKey, TValue>
  */
-interface ResultSetInterface extends CollectionInterface
+interface Result_Set_Interface extends Collection_Interface
 {
 }

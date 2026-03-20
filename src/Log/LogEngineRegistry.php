@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,20 +14,18 @@ declare(strict_types=1);
  * @since         2.2.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Log;
 
 use Cake\Core\App;
-use Cake\Core\Exception\CakeException;
-use Cake\Core\ObjectRegistry;
-use Psr\Log\LoggerInterface;
-
+use Cake\Core\Exception\Cake_Exception;
+use Cake\Core\Object_Registry;
+use Psr\Log\Logger_Interface;
 /**
  * Registry of loaded log engines
  *
  * @extends \Cake\Core\ObjectRegistry<\Psr\Log\LoggerInterface>
  */
-class LogEngineRegistry extends ObjectRegistry
+class Log_Engine_Registry extends Object_Registry
 {
     /**
      * Resolve a logger classname.
@@ -38,12 +35,11 @@ class LogEngineRegistry extends ObjectRegistry
      * @param string $class Partial classname to resolve.
      * @return class-string<\Psr\Log\LoggerInterface>|null Either the correct class name or null.
      */
-    protected function _resolveClassName(string $class): ?string
+    protected function _resolve_class_name(string $class): ?string
     {
         /** @var class-string<\Psr\Log\LoggerInterface>|null */
-        return App::className($class, 'Log/Engine', 'Log');
+        return App::class_name($class, 'Log/Engine', 'Log');
     }
-
     /**
      * Throws an exception when a logger is missing.
      *
@@ -53,11 +49,10 @@ class LogEngineRegistry extends ObjectRegistry
      * @param string|null $plugin The plugin the logger is missing in.
      * @throws \Cake\Core\Exception\CakeException
      */
-    protected function _throwMissingClassError(string $class, ?string $plugin): void
+    protected function _throw_missing_class_error(string $class, ?string $plugin): void
     {
-        throw new CakeException(sprintf('Could not load class `%s`.', $class));
+        throw new Cake_Exception(sprintf('Could not load class `%s`.', $class));
     }
-
     /**
      * Create the logger instance.
      *
@@ -68,20 +63,17 @@ class LogEngineRegistry extends ObjectRegistry
      * @param array<string, mixed> $config An array of settings to use for the logger.
      * @return \Psr\Log\LoggerInterface The constructed logger class.
      */
-    protected function _create(callable|object|string $class, string $alias, array $config): LoggerInterface
+    protected function _create(callable|object|string $class, string $alias, array $config): Logger_Interface
     {
         if (is_string($class)) {
             /** @var class-string<\Psr\Log\LoggerInterface> $class */
             return new $class($config);
         }
-
         if (is_callable($class)) {
             return $class($alias);
         }
-
         return $class;
     }
-
     /**
      * Remove a single logger from the registry.
      *
@@ -91,7 +83,6 @@ class LogEngineRegistry extends ObjectRegistry
     public function unload(string $name): static
     {
         unset($this->_loaded[$name]);
-
         return $this;
     }
 }

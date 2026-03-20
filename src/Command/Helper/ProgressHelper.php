@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,12 +14,10 @@ declare(strict_types=1);
  * @since         3.1.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Command\Helper;
 
 use Cake\Console\Helper;
 use InvalidArgumentException;
-
 /**
  * Create a progress bar using a supplied callback.
  *
@@ -35,34 +32,29 @@ use InvalidArgumentException;
  * }]);
  * ```
  */
-class ProgressHelper extends Helper
+class Progress_Helper extends Helper
 {
     /**
      * Default value for progress bar total value.
      * Percent completion is derived from progress/total
      */
     protected const DEFAULT_TOTAL = 100;
-
     /**
      * Default value for progress bar width
      */
     protected const DEFAULT_WIDTH = 80;
-
     /**
      * The current progress.
      */
     protected float|int $_progress = 0;
-
     /**
      * The total number of 'items' to progress through.
      */
     protected int $_total = self::DEFAULT_TOTAL;
-
     /**
      * The width of the bar.
      */
     protected int $_width = self::DEFAULT_WIDTH;
-
     /**
      * Output a progress bar.
      *
@@ -85,9 +77,7 @@ class ProgressHelper extends Helper
             throw new InvalidArgumentException('Callback option must be a callable.');
         }
         $this->init($args);
-
         $callback = $args['callback'];
-
         $this->_io->out('', 0);
         while ($this->_progress < $this->_total) {
             $callback($this);
@@ -95,7 +85,6 @@ class ProgressHelper extends Helper
         }
         $this->_io->out('');
     }
-
     /**
      * Initialize the progress bar for use.
      *
@@ -112,10 +101,8 @@ class ProgressHelper extends Helper
         $this->_progress = 0;
         $this->_width = $args['width'];
         $this->_total = $args['total'];
-
         return $this;
     }
-
     /**
      * Increment the progress bar.
      *
@@ -125,10 +112,8 @@ class ProgressHelper extends Helper
     public function increment(float|int $num = 1): static
     {
         $this->_progress = min(max(0, $this->_progress + $num), $this->_total);
-
         return $this;
     }
-
     /**
      * Render the progress bar based on the current state.
      *
@@ -136,23 +121,20 @@ class ProgressHelper extends Helper
      */
     public function draw(): static
     {
-        $numberLen = strlen(' 100%');
+        $number_len = strlen(' 100%');
         $complete = round($this->_progress / $this->_total, 2);
-        $barLen = ($this->_width - $numberLen) * $this->_progress / $this->_total;
+        $bar_len = ($this->_width - $number_len) * $this->_progress / $this->_total;
         $bar = '';
-        if ($barLen > 1) {
-            $bar = str_repeat('=', (int)$barLen - 1) . '>';
+        if ($bar_len > 1) {
+            $bar = str_repeat('=', (int) $bar_len - 1) . '>';
         }
-
-        $pad = ceil($this->_width - $numberLen - $barLen);
+        $pad = ceil($this->_width - $number_len - $bar_len);
         if ($pad > 0) {
-            $bar .= str_repeat(' ', (int)$pad);
+            $bar .= str_repeat(' ', (int) $pad);
         }
-        $percent = ($complete * 100) . '%';
-        $bar .= str_pad($percent, $numberLen, ' ', STR_PAD_LEFT);
-
+        $percent = $complete * 100 . '%';
+        $bar .= str_pad($percent, $number_len, ' ', STR_PAD_LEFT);
         $this->_io->overwrite($bar, 0);
-
         return $this;
     }
 }

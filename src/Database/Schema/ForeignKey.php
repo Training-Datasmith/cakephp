@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -17,17 +16,15 @@ declare(strict_types=1);
  * @since         5.3.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Database\Schema;
 
 use InvalidArgumentException;
-
 /**
  * ForeignKey metadata object
  *
  * Models a database foreign key constraint
  */
-class ForeignKey extends Constraint
+class Foreign_Key extends Constraint
 {
     public const CASCADE = 'cascade';
     public const RESTRICT = 'restrict';
@@ -37,32 +34,21 @@ class ForeignKey extends Constraint
     public const DEFERRED = 'DEFERRABLE INITIALLY DEFERRED';
     public const IMMEDIATE = 'DEFERRABLE INITIALLY IMMEDIATE';
     public const NOT_DEFERRED = 'NOT DEFERRABLE';
-
     /**
      * An allow list of valid actions
      *
      * @var array<string>
      */
-    protected array $validActions = [
-        self::CASCADE,
-        self::RESTRICT,
-        self::SET_NULL,
-        self::NO_ACTION,
-        self::SET_DEFAULT,
-    ];
-
+    protected array $valid_actions = [self::CASCADE, self::RESTRICT, self::SET_NULL, self::NO_ACTION, self::SET_DEFAULT];
     /**
      * The action to take when the referenced row is deleted.
      */
     protected ?string $delete = null;
-
     /**
      * The action to take when the referenced row is updated.
      */
     protected ?string $update = null;
-
     protected ?string $deferrable = null;
-
     /**
      * Constructor
      *
@@ -73,186 +59,144 @@ class ForeignKey extends Constraint
      * @param ?string $delete The action to take when the referenced row is deleted.
      * @param ?string $update The action to take when the referenced row is updated.
      */
-    public function __construct(
-        protected string $name,
-        protected array $columns,
-        protected ?string $referencedTable = null,
-        protected array $referencedColumns = [],
-        ?string $delete = null,
-        ?string $update = null,
-        ?string $deferrable = null,
-    ) {
+    public function __construct(protected string $name, protected array $columns, protected ?string $referenced_table = null, protected array $referenced_columns = [], ?string $delete = null, ?string $update = null, ?string $deferrable = null)
+    {
         $this->type = self::FOREIGN;
-        $this->delete = $this->normalizeAction($delete ?? self::NO_ACTION);
-        $this->update = $this->normalizeAction($update ?? self::NO_ACTION);
+        $this->delete = $this->normalize_action($delete ?? self::NO_ACTION);
+        $this->update = $this->normalize_action($update ?? self::NO_ACTION);
         if ($deferrable) {
-            $this->deferrable = $this->normalizeDeferrable($deferrable);
+            $this->deferrable = $this->normalize_deferrable($deferrable);
         }
     }
-
     /**
      * Sets the foreign key referenced table.
      *
      * @param string $table The table this KEY is pointing to
      * @return $this
      */
-    public function setReferencedTable(string $table): static
+    public function set_referenced_table(string $table): static
     {
-        $this->referencedTable = $table;
-
+        $this->referenced_table = $table;
         return $this;
     }
-
     /**
      * Gets the foreign key referenced table.
      */
-    public function getReferencedTable(): ?string
+    public function get_referenced_table(): ?string
     {
-        return $this->referencedTable;
+        return $this->referenced_table;
     }
-
     /**
      * Sets the foreign key referenced columns.
      *
      * @param array<string>|string $referencedColumns Referenced columns
      * @return $this
      */
-    public function setReferencedColumns(array|string $referencedColumns): static
+    public function set_referenced_columns(array|string $referenced_columns): static
     {
-        $referencedColumns = is_string($referencedColumns) ? [$referencedColumns] : $referencedColumns;
-        $this->referencedColumns = $referencedColumns;
-
+        $referenced_columns = is_string($referenced_columns) ? [$referenced_columns] : $referenced_columns;
+        $this->referenced_columns = $referenced_columns;
         return $this;
     }
-
     /**
      * Gets the foreign key referenced columns.
      *
      * @return array<string>
      */
-    public function getReferencedColumns(): array
+    public function get_referenced_columns(): array
     {
-        return $this->referencedColumns;
+        return $this->referenced_columns;
     }
-
     /**
      * Converts the foreign key to an array that is compatible
      * with the constructor.
      *
      * @return array<string, mixed>
      */
-    public function toArray(): array
+    public function to_array(): array
     {
-        return [
-            'name' => $this->name,
-            'type' => $this->type,
-            'columns' => $this->columns,
-            'referencedTable' => $this->referencedTable,
-            'referencedColumns' => $this->referencedColumns,
-            'delete' => $this->delete,
-            'update' => $this->update,
-            'deferrable' => $this->deferrable,
-        ];
+        return ['name' => $this->name, 'type' => $this->type, 'columns' => $this->columns, 'referencedTable' => $this->referenced_table, 'referencedColumns' => $this->referenced_columns, 'delete' => $this->delete, 'update' => $this->update, 'deferrable' => $this->deferrable];
     }
-
     /**
      * Sets ON DELETE action for the foreign key.
      *
      * @param string $delete On Delete
      * @return $this
      */
-    public function setDelete(string $delete): static
+    public function set_delete(string $delete): static
     {
-        $this->delete = $this->normalizeAction($delete);
-
+        $this->delete = $this->normalize_action($delete);
         return $this;
     }
-
     /**
      * Gets ON DELETE action for the foreign key.
      */
-    public function getDelete(): ?string
+    public function get_delete(): ?string
     {
         return $this->delete;
     }
-
     /**
      * Gets ON UPDATE action for the foreign key.
      */
-    public function getUpdate(): ?string
+    public function get_update(): ?string
     {
         return $this->update;
     }
-
     /**
      * Sets ON UPDATE action for the foreign key.
      *
      * @param string $update On Update
      * @return $this
      */
-    public function setUpdate(string $update): static
+    public function set_update(string $update): static
     {
-        $this->update = $this->normalizeAction($update);
-
+        $this->update = $this->normalize_action($update);
         return $this;
     }
-
     /**
      * From passed value checks if it's correct and fixes if needed
      *
      * @param string $action Action
      * @throws \InvalidArgumentException
      */
-    protected function normalizeAction(string $action): string
+    protected function normalize_action(string $action): string
     {
-        if (in_array($action, $this->validActions, true)) {
+        if (in_array($action, $this->valid_actions, true)) {
             return $action;
         }
         throw new InvalidArgumentException('Unknown action passed: ' . $action);
     }
-
     /**
      * Sets deferrable mode for the foreign key.
      *
      * @param string $deferrable Constraint
      * @return $this
      */
-    public function setDeferrable(string $deferrable): static
+    public function set_deferrable(string $deferrable): static
     {
-        $this->deferrable = $this->normalizeDeferrable($deferrable);
-
+        $this->deferrable = $this->normalize_deferrable($deferrable);
         return $this;
     }
-
     /**
      * Gets deferrable mode for the foreign key.
      */
-    public function getDeferrable(): ?string
+    public function get_deferrable(): ?string
     {
         return $this->deferrable;
     }
-
     /**
      * From passed value checks if it's correct and fixes if needed
      *
      * @param string $deferrable Deferrable
      * @throws \InvalidArgumentException
      */
-    protected function normalizeDeferrable(string $deferrable): string
+    protected function normalize_deferrable(string $deferrable): string
     {
-        $mapping = [
-            'DEFERRED' => ForeignKey::DEFERRED,
-            'IMMEDIATE' => ForeignKey::IMMEDIATE,
-            'NOT DEFERRED' => ForeignKey::NOT_DEFERRED,
-            ForeignKey::DEFERRED => ForeignKey::DEFERRED,
-            ForeignKey::IMMEDIATE => ForeignKey::IMMEDIATE,
-            ForeignKey::NOT_DEFERRED => ForeignKey::NOT_DEFERRED,
-        ];
+        $mapping = ['DEFERRED' => Foreign_Key::DEFERRED, 'IMMEDIATE' => Foreign_Key::IMMEDIATE, 'NOT DEFERRED' => Foreign_Key::NOT_DEFERRED, Foreign_Key::DEFERRED => Foreign_Key::DEFERRED, Foreign_Key::IMMEDIATE => Foreign_Key::IMMEDIATE, Foreign_Key::NOT_DEFERRED => Foreign_Key::NOT_DEFERRED];
         $normalized = strtoupper(str_replace('_', ' ', $deferrable));
         if (array_key_exists($normalized, $mapping)) {
             return $mapping[$normalized];
         }
-
         throw new InvalidArgumentException('Unknown deferrable passed: ' . $deferrable);
     }
 }

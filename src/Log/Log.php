@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -14,16 +13,14 @@ declare(strict_types=1);
  * @since         0.2.9
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Log;
 
-use Cake\Core\StaticConfigTrait;
-use Cake\Log\Engine\BaseLog;
+use Cake\Core\Static_Config_Trait;
+use Cake\Log\Engine\Base_Log;
 use Closure;
 use InvalidArgumentException;
-use Psr\Log\LoggerInterface;
+use Psr\Log\Logger_Interface;
 use Stringable;
-
 /**
  * Logs messages to configured Log adapters. One or more adapters
  * can be configured using Cake Log's methods. If you don't
@@ -110,88 +107,57 @@ use Stringable;
  */
 class Log
 {
-    use StaticConfigTrait {
+    use Static_Config_Trait {
         setConfig as protected _setConfig;
     }
-
     /**
      * An array mapping url schemes to fully qualified Log engine class names
      *
      * @var array<string, string>
      * @phpstan-var array<string, class-string>
      */
-    protected static array $_dsnClassMap = [
-        'console' => Engine\ConsoleLog::class,
-        'file' => Engine\FileLog::class,
-        'syslog' => Engine\SyslogLog::class,
-    ];
-
+    protected static array $_dsn_class_map = ['console' => Engine\Console_Log::class, 'file' => Engine\File_Log::class, 'syslog' => Engine\Syslog_Log::class];
     /**
      * Internal flag for tracking whether configuration has been changed.
      */
-    protected static bool $_dirtyConfig = false;
-
+    protected static bool $_dirty_config = false;
     /**
      * LogEngineRegistry class
      */
-    protected static LogEngineRegistry $_registry;
-
+    protected static Log_Engine_Registry $_registry;
     /**
      * Handled log levels
      *
      * @var array<string>
      */
-    protected static array $_levels = [
-        'emergency',
-        'alert',
-        'critical',
-        'error',
-        'warning',
-        'notice',
-        'info',
-        'debug',
-    ];
-
+    protected static array $_levels = ['emergency', 'alert', 'critical', 'error', 'warning', 'notice', 'info', 'debug'];
     /**
      * Log levels as detailed in RFC 5424
      * https://tools.ietf.org/html/rfc5424
      *
      * @var array<string, int>
      */
-    protected static array $_levelMap = [
-        'emergency' => LOG_EMERG,
-        'alert' => LOG_ALERT,
-        'critical' => LOG_CRIT,
-        'error' => LOG_ERR,
-        'warning' => LOG_WARNING,
-        'notice' => LOG_NOTICE,
-        'info' => LOG_INFO,
-        'debug' => LOG_DEBUG,
-    ];
-
+    protected static array $_level_map = ['emergency' => LOG_EMERG, 'alert' => LOG_ALERT, 'critical' => LOG_CRIT, 'error' => LOG_ERR, 'warning' => LOG_WARNING, 'notice' => LOG_NOTICE, 'info' => LOG_INFO, 'debug' => LOG_DEBUG];
     /**
      * Creates registry if doesn't exist and creates all defined logging
      * adapters if config isn't loaded.
      */
-    protected static function getRegistry(): LogEngineRegistry
+    protected static function get_registry(): Log_Engine_Registry
     {
-        static::$_registry ??= new LogEngineRegistry();
-
-        if (static::$_dirtyConfig) {
+        static::$_registry ??= new Log_Engine_Registry();
+        if (static::$_dirty_config) {
             foreach (static::$_config as $name => $properties) {
                 if (isset($properties['engine'])) {
                     $properties['className'] = $properties['engine'];
                 }
-                if (!static::$_registry->has((string)$name)) {
-                    static::$_registry->load((string)$name, $properties);
+                if (!static::$_registry->has((string) $name)) {
+                    static::$_registry->load((string) $name, $properties);
                 }
             }
         }
-        static::$_dirtyConfig = false;
-
+        static::$_dirty_config = false;
         return static::$_registry;
     }
-
     /**
      * Reset all the connected loggers. This is useful to do when changing the logging
      * configuration or during testing when you want to reset the internal state of the
@@ -206,9 +172,8 @@ class Log
             static::$_registry->reset();
         }
         static::$_config = [];
-        static::$_dirtyConfig = true;
+        static::$_dirty_config = true;
     }
-
     /**
      * Gets log levels
      *
@@ -221,7 +186,6 @@ class Log
     {
         return static::$_levels;
     }
-
     /**
      * This method can be used to define logging adapters for an application
      * or read existing configuration.
@@ -261,28 +225,25 @@ class Log
      * @param \Psr\Log\LoggerInterface|\Closure|array<string, mixed>|null $config An array of name => config data for adapter.
      * @throws \BadMethodCallException When trying to modify an existing config.
      */
-    public static function setConfig(array|string $key, LoggerInterface|Closure|array|null $config = null): void
+    public static function set_config(array|string $key, Logger_Interface|Closure|array|null $config = null): void
     {
-        static::_setConfig($key, $config);
-        static::$_dirtyConfig = true;
+        static::_set_config($key, $config);
+        static::$_dirty_config = true;
     }
-
     /**
      * Get a logging engine.
      *
      * @param string $name Key name of a configured adapter to get.
      * @return \Psr\Log\LoggerInterface|null Instance of LoggerInterface or null if not found
      */
-    public static function engine(string $name): ?LoggerInterface
+    public static function engine(string $name): ?Logger_Interface
     {
-        $registry = static::getRegistry();
+        $registry = static::get_registry();
         if (!$registry->{$name}) {
             return null;
         }
-
         return $registry->{$name};
     }
-
     /**
      * Writes the given message and type to all the configured log adapters.
      * Configured adapters are passed both the $level and $message variables. $level
@@ -339,46 +300,37 @@ class Log
      */
     public static function write(string|int $level, Stringable|string $message, array|string $context = []): bool
     {
-        if (is_int($level) && in_array($level, static::$_levelMap, true)) {
-            $level = array_search($level, static::$_levelMap, true);
+        if (is_int($level) && in_array($level, static::$_level_map, true)) {
+            $level = array_search($level, static::$_level_map, true);
         }
-
         if (!in_array($level, static::$_levels, true)) {
             throw new InvalidArgumentException(sprintf('Invalid log level `%s`', $level));
         }
-
         $logged = false;
-        $context = (array)$context;
+        $context = (array) $context;
         if (isset($context[0])) {
             $context = ['scope' => $context];
         }
         $context += ['scope' => []];
-
-        $registry = static::getRegistry();
-        foreach ($registry->loaded() as $streamName) {
+        $registry = static::get_registry();
+        foreach ($registry->loaded() as $stream_name) {
             /** @var \Psr\Log\LoggerInterface $logger */
-            $logger = $registry->{$streamName};
+            $logger = $registry->{$stream_name};
             $levels = null;
             $scopes = null;
-
-            if ($logger instanceof BaseLog) {
+            if ($logger instanceof Base_Log) {
                 $levels = $logger->levels();
                 $scopes = $logger->scopes();
             }
-
-            $correctLevel = empty($levels) || in_array($level, $levels, true);
-            $inScope = $scopes === null && empty($context['scope']) || $scopes === [] ||
-                is_array($scopes) && array_intersect((array)$context['scope'], $scopes);
-
-            if ($correctLevel && $inScope) {
+            $correct_level = empty($levels) || in_array($level, $levels, true);
+            $in_scope = $scopes === null && empty($context['scope']) || $scopes === [] || is_array($scopes) && array_intersect((array) $context['scope'], $scopes);
+            if ($correct_level && $in_scope) {
                 $logger->log($level, $message, $context);
                 $logged = true;
             }
         }
-
         return $logged;
     }
-
     /**
      * Convenience method to log emergency messages
      *
@@ -394,7 +346,6 @@ class Log
     {
         return static::write(__FUNCTION__, $message, $context);
     }
-
     /**
      * Convenience method to log alert messages
      *
@@ -410,7 +361,6 @@ class Log
     {
         return static::write(__FUNCTION__, $message, $context);
     }
-
     /**
      * Convenience method to log critical messages
      *
@@ -426,7 +376,6 @@ class Log
     {
         return static::write(__FUNCTION__, $message, $context);
     }
-
     /**
      * Convenience method to log error messages
      *
@@ -442,7 +391,6 @@ class Log
     {
         return static::write(__FUNCTION__, $message, $context);
     }
-
     /**
      * Convenience method to log warning messages
      *
@@ -458,7 +406,6 @@ class Log
     {
         return static::write(__FUNCTION__, $message, $context);
     }
-
     /**
      * Convenience method to log notice messages
      *
@@ -474,7 +421,6 @@ class Log
     {
         return static::write(__FUNCTION__, $message, $context);
     }
-
     /**
      * Convenience method to log debug messages
      *
@@ -490,7 +436,6 @@ class Log
     {
         return static::write(__FUNCTION__, $message, $context);
     }
-
     /**
      * Convenience method to log info messages
      *

@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,16 +14,14 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\ORM\Behavior\Translate;
 
-use Cake\Datasource\EntityInterface;
-
+use Cake\Datasource\Entity_Interface;
 /**
  * Contains a translation method aimed to help managing multiple translations
  * for an entity.
  */
-trait TranslateTrait
+trait Translate_Trait
 {
     /**
      * Returns the entity containing the translated fields for this object and for
@@ -40,29 +37,22 @@ trait TranslateTrait
         if ($language === $this->get('_locale')) {
             return $this;
         }
-
         $i18n = $this->has('_translations') ? $this->get('_translations') : null;
         $created = false;
-
         if (!$i18n) {
             $i18n = [];
             $created = true;
         }
-
-        if ($created || empty($i18n[$language]) || !($i18n[$language] instanceof EntityInterface)) {
-            $className = static::class;
-
-            $i18n[$language] = new $className();
+        if ($created || empty($i18n[$language]) || !$i18n[$language] instanceof Entity_Interface) {
+            $class_name = static::class;
+            $i18n[$language] = new $class_name();
             $created = true;
         }
-
         if ($created) {
             $this->set('_translations', $i18n);
         }
-
         // Assume the user will modify any of the internal translations, helps with saving
-        $this->setDirty('_translations', true);
-
+        $this->set_dirty('_translations', true);
         return $i18n[$language];
     }
 }

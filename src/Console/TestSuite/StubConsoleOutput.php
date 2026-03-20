@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP :  Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -14,11 +13,9 @@ declare(strict_types=1);
  * @link          https://cakephp.org CakePHP Project
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+namespace Cake\Console\Test_Suite;
 
-namespace Cake\Console\TestSuite;
-
-use Cake\Console\ConsoleOutput;
-
+use Cake\Console\Console_Output;
 /**
  * StubOutput makes testing shell commands/shell helpers easier.
  *
@@ -33,7 +30,7 @@ use Cake\Console\ConsoleOutput;
  * $io = new ConsoleIo($output);
  * ```
  */
-class StubConsoleOutput extends ConsoleOutput
+class Stub_Console_Output extends Console_Output
 {
     /**
      * Buffered messages.
@@ -41,7 +38,6 @@ class StubConsoleOutput extends ConsoleOutput
      * @var array<string>
      */
     protected array $_out = [];
-
     /**
      * Constructor
      */
@@ -49,9 +45,8 @@ class StubConsoleOutput extends ConsoleOutput
     {
         // Don't call parent on purpose as it opens php://stdin which doesn't
         // always exist in RunInSeparateProcess tests.
-        $this->_outputAs = self::PLAIN;
+        $this->_output_as = self::PLAIN;
     }
-
     /**
      * Write output to the buffer.
      *
@@ -60,19 +55,16 @@ class StubConsoleOutput extends ConsoleOutput
      */
     public function write(array|string $message, int $newlines = 1): int
     {
-        foreach ((array)$message as $line) {
+        foreach ((array) $message as $line) {
             $this->_out[] = $line;
         }
-
         $newlines--;
         while ($newlines > 0) {
             $this->_out[] = '';
             $newlines--;
         }
-
         return 0;
     }
-
     /**
      * Get the buffered output.
      *
@@ -82,7 +74,6 @@ class StubConsoleOutput extends ConsoleOutput
     {
         return $this->_out;
     }
-
     /**
      * Clear buffered output
      */
@@ -90,7 +81,6 @@ class StubConsoleOutput extends ConsoleOutput
     {
         $this->_out = [];
     }
-
     /**
      * Get the output as a string
      */
@@ -99,10 +89,6 @@ class StubConsoleOutput extends ConsoleOutput
         return implode("\n", $this->_out);
     }
 }
-
 // phpcs:disable
-class_alias(
-    \Cake\Console\TestSuite\StubConsoleOutput::class,
-    'Cake\TestSuite\Stub\ConsoleOutput'
-);
+class_alias(\Cake\Console\Test_Suite\Stub_Console_Output::class, 'Cake\TestSuite\Stub\ConsoleOutput');
 // phpcs:enable

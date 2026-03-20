@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,65 +14,53 @@ declare(strict_types=1);
  * @since         5.3.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+namespace Cake\Http\Rate_Limit;
 
-namespace Cake\Http\RateLimit;
-
-use Psr\SimpleCache\CacheInterface;
-
+use Psr\Simple_Cache\Cache_Interface;
 /**
  * Fixed window rate limiter implementation
  */
-class FixedWindowRateLimiter implements RateLimiterInterface
+class Fixed_Window_Rate_Limiter implements Rate_Limiter_Interface
 {
     /**
      * Cache instance
      */
-    protected CacheInterface $cache;
-
+    protected Cache_Interface $cache;
     /**
      * Constructor
      *
      * @param \Psr\SimpleCache\CacheInterface $cache Cache instance
      */
-    public function __construct(CacheInterface $cache)
+    public function __construct(Cache_Interface $cache)
     {
         $this->cache = $cache;
     }
-
     /**
      * @inheritDoc
      */
     public function attempt(string $identifier, int $limit, int $window, int $cost = 1): array
     {
         $now = time();
-        $windowStart = (int)($now / $window) * $window;
-        $key = $identifier . '_' . $windowStart;
-
-        $count = (int)$this->cache->get($key, 0);
+        $window_start = (int) ($now / $window) * $window;
+        $key = $identifier . '_' . $window_start;
+        $count = (int) $this->cache->get($key, 0);
         $allowed = $count + $cost <= $limit;
-
         if ($allowed) {
             $count += $cost;
-            $ttl = $windowStart + $window - $now;
+            $ttl = $window_start + $window - $now;
             $this->cache->set($key, $count, $ttl);
         }
-
-        return [
-            'allowed' => $allowed,
-            'limit' => $limit,
-            'remaining' => max(0, $limit - $count),
-            'reset' => $windowStart + $window,
-        ];
+        return ['allowed' => $allowed, 'limit' => $limit, 'remaining' => max(0, $limit - $count), 'reset' => $window_start + $window];
     }
-
     /**
      * @inheritDoc
      */
     public function reset(string $identifier): void
     {
         $now = time();
-        $window = 3600; // Assume max window of 1 hour for reset
-        $windowStart = (int)($now / $window) * $window;
-        $this->cache->delete($identifier . '_' . $windowStart);
+        $window = 3600;
+        // Assume max window of 1 hour for reset
+        $window_start = (int) ($now / $window) * $window;
+        $this->cache->delete($identifier . '_' . $window_start);
     }
 }

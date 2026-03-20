@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,7 +14,6 @@ declare(strict_types=1);
  * @since         4.1.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Error\Debug;
 
 /**
@@ -23,20 +21,19 @@ namespace Cake\Error\Debug;
  *
  * @unstable This interface is not stable and may change in the future.
  */
-interface FormatterInterface
+interface Formatter_Interface
 {
     /**
      * Convert a tree of NodeInterface objects into a plain text string.
      *
      * @param \Cake\Error\Debug\NodeInterface $node The node tree to dump.
      */
-    public function dump(NodeInterface $node): string;
-
+    public function dump(Node_Interface $node): string;
     /**
      * Output a dump wrapper with location context.
      *
      * @param string $contents The contents to wrap and return
      * @param array $location The file and line the contents came from.
      */
-    public function formatWrapper(string $contents, array $location): string;
+    public function format_wrapper(string $contents, array $location): string;
 }

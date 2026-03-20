@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -16,7 +15,6 @@ declare(strict_types=1);
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 // phpcs:disable PSR1.Files.SideEffects
-
 use function Cake\I18n\__ as cake__;
 use function Cake\I18n\__d as cake__d;
 use function Cake\I18n\__dn as cake__dn;
@@ -25,13 +23,10 @@ use function Cake\I18n\__dxn as cake__dxn;
 use function Cake\I18n\__n as cake__n;
 use function Cake\I18n\__x as cake__x;
 use function Cake\I18n\__xn as cake__xn;
-
 use Cake\I18n\Date;
 use Cake\I18n\DateTime;
-
-use function Cake\I18n\toDate as cakeToDate;
-use function Cake\I18n\toDateTime as cakeToDateTime;
-
+use function Cake\I18n\To_Date as cakeToDate;
+use function Cake\I18n\To_Date_Time as cakeToDateTime;
 if (!function_exists('__')) {
     /**
      * Returns a translated string if one is found; Otherwise, the submitted message.
@@ -46,7 +41,6 @@ if (!function_exists('__')) {
         return cake__($singular, ...$args);
     }
 }
-
 if (!function_exists('__n')) {
     /**
      * Returns correct plural form of message identified by $singular and $plural for count $count.
@@ -64,7 +58,6 @@ if (!function_exists('__n')) {
         return cake__n($singular, $plural, $count, ...$args);
     }
 }
-
 if (!function_exists('__d')) {
     /**
      * Allows you to override the current domain for a single message lookup.
@@ -80,7 +73,6 @@ if (!function_exists('__d')) {
         return cake__d($domain, $msg, ...$args);
     }
 }
-
 if (!function_exists('__dn')) {
     /**
      * Allows you to override the current domain for a single plural message lookup.
@@ -100,7 +92,6 @@ if (!function_exists('__dn')) {
         return cake__dn($domain, $singular, $plural, $count, ...$args);
     }
 }
-
 if (!function_exists('__x')) {
     /**
      * Returns a translated string if one is found; Otherwise, the submitted message.
@@ -118,7 +109,6 @@ if (!function_exists('__x')) {
         return cake__x($context, $singular, ...$args);
     }
 }
-
 if (!function_exists('__xn')) {
     /**
      * Returns correct plural form of message identified by $singular and $plural for count $count.
@@ -139,7 +129,6 @@ if (!function_exists('__xn')) {
         return cake__xn($context, $singular, $plural, $count, ...$args);
     }
 }
-
 if (!function_exists('__dx')) {
     /**
      * Allows you to override the current domain for a single message lookup.
@@ -158,7 +147,6 @@ if (!function_exists('__dx')) {
         return cake__dx($domain, $context, $msg, ...$args);
     }
 }
-
 if (!function_exists('__dxn')) {
     /**
      * Returns correct plural form of message identified by $singular and $plural for count $count.
@@ -175,18 +163,11 @@ if (!function_exists('__dxn')) {
      * @return string Plural form of translated string.
      * @link https://book.cakephp.org/5/en/core-libraries/global-constants-and-functions.html#dxn
      */
-    function __dxn(
-        string $domain,
-        string $context,
-        string $singular,
-        string $plural,
-        int $count,
-        mixed ...$args,
-    ): string {
+    function __dxn(string $domain, string $context, string $singular, string $plural, int $count, mixed ...$args): string
+    {
         return cake__dxn($domain, $context, $singular, $plural, $count, ...$args);
     }
 }
-
 if (!function_exists('toDateTime')) {
     /**
      * Converts a value to a DateTime object.
@@ -201,12 +182,11 @@ if (!function_exists('toDateTime')) {
      * @return \Cake\I18n\DateTime|null Returns a DateTime object if parsing is successful, or NULL otherwise.
      * @since 5.1.1
      */
-    function toDateTime(mixed $value, string $format = DateTimeInterface::ATOM): ?DateTime
+    function to_date_time(mixed $value, string $format = DateTimeInterface::ATOM): ?DateTime
     {
-        return cakeToDateTime($value, $format);
+        return cake_to_date_time($value, $format);
     }
 }
-
 if (!function_exists('toDate')) {
     /**
      * Converts a value to a Date object.
@@ -221,8 +201,8 @@ if (!function_exists('toDate')) {
      * @return \Cake\I18n\Date|null Returns a Date object if parsing is successful, or NULL otherwise.
      * @since 5.1.1
      */
-    function toDate(mixed $value, string $format = 'Y-m-d'): ?Date
+    function to_date(mixed $value, string $format = 'Y-m-d'): ?Date
     {
-        return cakeToDate($value, $format);
+        return cake_to_date($value, $format);
     }
 }

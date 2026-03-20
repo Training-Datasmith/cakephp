@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,17 +14,15 @@ declare(strict_types=1);
  * @since         4.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Database\Type;
 
 use Cake\Database\Driver;
-use Cake\Database\TypeInterface;
+use Cake\Database\Type_Interface;
 use PDO;
-
 /**
  * Base type class.
  */
-abstract class BaseType implements TypeInterface
+abstract class Base_Type implements Type_Interface
 {
     /**
      * Constructor
@@ -37,41 +34,37 @@ abstract class BaseType implements TypeInterface
          * Identifier name for this type
          */
         protected ?string $_name = null
-    ) {
+    )
+    {
     }
-
     /**
      * @inheritDoc
      */
-    public function getName(): ?string
+    public function get_name(): ?string
     {
         return $this->_name;
     }
-
     /**
      * @inheritDoc
      */
-    public function getBaseType(): ?string
+    public function get_base_type(): ?string
     {
         return $this->_name;
     }
-
     /**
      * @inheritDoc
      */
-    public function toStatement(mixed $value, Driver $driver): int
+    public function to_statement(mixed $value, Driver $driver): int
     {
         if ($value === null) {
             return PDO::PARAM_NULL;
         }
-
         return PDO::PARAM_STR;
     }
-
     /**
      * @inheritDoc
      */
-    public function newId(): mixed
+    public function new_id(): mixed
     {
         return null;
     }

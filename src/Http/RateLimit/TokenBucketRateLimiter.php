@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,31 +14,27 @@ declare(strict_types=1);
  * @since         5.3.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
+namespace Cake\Http\Rate_Limit;
 
-namespace Cake\Http\RateLimit;
-
-use Psr\SimpleCache\CacheInterface;
-
+use Psr\Simple_Cache\Cache_Interface;
 /**
  * Token bucket rate limiter implementation
  */
-class TokenBucketRateLimiter implements RateLimiterInterface
+class Token_Bucket_Rate_Limiter implements Rate_Limiter_Interface
 {
     /**
      * Cache instance
      */
-    protected CacheInterface $cache;
-
+    protected Cache_Interface $cache;
     /**
      * Constructor
      *
      * @param \Psr\SimpleCache\CacheInterface $cache Cache instance
      */
-    public function __construct(CacheInterface $cache)
+    public function __construct(Cache_Interface $cache)
     {
         $this->cache = $cache;
     }
-
     /**
      * @inheritDoc
      */
@@ -47,41 +42,24 @@ class TokenBucketRateLimiter implements RateLimiterInterface
     {
         $now = microtime(true);
         $key = $identifier;
-
-        $data = $this->cache->get($identifier, [
-            'tokens' => $limit,
-            'last_update' => $now,
-        ]);
-
+        $data = $this->cache->get($identifier, ['tokens' => $limit, 'last_update' => $now]);
         // Refill tokens based on time elapsed
         $elapsed = $now - $data['last_update'];
-        $refillRate = $limit / $window;
-        $tokensToAdd = $elapsed * $refillRate;
-
-        $data['tokens'] = min($limit, $data['tokens'] + $tokensToAdd);
+        $refill_rate = $limit / $window;
+        $tokens_to_add = $elapsed * $refill_rate;
+        $data['tokens'] = min($limit, $data['tokens'] + $tokens_to_add);
         $data['last_update'] = $now;
-
         $allowed = $data['tokens'] >= $cost;
-
         if ($allowed) {
             $data['tokens'] -= $cost;
         }
-
         $this->cache->set($key, $data, $window);
-
         // Calculate when bucket will be full
-        $tokensNeeded = $limit - $data['tokens'];
-        $secondsToFull = $tokensNeeded / $refillRate;
-        $reset = (int)($now + $secondsToFull);
-
-        return [
-            'allowed' => $allowed,
-            'limit' => $limit,
-            'remaining' => (int)$data['tokens'],
-            'reset' => $reset,
-        ];
+        $tokens_needed = $limit - $data['tokens'];
+        $seconds_to_full = $tokens_needed / $refill_rate;
+        $reset = (int) ($now + $seconds_to_full);
+        return ['allowed' => $allowed, 'limit' => $limit, 'remaining' => (int) $data['tokens'], 'reset' => $reset];
     }
-
     /**
      * @inheritDoc
      */

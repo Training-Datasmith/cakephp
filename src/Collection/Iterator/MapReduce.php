@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -14,14 +13,12 @@ declare(strict_types=1);
  * @link          https://cakephp.org CakePHP(tm) Project
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Collection\Iterator;
 
 use ArrayIterator;
 use IteratorAggregate;
 use LogicException;
 use Traversable;
-
 /**
  * Implements a simplistic version of the popular Map-Reduce algorithm. Acts
  * like an iterator for the original passed data after each result has been
@@ -30,30 +27,26 @@ use Traversable;
  *
  * @template-implements \IteratorAggregate<mixed>
  */
-class MapReduce implements IteratorAggregate
+class Map_Reduce implements IteratorAggregate
 {
     /**
      * Holds the shuffled results emitted from the map phase
      */
     protected array $_intermediate = [];
-
     /**
      * Holds the results as emitted during the reduce phase
      */
     protected array $_result = [];
-
     /**
      * Whether the Map-Reduce routine has been executed already on the data
      */
     protected bool $_executed = false;
-
     /**
      * A callable that will be executed for each record in the original data
      *
      * @var callable
      */
     protected $_mapper;
-
     /**
      * A callable that will be executed for each intermediate record emitted during
      * the Map phase
@@ -61,12 +54,10 @@ class MapReduce implements IteratorAggregate
      * @var callable|null
      */
     protected $_reducer;
-
     /**
      * Count of elements emitted during the Reduce phase
      */
     protected int $_counter = 0;
-
     /**
      * Constructor
      *
@@ -102,17 +93,18 @@ class MapReduce implements IteratorAggregate
      * of the bucket that was created during the mapping phase and third one is an
      * instance of this class.
      */
-    public function __construct(/**
-     * Holds the original data that needs to be processed
-     */
+    public function __construct(
+        /**
+         * Holds the original data that needs to be processed
+         */
         protected iterable $_data,
         callable $mapper,
         ?callable $reducer = null
-    ) {
+    )
+    {
         $this->_mapper = $mapper;
         $this->_reducer = $reducer;
     }
-
     /**
      * Returns an iterator with the end result of running the Map and Reduce
      * phases on the original data
@@ -122,10 +114,8 @@ class MapReduce implements IteratorAggregate
         if (!$this->_executed) {
             $this->_execute();
         }
-
         return new ArrayIterator($this->_result);
     }
-
     /**
      * Appends a new record to the bucket labeled with $key, usually as a result
      * of mapping a single record from the original data.
@@ -134,17 +124,14 @@ class MapReduce implements IteratorAggregate
      * @param mixed $bucket the name of the bucket where to put the record
      * @param mixed $key An optional key to assign to the value
      */
-    public function emitIntermediate(mixed $val, mixed $bucket, mixed $key = null): void
+    public function emit_intermediate(mixed $val, mixed $bucket, mixed $key = null): void
     {
         if ($key === null) {
             $this->_intermediate[$bucket ?? ''][] = $val;
-
             return;
         }
-
         $this->_intermediate[$bucket][$key] = $val;
     }
-
     /**
      * Appends a new record to the final list of results and optionally assign a key
      * for this record.
@@ -157,7 +144,6 @@ class MapReduce implements IteratorAggregate
         $this->_result[$key ?? $this->_counter] = $val;
         $this->_counter++;
     }
-
     /**
      * Runs the actual Map-Reduce algorithm. This iterates the original data
      * and calls the mapper function for each record, then for each intermediate
@@ -172,11 +158,9 @@ class MapReduce implements IteratorAggregate
         foreach ($this->_data as $key => $val) {
             $mapper($val, $key, $this);
         }
-
         if ($this->_intermediate && $this->_reducer === null) {
             throw new LogicException('No reducer function was provided');
         }
-
         $reducer = $this->_reducer;
         if ($reducer !== null) {
             foreach ($this->_intermediate as $key => $list) {

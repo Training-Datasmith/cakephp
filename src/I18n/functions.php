@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -16,12 +15,10 @@ declare(strict_types=1);
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 // phpcs:disable PSR1.Files.SideEffects
-
 namespace Cake\I18n;
 
 use DateTimeInterface;
 use Throwable;
-
 /**
  * Returns a translated string if one is found; Otherwise, the submitted message.
  *
@@ -38,10 +35,8 @@ function __(string $singular, mixed ...$args): string
     if (isset($args[0]) && is_array($args[0])) {
         $args = $args[0];
     }
-
-    return I18n::getTranslator()->translate($singular, $args);
+    return I18n::get_translator()->translate($singular, $args);
 }
-
 /**
  * Returns correct plural form of message identified by $singular and $plural for count $count.
  * Some languages have more than one form for plural messages dependent on the count.
@@ -61,13 +56,8 @@ function __n(string $singular, string $plural, int $count, mixed ...$args): stri
     if (isset($args[0]) && is_array($args[0])) {
         $args = $args[0];
     }
-
-    return I18n::getTranslator()->translate(
-        $plural,
-        ['_count' => $count, '_singular' => $singular] + $args,
-    );
+    return I18n::get_translator()->translate($plural, ['_count' => $count, '_singular' => $singular] + $args);
 }
-
 /**
  * Allows you to override the current domain for a single message lookup.
  *
@@ -85,10 +75,8 @@ function __d(string $domain, string $msg, mixed ...$args): string
     if (isset($args[0]) && is_array($args[0])) {
         $args = $args[0];
     }
-
-    return I18n::getTranslator($domain)->translate($msg, $args);
+    return I18n::get_translator($domain)->translate($msg, $args);
 }
-
 /**
  * Allows you to override the current domain for a single plural message lookup.
  * Returns correct plural form of message identified by $singular and $plural for count $count
@@ -110,13 +98,8 @@ function __dn(string $domain, string $singular, string $plural, int $count, mixe
     if (isset($args[0]) && is_array($args[0])) {
         $args = $args[0];
     }
-
-    return I18n::getTranslator($domain)->translate(
-        $plural,
-        ['_count' => $count, '_singular' => $singular] + $args,
-    );
+    return I18n::get_translator($domain)->translate($plural, ['_count' => $count, '_singular' => $singular] + $args);
 }
-
 /**
  * Returns a translated string if one is found; Otherwise, the submitted message.
  * The context is a unique identifier for the translations string that makes it unique
@@ -136,10 +119,8 @@ function __x(string $context, string $singular, mixed ...$args): string
     if (isset($args[0]) && is_array($args[0])) {
         $args = $args[0];
     }
-
-    return I18n::getTranslator()->translate($singular, ['_context' => $context] + $args);
+    return I18n::get_translator()->translate($singular, ['_context' => $context] + $args);
 }
-
 /**
  * Returns correct plural form of message identified by $singular and $plural for count $count.
  * Some languages have more than one form for plural messages dependent on the count.
@@ -162,13 +143,8 @@ function __xn(string $context, string $singular, string $plural, int $count, mix
     if (isset($args[0]) && is_array($args[0])) {
         $args = $args[0];
     }
-
-    return I18n::getTranslator()->translate(
-        $plural,
-        ['_count' => $count, '_singular' => $singular, '_context' => $context] + $args,
-    );
+    return I18n::get_translator()->translate($plural, ['_count' => $count, '_singular' => $singular, '_context' => $context] + $args);
 }
-
 /**
  * Allows you to override the current domain for a single message lookup.
  * The context is a unique identifier for the translations string that makes it unique
@@ -189,13 +165,8 @@ function __dx(string $domain, string $context, string $msg, mixed ...$args): str
     if (isset($args[0]) && is_array($args[0])) {
         $args = $args[0];
     }
-
-    return I18n::getTranslator($domain)->translate(
-        $msg,
-        ['_context' => $context] + $args,
-    );
+    return I18n::get_translator($domain)->translate($msg, ['_context' => $context] + $args);
 }
-
 /**
  * Returns correct plural form of message identified by $singular and $plural for count $count.
  * Allows you to override the current domain for a single message lookup.
@@ -211,27 +182,16 @@ function __dx(string $domain, string $context, string $msg, mixed ...$args): str
  * @return string Plural form of translated string.
  * @link https://book.cakephp.org/5/en/core-libraries/global-constants-and-functions.html#dxn
  */
-function __dxn(
-    string $domain,
-    string $context,
-    string $singular,
-    string $plural,
-    int $count,
-    mixed ...$args,
-): string {
+function __dxn(string $domain, string $context, string $singular, string $plural, int $count, mixed ...$args): string
+{
     if (!$singular) {
         return '';
     }
     if (isset($args[0]) && is_array($args[0])) {
         $args = $args[0];
     }
-
-    return I18n::getTranslator($domain)->translate(
-        $plural,
-        ['_count' => $count, '_singular' => $singular, '_context' => $context] + $args,
-    );
+    return I18n::get_translator($domain)->translate($plural, ['_count' => $count, '_singular' => $singular, '_context' => $context] + $args);
 }
-
 /**
  * Converts a value to a DateTime object.
  *
@@ -245,38 +205,30 @@ function __dxn(
  * @return \Cake\I18n\DateTime|null Returns a DateTime object if parsing is successful, or NULL otherwise.
  * @since 5.1.0
  */
-function toDateTime(mixed $value, string $format = DateTimeInterface::ATOM): ?DateTime
+function to_date_time(mixed $value, string $format = DateTimeInterface::ATOM): ?DateTime
 {
     if ($value instanceof DateTime) {
         return $value;
     }
-
-    if (
-        $value instanceof DateTimeInterface ||
-        $value instanceof Date
-    ) {
+    if ($value instanceof DateTimeInterface || $value instanceof Date) {
         return DateTime::parse($value);
     }
-
     if (is_numeric($value)) {
         try {
-            return DateTime::createFromTimestamp((float)$value);
+            return DateTime::create_from_timestamp((float) $value);
         } catch (Throwable) {
             return null;
         }
     }
-
     if (is_string($value)) {
         try {
-            return DateTime::createFromFormat($format, $value);
+            return DateTime::create_from_format($format, $value);
         } catch (Throwable) {
             return null;
         }
     }
-
     return null;
 }
-
 /**
  * Converts a value to a Date object.
  *
@@ -290,35 +242,29 @@ function toDateTime(mixed $value, string $format = DateTimeInterface::ATOM): ?Da
  * @return \Cake\I18n\Date|null Returns a Date object if parsing is successful, or NULL otherwise.
  * @since 5.1.0
  */
-function toDate(mixed $value, string $format = 'Y-m-d'): ?Date
+function to_date(mixed $value, string $format = 'Y-m-d'): ?Date
 {
     if ($value instanceof Date) {
         return $value;
     }
-
     if ($value instanceof DateTimeInterface) {
         return Date::parse($value);
     }
-
     if (is_numeric($value)) {
         try {
-            $datetime = DateTime::createFromTimestamp((float)$value);
-
+            $datetime = DateTime::create_from_timestamp((float) $value);
             return Date::create($datetime->year, $datetime->month, $datetime->day);
         } catch (Throwable) {
             return null;
         }
     }
-
     if (is_string($value)) {
         try {
-            $datetime = DateTime::createFromFormat($format, $value);
-
+            $datetime = DateTime::create_from_format($format, $value);
             return Date::parse($datetime);
         } catch (Throwable) {
             return null;
         }
     }
-
     return null;
 }

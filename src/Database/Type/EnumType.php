@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,33 +14,30 @@ declare(strict_types=1);
  * @since         5.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Database\Type;
 
-use BackedEnum;
+use Backed_Enum;
 use Cake\Database\Driver;
-use Cake\Database\Exception\DatabaseException;
-use Cake\Database\TypeFactory;
+use Cake\Database\Exception\Database_Exception;
+use Cake\Database\Type_Factory;
 use Cake\Utility\Text;
 use InvalidArgumentException;
 use PDO;
-use ReflectionEnum;
-use ReflectionException;
+use Reflection_Enum;
+use Reflection_Exception;
 use TypeError;
-use ValueError;
-
+use Value_Error;
 /**
  * Enum type converter.
  *
  * Use to convert string data between PHP and the database types.
  */
-class EnumType extends BaseType
+class Enum_Type extends Base_Type
 {
     /**
      * The type of the enum which is either string or int
      */
-    protected string $backingType;
-
+    protected string $backing_type;
     /**
      * @param string $name The name identifying this type
      * @param class-string<\BackedEnum> $enumClassName The associated enum class name
@@ -51,31 +47,21 @@ class EnumType extends BaseType
         /**
          * The enum classname which is associated to the type instance
          */
-        protected string $enumClassName,
-    ) {
+        protected string $enum_class_name
+    )
+    {
         parent::__construct($name);
-
         try {
-            $reflectionEnum = new ReflectionEnum($this->enumClassName);
-        } catch (ReflectionException $e) {
-            throw new DatabaseException(sprintf(
-                'Unable to use `%s` for type `%s`. %s.',
-                $this->enumClassName,
-                $name,
-                $e->getMessage(),
-            ));
+            $reflection_enum = new Reflection_Enum($this->enum_class_name);
+        } catch (Reflection_Exception $e) {
+            throw new Database_Exception(sprintf('Unable to use `%s` for type `%s`. %s.', $this->enum_class_name, $name, $e->get_message()));
         }
-
-        $namedType = $reflectionEnum->getBackingType();
-        if ($namedType === null) {
-            throw new DatabaseException(
-                sprintf('Unable to use enum `%s` for type `%s`, must be a backed enum.', $this->enumClassName, $name),
-            );
+        $named_type = $reflection_enum->get_backing_type();
+        if ($named_type === null) {
+            throw new Database_Exception(sprintf('Unable to use enum `%s` for type `%s`, must be a backed enum.', $this->enum_class_name, $name));
         }
-
-        $this->backingType = (string)$namedType;
+        $this->backing_type = (string) $named_type;
     }
-
     /**
      * Convert enum instances into the database format.
      *
@@ -83,111 +69,86 @@ class EnumType extends BaseType
      * @param \Cake\Database\Driver $driver The driver instance to convert with.
      * @throws \InvalidArgumentException When the given value is not a valid value for the associated enum
      */
-    public function toDatabase(mixed $value, Driver $driver): string|int|null
+    public function to_database(mixed $value, Driver $driver): string|int|null
     {
         if ($value === null) {
             return null;
         }
-
-        if ($value instanceof $this->enumClassName) {
+        if ($value instanceof $this->enum_class_name) {
             return $value->value;
         }
-
-        if ($this->backingType === 'int' && is_string($value)) {
-            $intVal = filter_var($value, FILTER_VALIDATE_INT);
-            if ($intVal !== false) {
-                $value = $intVal;
+        if ($this->backing_type === 'int' && is_string($value)) {
+            $int_val = filter_var($value, FILTER_VALIDATE_INT);
+            if ($int_val !== false) {
+                $value = $int_val;
             }
         }
-
         try {
-            return $this->enumClassName::from($value)->value;
-        } catch (ValueError | TypeError $exception) {
+            return $this->enum_class_name::from($value)->value;
+        } catch (Value_Error|TypeError $exception) {
             if ($exception instanceof TypeError) {
-                throw new InvalidArgumentException(sprintf(
-                    'Given value `%s` of type `%s` does not match associated `%s` backed enum in `%s`',
-                    print_r($value, true),
-                    get_debug_type($value),
-                    $this->backingType,
-                    $this->enumClassName,
-                ));
+                throw new InvalidArgumentException(sprintf('Given value `%s` of type `%s` does not match associated `%s` backed enum in `%s`', print_r($value, true), get_debug_type($value), $this->backing_type, $this->enum_class_name));
             }
-
-            throw new InvalidArgumentException(sprintf(
-                '`%s` is not a valid value for `%s`',
-                $value,
-                $this->enumClassName,
-            ));
+            throw new InvalidArgumentException(sprintf('`%s` is not a valid value for `%s`', $value, $this->enum_class_name));
         }
     }
-
     /**
      * Transform DB value to backed enum instance
      *
      * @param mixed $value The value to convert.
      * @param \Cake\Database\Driver $driver The driver instance to convert with.
      */
-    public function toPHP(mixed $value, Driver $driver): ?BackedEnum
+    public function to_php(mixed $value, Driver $driver): ?Backed_Enum
     {
         if ($value === null) {
             return null;
         }
-
-        if ($this->backingType === 'int' && is_string($value)) {
-            $intVal = filter_var($value, FILTER_VALIDATE_INT);
-            if ($intVal !== false) {
-                $value = $intVal;
+        if ($this->backing_type === 'int' && is_string($value)) {
+            $int_val = filter_var($value, FILTER_VALIDATE_INT);
+            if ($int_val !== false) {
+                $value = $int_val;
             }
         }
-
-        return $this->enumClassName::from($value);
+        return $this->enum_class_name::from($value);
     }
-
     /**
      * @inheritDoc
      */
-    public function toStatement(mixed $value, Driver $driver): int
+    public function to_statement(mixed $value, Driver $driver): int
     {
-        if ($this->backingType === 'int') {
+        if ($this->backing_type === 'int') {
             return PDO::PARAM_INT;
         }
-
         return PDO::PARAM_STR;
     }
-
     /**
      * Marshals request data
      *
      * @param mixed $value The value to convert.
      * @return \BackedEnum|null Converted value.
      */
-    public function marshal(mixed $value): ?BackedEnum
+    public function marshal(mixed $value): ?Backed_Enum
     {
         if ($value === null) {
             return null;
         }
-
-        if ($value instanceof $this->enumClassName) {
+        if ($value instanceof $this->enum_class_name) {
             return $value;
         }
-
-        if ($this->backingType === 'int') {
+        if ($this->backing_type === 'int') {
             if ($value === '') {
                 return null;
             }
-
             if (is_numeric($value)) {
-                $value = (int)$value;
+                $value = (int) $value;
             }
         }
-
         try {
-            return $this->enumClassName::from($value);
-        } catch (ValueError | TypeError) {
+            return $this->enum_class_name::from($value);
+        } catch (Value_Error|TypeError) {
             return null;
         }
     }
-
     /**
      * Create an `EnumType` that is paired with the provided `$enumClassName`.
      *
@@ -200,20 +161,18 @@ class EnumType extends BaseType
      *
      * @param class-string<\BackedEnum> $enumClassName The enum class name
      */
-    public static function from(string $enumClassName): string
+    public static function from(string $enum_class_name): string
     {
-        $typeName = 'enum-' . strtolower(Text::slug($enumClassName));
-        $instance = new EnumType($typeName, $enumClassName);
-        TypeFactory::set($typeName, $instance);
-
-        return $typeName;
+        $type_name = 'enum-' . strtolower(Text::slug($enum_class_name));
+        $instance = new Enum_Type($type_name, $enum_class_name);
+        Type_Factory::set($type_name, $instance);
+        return $type_name;
     }
-
     /**
      * @return class-string<\BackedEnum>
      */
-    public function getEnumClassName(): string
+    public function get_enum_class_name(): string
     {
-        return $this->enumClassName;
+        return $this->enum_class_name;
     }
 }

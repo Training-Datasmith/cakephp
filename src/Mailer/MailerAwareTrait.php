@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,12 +14,10 @@ declare(strict_types=1);
  * @since         3.1.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Mailer;
 
 use Cake\Core\App;
-use Cake\Mailer\Exception\MissingMailerException;
-
+use Cake\Mailer\Exception\Missing_Mailer_Exception;
 /**
  * Provides functionality for loading mailer classes
  * onto properties of the host object.
@@ -28,7 +25,7 @@ use Cake\Mailer\Exception\MissingMailerException;
  * Example users of this trait are Cake\Controller\Controller and
  * Cake\Console\Command.
  */
-trait MailerAwareTrait
+trait Mailer_Aware_Trait
 {
     /**
      * Returns a mailer instance.
@@ -37,13 +34,12 @@ trait MailerAwareTrait
      * @param array<string, mixed>|string|null $config Array of configs, or profile name string.
      * @throws \Cake\Mailer\Exception\MissingMailerException if undefined mailer class.
      */
-    protected function getMailer(string $name, array|string|null $config = null): Mailer
+    protected function get_mailer(string $name, array|string|null $config = null): Mailer
     {
-        $className = App::className($name, 'Mailer', 'Mailer');
-        if ($className === null) {
-            throw new MissingMailerException(compact('name'));
+        $class_name = App::class_name($name, 'Mailer', 'Mailer');
+        if ($class_name === null) {
+            throw new Missing_Mailer_Exception(compact('name'));
         }
-
-        return new $className($config);
+        return new $class_name($config);
     }
 }

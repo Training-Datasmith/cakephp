@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,36 +14,32 @@ declare(strict_types=1);
  * @since         3.1.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Console;
 
-use Cake\Console\Exception\MissingHelperException;
+use Cake\Console\Exception\Missing_Helper_Exception;
 use Cake\Core\App;
-use Cake\Core\ObjectRegistry;
-
+use Cake\Core\Object_Registry;
 /**
  * Registry for Helpers. Provides features
  * for lazily loading helpers.
  *
  * @extends \Cake\Core\ObjectRegistry<\Cake\Console\Helper>
  */
-class HelperRegistry extends ObjectRegistry
+class Helper_Registry extends Object_Registry
 {
     /**
      * IO instance.
      */
-    protected ConsoleIo $_io;
-
+    protected Console_Io $_io;
     /**
      * Sets the IO instance that should be passed to the shell helpers
      *
      * @param \Cake\Console\ConsoleIo $io An io instance.
      */
-    public function setIo(ConsoleIo $io): void
+    public function set_io(Console_Io $io): void
     {
         $this->_io = $io;
     }
-
     /**
      * Resolve a helper classname.
      *
@@ -53,12 +48,11 @@ class HelperRegistry extends ObjectRegistry
      * @param string $class Partial classname to resolve.
      * @return class-string<\Cake\Console\Helper>|null Either the correct class name or null.
      */
-    protected function _resolveClassName(string $class): ?string
+    protected function _resolve_class_name(string $class): ?string
     {
         /** @var class-string<\Cake\Console\Helper>|null */
-        return App::className($class, 'Command/Helper', 'Helper');
+        return App::class_name($class, 'Command/Helper', 'Helper');
     }
-
     /**
      * Throws an exception when a helper is missing.
      *
@@ -69,14 +63,10 @@ class HelperRegistry extends ObjectRegistry
      * @param string|null $plugin The plugin the helper is missing in.
      * @throws \Cake\Console\Exception\MissingHelperException
      */
-    protected function _throwMissingClassError(string $class, ?string $plugin): void
+    protected function _throw_missing_class_error(string $class, ?string $plugin): void
     {
-        throw new MissingHelperException([
-            'class' => $class,
-            'plugin' => $plugin,
-        ]);
+        throw new Missing_Helper_Exception(['class' => $class, 'plugin' => $plugin]);
     }
-
     /**
      * Create the helper instance.
      *
@@ -92,7 +82,6 @@ class HelperRegistry extends ObjectRegistry
         if (is_object($class)) {
             return $class;
         }
-
         return new $class($this->_io, $config);
     }
 }

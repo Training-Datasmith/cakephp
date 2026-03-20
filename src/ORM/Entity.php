@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,21 +14,18 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\ORM;
 
-use Cake\Datasource\EntityInterface;
-use Cake\Datasource\EntityTrait;
-use Cake\Datasource\InvalidPropertyInterface;
-
+use Cake\Datasource\Entity_Interface;
+use Cake\Datasource\Entity_Trait;
+use Cake\Datasource\Invalid_Property_Interface;
 /**
  * An entity represents a single result row from a repository. It exposes the
  * methods for retrieving and storing properties associated in this row.
  */
-class Entity implements EntityInterface, InvalidPropertyInterface
+class Entity implements Entity_Interface, Invalid_Property_Interface
 {
-    use EntityTrait;
-
+    use Entity_Trait;
     /**
      * Initializes the internal properties of this entity out of the
      * keys in an array. The following list of options can be used:
@@ -51,39 +47,22 @@ class Entity implements EntityInterface, InvalidPropertyInterface
      */
     public function __construct(array $properties = [], array $options = [])
     {
-        $options += [
-            'useSetters' => true,
-            'markClean' => false,
-            'markNew' => null,
-            'guard' => false,
-            'source' => null,
-        ];
-
+        $options += ['useSetters' => true, 'markClean' => false, 'markNew' => null, 'guard' => false, 'source' => null];
         if ($options['source'] !== null) {
-            $this->setSource($options['source']);
+            $this->set_source($options['source']);
         }
-
         if ($options['markNew'] !== null) {
-            $this->setNew($options['markNew']);
+            $this->set_new($options['markNew']);
         }
-
         if ($properties) {
             //Remember the original field names here.
-            $this->setOriginalField(array_keys($properties));
-
+            $this->set_original_field(array_keys($properties));
             if ($options['markClean'] && !$options['useSetters']) {
                 $this->_fields = $properties;
-
                 return;
             }
-
-            $this->patch($properties, [
-                'asOriginal' => true,
-                'setter' => $options['useSetters'],
-                'guard' => $options['guard'],
-            ]);
+            $this->patch($properties, ['asOriginal' => true, 'setter' => $options['useSetters'], 'guard' => $options['guard']]);
         }
-
         if ($options['markClean']) {
             $this->clean();
         }

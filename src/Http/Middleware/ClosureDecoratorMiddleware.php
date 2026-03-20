@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,15 +14,13 @@ declare(strict_types=1);
  * @since         4.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Http\Middleware;
 
 use Closure;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\MiddlewareInterface;
-use Psr\Http\Server\RequestHandlerInterface;
-
+use Psr\Http\Message\Response_Interface;
+use Psr\Http\Message\Server_Request_Interface;
+use Psr\Http\Server\Middleware_Interface;
+use Psr\Http\Server\Request_Handler_Interface;
 /**
  * Decorate closures as PSR-15 middleware.
  *
@@ -38,7 +35,7 @@ use Psr\Http\Server\RequestHandlerInterface;
  *
  * such that it will operate as PSR-15 middleware.
  */
-class ClosureDecoratorMiddleware implements MiddlewareInterface
+class Closure_Decorator_Middleware implements Middleware_Interface
 {
     /**
      * Constructor
@@ -50,27 +47,23 @@ class ClosureDecoratorMiddleware implements MiddlewareInterface
          * A Closure.
          */
         protected Closure $callable
-    ) {
+    )
+    {
     }
-
     /**
      * Run the callable to process an incoming server request.
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request Request instance.
      * @param \Psr\Http\Server\RequestHandlerInterface $handler Request handler instance.
      */
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
+    public function process(Server_Request_Interface $request, Request_Handler_Interface $handler): Response_Interface
     {
-        return ($this->callable)(
-            $request,
-            $handler,
-        );
+        return ($this->callable)($request, $handler);
     }
-
     /**
      * @internal
      */
-    public function getCallable(): Closure
+    public function get_callable(): Closure
     {
         return $this->callable;
     }

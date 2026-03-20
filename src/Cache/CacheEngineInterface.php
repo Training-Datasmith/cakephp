@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,7 +14,6 @@ declare(strict_types=1);
  * @since         3.7.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Cache;
 
 /**
@@ -27,7 +25,7 @@ namespace Cake\Cache;
  *
  * @since 3.7.0
  */
-interface CacheEngineInterface
+interface Cache_Engine_Interface
 {
     /**
      * Write data for key into a cache engine if it doesn't exist already.
@@ -38,7 +36,6 @@ interface CacheEngineInterface
      *   Or if the key existed already.
      */
     public function add(string $key, mixed $value): bool;
-
     /**
      * Increment a number under the key and return incremented value
      *
@@ -47,7 +44,6 @@ interface CacheEngineInterface
      * @return int|false New incremented value, false otherwise
      */
     public function increment(string $key, int $offset = 1): int|false;
-
     /**
      * Decrement a number under the key and return decremented value
      *
@@ -56,7 +52,6 @@ interface CacheEngineInterface
      * @return int|false New decremented value, false otherwise
      */
     public function decrement(string $key, int $offset = 1): int|false;
-
     /**
      * Clear all values belonging to the named group.
      *
@@ -66,5 +61,5 @@ interface CacheEngineInterface
      *
      * @param string $group name of the group to be cleared
      */
-    public function clearGroup(string $group): bool;
+    public function clear_group(string $group): bool;
 }

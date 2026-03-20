@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,29 +14,25 @@ declare(strict_types=1);
  * @since         4.4.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Error\Renderer;
 
-use Cake\Console\ConsoleOutput;
+use Cake\Console\Console_Output;
 use Cake\Core\Configure;
-use Cake\Core\Exception\CakeException;
+use Cake\Core\Exception\Cake_Exception;
 use Cake\Error\Debugger;
-use Cake\Error\ExceptionRendererInterface;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
+use Cake\Error\Exception_Renderer_Interface;
+use Psr\Http\Message\Response_Interface;
+use Psr\Http\Message\Server_Request_Interface;
 use Throwable;
-
 /**
  * Plain text exception rendering with a stack trace.
  *
  * Useful in CI or plain text environments.
  */
-class ConsoleExceptionRenderer implements ExceptionRendererInterface
+class Console_Exception_Renderer implements Exception_Renderer_Interface
 {
-    private readonly ConsoleOutput $output;
-
+    private readonly Console_Output $output;
     private readonly bool $trace;
-
     /**
      * Constructor.
      *
@@ -45,80 +40,64 @@ class ConsoleExceptionRenderer implements ExceptionRendererInterface
      * @param \Psr\Http\Message\ServerRequestInterface|null $request Not used.
      * @param array $config Error handling configuration.
      */
-    public function __construct(private readonly Throwable $error, ?ServerRequestInterface $request, array $config)
+    public function __construct(private readonly Throwable $error, ?Server_Request_Interface $request, array $config)
     {
-        $this->output = $config['stderr'] ?? new ConsoleOutput('php://stderr');
+        $this->output = $config['stderr'] ?? new Console_Output('php://stderr');
         $this->trace = $config['trace'] ?? true;
     }
-
     /**
      * Render an exception into a plain text message.
      */
-    public function render(): ResponseInterface|string
+    public function render(): Response_Interface|string
     {
         $exceptions = [$this->error];
-        $previous = $this->error->getPrevious();
+        $previous = $this->error->get_previous();
         while ($previous !== null) {
             $exceptions[] = $previous;
-            $previous = $previous->getPrevious();
+            $previous = $previous->get_previous();
         }
         $out = [];
         foreach ($exceptions as $i => $error) {
             $parent = $i > 0 ? $exceptions[$i - 1] : null;
-            $out = array_merge($out, $this->renderException($error, $parent));
+            $out = array_merge($out, $this->render_exception($error, $parent));
         }
-
         return implode("\n", $out);
     }
-
     /**
      * Render an individual exception
      *
      * @param \Throwable $exception The exception to render.
      * @param \Throwable|null $parent The Exception index in the chain
      */
-    protected function renderException(Throwable $exception, ?Throwable $parent): array
+    protected function render_exception(Throwable $exception, ?Throwable $parent): array
     {
-        $out = [
-            sprintf(
-                '<error>%s[%s] %s</error> in %s on line %s',
-                $parent ? 'Caused by ' : '',
-                $exception::class,
-                $exception->getMessage(),
-                $exception->getFile(),
-                $exception->getLine(),
-            ),
-        ];
-
+        $out = [sprintf('<error>%s[%s] %s</error> in %s on line %s', $parent ? 'Caused by ' : '', $exception::class, $exception->get_message(), $exception->get_file(), $exception->get_line())];
         $debug = Configure::read('debug');
-        if ($debug && $exception instanceof CakeException) {
-            $attributes = $exception->getAttributes();
+        if ($debug && $exception instanceof Cake_Exception) {
+            $attributes = $exception->get_attributes();
             if ($attributes) {
                 $out[] = '';
                 $out[] = '<info>Exception Attributes</info>';
                 $out[] = '';
-                $out[] = var_export($exception->getAttributes(), true);
+                $out[] = var_export($exception->get_attributes(), true);
             }
         }
-
         if ($this->trace) {
-            $stacktrace = Debugger::getUniqueFrames($exception, $parent);
+            $stacktrace = Debugger::get_unique_frames($exception, $parent);
             $out[] = '';
             $out[] = '<info>Stack Trace:</info>';
             $out[] = '';
-            $out[] = Debugger::formatTrace($stacktrace, ['format' => 'text']);
+            $out[] = Debugger::format_trace($stacktrace, ['format' => 'text']);
             $out[] = '';
         }
-
         return $out;
     }
-
     /**
      * Write output to the output stream
      *
      * @param \Psr\Http\Message\ResponseInterface|string $output The output to print.
      */
-    public function write(ResponseInterface|string $output): void
+    public function write(Response_Interface|string $output): void
     {
         if (is_string($output)) {
             $this->output->write($output);

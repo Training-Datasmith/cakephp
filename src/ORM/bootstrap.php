@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,9 +14,7 @@ declare(strict_types=1);
  * @since         5.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
-use Cake\Datasource\FactoryLocator;
-use Cake\ORM\Locator\TableLocator;
-
+use Cake\Datasource\Factory_Locator;
+use Cake\ORM\Locator\Table_Locator;
 // @phpstan-ignore argument.type (Table extends RepositoryInterface)
-FactoryLocator::add('Table', new TableLocator());
+Factory_Locator::add('Table', new Table_Locator());

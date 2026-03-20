@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) :  Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,40 +14,27 @@ declare(strict_types=1);
  * @since         2.2.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Log\Engine;
 
-use Cake\Console\ConsoleOutput;
-use Cake\Log\Formatter\DefaultFormatter;
+use Cake\Console\Console_Output;
+use Cake\Log\Formatter\Default_Formatter;
 use InvalidArgumentException;
 use Stringable;
-
 /**
  * Console logging. Writes logs to console output.
  */
-class ConsoleLog extends BaseLog
+class Console_Log extends Base_Log
 {
     /**
      * Default config for this class
      *
      * @var array<string, mixed>
      */
-    protected array $_defaultConfig = [
-        'stream' => 'php://stderr',
-        'levels' => null,
-        'scopes' => [],
-        'outputAs' => null,
-        'formatter' => [
-            'className' => DefaultFormatter::class,
-            'includeTags' => true,
-        ],
-    ];
-
+    protected array $_default_config = ['stream' => 'php://stderr', 'levels' => null, 'scopes' => [], 'outputAs' => null, 'formatter' => ['className' => Default_Formatter::class, 'includeTags' => true]];
     /**
      * Output stream
      */
-    protected ConsoleOutput $_output;
-
+    protected Console_Output $_output;
     /**
      * Constructs a new Console Logger.
      *
@@ -66,21 +52,18 @@ class ConsoleLog extends BaseLog
     public function __construct(array $config = [])
     {
         parent::__construct($config);
-
         $config = $this->_config;
-        if ($config['stream'] instanceof ConsoleOutput) {
+        if ($config['stream'] instanceof Console_Output) {
             $this->_output = $config['stream'];
         } elseif (is_string($config['stream'])) {
-            $this->_output = new ConsoleOutput($config['stream']);
+            $this->_output = new Console_Output($config['stream']);
         } else {
             throw new InvalidArgumentException('`stream` not a ConsoleOutput nor string');
         }
-
         if (isset($config['outputAs'])) {
-            $this->_output->setOutputAs($config['outputAs']);
+            $this->_output->set_output_as($config['outputAs']);
         }
     }
-
     /**
      * Implements writing to console.
      *

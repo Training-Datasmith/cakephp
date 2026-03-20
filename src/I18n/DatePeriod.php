@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,11 +14,9 @@ declare(strict_types=1);
  * @since         5.3.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\I18n;
 
-use Cake\Chronos\ChronosDatePeriod;
-
+use Cake\Chronos\Chronos_Date_Period;
 /**
  * DatePeriod wrapper that returns DateTime instances.
  *
@@ -27,7 +24,7 @@ use Cake\Chronos\ChronosDatePeriod;
  * @template TValue \Cake\I18n\DateTime
  * @template-extends \Cake\Chronos\ChronosDatePeriod<int, \Cake\I18n\Date>
  */
-class DatePeriod extends ChronosDatePeriod
+class DatePeriod extends Chronos_Date_Period
 {
     public function current(): Date
     {

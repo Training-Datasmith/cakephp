@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -13,18 +12,17 @@ declare(strict_types=1);
  * @link          https://cakephp.org CakePHP(tm) Project
  * @license       https://www.opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Console;
 
 /**
  * An interface for abstracting creation of command and shell instances.
  */
-interface CommandFactoryInterface
+interface Command_Factory_Interface
 {
     /**
      * The factory method for creating Command  instances.
      *
      * @param string $className Command class name.
      */
-    public function create(string $className): CommandInterface;
+    public function create(string $class_name): Command_Interface;
 }

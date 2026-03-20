@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -13,31 +12,26 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Controller\Exception;
 
-use function Cake\Core\deprecationWarning;
-
-use Cake\Http\Exception\BadRequestException;
+use function Cake\Core\Deprecation_Warning;
+use Cake\Http\Exception\Bad_Request_Exception;
 use Throwable;
-
 /**
  * Security exception - used when SecurityComponent detects any issue with the current request
  *
  * @deprecated 5.2.0 This exception is no longer used in the CakePHP core.
  */
-class SecurityException extends BadRequestException
+class Security_Exception extends Bad_Request_Exception
 {
     /**
      * Security Exception type
      */
     protected string $_type = 'secure';
-
     /**
      * Reason for request blackhole
      */
     protected ?string $_reason = null;
-
     /**
      * Constructor
      *
@@ -47,49 +41,40 @@ class SecurityException extends BadRequestException
      */
     public function __construct(?string $message = null, ?int $code = null, ?Throwable $previous = null)
     {
-        deprecationWarning(
-            '5.2.0',
-            static::class . ' is deprecated. Use BadRequestException or a custom exception instead.',
-        );
-
+        deprecation_warning('5.2.0', static::class . ' is deprecated. Use BadRequestException or a custom exception instead.');
         parent::__construct($message, $code, $previous);
     }
-
     /**
      * Getter for type
      */
-    public function getType(): string
+    public function get_type(): string
     {
         return $this->_type;
     }
-
     /**
      * Set Message
      *
      * @param string $message Exception message
      */
-    public function setMessage(string $message): void
+    public function set_message(string $message): void
     {
         $this->message = $message;
     }
-
     /**
      * Set Reason
      *
      * @param string|null $reason Reason details
      * @return $this
      */
-    public function setReason(?string $reason = null): static
+    public function set_reason(?string $reason = null): static
     {
         $this->_reason = $reason;
-
         return $this;
     }
-
     /**
      * Get Reason
      */
-    public function getReason(): ?string
+    public function get_reason(): ?string
     {
         return $this->_reason;
     }

@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,7 +14,6 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Database\Statement;
 
 /**
@@ -23,42 +21,33 @@ namespace Cake\Database\Statement;
  *
  * @internal
  */
-class SqliteStatement extends Statement
+class Sqlite_Statement extends Statement
 {
-    protected ?int $affectedRows = null;
-
+    protected ?int $affected_rows = null;
     /**
      * @inheritDoc
      */
     public function execute(?array $params = null): bool
     {
-        $this->affectedRows = null;
-
+        $this->affected_rows = null;
         return parent::execute($params);
     }
-
     /**
      * @inheritDoc
      */
-    public function rowCount(): int
+    public function row_count(): int
     {
-        if ($this->affectedRows !== null) {
-            return $this->affectedRows;
+        if ($this->affected_rows !== null) {
+            return $this->affected_rows;
         }
-
-        if (
-            $this->statement->queryString &&
-            preg_match('/^(?:DELETE|UPDATE|INSERT)/i', $this->statement->queryString)
-        ) {
+        if ($this->statement->query_string && preg_match('/^(?:DELETE|UPDATE|INSERT)/i', $this->statement->query_string)) {
             $changes = $this->_driver->prepare('SELECT CHANGES()');
             $changes->execute();
             $row = $changes->fetch();
-
-            $this->affectedRows = $row ? (int)$row[0] : 0;
+            $this->affected_rows = $row ? (int) $row[0] : 0;
         } else {
-            $this->affectedRows = parent::rowCount();
+            $this->affected_rows = parent::row_count();
         }
-
-        return $this->affectedRows;
+        return $this->affected_rows;
     }
 }

@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,7 +14,6 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Form;
 
 /**
@@ -29,34 +27,25 @@ class Schema
      * @var array<string, array<string, mixed>>
      */
     protected array $_fields = [];
-
     /**
      * The default values for fields.
      *
      * @var array<string, mixed>
      */
-    protected array $_fieldDefaults = [
-        'type' => null,
-        'length' => null,
-        'precision' => null,
-        'default' => null,
-    ];
-
+    protected array $_field_defaults = ['type' => null, 'length' => null, 'precision' => null, 'default' => null];
     /**
      * Add multiple fields to the schema.
      *
      * @param array<string, array<string, mixed>|string> $fields The fields to add.
      * @return $this
      */
-    public function addFields(array $fields): static
+    public function add_fields(array $fields): static
     {
         foreach ($fields as $name => $attrs) {
-            $this->addField($name, $attrs);
+            $this->add_field($name, $attrs);
         }
-
         return $this;
     }
-
     /**
      * Adds a field to the schema.
      *
@@ -65,30 +54,26 @@ class Schema
      *   as a string.
      * @return $this
      */
-    public function addField(string $name, array|string $attrs): static
+    public function add_field(string $name, array|string $attrs): static
     {
         if (is_string($attrs)) {
             $attrs = ['type' => $attrs];
         }
-        $attrs = array_intersect_key($attrs, $this->_fieldDefaults);
-        $this->_fields[$name] = $attrs + $this->_fieldDefaults;
-
+        $attrs = array_intersect_key($attrs, $this->_field_defaults);
+        $this->_fields[$name] = $attrs + $this->_field_defaults;
         return $this;
     }
-
     /**
      * Removes a field from the schema.
      *
      * @param string $name The field to remove.
      * @return $this
      */
-    public function removeField(string $name): static
+    public function remove_field(string $name): static
     {
         unset($this->_fields[$name]);
-
         return $this;
     }
-
     /**
      * Get the list of fields in the schema.
      *
@@ -98,7 +83,6 @@ class Schema
     {
         return array_keys($this->_fields);
     }
-
     /**
      * Get the attributes for a given field.
      *
@@ -109,7 +93,6 @@ class Schema
     {
         return $this->_fields[$name] ?? null;
     }
-
     /**
      * Get the type of the named field.
      *
@@ -117,16 +100,14 @@ class Schema
      * @return string|null Either the field type or null if the
      *   field does not exist.
      */
-    public function fieldType(string $name): ?string
+    public function field_type(string $name): ?string
     {
         $field = $this->field($name);
         if (!$field) {
             return null;
         }
-
         return $field['type'];
     }
-
     /**
      * Get the printable version of this object
      *
@@ -134,8 +115,6 @@ class Schema
      */
     public function __debugInfo(): array
     {
-        return [
-            '_fields' => $this->_fields,
-        ];
+        return ['_fields' => $this->_fields];
     }
 }

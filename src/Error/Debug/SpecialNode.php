@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,13 +14,12 @@ declare(strict_types=1);
  * @since         4.1.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Error\Debug;
 
 /**
  * Debug node for special messages like errors or recursion warnings.
  */
-class SpecialNode implements NodeInterface
+class Special_Node implements Node_Interface
 {
     /**
      * Constructor
@@ -31,19 +29,17 @@ class SpecialNode implements NodeInterface
     public function __construct(private readonly string $value)
     {
     }
-
     /**
      * Get the message/value
      */
-    public function getValue(): string
+    public function get_value(): string
     {
         return $this->value;
     }
-
     /**
      * @inheritDoc
      */
-    public function getChildren(): array
+    public function get_children(): array
     {
         return [];
     }

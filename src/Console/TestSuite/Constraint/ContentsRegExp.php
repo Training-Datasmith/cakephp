@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -14,15 +13,14 @@ declare(strict_types=1);
  * @since         3.7.0
  * @license       https://www.opensource.org/licenses/mit-license.php MIT License
  */
-
-namespace Cake\Console\TestSuite\Constraint;
+namespace Cake\Console\Test_Suite\Constraint;
 
 /**
  * ContentsRegExp
  *
  * @internal
  */
-class ContentsRegExp extends ContentsBase
+class Contents_Reg_Exp extends Contents_Base
 {
     /**
      * Checks if contents contain expected
@@ -33,35 +31,28 @@ class ContentsRegExp extends ContentsBase
     {
         return preg_match($other, $this->contents) > 0;
     }
-
     /**
      * Assertion message
      */
-    public function toString(): string
+    public function to_string(): string
     {
         return sprintf('PCRE pattern found in %s', $this->output);
     }
-
     /**
      * @param mixed $other Expected
      */
-    public function failureDescription(mixed $other): string
+    public function failure_description(mixed $other): string
     {
-        return '`' . $other . '` ' . $this->toString();
+        return '`' . $other . '` ' . $this->to_string();
     }
-
     /**
      * @inheritDoc
      */
-    protected function additionalFailureDescription(mixed $other): string
+    protected function additional_failure_description(mixed $other): string
     {
         return sprintf("actual result:\n%s", $this->contents);
     }
 }
-
 // phpcs:disable
-class_alias(
-    \Cake\Console\TestSuite\Constraint\ContentsRegExp::class,
-    'Cake\TestSuite\Constraint\Console\ContentsRegExp'
-);
+class_alias(\Cake\Console\Test_Suite\Constraint\Contents_Reg_Exp::class, 'Cake\TestSuite\Constraint\Console\ContentsRegExp');
 // phpcs:enable

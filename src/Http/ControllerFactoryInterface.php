@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,18 +14,16 @@ declare(strict_types=1);
  * @since         4.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Http;
 
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-
+use Psr\Http\Message\Response_Interface;
+use Psr\Http\Message\Server_Request_Interface;
 /**
  * Factory method for building controllers from request/response pairs.
  *
  * @template TController
  */
-interface ControllerFactoryInterface
+interface Controller_Factory_Interface
 {
     /**
      * Create a controller for a given request
@@ -35,8 +32,7 @@ interface ControllerFactoryInterface
      * @throws \Cake\Http\Exception\MissingControllerException
      * @phpstan-return TController
      */
-    public function create(ServerRequestInterface $request): mixed;
-
+    public function create(Server_Request_Interface $request): mixed;
     /**
      * Invoke a controller's action and wrapping methods.
      *
@@ -44,5 +40,5 @@ interface ControllerFactoryInterface
      * @return \Psr\Http\Message\ResponseInterface The response
      * @phpstan-param TController $controller
      */
-    public function invoke(mixed $controller): ResponseInterface;
+    public function invoke(mixed $controller): Response_Interface;
 }

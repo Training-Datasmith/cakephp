@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -14,15 +13,14 @@ declare(strict_types=1);
  * @since         3.7.0
  * @license       https://www.opensource.org/licenses/mit-license.php MIT License
  */
-
-namespace Cake\Console\TestSuite\Constraint;
+namespace Cake\Console\Test_Suite\Constraint;
 
 /**
  * ContentsEmpty
  *
  * @internal
  */
-class ContentsEmpty extends ContentsBase
+class Contents_Empty extends Contents_Base
 {
     /**
      * Checks if contents are empty
@@ -33,37 +31,30 @@ class ContentsEmpty extends ContentsBase
     {
         return $this->contents === '';
     }
-
     /**
      * Assertion message
      */
-    public function toString(): string
+    public function to_string(): string
     {
         return sprintf('%s is empty.', $this->output);
     }
-
     /**
      * Overwrites the descriptions so we can remove the automatic "expected" message
      *
      * @param mixed $other Value
      */
-    protected function failureDescription(mixed $other): string
+    protected function failure_description(mixed $other): string
     {
-        return $this->toString();
+        return $this->to_string();
     }
-
     /**
      * @inheritDoc
      */
-    protected function additionalFailureDescription(mixed $other): string
+    protected function additional_failure_description(mixed $other): string
     {
         return sprintf("actual result:\n%s", $this->contents);
     }
 }
-
 // phpcs:disable
-class_alias(
-    \Cake\Console\TestSuite\Constraint\ContentsEmpty::class,
-    'Cake\TestSuite\Constraint\Console\ContentsEmpty'
-);
+class_alias(\Cake\Console\Test_Suite\Constraint\Contents_Empty::class, 'Cake\TestSuite\Constraint\Console\ContentsEmpty');
 // phpcs:enable

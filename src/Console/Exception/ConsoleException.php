@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -14,20 +13,18 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Console\Exception;
 
-use Cake\Console\CommandInterface;
-use Cake\Core\Exception\CakeException;
-
+use Cake\Console\Command_Interface;
+use Cake\Core\Exception\Cake_Exception;
 /**
  * Exception class for Console libraries. This exception will be thrown from Console library
  * classes when they encounter an error.
  */
-class ConsoleException extends CakeException
+class Console_Exception extends Cake_Exception
 {
     /**
      * Default exception code
      */
-    protected int $_defaultCode = CommandInterface::CODE_ERROR;
+    protected int $_default_code = Command_Interface::CODE_ERROR;
 }

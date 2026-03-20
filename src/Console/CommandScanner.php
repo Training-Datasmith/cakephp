@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,7 +14,6 @@ declare(strict_types=1);
  * @since         3.5.0
  * @license       https://www.opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Console;
 
 use Cake\Core\App;
@@ -24,65 +22,49 @@ use Cake\Core\Plugin;
 use Cake\Utility\Filesystem;
 use Cake\Utility\Inflector;
 use ReflectionClass;
-
 /**
  * Used by CommandCollection and CommandTask to scan the filesystem
  * for command classes.
  *
  * @internal
  */
-class CommandScanner
+class Command_Scanner
 {
     /**
      * Scan CakePHP internals for shells & commands.
      *
      * @return array A list of command metadata.
      */
-    public function scanCore(): array
+    public function scan_core(): array
     {
-        return $this->scanDir(
-            dirname(__DIR__) . DIRECTORY_SEPARATOR . 'Command' . DIRECTORY_SEPARATOR,
-            'Cake\Command\\',
-            '',
-            ['command_list'],
-        );
+        return $this->scan_dir(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'Command' . DIRECTORY_SEPARATOR, 'Cake\Command\\', '', ['command_list']);
     }
-
     /**
      * Scan the application for shells & commands.
      *
      * @return array A list of command metadata.
      */
-    public function scanApp(): array
+    public function scan_app(): array
     {
-        $appNamespace = Configure::read('App.namespace');
-
-        return $this->scanDir(
-            App::classPath('Command')[0],
-            $appNamespace . '\Command\\',
-            '',
-            [],
-        );
+        $app_namespace = Configure::read('App.namespace');
+        return $this->scan_dir(App::class_path('Command')[0], $app_namespace . '\Command\\', '', []);
     }
-
     /**
      * Scan the named plugin for shells and commands
      *
      * @param string $plugin The named plugin.
      * @return array A list of command metadata.
      */
-    public function scanPlugin(string $plugin): array
+    public function scan_plugin(string $plugin): array
     {
-        if (!Plugin::isLoaded($plugin)) {
+        if (!Plugin::is_loaded($plugin)) {
             return [];
         }
-        $path = Plugin::classPath($plugin);
+        $path = Plugin::class_path($plugin);
         $namespace = str_replace('/', '\\', $plugin);
         $prefix = Inflector::underscore($plugin) . '.';
-
-        return $this->scanDir($path . 'Command', $namespace . '\Command\\', $prefix, []);
+        return $this->scan_dir($path . 'Command', $namespace . '\Command\\', $prefix, []);
     }
-
     /**
      * Scan a directory for .php files and return the class names that
      * should be within them.
@@ -93,50 +75,38 @@ class CommandScanner
      * @param array<string> $hide A list of command names to hide as they are internal commands.
      * @return array The list of shell info arrays based on scanning the filesystem and inflection.
      */
-    protected function scanDir(string $path, string $namespace, string $prefix, array $hide): array
+    protected function scan_dir(string $path, string $namespace, string $prefix, array $hide): array
     {
         if (!is_dir($path)) {
             return [];
         }
-
         // This ensures `Command` class is not added to the list.
         $hide[] = '';
-
-        $classPattern = '/Command\.php$/';
+        $class_pattern = '/Command\.php$/';
         $fs = new Filesystem();
         /** @var \Iterator<\SplFileInfo> $files */
-        $files = $fs->find($path, $classPattern);
-
+        $files = $fs->find($path, $class_pattern);
         $commands = [];
-        foreach ($files as $fileInfo) {
-            $file = $fileInfo->getFilename();
-
-            $name = Inflector::underscore((string)preg_replace($classPattern, '', $file));
+        foreach ($files as $file_info) {
+            $file = $file_info->get_filename();
+            $name = Inflector::underscore((string) preg_replace($class_pattern, '', $file));
             if (in_array($name, $hide, true)) {
                 continue;
             }
-
-            $class = $namespace . $fileInfo->getBasename('.php');
-            if (!is_subclass_of($class, CommandInterface::class)) {
+            $class = $namespace . $file_info->get_basename('.php');
+            if (!is_subclass_of($class, Command_Interface::class)) {
                 continue;
             }
             $reflection = new ReflectionClass($class);
-            if ($reflection->isAbstract()) {
+            if ($reflection->is_abstract()) {
                 continue;
             }
-            if (is_subclass_of($class, BaseCommand::class)) {
-                $name = $class::defaultName();
+            if (is_subclass_of($class, Base_Command::class)) {
+                $name = $class::default_name();
             }
-            $commands[$path . $file] = [
-                'file' => $path . $file,
-                'fullName' => $prefix . $name,
-                'name' => $name,
-                'class' => $class,
-            ];
+            $commands[$path . $file] = ['file' => $path . $file, 'fullName' => $prefix . $name, 'name' => $name, 'class' => $class];
         }
-
         ksort($commands);
-
         return array_values($commands);
     }
 }

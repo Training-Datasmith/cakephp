@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,15 +14,13 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Core;
 
 use Cake\Utility\Inflector;
-
 /**
  * Provides methods that allow other classes access to conventions based inflections.
  */
-trait ConventionsTrait
+trait Conventions_Trait
 {
     /**
      * Creates a fixture name
@@ -31,22 +28,20 @@ trait ConventionsTrait
      * @param string $name Model class name
      * @return string Singular model key
      */
-    protected function _fixtureName(string $name): string
+    protected function _fixture_name(string $name): string
     {
         return Inflector::camelize($name);
     }
-
     /**
      * Creates the proper entity name (singular) for the specified name
      *
      * @param string $name Name
      * @return string Camelized and plural model name
      */
-    protected function _entityName(string $name): string
+    protected function _entity_name(string $name): string
     {
         return Inflector::singularize(Inflector::camelize($name));
     }
-
     /**
      * Creates the proper underscored model key for associations
      *
@@ -55,59 +50,52 @@ trait ConventionsTrait
      * @param string $name Model class name
      * @return string Singular model key
      */
-    protected function _modelKey(string $name): string
+    protected function _model_key(string $name): string
     {
-        [, $name] = pluginSplit($name);
-
+        [, $name] = plugin_split($name);
         return Inflector::underscore(Inflector::singularize($name)) . '_id';
     }
-
     /**
      * Creates the proper model name from a foreign key
      *
      * @param string $key Foreign key
      * @return string Model name
      */
-    protected function _modelNameFromKey(string $key): string
+    protected function _model_name_from_key(string $key): string
     {
         $key = str_replace('_id', '', $key);
-
         return Inflector::camelize(Inflector::pluralize($key));
     }
-
     /**
      * Creates the singular name for use in views.
      *
      * @param string $name Name to use
      * @return string Variable name
      */
-    protected function _singularName(string $name): string
+    protected function _singular_name(string $name): string
     {
         return Inflector::variable(Inflector::singularize($name));
     }
-
     /**
      * Creates the plural variable name for views
      *
      * @param string $name Name to use
      * @return string Plural name for views
      */
-    protected function _variableName(string $name): string
+    protected function _variable_name(string $name): string
     {
         return Inflector::variable($name);
     }
-
     /**
      * Creates the singular human name used in views
      *
      * @param string $name Controller name
      * @return string Singular human name
      */
-    protected function _singularHumanName(string $name): string
+    protected function _singular_human_name(string $name): string
     {
         return Inflector::humanize(Inflector::underscore(Inflector::singularize($name)));
     }
-
     /**
      * Creates a camelized version of $name
      *
@@ -118,41 +106,37 @@ trait ConventionsTrait
     {
         return Inflector::camelize($name);
     }
-
     /**
      * Creates the plural human name used in views
      *
      * @param string $name Controller name
      * @return string Plural human name
      */
-    protected function _pluralHumanName(string $name): string
+    protected function _plural_human_name(string $name): string
     {
         return Inflector::humanize(Inflector::underscore($name));
     }
-
     /**
      * Find the correct path for a plugin. Scans $pluginPaths for the plugin you want.
      *
      * @param string $pluginName Name of the plugin you want ie. DebugKit
      * @return string Path to the correct plugin.
      */
-    protected function _pluginPath(string $pluginName): string
+    protected function _plugin_path(string $plugin_name): string
     {
-        if (Plugin::isLoaded($pluginName)) {
-            return Plugin::path($pluginName);
+        if (Plugin::is_loaded($plugin_name)) {
+            return Plugin::path($plugin_name);
         }
-
-        return current(App::path('plugins')) . $pluginName . DIRECTORY_SEPARATOR;
+        return current(App::path('plugins')) . $plugin_name . DIRECTORY_SEPARATOR;
     }
-
     /**
      * Return plugin's namespace
      *
      * @param string $pluginName Plugin name
      * @return string Plugin's namespace
      */
-    protected function _pluginNamespace(string $pluginName): string
+    protected function _plugin_namespace(string $plugin_name): string
     {
-        return str_replace('/', '\\', $pluginName);
+        return str_replace('/', '\\', $plugin_name);
     }
 }

@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -14,14 +13,12 @@ declare(strict_types=1);
  * @since         4.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Http\Client\Exception;
 
-use Psr\Http\Client\NetworkExceptionInterface;
-use Psr\Http\Message\RequestInterface;
+use Psr\Http\Client\Network_Exception_Interface;
+use Psr\Http\Message\Request_Interface;
 use RuntimeException;
 use Throwable;
-
 /**
  * Thrown when the request cannot be completed because of network issues.
  *
@@ -29,10 +26,9 @@ use Throwable;
  *
  * Example: the target host name can not be resolved or the connection failed.
  */
-class NetworkException extends RuntimeException implements NetworkExceptionInterface
+class Network_Exception extends RuntimeException implements Network_Exception_Interface
 {
-    protected RequestInterface $request;
-
+    protected Request_Interface $request;
     /**
      * Constructor.
      *
@@ -40,18 +36,17 @@ class NetworkException extends RuntimeException implements NetworkExceptionInter
      * @param \Psr\Http\Message\RequestInterface $request Request instance.
      * @param \Throwable|null $previous Previous Exception
      */
-    public function __construct(string $message, RequestInterface $request, ?Throwable $previous = null)
+    public function __construct(string $message, Request_Interface $request, ?Throwable $previous = null)
     {
         $this->request = $request;
         parent::__construct($message, 0, $previous);
     }
-
     /**
      * Returns the request.
      *
      * The request object MAY be a different object from the one passed to ClientInterface::sendRequest()
      */
-    public function getRequest(): RequestInterface
+    public function get_request(): Request_Interface
     {
         return $this->request;
     }

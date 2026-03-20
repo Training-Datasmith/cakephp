@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,24 +14,20 @@ declare(strict_types=1);
  * @since         4.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Mailer;
 
 use Cake\Core\Configure;
-
 use function Cake\Core\env;
-
-use Cake\Http\Client\FormDataPart;
+use Cake\Http\Client\Form_Data_Part;
 use Cake\Utility\Hash;
 use Cake\Utility\Security;
 use Cake\Utility\Text;
 use Closure;
 use InvalidArgumentException;
 use JsonSerializable;
-use Psr\Http\Message\UploadedFileInterface;
+use Psr\Http\Message\Uploaded_File_Interface;
 use RuntimeException;
-use SimpleXMLElement;
-
+use Simple_Xml_Element;
 /**
  * Email message class.
  *
@@ -47,75 +42,63 @@ class Message implements JsonSerializable
      * @var int
      */
     public const LINE_LENGTH_SHOULD = 78;
-
     /**
      * Line length - must not exceed - RFC 2822 - 2.1.1
      *
      * @var int
      */
     public const LINE_LENGTH_MUST = 998;
-
     /**
      * Type of message - HTML
      *
      * @var string
      */
     public const MESSAGE_HTML = 'html';
-
     /**
      * Type of message - TEXT
      *
      * @var string
      */
     public const MESSAGE_TEXT = 'text';
-
     /**
      * Type of message - BOTH
      *
      * @var string
      */
     public const MESSAGE_BOTH = 'both';
-
     /**
      * Holds the regex pattern for email validation
      *
      * @var string
      */
     public const EMAIL_PATTERN = '/^((?:[\p{L}0-9.!#$%&\'*+\/=?^_`{|}~-]+)*@[\p{L}0-9-._]+)$/ui';
-
     /**
      * Recipient of the email
      */
     protected array $to = [];
-
     /**
      * The mail which the email is sent from
      */
     protected array $from = [];
-
     /**
      * The sender email
      */
     protected array $sender = [];
-
     /**
      * List of email(s) that the recipient will reply to
      */
-    protected array $replyTo = [];
-
+    protected array $reply_to = [];
     /**
      * The read receipt email
      */
-    protected array $readReceipt = [];
-
+    protected array $read_receipt = [];
     /**
      * The mail that will be used in case of any errors like
      * - Remote mailserver down
      * - Remote user has exceeded his quota
      * - Unknown user
      */
-    protected array $returnPath = [];
-
+    protected array $return_path = [];
     /**
      * Carbon Copy
      *
@@ -123,7 +106,6 @@ class Message implements JsonSerializable
      * The Recipient WILL be able to see this list
      */
     protected array $cc = [];
-
     /**
      * Blind Carbon Copy
      *
@@ -131,91 +113,70 @@ class Message implements JsonSerializable
      * The Recipient WILL NOT be able to see this list
      */
     protected array $bcc = [];
-
     /**
      * Message ID
      */
-    protected string|bool $messageId = true;
-
+    protected string|bool $message_id = true;
     /**
      * Domain for messageId generation.
      * Needs to be manually set for CLI mailing as env('HTTP_HOST') is empty
      */
     protected string $domain = '';
-
     /**
      * The subject of the email
      */
     protected string $subject = '';
-
     /**
      * Associative array of a user defined headers
      * Keys will be prefixed 'X-' as per RFC2822 Section 4.7.5
      */
     protected array $headers = [];
-
     /**
      * Text message
      */
-    protected string $textMessage = '';
-
+    protected string $text_message = '';
     /**
      * Html message
      */
-    protected string $htmlMessage = '';
-
+    protected string $html_message = '';
     /**
      * Final message to send
      */
     protected array $message = [];
-
     /**
      * Available formats to be sent.
      *
      * @var array<string>
      */
-    protected array $emailFormatAvailable = [self::MESSAGE_TEXT, self::MESSAGE_HTML, self::MESSAGE_BOTH];
-
+    protected array $email_format_available = [self::MESSAGE_TEXT, self::MESSAGE_HTML, self::MESSAGE_BOTH];
     /**
      * What format should the email be sent in
      */
-    protected string $emailFormat = self::MESSAGE_TEXT;
-
+    protected string $email_format = self::MESSAGE_TEXT;
     /**
      * Charset the email body is sent in
      */
     protected string $charset = 'utf-8';
-
     /**
      * Charset the email header is sent in
      * If null, the $charset property will be used as default
      */
-    protected ?string $headerCharset = null;
-
+    protected ?string $header_charset = null;
     /**
      * The email transfer encoding used.
      * If null, the $charset property is used for determined the transfer encoding.
      */
-    protected ?string $transferEncoding = null;
-
+    protected ?string $transfer_encoding = null;
     /**
      * Available encoding to be set for transfer.
      *
      * @var array<string>
      */
-    protected array $transferEncodingAvailable = [
-        '7bit',
-        '8bit',
-        'base64',
-        'binary',
-        'quoted-printable',
-    ];
-
+    protected array $transfer_encoding_available = ['7bit', '8bit', 'base64', 'binary', 'quoted-printable'];
     /**
      * The application wide charset, used to encode headers and body
      */
-    protected ?string $appCharset = null;
-
+    protected ?string $app_charset = null;
     /**
      * List of files that should be attached to the email.
      *
@@ -224,53 +185,39 @@ class Message implements JsonSerializable
      * @var array<string, array>
      */
     protected array $attachments = [];
-
     /**
      * If set, boundary to use for multipart mime messages
      */
     protected ?string $boundary = null;
-
     /**
      * Contains the optional priority of the email.
      */
     protected ?int $priority = null;
-
     /**
      * 8Bit character sets
      *
      * @var array<string>
      */
     protected array $charset8bit = ['UTF-8', 'SHIFT_JIS'];
-
     /**
      * Define Content-Type charset name
      *
      * @var array<string, string>
      */
-    protected array $contentTypeCharset = [
-        'ISO-2022-JP-MS' => 'ISO-2022-JP',
-    ];
-
+    protected array $content_type_charset = ['ISO-2022-JP-MS' => 'ISO-2022-JP'];
     /**
      * Regex for email validation
      *
      * If null, filter_var() will be used. Use the emailPattern() method
      * to set a custom pattern.
      */
-    protected ?string $emailPattern = self::EMAIL_PATTERN;
-
+    protected ?string $email_pattern = self::EMAIL_PATTERN;
     /**
      * Properties that could be serialized
      *
      * @var array<string>
      */
-    protected array $serializableProperties = [
-        'to', 'from', 'sender', 'replyTo', 'cc', 'bcc', 'subject',
-        'returnPath', 'readReceipt', 'emailFormat', 'emailPattern', 'domain',
-        'attachments', 'messageId', 'headers', 'appCharset', 'charset', 'headerCharset',
-        'textMessage', 'htmlMessage',
-    ];
-
+    protected array $serializable_properties = ['to', 'from', 'sender', 'replyTo', 'cc', 'bcc', 'subject', 'returnPath', 'readReceipt', 'emailFormat', 'emailPattern', 'domain', 'attachments', 'messageId', 'headers', 'appCharset', 'charset', 'headerCharset', 'textMessage', 'htmlMessage'];
     /**
      * Constructor
      *
@@ -278,20 +225,18 @@ class Message implements JsonSerializable
      */
     public function __construct(?array $config = null)
     {
-        $this->appCharset = Configure::read('App.encoding');
-        if ($this->appCharset !== null) {
-            $this->charset = $this->appCharset;
+        $this->app_charset = Configure::read('App.encoding');
+        if ($this->app_charset !== null) {
+            $this->charset = $this->app_charset;
         }
-        $this->domain = (string)preg_replace('/\:\d+$/', '', (string)env('HTTP_HOST'));
+        $this->domain = (string) preg_replace('/\:\d+$/', '', (string) env('HTTP_HOST'));
         if (!$this->domain) {
             $this->domain = php_uname('n');
         }
-
         if ($config) {
-            $this->setConfig($config);
+            $this->set_config($config);
         }
     }
-
     /**
      * Sets "from" address.
      *
@@ -301,19 +246,17 @@ class Message implements JsonSerializable
      * @return $this
      * @throws \InvalidArgumentException
      */
-    public function setFrom(array|string $email, ?string $name = null)
+    public function set_from(array|string $email, ?string $name = null)
     {
-        return $this->setEmailSingle('from', $email, $name, 'From requires only 1 email address.');
+        return $this->set_email_single('from', $email, $name, 'From requires only 1 email address.');
     }
-
     /**
      * Gets "from" address.
      */
-    public function getFrom(): array
+    public function get_from(): array
     {
         return $this->from;
     }
-
     /**
      * Sets the "sender" address. See RFC link below for full explanation.
      *
@@ -324,21 +267,19 @@ class Message implements JsonSerializable
      * @throws \InvalidArgumentException
      * @link https://tools.ietf.org/html/rfc2822.html#section-3.6.2
      */
-    public function setSender(array|string $email, ?string $name = null)
+    public function set_sender(array|string $email, ?string $name = null)
     {
-        return $this->setEmailSingle('sender', $email, $name, 'Sender requires only 1 email address.');
+        return $this->set_email_single('sender', $email, $name, 'Sender requires only 1 email address.');
     }
-
     /**
      * Gets the "sender" address. See RFC link below for full explanation.
      *
      * @link https://tools.ietf.org/html/rfc2822.html#section-3.6.2
      */
-    public function getSender(): array
+    public function get_sender(): array
     {
         return $this->sender;
     }
-
     /**
      * Sets "Reply-To" address.
      *
@@ -348,19 +289,17 @@ class Message implements JsonSerializable
      * @return $this
      * @throws \InvalidArgumentException
      */
-    public function setReplyTo(array|string $email, ?string $name = null)
+    public function set_reply_to(array|string $email, ?string $name = null)
     {
-        return $this->setEmail('replyTo', $email, $name);
+        return $this->set_email('replyTo', $email, $name);
     }
-
     /**
      * Gets "Reply-To" address.
      */
-    public function getReplyTo(): array
+    public function get_reply_to(): array
     {
-        return $this->replyTo;
+        return $this->reply_to;
     }
-
     /**
      * Add "Reply-To" address.
      *
@@ -369,11 +308,10 @@ class Message implements JsonSerializable
      * @param string|null $name Name
      * @return $this
      */
-    public function addReplyTo(array|string $email, ?string $name = null)
+    public function add_reply_to(array|string $email, ?string $name = null)
     {
-        return $this->addEmail('replyTo', $email, $name);
+        return $this->add_email('replyTo', $email, $name);
     }
-
     /**
      * Sets Read Receipt (Disposition-Notification-To header).
      *
@@ -383,24 +321,17 @@ class Message implements JsonSerializable
      * @return $this
      * @throws \InvalidArgumentException
      */
-    public function setReadReceipt(array|string $email, ?string $name = null)
+    public function set_read_receipt(array|string $email, ?string $name = null)
     {
-        return $this->setEmailSingle(
-            'readReceipt',
-            $email,
-            $name,
-            'Disposition-Notification-To requires only 1 email address.',
-        );
+        return $this->set_email_single('readReceipt', $email, $name, 'Disposition-Notification-To requires only 1 email address.');
     }
-
     /**
      * Gets Read Receipt (Disposition-Notification-To header).
      */
-    public function getReadReceipt(): array
+    public function get_read_receipt(): array
     {
-        return $this->readReceipt;
+        return $this->read_receipt;
     }
-
     /**
      * Sets return path.
      *
@@ -410,19 +341,17 @@ class Message implements JsonSerializable
      * @return $this
      * @throws \InvalidArgumentException
      */
-    public function setReturnPath(array|string $email, ?string $name = null)
+    public function set_return_path(array|string $email, ?string $name = null)
     {
-        return $this->setEmailSingle('returnPath', $email, $name, 'Return-Path requires only 1 email address.');
+        return $this->set_email_single('returnPath', $email, $name, 'Return-Path requires only 1 email address.');
     }
-
     /**
      * Gets return path.
      */
-    public function getReturnPath(): array
+    public function get_return_path(): array
     {
-        return $this->returnPath;
+        return $this->return_path;
     }
-
     /**
      * Sets "to" address.
      *
@@ -431,19 +360,17 @@ class Message implements JsonSerializable
      * @param string|null $name Name
      * @return $this
      */
-    public function setTo(array|string $email, ?string $name = null)
+    public function set_to(array|string $email, ?string $name = null)
     {
-        return $this->setEmail('to', $email, $name);
+        return $this->set_email('to', $email, $name);
     }
-
     /**
      * Gets "to" address
      */
-    public function getTo(): array
+    public function get_to(): array
     {
         return $this->to;
     }
-
     /**
      * Add "To" address.
      *
@@ -452,11 +379,10 @@ class Message implements JsonSerializable
      * @param string|null $name Name
      * @return $this
      */
-    public function addTo(array|string $email, ?string $name = null)
+    public function add_to(array|string $email, ?string $name = null)
     {
-        return $this->addEmail('to', $email, $name);
+        return $this->add_email('to', $email, $name);
     }
-
     /**
      * Sets "cc" address.
      *
@@ -465,19 +391,17 @@ class Message implements JsonSerializable
      * @param string|null $name Name
      * @return $this
      */
-    public function setCc(array|string $email, ?string $name = null)
+    public function set_cc(array|string $email, ?string $name = null)
     {
-        return $this->setEmail('cc', $email, $name);
+        return $this->set_email('cc', $email, $name);
     }
-
     /**
      * Gets "cc" address.
      */
-    public function getCc(): array
+    public function get_cc(): array
     {
         return $this->cc;
     }
-
     /**
      * Add "cc" address.
      *
@@ -486,11 +410,10 @@ class Message implements JsonSerializable
      * @param string|null $name Name
      * @return $this
      */
-    public function addCc(array|string $email, ?string $name = null)
+    public function add_cc(array|string $email, ?string $name = null)
     {
-        return $this->addEmail('cc', $email, $name);
+        return $this->add_email('cc', $email, $name);
     }
-
     /**
      * Sets "bcc" address.
      *
@@ -499,19 +422,17 @@ class Message implements JsonSerializable
      * @param string|null $name Name
      * @return $this
      */
-    public function setBcc(array|string $email, ?string $name = null)
+    public function set_bcc(array|string $email, ?string $name = null)
     {
-        return $this->setEmail('bcc', $email, $name);
+        return $this->set_email('bcc', $email, $name);
     }
-
     /**
      * Gets "bcc" address.
      */
-    public function getBcc(): array
+    public function get_bcc(): array
     {
         return $this->bcc;
     }
-
     /**
      * Add "bcc" address.
      *
@@ -520,57 +441,50 @@ class Message implements JsonSerializable
      * @param string|null $name Name
      * @return $this
      */
-    public function addBcc(array|string $email, ?string $name = null)
+    public function add_bcc(array|string $email, ?string $name = null)
     {
-        return $this->addEmail('bcc', $email, $name);
+        return $this->add_email('bcc', $email, $name);
     }
-
     /**
      * Charset setter.
      *
      * @param string $charset Character set.
      * @return $this
      */
-    public function setCharset(string $charset): static
+    public function set_charset(string $charset): static
     {
         $this->charset = $charset;
-
         return $this;
     }
-
     /**
      * Charset getter.
      *
      * @return string Charset
      */
-    public function getCharset(): string
+    public function get_charset(): string
     {
         return $this->charset;
     }
-
     /**
      * HeaderCharset setter.
      *
      * @param string|null $charset Character set.
      * @return $this
      */
-    public function setHeaderCharset(?string $charset): static
+    public function set_header_charset(?string $charset): static
     {
-        $this->headerCharset = $charset;
-
+        $this->header_charset = $charset;
         return $this;
     }
-
     /**
      * HeaderCharset getter.
      *
      * @return string Charset
      */
-    public function getHeaderCharset(): string
+    public function get_header_charset(): string
     {
-        return $this->headerCharset ?: $this->charset;
+        return $this->header_charset ?: $this->charset;
     }
-
     /**
      * TransferEncoding setter.
      *
@@ -578,35 +492,26 @@ class Message implements JsonSerializable
      * @return $this
      * @throws \InvalidArgumentException
      */
-    public function setTransferEncoding(?string $encoding): static
+    public function set_transfer_encoding(?string $encoding): static
     {
         if ($encoding !== null) {
             $encoding = strtolower($encoding);
-            if (!in_array($encoding, $this->transferEncodingAvailable, true)) {
-                throw new InvalidArgumentException(
-                    sprintf(
-                        'Transfer encoding not available. Can be : %s.',
-                        implode(', ', $this->transferEncodingAvailable),
-                    ),
-                );
+            if (!in_array($encoding, $this->transfer_encoding_available, true)) {
+                throw new InvalidArgumentException(sprintf('Transfer encoding not available. Can be : %s.', implode(', ', $this->transfer_encoding_available)));
             }
         }
-
-        $this->transferEncoding = $encoding;
-
+        $this->transfer_encoding = $encoding;
         return $this;
     }
-
     /**
      * TransferEncoding getter.
      *
      * @return string|null Encoding
      */
-    public function getTransferEncoding(): ?string
+    public function get_transfer_encoding(): ?string
     {
-        return $this->transferEncoding;
+        return $this->transfer_encoding;
     }
-
     /**
      * EmailPattern setter/getter
      *
@@ -614,21 +519,18 @@ class Message implements JsonSerializable
      *   null to unset the pattern and make use of filter_var() instead.
      * @return $this
      */
-    public function setEmailPattern(?string $regex): static
+    public function set_email_pattern(?string $regex): static
     {
-        $this->emailPattern = $regex;
-
+        $this->email_pattern = $regex;
         return $this;
     }
-
     /**
      * EmailPattern setter/getter
      */
-    public function getEmailPattern(): ?string
+    public function get_email_pattern(): ?string
     {
-        return $this->emailPattern;
+        return $this->email_pattern;
     }
-
     /**
      * Set email
      *
@@ -639,12 +541,11 @@ class Message implements JsonSerializable
      * @return $this
      * @throws \InvalidArgumentException
      */
-    protected function setEmail(string $varName, array|string $email, ?string $name): static
+    protected function set_email(string $var_name, array|string $email, ?string $name): static
     {
         if (!is_array($email)) {
-            $this->validateEmail($email, $varName);
-            $this->{$varName} = [$email => $name ?? $email];
-
+            $this->validate_email($email, $var_name);
+            $this->{$var_name} = [$email => $name ?? $email];
             return $this;
         }
         $list = [];
@@ -652,14 +553,12 @@ class Message implements JsonSerializable
             if (is_int($key)) {
                 $key = $value;
             }
-            $this->validateEmail($key, $varName);
+            $this->validate_email($key, $var_name);
             $list[$key] = $value ?? $key;
         }
-        $this->{$varName} = $list;
-
+        $this->{$var_name} = $list;
         return $this;
     }
-
     /**
      * Validate email address
      *
@@ -667,23 +566,21 @@ class Message implements JsonSerializable
      * @param string $context Which property was set
      * @throws \InvalidArgumentException If email address does not validate
      */
-    protected function validateEmail(string $email, string $context): void
+    protected function validate_email(string $email, string $context): void
     {
-        if ($this->emailPattern === null) {
+        if ($this->email_pattern === null) {
             if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 return;
             }
-        } elseif (preg_match($this->emailPattern, $email)) {
+        } elseif (preg_match($this->email_pattern, $email)) {
             return;
         }
-
         $context = ltrim($context, '_');
         if ($email === '') {
             throw new InvalidArgumentException(sprintf('The email set for `%s` is empty.', $context));
         }
         throw new InvalidArgumentException(sprintf('Invalid email set for `%s`. You passed `%s`.', $context, $email));
     }
-
     /**
      * Set only 1 email
      *
@@ -695,24 +592,20 @@ class Message implements JsonSerializable
      * @return $this
      * @throws \InvalidArgumentException
      */
-    protected function setEmailSingle(string $varName, array|string $email, ?string $name, string $throwMessage): static
+    protected function set_email_single(string $var_name, array|string $email, ?string $name, string $throw_message): static
     {
         if ($email === []) {
-            $this->{$varName} = $email;
-
+            $this->{$var_name} = $email;
             return $this;
         }
-
-        $current = $this->{$varName};
-        $this->setEmail($varName, $email, $name);
-        if (count($this->{$varName}) !== 1) {
-            $this->{$varName} = $current;
-            throw new InvalidArgumentException($throwMessage);
+        $current = $this->{$var_name};
+        $this->set_email($var_name, $email, $name);
+        if (count($this->{$var_name}) !== 1) {
+            $this->{$var_name} = $current;
+            throw new InvalidArgumentException($throw_message);
         }
-
         return $this;
     }
-
     /**
      * Add email
      *
@@ -723,13 +616,12 @@ class Message implements JsonSerializable
      * @return $this
      * @throws \InvalidArgumentException
      */
-    protected function addEmail(string $varName, array|string $email, ?string $name): static
+    protected function add_email(string $var_name, array|string $email, ?string $name): static
     {
         if (!is_array($email)) {
-            $this->validateEmail($email, $varName);
+            $this->validate_email($email, $var_name);
             $name ??= $email;
-            $this->{$varName}[$email] = $name;
-
+            $this->{$var_name}[$email] = $name;
             return $this;
         }
         $list = [];
@@ -737,71 +629,61 @@ class Message implements JsonSerializable
             if (is_int($key)) {
                 $key = $value;
             }
-            $this->validateEmail($key, $varName);
+            $this->validate_email($key, $var_name);
             $list[$key] = $value;
         }
-        $this->{$varName} = array_merge($this->{$varName}, $list);
-
+        $this->{$var_name} = array_merge($this->{$var_name}, $list);
         return $this;
     }
-
     /**
      * Sets subject.
      *
      * @param string $subject Subject string.
      * @return $this
      */
-    public function setSubject(string $subject): static
+    public function set_subject(string $subject): static
     {
-        $this->subject = $this->encodeForHeader($subject);
-
+        $this->subject = $this->encode_for_header($subject);
         return $this;
     }
-
     /**
      * Gets subject.
      */
-    public function getSubject(): string
+    public function get_subject(): string
     {
         return $this->subject;
     }
-
     /**
      * Get original subject without encoding
      *
      * @return string Original subject
      */
-    public function getOriginalSubject(): string
+    public function get_original_subject(): string
     {
-        return $this->decodeForHeader($this->subject);
+        return $this->decode_for_header($this->subject);
     }
-
     /**
      * Sets headers for the message
      *
      * @param array $headers Associative array containing headers to be set.
      * @return $this
      */
-    public function setHeaders(array $headers): static
+    public function set_headers(array $headers): static
     {
         $this->headers = $headers;
-
         return $this;
     }
-
     /**
      * Add header for the message
      *
      * @param array $headers Headers to set.
      * @return $this
      */
-    public function addHeaders(array $headers): static
+    public function add_headers(array $headers): static
     {
         $this->headers = Hash::merge($this->headers, $headers);
-
         return $this;
     }
-
     /**
      * Get list of headers
      *
@@ -819,39 +701,23 @@ class Message implements JsonSerializable
      * @param array<int|string, string> $include List of headers.
      * @return array<string, string>
      */
-    public function getHeaders(array $include = []): array
+    public function get_headers(array $include = []): array
     {
-        $this->createBoundary();
-
+        $this->create_boundary();
         if ($include === array_values($include)) {
             $include = array_fill_keys($include, true);
         }
-        $defaults = array_fill_keys(
-            [
-                'from', 'sender', 'replyTo', 'readReceipt', 'returnPath',
-                'to', 'cc', 'bcc', 'subject',
-            ],
-            false,
-        );
+        $defaults = array_fill_keys(['from', 'sender', 'replyTo', 'readReceipt', 'returnPath', 'to', 'cc', 'bcc', 'subject'], false);
         $include += $defaults;
-
         $headers = [];
-        $relation = [
-            'from' => 'From',
-            'replyTo' => 'Reply-To',
-            'readReceipt' => 'Disposition-Notification-To',
-            'returnPath' => 'Return-Path',
-            'to' => 'To',
-            'cc' => 'Cc',
-            'bcc' => 'Bcc',
-        ];
-        $headersMultipleEmails = ['to', 'cc', 'bcc', 'replyTo'];
+        $relation = ['from' => 'From', 'replyTo' => 'Reply-To', 'readReceipt' => 'Disposition-Notification-To', 'returnPath' => 'Return-Path', 'to' => 'To', 'cc' => 'Cc', 'bcc' => 'Bcc'];
+        $headers_multiple_emails = ['to', 'cc', 'bcc', 'replyTo'];
         foreach ($relation as $var => $header) {
             if ($include[$var]) {
-                if (in_array($var, $headersMultipleEmails)) {
-                    $headers[$header] = implode(', ', $this->formatAddress($this->{$var}));
+                if (in_array($var, $headers_multiple_emails)) {
+                    $headers[$header] = implode(', ', $this->format_address($this->{$var}));
                 } else {
-                    $headers[$header] = (string)current($this->formatAddress($this->{$var}));
+                    $headers[$header] = (string) current($this->format_address($this->{$var}));
                 }
             }
         }
@@ -859,43 +725,36 @@ class Message implements JsonSerializable
             if (key($this->sender) === key($this->from)) {
                 $headers['Sender'] = '';
             } else {
-                $headers['Sender'] = (string)current($this->formatAddress($this->sender));
+                $headers['Sender'] = (string) current($this->format_address($this->sender));
             }
         }
-
         $headers += $this->headers;
         $headers['Date'] ??= date(DATE_RFC2822);
-        if ($this->messageId !== false) {
-            if ($this->messageId === true) {
-                $this->messageId = '<' . str_replace('-', '', Text::uuid()) . '@' . $this->domain . '>';
+        if ($this->message_id !== false) {
+            if ($this->message_id === true) {
+                $this->message_id = '<' . str_replace('-', '', Text::uuid()) . '@' . $this->domain . '>';
             }
-
-            $headers['Message-ID'] = $this->messageId;
+            $headers['Message-ID'] = $this->message_id;
         }
-
         if ($this->priority) {
-            $headers['X-Priority'] = (string)$this->priority;
+            $headers['X-Priority'] = (string) $this->priority;
         }
-
         if ($include['subject']) {
             $headers['Subject'] = $this->subject;
         }
-
         $headers['MIME-Version'] = '1.0';
         if ($this->attachments) {
             $headers['Content-Type'] = 'multipart/mixed; boundary="' . $this->boundary . '"';
-        } elseif ($this->emailFormat === static::MESSAGE_BOTH) {
+        } elseif ($this->email_format === static::MESSAGE_BOTH) {
             $headers['Content-Type'] = 'multipart/alternative; boundary="' . $this->boundary . '"';
-        } elseif ($this->emailFormat === static::MESSAGE_TEXT) {
-            $headers['Content-Type'] = 'text/plain; charset=' . $this->getContentTypeCharset();
-        } elseif ($this->emailFormat === static::MESSAGE_HTML) {
-            $headers['Content-Type'] = 'text/html; charset=' . $this->getContentTypeCharset();
+        } elseif ($this->email_format === static::MESSAGE_TEXT) {
+            $headers['Content-Type'] = 'text/plain; charset=' . $this->get_content_type_charset();
+        } elseif ($this->email_format === static::MESSAGE_HTML) {
+            $headers['Content-Type'] = 'text/html; charset=' . $this->get_content_type_charset();
         }
-        $headers['Content-Transfer-Encoding'] = $this->getContentTransferEncoding();
-
+        $headers['Content-Transfer-Encoding'] = $this->get_content_transfer_encoding();
         return $headers;
     }
-
     /**
      * Get headers as string.
      *
@@ -904,28 +763,23 @@ class Message implements JsonSerializable
      * @param \Closure|null $callback Callback to run each header value through before stringifying.
      * @see Message::getHeaders()
      */
-    public function getHeadersString(array $include = [], string $eol = "\r\n", ?Closure $callback = null): string
+    public function get_headers_string(array $include = [], string $eol = "\r\n", ?Closure $callback = null): string
     {
-        $lines = $this->getHeaders($include);
-
+        $lines = $this->get_headers($include);
         if ($callback) {
             $lines = array_map($callback, $lines);
         }
-
         $headers = [];
         foreach ($lines as $key => $value) {
             if ($value === '') {
                 continue;
             }
-
-            foreach ((array)$value as $val) {
+            foreach ((array) $value as $val) {
                 $headers[] = $key . ': ' . $val;
             }
         }
-
         return implode($eol, $headers);
     }
-
     /**
      * Format addresses
      *
@@ -936,24 +790,22 @@ class Message implements JsonSerializable
      * @param array $address Addresses to format.
      * @return array<string>
      */
-    public function formatAddress(array $address): array
+    public function format_address(array $address): array
     {
         $return = [];
         foreach ($address as $email => $alias) {
             if ($email === $alias) {
                 $return[] = $email;
             } else {
-                $encoded = $this->encodeForHeader($alias);
-                if (preg_match('/[^a-z0-9+\-\\=? ]/i', $encoded)) {
+                $encoded = $this->encode_for_header($alias);
+                if (preg_match('/[^a-z0-9+\-\=? ]/i', $encoded)) {
                     $encoded = '"' . addcslashes($encoded, '"\\') . '"';
                 }
                 $return[] = sprintf('%s <%s>', $encoded, $email);
             }
         }
-
         return $return;
     }
-
     /**
      * Sets email format.
      *
@@ -961,40 +813,34 @@ class Message implements JsonSerializable
      * @return $this
      * @throws \InvalidArgumentException
      */
-    public function setEmailFormat(string $format): static
+    public function set_email_format(string $format): static
     {
-        if (!in_array($format, $this->emailFormatAvailable, true)) {
+        if (!in_array($format, $this->email_format_available, true)) {
             throw new InvalidArgumentException('Format not available.');
         }
-        $this->emailFormat = $format;
-
+        $this->email_format = $format;
         return $this;
     }
-
     /**
      * Gets email format.
      */
-    public function getEmailFormat(): string
+    public function get_email_format(): string
     {
-        return $this->emailFormat;
+        return $this->email_format;
     }
-
     /**
      * Gets the body types that are in this email message
      *
      * @return array Array of types. Valid types are Email::MESSAGE_TEXT and Email::MESSAGE_HTML
      */
-    public function getBodyTypes(): array
+    public function get_body_types(): array
     {
-        $format = $this->emailFormat;
-
+        $format = $this->email_format;
         if ($format === static::MESSAGE_BOTH) {
             return [static::MESSAGE_HTML, static::MESSAGE_TEXT];
         }
-
         return [$format];
     }
-
     /**
      * Sets message ID.
      *
@@ -1003,30 +849,25 @@ class Message implements JsonSerializable
      * @return $this
      * @throws \InvalidArgumentException
      */
-    public function setMessageId(string|bool $message): static
+    public function set_message_id(string|bool $message): static
     {
         if (is_bool($message)) {
-            $this->messageId = $message;
+            $this->message_id = $message;
         } else {
             if (!preg_match('/^\<.+@.+\>$/', $message)) {
-                throw new InvalidArgumentException(
-                    'Invalid format to Message-ID. The text should be something like "<uuid@server.com>"',
-                );
+                throw new InvalidArgumentException('Invalid format to Message-ID. The text should be something like "<uuid@server.com>"');
             }
-            $this->messageId = $message;
+            $this->message_id = $message;
         }
-
         return $this;
     }
-
     /**
      * Gets message ID.
      */
-    public function getMessageId(): string|bool
+    public function get_message_id(): string|bool
     {
-        return $this->messageId;
+        return $this->message_id;
     }
-
     /**
      * Sets domain.
      *
@@ -1035,21 +876,18 @@ class Message implements JsonSerializable
      * @param string $domain Manually set the domain for CLI mailing.
      * @return $this
      */
-    public function setDomain(string $domain): static
+    public function set_domain(string $domain): static
     {
         $this->domain = $domain;
-
         return $this;
     }
-
     /**
      * Gets domain.
      */
-    public function getDomain(): string
+    public function get_domain(): string
     {
         return $this->domain;
     }
-
     /**
      * Add attachments to the email message
      *
@@ -1093,69 +931,57 @@ class Message implements JsonSerializable
      * @return $this
      * @throws \InvalidArgumentException
      */
-    public function setAttachments(array $attachments): static
+    public function set_attachments(array $attachments): static
     {
         $attach = [];
-        foreach ($attachments as $name => $fileInfo) {
-            if (!is_array($fileInfo)) {
-                $fileInfo = ['file' => $fileInfo];
+        foreach ($attachments as $name => $file_info) {
+            if (!is_array($file_info)) {
+                $file_info = ['file' => $file_info];
             }
-            if (!isset($fileInfo['file'])) {
-                if (!isset($fileInfo['data'])) {
+            if (!isset($file_info['file'])) {
+                if (!isset($file_info['data'])) {
                     throw new InvalidArgumentException('No file or data specified.');
                 }
                 if (is_int($name)) {
                     throw new InvalidArgumentException('No filename specified.');
                 }
-                $fileInfo['data'] = chunk_split(base64_encode($fileInfo['data']), 76, "\r\n");
-            } elseif ($fileInfo['file'] instanceof UploadedFileInterface) {
-                $fileInfo['mimetype'] = $fileInfo['file']->getClientMediaType();
+                $file_info['data'] = chunk_split(base64_encode($file_info['data']), 76, "\r\n");
+            } elseif ($file_info['file'] instanceof Uploaded_File_Interface) {
+                $file_info['mimetype'] = $file_info['file']->get_client_media_type();
                 if (is_int($name)) {
-                    $name = $fileInfo['file']->getClientFilename();
+                    $name = $file_info['file']->get_client_filename();
                     assert(is_string($name));
                 }
-            } elseif (is_string($fileInfo['file'])) {
-                $fileName = $fileInfo['file'];
-                $fileInfo['file'] = realpath($fileInfo['file']);
-                if ($fileInfo['file'] === false || !file_exists($fileInfo['file'])) {
-                    throw new InvalidArgumentException(sprintf('File not found: `%s`', $fileName));
+            } elseif (is_string($file_info['file'])) {
+                $file_name = $file_info['file'];
+                $file_info['file'] = realpath($file_info['file']);
+                if ($file_info['file'] === false || !file_exists($file_info['file'])) {
+                    throw new InvalidArgumentException(sprintf('File not found: `%s`', $file_name));
                 }
                 if (is_int($name)) {
-                    $name = basename($fileInfo['file']);
+                    $name = basename($file_info['file']);
                 }
             } else {
-                throw new InvalidArgumentException(sprintf(
-                    'File must be a filepath or UploadedFileInterface instance. Found `%s` instead.',
-                    gettype($fileInfo['file']),
-                ));
+                throw new InvalidArgumentException(sprintf('File must be a filepath or UploadedFileInterface instance. Found `%s` instead.', gettype($file_info['file'])));
             }
-            if (
-                !isset($fileInfo['mimetype'])
-                && isset($fileInfo['file'])
-                && is_string($fileInfo['file'])
-                && function_exists('mime_content_type')
-            ) {
-                $fileInfo['mimetype'] = mime_content_type($fileInfo['file']);
+            if (!isset($file_info['mimetype']) && isset($file_info['file']) && is_string($file_info['file']) && function_exists('mime_content_type')) {
+                $file_info['mimetype'] = mime_content_type($file_info['file']);
             }
-            $fileInfo['mimetype'] ??= 'application/octet-stream';
-
-            $attach[$name] = $fileInfo;
+            $file_info['mimetype'] ??= 'application/octet-stream';
+            $attach[$name] = $file_info;
         }
         $this->attachments = $attach;
-
         return $this;
     }
-
     /**
      * Gets attachments to the email message.
      *
      * @return array<string, array> Array of attachments.
      */
-    public function getAttachments(): array
+    public function get_attachments(): array
     {
         return $this->attachments;
     }
-
     /**
      * Add attachment.
      *
@@ -1166,25 +992,12 @@ class Message implements JsonSerializable
      * @param bool|null $contentDisposition Allows you to disable the `Content-Disposition` header
      * @return $this
      */
-    public function addAttachment(
-        UploadedFileInterface|string $path,
-        ?string $name = null,
-        ?string $mimetype = null,
-        ?string $contentId = null,
-        ?bool $contentDisposition = null,
-    ): static {
+    public function add_attachment(Uploaded_File_Interface|string $path, ?string $name = null, ?string $mimetype = null, ?string $content_id = null, ?bool $content_disposition = null): static
+    {
         $name ??= 0;
-
-        $this->addAttachments([$name => [
-            'file' => $path,
-            'mimetype' => $mimetype,
-            'contentId' => $contentId,
-            'contentDisposition' => $contentDisposition,
-        ]]);
-
+        $this->add_attachments([$name => ['file' => $path, 'mimetype' => $mimetype, 'contentId' => $content_id, 'contentDisposition' => $content_disposition]]);
         return $this;
     }
-
     /**
      * Add attachments
      *
@@ -1193,263 +1006,211 @@ class Message implements JsonSerializable
      * @throws \InvalidArgumentException
      * @see \Cake\Mailer\Email::setAttachments()
      */
-    public function addAttachments(array $attachments): static
+    public function add_attachments(array $attachments): static
     {
         $current = $this->attachments;
-        $this->setAttachments($attachments);
+        $this->set_attachments($attachments);
         $this->attachments = array_merge($current, $this->attachments);
-
         return $this;
     }
-
     /**
      * Get generated message body as array.
      */
-    public function getBody(): array
+    public function get_body(): array
     {
         if (!$this->message) {
-            $this->message = $this->generateMessage();
+            $this->message = $this->generate_message();
         }
-
         return $this->message;
     }
-
     /**
      * Get generated body as string.
      *
      * @param string $eol End of line string for imploding.
      * @see Message::getBody()
      */
-    public function getBodyString(string $eol = "\r\n"): string
+    public function get_body_string(string $eol = "\r\n"): string
     {
-        $lines = $this->getBody();
-
+        $lines = $this->get_body();
         return implode($eol, $lines);
     }
-
     /**
      * Create unique boundary identifier
      */
-    protected function createBoundary(): void
+    protected function create_boundary(): void
     {
-        if (
-            $this->boundary === null &&
-            (
-                $this->attachments ||
-                $this->emailFormat === static::MESSAGE_BOTH
-            )
-        ) {
-            $this->boundary = hash('xxh128', Security::randomBytes(16));
+        if ($this->boundary === null && ($this->attachments || $this->email_format === static::MESSAGE_BOTH)) {
+            $this->boundary = hash('xxh128', Security::random_bytes(16));
         }
     }
-
     /**
      * Generate full message.
      *
      * @return array<string>
      */
-    protected function generateMessage(): array
+    protected function generate_message(): array
     {
-        $this->createBoundary();
+        $this->create_boundary();
         $msg = [];
-
-        $contentIds = array_filter((array)Hash::extract($this->attachments, '{s}.contentId'));
-        $hasInlineAttachments = $contentIds !== [];
-        $hasAttachments = $this->attachments !== [];
-        $hasMultipleTypes = $this->emailFormat === static::MESSAGE_BOTH;
-        $multiPart = ($hasAttachments || $hasMultipleTypes);
-
+        $content_ids = array_filter((array) Hash::extract($this->attachments, '{s}.contentId'));
+        $has_inline_attachments = $content_ids !== [];
+        $has_attachments = $this->attachments !== [];
+        $has_multiple_types = $this->email_format === static::MESSAGE_BOTH;
+        $multi_part = $has_attachments || $has_multiple_types;
         $boundary = $this->boundary ?? '';
-        $relBoundary = $boundary;
-        $textBoundary = $boundary;
-
-        if ($hasInlineAttachments) {
+        $rel_boundary = $boundary;
+        $text_boundary = $boundary;
+        if ($has_inline_attachments) {
             $msg[] = '--' . $boundary;
             $msg[] = 'Content-Type: multipart/related; boundary="rel-' . $boundary . '"';
             $msg[] = '';
-            $relBoundary = 'rel-' . $boundary;
-            $textBoundary = 'rel-' . $boundary;
+            $rel_boundary = 'rel-' . $boundary;
+            $text_boundary = 'rel-' . $boundary;
         }
-
-        if ($hasMultipleTypes && $hasAttachments) {
-            $msg[] = '--' . $relBoundary;
+        if ($has_multiple_types && $has_attachments) {
+            $msg[] = '--' . $rel_boundary;
             $msg[] = 'Content-Type: multipart/alternative; boundary="alt-' . $boundary . '"';
             $msg[] = '';
-            $textBoundary = 'alt-' . $boundary;
+            $text_boundary = 'alt-' . $boundary;
         }
-
-        if (
-            $this->emailFormat === static::MESSAGE_TEXT
-            || $this->emailFormat === static::MESSAGE_BOTH
-        ) {
-            if ($multiPart) {
-                $msg[] = '--' . $textBoundary;
-                $msg[] = 'Content-Type: text/plain; charset=' . $this->getContentTypeCharset();
-                $msg[] = 'Content-Transfer-Encoding: ' . $this->getContentTransferEncoding();
+        if ($this->email_format === static::MESSAGE_TEXT || $this->email_format === static::MESSAGE_BOTH) {
+            if ($multi_part) {
+                $msg[] = '--' . $text_boundary;
+                $msg[] = 'Content-Type: text/plain; charset=' . $this->get_content_type_charset();
+                $msg[] = 'Content-Transfer-Encoding: ' . $this->get_content_transfer_encoding();
                 $msg[] = '';
             }
-            $content = explode("\n", $this->textMessage);
+            $content = explode("\n", $this->text_message);
             $msg = array_merge($msg, $content);
             $msg[] = '';
             $msg[] = '';
         }
-
-        if (
-            $this->emailFormat === static::MESSAGE_HTML
-            || $this->emailFormat === static::MESSAGE_BOTH
-        ) {
-            if ($multiPart) {
-                $msg[] = '--' . $textBoundary;
-                $msg[] = 'Content-Type: text/html; charset=' . $this->getContentTypeCharset();
-                $msg[] = 'Content-Transfer-Encoding: ' . $this->getContentTransferEncoding();
+        if ($this->email_format === static::MESSAGE_HTML || $this->email_format === static::MESSAGE_BOTH) {
+            if ($multi_part) {
+                $msg[] = '--' . $text_boundary;
+                $msg[] = 'Content-Type: text/html; charset=' . $this->get_content_type_charset();
+                $msg[] = 'Content-Transfer-Encoding: ' . $this->get_content_transfer_encoding();
                 $msg[] = '';
             }
-            $content = explode("\n", $this->htmlMessage);
+            $content = explode("\n", $this->html_message);
             $msg = array_merge($msg, $content);
             $msg[] = '';
             $msg[] = '';
         }
-
-        if ($textBoundary !== $relBoundary) {
-            $msg[] = '--' . $textBoundary . '--';
+        if ($text_boundary !== $rel_boundary) {
+            $msg[] = '--' . $text_boundary . '--';
             $msg[] = '';
         }
-
-        if ($hasInlineAttachments) {
-            $attachments = $this->attachInlineFiles($relBoundary);
+        if ($has_inline_attachments) {
+            $attachments = $this->attach_inline_files($rel_boundary);
             $msg = array_merge($msg, $attachments);
             $msg[] = '';
-            $msg[] = '--' . $relBoundary . '--';
+            $msg[] = '--' . $rel_boundary . '--';
             $msg[] = '';
         }
-
-        if ($hasAttachments) {
-            $attachments = $this->attachFiles($boundary);
+        if ($has_attachments) {
+            $attachments = $this->attach_files($boundary);
             $msg = array_merge($msg, $attachments);
         }
-        if ($hasAttachments || $hasMultipleTypes) {
+        if ($has_attachments || $has_multiple_types) {
             $msg[] = '';
             $msg[] = '--' . $boundary . '--';
             $msg[] = '';
         }
-
         return $msg;
     }
-
     /**
      * Attach non-embedded files by adding file contents inside boundaries.
      *
      * @param string|null $boundary Boundary to use. If null, will default to $this->boundary
      * @return array<string> An array of lines to add to the message
      */
-    protected function attachFiles(?string $boundary = null): array
+    protected function attach_files(?string $boundary = null): array
     {
         $boundary ??= $this->boundary;
-
         $msg = [];
-        foreach ($this->attachments as $filename => $fileInfo) {
-            if (!empty($fileInfo['contentId'])) {
+        foreach ($this->attachments as $filename => $file_info) {
+            if (!empty($file_info['contentId'])) {
                 continue;
             }
-            $data = $fileInfo['data'] ?? $this->readFile($fileInfo['file']);
-            $hasDisposition = (
-                !isset($fileInfo['contentDisposition']) ||
-                $fileInfo['contentDisposition']
-            );
-            $part = new FormDataPart('', $data, '', $this->getHeaderCharset());
-
-            if ($hasDisposition) {
+            $data = $file_info['data'] ?? $this->read_file($file_info['file']);
+            $has_disposition = !isset($file_info['contentDisposition']) || $file_info['contentDisposition'];
+            $part = new Form_Data_Part('', $data, '', $this->get_header_charset());
+            if ($has_disposition) {
                 $part->disposition('attachment');
                 $part->filename($filename);
             }
-            $part->transferEncoding('base64');
-            $part->type($fileInfo['mimetype']);
-
+            $part->transfer_encoding('base64');
+            $part->type($file_info['mimetype']);
             $msg[] = '--' . $boundary;
-            $msg[] = (string)$part;
+            $msg[] = (string) $part;
             $msg[] = '';
         }
-
         return $msg;
     }
-
     /**
      * Attach inline/embedded files to the message.
      *
      * @param string|null $boundary Boundary to use. If null, will default to $this->boundary
      * @return array<string> An array of lines to add to the message
      */
-    protected function attachInlineFiles(?string $boundary = null): array
+    protected function attach_inline_files(?string $boundary = null): array
     {
         $boundary ??= $this->boundary;
-
         $msg = [];
-        foreach ($this->getAttachments() as $filename => $fileInfo) {
-            if (empty($fileInfo['contentId'])) {
+        foreach ($this->get_attachments() as $filename => $file_info) {
+            if (empty($file_info['contentId'])) {
                 continue;
             }
-            $data = $fileInfo['data'] ?? $this->readFile($fileInfo['file']);
-
+            $data = $file_info['data'] ?? $this->read_file($file_info['file']);
             $msg[] = '--' . $boundary;
-            $part = new FormDataPart('', $data, 'inline', $this->getHeaderCharset());
-            $part->type($fileInfo['mimetype']);
-            $part->transferEncoding('base64');
-            $part->contentId($fileInfo['contentId']);
+            $part = new Form_Data_Part('', $data, 'inline', $this->get_header_charset());
+            $part->type($file_info['mimetype']);
+            $part->transfer_encoding('base64');
+            $part->content_id($file_info['contentId']);
             $part->filename($filename);
-            $msg[] = (string)$part;
+            $msg[] = (string) $part;
             $msg[] = '';
         }
-
         return $msg;
     }
-
     /**
      * Sets priority.
      *
      * @param int|null $priority 1 (highest) to 5 (lowest)
      * @return $this
      */
-    public function setPriority(?int $priority): static
+    public function set_priority(?int $priority): static
     {
         $this->priority = $priority;
-
         return $this;
     }
-
     /**
      * Gets priority.
      */
-    public function getPriority(): ?int
+    public function get_priority(): ?int
     {
         return $this->priority;
     }
-
     /**
      * Sets the configuration for this instance.
      *
      * @param array<string, mixed> $config Config array.
      * @return $this
      */
-    public function setConfig(array $config): static
+    public function set_config(array $config): static
     {
-        $simpleMethods = [
-            'from', 'sender', 'to', 'replyTo', 'readReceipt', 'returnPath',
-            'cc', 'bcc', 'messageId', 'domain', 'subject', 'attachments',
-            'emailFormat', 'emailPattern', 'charset', 'headerCharset',
-        ];
-        foreach ($simpleMethods as $method) {
+        $simple_methods = ['from', 'sender', 'to', 'replyTo', 'readReceipt', 'returnPath', 'cc', 'bcc', 'messageId', 'domain', 'subject', 'attachments', 'emailFormat', 'emailPattern', 'charset', 'headerCharset'];
+        foreach ($simple_methods as $method) {
             if (isset($config[$method])) {
                 $this->{'set' . ucfirst($method)}($config[$method]);
             }
         }
-
         if (isset($config['headers'])) {
-            $this->setHeaders($config['headers']);
+            $this->set_headers($config['headers']);
         }
-
         return $this;
     }
-
     /**
      * Set message body.
      *
@@ -1457,74 +1218,60 @@ class Message implements JsonSerializable
      *   content string of respective type.
      * @return $this
      */
-    public function setBody(array $content): static
+    public function set_body(array $content): static
     {
         foreach ($content as $type => $text) {
-            if (!in_array($type, $this->emailFormatAvailable, true)) {
-                throw new InvalidArgumentException(sprintf(
-                    'Invalid message type: `%s`. Valid types are: `text`, `html`.',
-                    $type,
-                ));
+            if (!in_array($type, $this->email_format_available, true)) {
+                throw new InvalidArgumentException(sprintf('Invalid message type: `%s`. Valid types are: `text`, `html`.', $type));
             }
-
             $text = str_replace(["\r\n", "\r"], "\n", $text);
-            $text = $this->encodeString($text, $this->getCharset());
+            $text = $this->encode_string($text, $this->get_charset());
             $text = $this->wrap($text);
             $text = implode("\n", $text);
             $text = rtrim($text, "\n");
-
             $property = "{$type}Message";
-            $this->$property = $text;
+            $this->{$property} = $text;
         }
-
         $this->boundary = null;
         $this->message = [];
-
         return $this;
     }
-
     /**
      * Set text body for message.
      *
      * @param string $content Content string
      * @return $this
      */
-    public function setBodyText(string $content): static
+    public function set_body_text(string $content): static
     {
-        $this->setBody([static::MESSAGE_TEXT => $content]);
-
+        $this->set_body([static::MESSAGE_TEXT => $content]);
         return $this;
     }
-
     /**
      * Set HTML body for message.
      *
      * @param string $content Content string
      * @return $this
      */
-    public function setBodyHtml(string $content): static
+    public function set_body_html(string $content): static
     {
-        $this->setBody([static::MESSAGE_HTML => $content]);
-
+        $this->set_body([static::MESSAGE_HTML => $content]);
         return $this;
     }
-
     /**
      * Get text body of message.
      */
-    public function getBodyText(): string
+    public function get_body_text(): string
     {
-        return $this->textMessage;
+        return $this->text_message;
     }
-
     /**
      * Get HTML body of message.
      */
-    public function getBodyHtml(): string
+    public function get_body_html(): string
     {
-        return $this->htmlMessage;
+        return $this->html_message;
     }
-
     /**
      * Translates a string for one charset to another if the App.encoding value
      * differs and the mb_convert_encoding function exists
@@ -1532,29 +1279,24 @@ class Message implements JsonSerializable
      * @param string $text The text to be converted
      * @param string $charset the target encoding
      */
-    protected function encodeString(string $text, string $charset): string
+    protected function encode_string(string $text, string $charset): string
     {
-        if ($this->appCharset === $charset) {
+        if ($this->app_charset === $charset) {
             return $text;
         }
-
-        if ($this->appCharset === null) {
+        if ($this->app_charset === null) {
             $encoded = mb_convert_encoding($text, $charset);
             if ($encoded === false) {
                 throw new RuntimeException('mb_convert_encoding failed.');
             }
-
             return $encoded;
         }
-
-        $encoded = mb_convert_encoding($text, $charset, $this->appCharset);
+        $encoded = mb_convert_encoding($text, $charset, $this->app_charset);
         if ($encoded === false) {
             throw new RuntimeException('mb_convert_encoding failed.');
         }
-
         return $encoded;
     }
-
     /**
      * Wrap the message to follow the RFC 2822 - 2.1.1
      *
@@ -1562,7 +1304,7 @@ class Message implements JsonSerializable
      * @param int $wrapLength The line length
      * @return array<string> Wrapped message
      */
-    protected function wrap(?string $message = null, int $wrapLength = self::LINE_LENGTH_MUST): array
+    protected function wrap(?string $message = null, int $wrap_length = self::LINE_LENGTH_MUST): array
     {
         if ($message === null || $message === '') {
             return [''];
@@ -1570,101 +1312,90 @@ class Message implements JsonSerializable
         $message = str_replace(["\r\n", "\r"], "\n", $message);
         $lines = explode("\n", $message);
         $formatted = [];
-        $cut = ($wrapLength === static::LINE_LENGTH_MUST);
-
+        $cut = $wrap_length === static::LINE_LENGTH_MUST;
         foreach ($lines as $line) {
             if ($line === '') {
                 $formatted[] = '';
                 continue;
             }
-            if (strlen($line) < $wrapLength) {
+            if (strlen($line) < $wrap_length) {
                 $formatted[] = $line;
                 continue;
             }
             if (!preg_match('/<[a-z]+.*>/i', $line)) {
-                $formatted = array_merge(
-                    $formatted,
-                    explode("\n", Text::wordWrap($line, $wrapLength, "\n", $cut)),
-                );
+                $formatted = array_merge($formatted, explode("\n", Text::word_wrap($line, $wrap_length, "\n", $cut)));
                 continue;
             }
-
-            $tagOpen = false;
-            $tmpLine = '';
+            $tag_open = false;
+            $tmp_line = '';
             $tag = '';
-            $tmpLineLength = 0;
+            $tmp_line_length = 0;
             for ($i = 0, $count = strlen($line); $i < $count; $i++) {
                 $char = $line[$i];
-                if ($tagOpen) {
+                if ($tag_open) {
                     $tag .= $char;
                     if ($char === '>') {
-                        $tagLength = strlen($tag);
-                        if ($tagLength + $tmpLineLength < $wrapLength) {
-                            $tmpLine .= $tag;
-                            $tmpLineLength += $tagLength;
+                        $tag_length = strlen($tag);
+                        if ($tag_length + $tmp_line_length < $wrap_length) {
+                            $tmp_line .= $tag;
+                            $tmp_line_length += $tag_length;
                         } else {
-                            if ($tmpLineLength > 0) {
-                                $formatted = array_merge(
-                                    $formatted,
-                                    explode("\n", Text::wordWrap(trim($tmpLine), $wrapLength, "\n", $cut)),
-                                );
-                                $tmpLine = '';
-                                $tmpLineLength = 0;
+                            if ($tmp_line_length > 0) {
+                                $formatted = array_merge($formatted, explode("\n", Text::word_wrap(trim($tmp_line), $wrap_length, "\n", $cut)));
+                                $tmp_line = '';
+                                $tmp_line_length = 0;
                             }
-                            if ($tagLength > $wrapLength) {
+                            if ($tag_length > $wrap_length) {
                                 $formatted[] = $tag;
                             } else {
-                                $tmpLine = $tag;
-                                $tmpLineLength = $tagLength;
+                                $tmp_line = $tag;
+                                $tmp_line_length = $tag_length;
                             }
                         }
                         $tag = '';
-                        $tagOpen = false;
+                        $tag_open = false;
                     }
                     continue;
                 }
                 if ($char === '<') {
-                    $tagOpen = true;
+                    $tag_open = true;
                     $tag = '<';
                     continue;
                 }
-                if ($char === ' ' && $tmpLineLength >= $wrapLength) {
-                    $formatted[] = $tmpLine;
-                    $tmpLineLength = 0;
+                if ($char === ' ' && $tmp_line_length >= $wrap_length) {
+                    $formatted[] = $tmp_line;
+                    $tmp_line_length = 0;
                     continue;
                 }
-                $tmpLine .= $char;
-                $tmpLineLength++;
-                if ($tmpLineLength === $wrapLength) {
-                    $nextChar = $line[$i + 1] ?? '';
-                    if ($nextChar === ' ' || $nextChar === '<') {
-                        $formatted[] = trim($tmpLine);
-                        $tmpLine = '';
-                        $tmpLineLength = 0;
-                        if ($nextChar === ' ') {
+                $tmp_line .= $char;
+                $tmp_line_length++;
+                if ($tmp_line_length === $wrap_length) {
+                    $next_char = $line[$i + 1] ?? '';
+                    if ($next_char === ' ' || $next_char === '<') {
+                        $formatted[] = trim($tmp_line);
+                        $tmp_line = '';
+                        $tmp_line_length = 0;
+                        if ($next_char === ' ') {
                             $i++;
                         }
                     } else {
-                        $lastSpace = strrpos($tmpLine, ' ');
-                        if ($lastSpace === false) {
+                        $last_space = strrpos($tmp_line, ' ');
+                        if ($last_space === false) {
                             continue;
                         }
-                        $formatted[] = trim(substr($tmpLine, 0, $lastSpace));
-                        $tmpLine = substr($tmpLine, $lastSpace + 1);
-
-                        $tmpLineLength = strlen($tmpLine);
+                        $formatted[] = trim(substr($tmp_line, 0, $last_space));
+                        $tmp_line = substr($tmp_line, $last_space + 1);
+                        $tmp_line_length = strlen($tmp_line);
                     }
                 }
             }
-            if ($tmpLine) {
-                $formatted[] = $tmpLine;
+            if ($tmp_line) {
+                $formatted[] = $tmp_line;
             }
         }
         $formatted[] = '';
-
         return $formatted;
     }
-
     /**
      * Reset all the internal variables to be able to send out a new email.
      *
@@ -1675,68 +1406,60 @@ class Message implements JsonSerializable
         $this->to = [];
         $this->from = [];
         $this->sender = [];
-        $this->replyTo = [];
-        $this->readReceipt = [];
-        $this->returnPath = [];
+        $this->reply_to = [];
+        $this->read_receipt = [];
+        $this->return_path = [];
         $this->cc = [];
         $this->bcc = [];
-        $this->messageId = true;
+        $this->message_id = true;
         $this->subject = '';
         $this->headers = [];
-        $this->textMessage = '';
-        $this->htmlMessage = '';
+        $this->text_message = '';
+        $this->html_message = '';
         $this->message = [];
-        $this->emailFormat = static::MESSAGE_TEXT;
+        $this->email_format = static::MESSAGE_TEXT;
         $this->priority = null;
         $this->charset = 'utf-8';
-        $this->headerCharset = null;
-        $this->transferEncoding = null;
+        $this->header_charset = null;
+        $this->transfer_encoding = null;
         $this->attachments = [];
-        $this->emailPattern = static::EMAIL_PATTERN;
-
+        $this->email_pattern = static::EMAIL_PATTERN;
         return $this;
     }
-
     /**
      * Encode the specified string using the current charset
      *
      * @param string $text String to encode
      * @return string Encoded string
      */
-    protected function encodeForHeader(string $text): string
+    protected function encode_for_header(string $text): string
     {
-        if ($this->appCharset === null) {
+        if ($this->app_charset === null) {
             return $text;
         }
-
         $restore = mb_internal_encoding();
-        mb_internal_encoding($this->appCharset);
-        $return = mb_encode_mimeheader($text, $this->getHeaderCharset(), 'B');
+        mb_internal_encoding($this->app_charset);
+        $return = mb_encode_mimeheader($text, $this->get_header_charset(), 'B');
         mb_internal_encoding($restore);
-
         return $return;
     }
-
     /**
      * Decode the specified string
      *
      * @param string $text String to decode
      * @return string Decoded string
      */
-    protected function decodeForHeader(string $text): string
+    protected function decode_for_header(string $text): string
     {
-        if ($this->appCharset === null) {
+        if ($this->app_charset === null) {
             return $text;
         }
-
         $restore = mb_internal_encoding();
-        mb_internal_encoding($this->appCharset);
+        mb_internal_encoding($this->app_charset);
         $return = mb_decode_mimeheader($text);
         mb_internal_encoding($restore);
-
         return $return;
     }
-
     /**
      * Read the file contents and return a base64 version of the file contents.
      *
@@ -1744,51 +1467,44 @@ class Message implements JsonSerializable
      *   or UploadedFileInterface instance.
      * @return string File contents in base64 encoding
      */
-    protected function readFile(UploadedFileInterface|string $file): string
+    protected function read_file(Uploaded_File_Interface|string $file): string
     {
         if (is_string($file)) {
-            $content = (string)file_get_contents($file);
+            $content = (string) file_get_contents($file);
         } else {
-            $content = (string)$file->getStream();
+            $content = (string) $file->get_stream();
         }
-
         return chunk_split(base64_encode($content));
     }
-
     /**
      * Return the Content-Transfer Encoding value based
      * on the set transferEncoding or set charset.
      */
-    public function getContentTransferEncoding(): string
+    public function get_content_transfer_encoding(): string
     {
-        if ($this->transferEncoding) {
-            return $this->transferEncoding;
+        if ($this->transfer_encoding) {
+            return $this->transfer_encoding;
         }
-
         $charset = strtoupper($this->charset);
         if (in_array($charset, $this->charset8bit, true)) {
             return '8bit';
         }
-
         return '7bit';
     }
-
     /**
      * Return charset value for Content-Type.
      *
      * Checks fallback/compatibility types which include workarounds
      * for legacy japanese character sets.
      */
-    public function getContentTypeCharset(): string
+    public function get_content_type_charset(): string
     {
         $charset = strtoupper($this->charset);
-        if (array_key_exists($charset, $this->contentTypeCharset)) {
-            return strtoupper($this->contentTypeCharset[$charset]);
+        if (array_key_exists($charset, $this->content_type_charset)) {
+            return strtoupper($this->content_type_charset[$charset]);
         }
-
         return strtoupper($this->charset);
     }
-
     /**
      * Serializes the email object to a value that can be natively serialized and re-used
      * to clone this email instance.
@@ -1799,35 +1515,30 @@ class Message implements JsonSerializable
     public function jsonSerialize(): array
     {
         $array = [];
-        foreach ($this->serializableProperties as $property) {
+        foreach ($this->serializable_properties as $property) {
             $array[$property] = $this->{$property};
         }
-
         array_walk($array['attachments'], function (array &$item): void {
             if (!empty($item['file'])) {
-                $item['data'] = $this->readFile($item['file']);
+                $item['data'] = $this->read_file($item['file']);
                 unset($item['file']);
             }
         });
-
-        return array_filter($array, fn ($i) => $i !== null && !is_array($i) && !is_bool($i) && strlen((string) $i) || !empty($i));
+        return array_filter($array, fn($i) => $i !== null && !is_array($i) && !is_bool($i) && strlen((string) $i) || !empty($i));
     }
-
     /**
      * Configures an email instance object from serialized config.
      *
      * @param array<string, mixed> $config Email configuration array.
      * @return $this
      */
-    public function createFromArray(array $config): static
+    public function create_from_array(array $config): static
     {
         foreach ($config as $property => $value) {
             $this->{$property} = $value;
         }
-
         return $this;
     }
-
     /**
      * Magic method used for serializing the Message object.
      */
@@ -1835,14 +1546,12 @@ class Message implements JsonSerializable
     {
         $array = $this->jsonSerialize();
         array_walk_recursive($array, function (&$item): void {
-            if ($item instanceof SimpleXMLElement) {
-                $item = json_decode((string)json_encode((array)$item), true);
+            if ($item instanceof Simple_Xml_Element) {
+                $item = json_decode((string) json_encode((array) $item), true);
             }
         });
-
         return $array;
     }
-
     /**
      * Magic method used to rebuild the Message object.
      *
@@ -1850,6 +1559,6 @@ class Message implements JsonSerializable
      */
     public function __unserialize(array $data): void
     {
-        $this->createFromArray($data);
+        $this->create_from_array($data);
     }
 }

@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,27 +14,23 @@ declare(strict_types=1);
  * @since         3.3.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Database\Type;
 
 use Cake\Database\Driver;
 use InvalidArgumentException;
 use PDO;
-
 /**
  * JSON type converter.
  *
  * Used to convert JSON data between PHP and the database types.
  */
-class JsonType extends BaseType implements BatchCastingInterface
+class Json_Type extends Base_Type implements Batch_Casting_Interface
 {
-    protected int $_encodingOptions = 0;
-
+    protected int $_encoding_options = 0;
     /**
      * Flags for json_decode()
      */
-    protected int $_decodingOptions = JSON_OBJECT_AS_ARRAY;
-
+    protected int $_decoding_options = JSON_OBJECT_AS_ARRAY;
     /**
      * Convert a value data into a JSON string
      *
@@ -44,58 +39,49 @@ class JsonType extends BaseType implements BatchCastingInterface
      * @throws \InvalidArgumentException
      * @throws \JsonException
      */
-    public function toDatabase(mixed $value, Driver $driver): ?string
+    public function to_database(mixed $value, Driver $driver): ?string
     {
         if (is_resource($value)) {
             throw new InvalidArgumentException('Cannot convert a resource value to JSON');
         }
-
         if ($value === null) {
             return null;
         }
-
-        return json_encode($value, JSON_THROW_ON_ERROR | $this->_encodingOptions);
+        return json_encode($value, JSON_THROW_ON_ERROR | $this->_encoding_options);
     }
-
     /**
      * {@inheritDoc}
      *
      * @param mixed $value The value to convert.
      * @param \Cake\Database\Driver $driver The driver instance to convert with.
      */
-    public function toPHP(mixed $value, Driver $driver): mixed
+    public function to_php(mixed $value, Driver $driver): mixed
     {
         if (!is_string($value)) {
             return null;
         }
-
-        return json_decode($value, flags: $this->_decodingOptions);
+        return json_decode($value, flags: $this->_decoding_options);
     }
-
     /**
      * @inheritDoc
      */
-    public function manyToPHP(array $values, array $fields, Driver $driver): array
+    public function many_to_php(array $values, array $fields, Driver $driver): array
     {
         foreach ($fields as $field) {
             if (!isset($values[$field])) {
                 continue;
             }
-
-            $values[$field] = json_decode($values[$field], flags: $this->_decodingOptions);
+            $values[$field] = json_decode($values[$field], flags: $this->_decoding_options);
         }
-
         return $values;
     }
-
     /**
      * @inheritDoc
      */
-    public function toStatement(mixed $value, Driver $driver): int
+    public function to_statement(mixed $value, Driver $driver): int
     {
         return PDO::PARAM_STR;
     }
-
     /**
      * Marshals request data into a JSON compatible structure.
      *
@@ -106,7 +92,6 @@ class JsonType extends BaseType implements BatchCastingInterface
     {
         return $value;
     }
-
     /**
      * Set json_encode options.
      *
@@ -114,13 +99,11 @@ class JsonType extends BaseType implements BatchCastingInterface
      * @return $this
      * @see https://www.php.net/manual/en/function.json-encode.php
      */
-    public function setEncodingOptions(int $options): static
+    public function set_encoding_options(int $options): static
     {
-        $this->_encodingOptions = $options;
-
+        $this->_encoding_options = $options;
         return $this;
     }
-
     /**
      * Set json_decode() options.
      *
@@ -129,10 +112,9 @@ class JsonType extends BaseType implements BatchCastingInterface
      * @param int $options Decoding flags. Use JSON_* flags. Set `0` to reset.
      * @return $this
      */
-    public function setDecodingOptions(int $options): static
+    public function set_decoding_options(int $options): static
     {
-        $this->_decodingOptions = $options;
-
+        $this->_decoding_options = $options;
         return $this;
     }
 }

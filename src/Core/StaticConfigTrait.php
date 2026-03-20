@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,13 +14,11 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Core;
 
 use BadMethodCallException;
 use InvalidArgumentException;
 use LogicException;
-
 /**
  * A trait that provides a set of static methods to manage configuration
  * for classes that provide an adapter facade or need to have sets of
@@ -29,7 +26,7 @@ use LogicException;
  *
  * Implementing objects are expected to declare a static `$_dsnClassMap` property.
  */
-trait StaticConfigTrait
+trait Static_Config_Trait
 {
     /**
      * Configuration sets.
@@ -37,7 +34,6 @@ trait StaticConfigTrait
      * @var array<string|int, array<string, mixed>>
      */
     protected static array $_config = [];
-
     /**
      * This method can be used to define configuration adapters for an application.
      *
@@ -74,55 +70,47 @@ trait StaticConfigTrait
      * @throws \BadMethodCallException When trying to modify an existing config.
      * @throws \LogicException When trying to store an invalid structured config array.
      */
-    public static function setConfig(array|string $key, mixed $config = null): void
+    public static function set_config(array|string $key, mixed $config = null): void
     {
         if ($config === null) {
             if (!is_array($key)) {
                 throw new LogicException('If config is null, key must be an array.');
             }
             foreach ($key as $name => $settings) {
-                static::setConfig((string)$name, $settings);
+                static::set_config((string) $name, $settings);
             }
-
             return;
         }
         if (!is_string($key)) {
             throw new LogicException('If config is not null, key must be a string.');
         }
-
         if (isset(static::$_config[$key])) {
             throw new BadMethodCallException(sprintf('Cannot reconfigure existing key `%s`.', $key));
         }
-
         if (is_object($config)) {
             $config = ['className' => $config];
         }
-
         if (is_array($config) && isset($config['url'])) {
-            $parsed = static::parseDsn($config['url']);
+            $parsed = static::parse_dsn($config['url']);
             unset($config['url']);
             $config = $parsed + $config;
         }
-
         if (isset($config['engine']) && empty($config['className'])) {
             $config['className'] = $config['engine'];
             unset($config['engine']);
         }
-
         static::$_config[$key] = $config;
     }
-
     /**
      * Reads existing configuration.
      *
      * @param string $key The name of the configuration.
      * @return mixed|null Configuration data at the named key or null if the key does not exist.
      */
-    public static function getConfig(string $key): mixed
+    public static function get_config(string $key): mixed
     {
         return static::$_config[$key] ?? null;
     }
-
     /**
      * Reads existing configuration for a specific key.
      *
@@ -132,15 +120,13 @@ trait StaticConfigTrait
      * @return mixed Configuration data at the named key.
      * @throws \InvalidArgumentException If value does not exist.
      */
-    public static function getConfigOrFail(string $key): mixed
+    public static function get_config_or_fail(string $key): mixed
     {
         if (!isset(static::$_config[$key])) {
             throw new InvalidArgumentException(sprintf('Expected configuration `%s` not found.', $key));
         }
-
         return static::$_config[$key];
     }
-
     /**
      * Drops a constructed adapter.
      *
@@ -163,10 +149,8 @@ trait StaticConfigTrait
             static::$_registry->unload($config);
         }
         unset(static::$_config[$config]);
-
         return true;
     }
-
     /**
      * Returns an array containing the named configurations
      *
@@ -175,10 +159,8 @@ trait StaticConfigTrait
     public static function configured(): array
     {
         $configurations = array_keys(static::$_config);
-
-        return array_map(fn (int|string $key) => (string)$key, $configurations);
+        return array_map(fn(int|string $key) => (string) $key, $configurations);
     }
-
     /**
      * Parses a DSN into a valid connection configuration
      *
@@ -211,50 +193,46 @@ trait StaticConfigTrait
      * @return array<int|string, array|bool|string|null> The configuration array to be stored after parsing the DSN
      * @throws \InvalidArgumentException If not passed a string, or passed an invalid string
      */
-    public static function parseDsn(string $dsn): array
+    public static function parse_dsn(string $dsn): array
     {
         if (!$dsn) {
             return [];
         }
-
         $pattern = <<<'REGEXP'
-{
-    ^
-    (?P<_scheme>
-        (?P<scheme>[\w\\\\]+)://
-    )
-    (?P<_username>
-        (?P<username>.*?)
-        (?P<_password>
-            :(?P<password>.*?)
-        )?
-        @
-    )?
-    (?P<_host>
-        (?P<host>\[[^]]+]|[^?#/:@]+)
-        (?P<_port>
-            :(?P<port>\d+)
-        )?
-    )?
-    (?P<_path>
-        (?P<path>/[^?#]*)
-    )?
-    (?P<_query>
-        \?(?P<query>[^#]*)
-    )?
-    (?P<_fragment>
-        \#(?P<fragment>.*)
-    )?
-    $
-}x
-REGEXP;
-
+        {
+            ^
+            (?P<_scheme>
+                (?P<scheme>[\w\\\\]+)://
+            )
+            (?P<_username>
+                (?P<username>.*?)
+                (?P<_password>
+                    :(?P<password>.*?)
+                )?
+                @
+            )?
+            (?P<_host>
+                (?P<host>\[[^]]+]|[^?#/:@]+)
+                (?P<_port>
+                    :(?P<port>\d+)
+                )?
+            )?
+            (?P<_path>
+                (?P<path>/[^?#]*)
+            )?
+            (?P<_query>
+                \?(?P<query>[^#]*)
+            )?
+            (?P<_fragment>
+                \#(?P<fragment>.*)
+            )?
+            $
+        }x
+        REGEXP;
         preg_match($pattern, $dsn, $parsed);
-
         if (!$parsed) {
             throw new InvalidArgumentException(sprintf('The DSN string `%s` could not be parsed.', $dsn));
         }
-
         $exists = [];
         /**
          * @var string|int $k
@@ -263,69 +241,59 @@ REGEXP;
             if (is_int($k)) {
                 unset($parsed[$k]);
             } elseif (str_starts_with($k, '_')) {
-                $exists[substr($k, 1)] = ($v !== '');
+                $exists[substr($k, 1)] = $v !== '';
                 unset($parsed[$k]);
             } elseif ($v === '' && !$exists[$k]) {
                 unset($parsed[$k]);
             }
         }
-
         $query = '';
-
         if (isset($parsed['query'])) {
             $query = $parsed['query'];
             unset($parsed['query']);
         }
-
-        parse_str($query, $queryArgs);
-
+        parse_str($query, $query_args);
         /**
          * @var string $key
          */
-        foreach ($queryArgs as $key => $value) {
+        foreach ($query_args as $key => $value) {
             if ($value === 'true') {
-                $queryArgs[$key] = true;
+                $query_args[$key] = true;
             } elseif ($value === 'false') {
-                $queryArgs[$key] = false;
+                $query_args[$key] = false;
             } elseif ($value === 'null') {
-                $queryArgs[$key] = null;
+                $query_args[$key] = null;
             }
         }
-
-        $parsed = $queryArgs + $parsed;
-
+        $parsed = $query_args + $parsed;
         if (empty($parsed['className'])) {
-            $classMap = static::getDsnClassMap();
-
+            $class_map = static::get_dsn_class_map();
             /** @var string $scheme */
             $scheme = $parsed['scheme'];
             $parsed['className'] = $scheme;
-            if (isset($classMap[$scheme])) {
-                $parsed['className'] = $classMap[$scheme];
+            if (isset($class_map[$scheme])) {
+                $parsed['className'] = $class_map[$scheme];
             }
         }
-
         return $parsed;
     }
-
     /**
      * Updates the DSN class map for this class.
      *
      * @param array<string, string> $map Additions/edits to the class map to apply.
      * @phpstan-param array<string, class-string> $map
      */
-    public static function setDsnClassMap(array $map): void
+    public static function set_dsn_class_map(array $map): void
     {
-        static::$_dsnClassMap = $map + static::$_dsnClassMap;
+        static::$_dsn_class_map = $map + static::$_dsn_class_map;
     }
-
     /**
      * Returns the DSN class map for this class.
      *
      * @return array<string, class-string>
      */
-    public static function getDsnClassMap(): array
+    public static function get_dsn_class_map(): array
     {
-        return static::$_dsnClassMap;
+        return static::$_dsn_class_map;
     }
 }

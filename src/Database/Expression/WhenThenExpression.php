@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,84 +14,70 @@ declare(strict_types=1);
  * @since         4.3.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Database\Expression;
 
-use Cake\Database\ExpressionInterface;
+use Cake\Database\Expression_Interface;
 use Cake\Database\Query;
-use Cake\Database\Type\ExpressionTypeCasterTrait;
-use Cake\Database\TypeMap;
-use Cake\Database\ValueBinder;
+use Cake\Database\Type\Expression_Type_Caster_Trait;
+use Cake\Database\Type_Map;
+use Cake\Database\Value_Binder;
 use Closure;
 use InvalidArgumentException;
 use LogicException;
-
 /**
  * Represents a SQL when/then clause with a fluid API
  */
-class WhenThenExpression implements ExpressionInterface
+class When_Then_Expression implements Expression_Interface
 {
-    use CaseExpressionTrait;
-    use ExpressionTypeCasterTrait;
-
+    use Case_Expression_Trait;
+    use Expression_Type_Caster_Trait;
     /**
      * The names of the clauses that are valid for use with the
      * `clause()` method.
      *
      * @var array<string>
      */
-    protected array $validClauseNames = [
-        'when',
-        'then',
-    ];
-
+    protected array $valid_clause_names = ['when', 'then'];
     /**
      * The type map to use when using an array of conditions for the
      * `WHEN` value.
      */
-    protected TypeMap $_typeMap;
-
+    protected Type_Map $_type_map;
     /**
      * Then `WHEN` value.
      *
      * @var \Cake\Database\ExpressionInterface|object|scalar|null
      */
     protected mixed $when = null;
-
     /**
      * The `WHEN` value type.
      */
-    protected array|string|null $whenType = null;
-
+    protected array|string|null $when_type = null;
     /**
      * The `THEN` value.
      *
      * @var \Cake\Database\ExpressionInterface|object|scalar|null
      */
     protected mixed $then = null;
-
     /**
      * Whether the `THEN` value has been defined, eg whether `then()`
      * has been invoked.
      */
-    protected bool $hasThenBeenDefined = false;
-
+    protected bool $has_then_been_defined = false;
     /**
      * The `THEN` result type.
      */
-    protected ?string $thenType = null;
-
+    protected ?string $then_type = null;
     /**
      * Constructor.
      *
      * @param \Cake\Database\TypeMap|null $typeMap The type map to use when using an array of conditions for the `WHEN`
      *  value.
      */
-    public function __construct(?TypeMap $typeMap = null)
+    public function __construct(?Type_Map $type_map = null)
     {
-        $this->_typeMap = $typeMap ?? new TypeMap();
+        $this->_type_map = $type_map ?? new Type_Map();
     }
-
     /**
      * Sets the `WHEN` value.
      *
@@ -118,54 +103,27 @@ class WhenThenExpression implements ExpressionInterface
             if (!$when) {
                 throw new InvalidArgumentException('The `$when` argument must be a non-empty array');
             }
-
-            if (
-                $type !== null &&
-                !is_array($type)
-            ) {
-                throw new InvalidArgumentException(sprintf(
-                    'When using an array for the `$when` argument, the `$type` argument must be an ' .
-                    'array too, `%s` given.',
-                    get_debug_type($type),
-                ));
+            if ($type !== null && !is_array($type)) {
+                throw new InvalidArgumentException(sprintf('When using an array for the `$when` argument, the `$type` argument must be an ' . 'array too, `%s` given.', get_debug_type($type)));
             }
-
             // avoid dirtying the type map for possible consecutive `when()` calls
-            $typeMap = clone $this->_typeMap;
-            if (
-                is_array($type) &&
-                $type !== []
-            ) {
-                $typeMap = $typeMap->setTypes($type);
+            $type_map = clone $this->_type_map;
+            if (is_array($type) && $type !== []) {
+                $type_map = $type_map->set_types($type);
             }
-
-            $when = new QueryExpression($when, $typeMap);
+            $when = new Query_Expression($when, $type_map);
         } else {
-            if (
-                $type !== null &&
-                !is_string($type)
-            ) {
-                throw new InvalidArgumentException(sprintf(
-                    'When using a non-array value for the `$when` argument, the `$type` argument must ' .
-                    'be a string, `%s` given.',
-                    get_debug_type($type),
-                ));
+            if ($type !== null && !is_string($type)) {
+                throw new InvalidArgumentException(sprintf('When using a non-array value for the `$when` argument, the `$type` argument must ' . 'be a string, `%s` given.', get_debug_type($type)));
             }
-
-            if (
-                $type === null &&
-                !($when instanceof ExpressionInterface)
-            ) {
-                $type = $this->inferType($when);
+            if ($type === null && !$when instanceof Expression_Interface) {
+                $type = $this->infer_type($when);
             }
         }
-
         $this->when = $when;
-        $this->whenType = $type;
-
+        $this->when_type = $type;
         return $this;
     }
-
     /**
      * Sets the `THEN` result value.
      *
@@ -176,38 +134,23 @@ class WhenThenExpression implements ExpressionInterface
      */
     public function then(mixed $result, ?string $type = null): static
     {
-        if (
-            $result !== null &&
-            !is_scalar($result) &&
-            !(is_object($result) && !($result instanceof Closure))
-        ) {
-            throw new InvalidArgumentException(sprintf(
-                'The `$result` argument must be either `null`, a scalar value, an object, ' .
-                'or an instance of `\%s`, `%s` given.',
-                ExpressionInterface::class,
-                get_debug_type($result),
-            ));
+        if ($result !== null && !is_scalar($result) && !(is_object($result) && !$result instanceof Closure)) {
+            throw new InvalidArgumentException(sprintf('The `$result` argument must be either `null`, a scalar value, an object, ' . 'or an instance of `\%s`, `%s` given.', Expression_Interface::class, get_debug_type($result)));
         }
-
         $this->then = $result;
-
-        $this->thenType = $type ?? $this->inferType($result);
-
-        $this->hasThenBeenDefined = true;
-
+        $this->then_type = $type ?? $this->infer_type($result);
+        $this->has_then_been_defined = true;
         return $this;
     }
-
     /**
      * Returns the expression's result value type.
      *
      * @see WhenThenExpression::then()
      */
-    public function getResultType(): ?string
+    public function get_result_type(): ?string
     {
-        return $this->thenType;
+        return $this->then_type;
     }
-
     /**
      * Returns the available data for the given clause.
      *
@@ -224,87 +167,67 @@ class WhenThenExpression implements ExpressionInterface
      */
     public function clause(string $clause): mixed
     {
-        if (!in_array($clause, $this->validClauseNames, true)) {
-            throw new InvalidArgumentException(
-                sprintf(
-                    'The `$clause` argument must be one of `%s`, the given value `%s` is invalid.',
-                    implode('`, `', $this->validClauseNames),
-                    $clause,
-                ),
-            );
+        if (!in_array($clause, $this->valid_clause_names, true)) {
+            throw new InvalidArgumentException(sprintf('The `$clause` argument must be one of `%s`, the given value `%s` is invalid.', implode('`, `', $this->valid_clause_names), $clause));
         }
-
         return $this->{$clause};
     }
-
     /**
      * @inheritDoc
      */
-    public function sql(ValueBinder $binder): string
+    public function sql(Value_Binder $binder): string
     {
         if ($this->when === null) {
             throw new LogicException('Case expression has incomplete when clause. Missing `when()`.');
         }
-
-        if (!$this->hasThenBeenDefined) {
+        if (!$this->has_then_been_defined) {
             throw new LogicException('Case expression has incomplete when clause. Missing `then()` after `when()`.');
         }
-
         $when = $this->when;
-        if (
-            is_string($this->whenType) &&
-            !($when instanceof ExpressionInterface)
-        ) {
-            $when = $this->_castToExpression($when, $this->whenType);
+        if (is_string($this->when_type) && !$when instanceof Expression_Interface) {
+            $when = $this->_cast_to_expression($when, $this->when_type);
         }
         if ($when instanceof Query) {
             $when = sprintf('(%s)', $when->sql($binder));
-        } elseif ($when instanceof ExpressionInterface) {
+        } elseif ($when instanceof Expression_Interface) {
             $when = $when->sql($binder);
         } else {
             $placeholder = $binder->placeholder('c');
-            if (is_string($this->whenType)) {
-                $whenType = $this->whenType;
+            if (is_string($this->when_type)) {
+                $when_type = $this->when_type;
             } else {
-                $whenType = null;
+                $when_type = null;
             }
-            $binder->bind($placeholder, $when, $whenType);
+            $binder->bind($placeholder, $when, $when_type);
             $when = $placeholder;
         }
-
-        $then = $this->compileNullableValue($binder, $this->then, $this->thenType);
-
+        $then = $this->compile_nullable_value($binder, $this->then, $this->then_type);
         return "WHEN {$when} THEN {$then}";
     }
-
     /**
      * @inheritDoc
      */
     public function traverse(Closure $callback): static
     {
-        if ($this->when instanceof ExpressionInterface) {
+        if ($this->when instanceof Expression_Interface) {
             $callback($this->when);
             $this->when->traverse($callback);
         }
-
-        if ($this->then instanceof ExpressionInterface) {
+        if ($this->then instanceof Expression_Interface) {
             $callback($this->then);
             $this->then->traverse($callback);
         }
-
         return $this;
     }
-
     /**
      * Clones the inner expression objects.
      */
     public function __clone()
     {
-        if ($this->when instanceof ExpressionInterface) {
+        if ($this->when instanceof Expression_Interface) {
             $this->when = clone $this->when;
         }
-
-        if ($this->then instanceof ExpressionInterface) {
+        if ($this->then instanceof Expression_Interface) {
             $this->then = clone $this->then;
         }
     }

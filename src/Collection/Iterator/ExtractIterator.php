@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,14 +14,12 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Collection\Iterator;
 
 use ArrayIterator;
 use Cake\Collection\Collection;
-use Cake\Collection\CollectionInterface;
+use Cake\Collection\Collection_Interface;
 use Iterator;
-
 /**
  * Creates an iterator from another iterator that extract the requested column
  * or property based on a path
@@ -30,7 +27,7 @@ use Iterator;
  * @template TKey
  * @extends \Cake\Collection\Collection<TKey, mixed>
  */
-class ExtractIterator extends Collection
+class Extract_Iterator extends Collection
 {
     /**
      * A callable responsible for extracting a single value for each
@@ -39,7 +36,6 @@ class ExtractIterator extends Collection
      * @var callable
      */
     protected $_extractor;
-
     /**
      * Creates the iterator that will return the requested property for each value
      * in the collection expressed in $path
@@ -63,10 +59,9 @@ class ExtractIterator extends Collection
      */
     public function __construct(iterable $items, callable|string $path)
     {
-        $this->_extractor = $this->_propertyExtractor($path);
+        $this->_extractor = $this->_property_extractor($path);
         parent::__construct($items);
     }
-
     /**
      * Returns the column value defined in $path or null if the path could not be
      * followed
@@ -74,35 +69,27 @@ class ExtractIterator extends Collection
     public function current(): mixed
     {
         $extractor = $this->_extractor;
-
         return $extractor(parent::current());
     }
-
     /**
      * @inheritDoc
      */
     public function unwrap(): Iterator
     {
-        $iterator = $this->getInnerIterator();
-
-        if ($iterator instanceof CollectionInterface) {
+        $iterator = $this->get_inner_iterator();
+        if ($iterator instanceof Collection_Interface) {
             $iterator = $iterator->unwrap();
         }
-
         if ($iterator::class !== ArrayIterator::class) {
             return $this;
         }
-
         // ArrayIterator can be traversed strictly.
         // Let's do that for performance gains
-
         $callback = $this->_extractor;
         $res = [];
-
-        foreach ($iterator->getArrayCopy() as $k => $v) {
+        foreach ($iterator->get_array_copy() as $k => $v) {
             $res[$k] = $callback($v);
         }
-
         return new ArrayIterator($res);
     }
 }

@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,15 +14,13 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Collection\Iterator;
 
 use ArrayIterator;
 use Cake\Collection\Collection;
-use Cake\Collection\CollectionInterface;
+use Cake\Collection\Collection_Interface;
 use Iterator;
 use Traversable;
-
 /**
  * Creates an iterator from another iterator that will modify each of the values
  * by converting them using a callback function.
@@ -31,7 +28,7 @@ use Traversable;
  * @template TKey
  * @extends \Cake\Collection\Collection<TKey, mixed>
  */
-class ReplaceIterator extends Collection
+class Replace_Iterator extends Collection
 {
     /**
      * The callback function to be used to transform values
@@ -39,12 +36,10 @@ class ReplaceIterator extends Collection
      * @var callable
      */
     protected $_callback;
-
     /**
      * A reference to the internal iterator this object is wrapping.
      */
-    protected Traversable $_innerIterator;
-
+    protected Traversable $_inner_iterator;
     /**
      * Creates an iterator from another iterator that will modify each of the values
      * by converting them using a callback function.
@@ -60,43 +55,35 @@ class ReplaceIterator extends Collection
     {
         $this->_callback = $callback;
         parent::__construct($items);
-        $this->_innerIterator = $this->getInnerIterator();
+        $this->_inner_iterator = $this->get_inner_iterator();
     }
-
     /**
      * Returns the value returned by the callback after passing the current value in
      * the iteration
      */
     public function current(): mixed
     {
-        return ($this->_callback)(parent::current(), $this->key(), $this->_innerIterator);
+        return ($this->_callback)(parent::current(), $this->key(), $this->_inner_iterator);
     }
-
     /**
      * @inheritDoc
      */
     public function unwrap(): Iterator
     {
-        $iterator = $this->_innerIterator;
-
-        if ($iterator instanceof CollectionInterface) {
+        $iterator = $this->_inner_iterator;
+        if ($iterator instanceof Collection_Interface) {
             $iterator = $iterator->unwrap();
         }
-
         if ($iterator::class !== ArrayIterator::class) {
             return $this;
         }
-
         // ArrayIterator can be traversed strictly.
         // Let's do that for performance gains
-
         $callback = $this->_callback;
         $res = [];
-
         foreach ($iterator as $k => $v) {
             $res[$k] = $callback($v, $k, $iterator);
         }
-
         return new ArrayIterator($res);
     }
 }

@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright 2005-2011, Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -13,19 +12,17 @@ declare(strict_types=1);
  * @since         3.6.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Core;
 
-use Cake\Console\CommandCollection;
-use Cake\Http\MiddlewareQueue;
-use Cake\Routing\RouteBuilder;
-
+use Cake\Console\Command_Collection;
+use Cake\Http\Middleware_Queue;
+use Cake\Routing\Route_Builder;
 /**
  * Plugin Interface
  *
  * @method \Cake\Event\EventManagerInterface events(\Cake\Event\EventManagerInterface $eventManager)
  */
-interface PluginInterface
+interface Plugin_Interface
 {
     /**
      * List of valid hooks.
@@ -33,32 +30,26 @@ interface PluginInterface
      * @var array<string>
      */
     public const VALID_HOOKS = ['bootstrap', 'console', 'middleware', 'routes', 'services', 'events'];
-
     /**
      * Get the name of this plugin.
      */
-    public function getName(): string;
-
+    public function get_name(): string;
     /**
      * Get the filesystem path to this plugin
      */
-    public function getPath(): string;
-
+    public function get_path(): string;
     /**
      * Get the filesystem path to configuration for this plugin
      */
-    public function getConfigPath(): string;
-
+    public function get_config_path(): string;
     /**
      * Get the filesystem path to configuration for this plugin
      */
-    public function getClassPath(): string;
-
+    public function get_class_path(): string;
     /**
      * Get the filesystem path to templates for this plugin
      */
-    public function getTemplatePath(): string;
-
+    public function get_template_path(): string;
     /**
      * Load all the application configuration and bootstrap logic.
      *
@@ -70,22 +61,19 @@ interface PluginInterface
      *
      * @param \Cake\Core\PluginApplicationInterface<mixed> $app The host application
      */
-    public function bootstrap(PluginApplicationInterface $app): void;
-
+    public function bootstrap(Plugin_Application_Interface $app): void;
     /**
      * Add console commands for the plugin.
      *
      * @param \Cake\Console\CommandCollection $commands The command collection to update
      */
-    public function console(CommandCollection $commands): CommandCollection;
-
+    public function console(Command_Collection $commands): Command_Collection;
     /**
      * Add middleware for the plugin.
      *
      * @param \Cake\Http\MiddlewareQueue $middlewareQueue The middleware queue to update.
      */
-    public function middleware(MiddlewareQueue $middlewareQueue): MiddlewareQueue;
-
+    public function middleware(Middleware_Queue $middleware_queue): Middleware_Queue;
     /**
      * Add routes for the plugin.
      *
@@ -94,15 +82,13 @@ interface PluginInterface
      *
      * @param \Cake\Routing\RouteBuilder $routes The route builder to update.
      */
-    public function routes(RouteBuilder $routes): void;
-
+    public function routes(Route_Builder $routes): void;
     /**
      * Register plugin services to the application's container
      *
      * @param \Cake\Core\ContainerInterface $container Container instance.
      */
-    public function services(ContainerInterface $container): void;
-
+    public function services(Container_Interface $container): void;
     /**
      * Disables the named hook
      *
@@ -110,7 +96,6 @@ interface PluginInterface
      * @return $this
      */
     public function disable(string $hook);
-
     /**
      * Enables the named hook
      *
@@ -118,11 +103,10 @@ interface PluginInterface
      * @return $this
      */
     public function enable(string $hook);
-
     /**
      * Check if the named hook is enabled
      *
      * @param string $hook The hook to check
      */
-    public function isEnabled(string $hook): bool;
+    public function is_enabled(string $hook): bool;
 }

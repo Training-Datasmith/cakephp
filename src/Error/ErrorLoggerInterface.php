@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,18 +14,16 @@ declare(strict_types=1);
  * @since         4.1.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Error;
 
-use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\Server_Request_Interface;
 use Throwable;
-
 /**
  * Interface for error logging handlers.
  *
  * Used by the ErrorHandlerMiddleware and global error handlers to log exceptions and errors.
  */
-interface ErrorLoggerInterface
+interface Error_Logger_Interface
 {
     /**
      * Log an error for an exception with optional request context.
@@ -35,12 +32,7 @@ interface ErrorLoggerInterface
      * @param \Psr\Http\Message\ServerRequestInterface|null $request The current request if available.
      * @param bool $includeTrace Should the log message include a stacktrace.
      */
-    public function logException(
-        Throwable $exception,
-        ?ServerRequestInterface $request = null,
-        bool $includeTrace = false,
-    ): void;
-
+    public function log_exception(Throwable $exception, ?Server_Request_Interface $request = null, bool $include_trace = false): void;
     /**
      * Log an error to Cake's Log subsystem
      *
@@ -48,9 +40,5 @@ interface ErrorLoggerInterface
      * @param \Psr\Http\Message\ServerRequestInterface|null $request The request if in an HTTP context.
      * @param bool $includeTrace Should the log message include a stacktrace.
      */
-    public function logError(
-        PhpError $error,
-        ?ServerRequestInterface $request = null,
-        bool $includeTrace = false,
-    ): void;
+    public function log_error(Php_Error $error, ?Server_Request_Interface $request = null, bool $include_trace = false): void;
 }

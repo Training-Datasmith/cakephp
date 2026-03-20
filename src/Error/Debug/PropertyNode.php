@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,13 +14,12 @@ declare(strict_types=1);
  * @since         4.1.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Error\Debug;
 
 /**
  * Dump node for object properties.
  */
-class PropertyNode implements NodeInterface
+class Property_Node implements Node_Interface
 {
     /**
      * Constructor
@@ -30,38 +28,34 @@ class PropertyNode implements NodeInterface
      * @param string|null $visibility The visibility of the property.
      * @param \Cake\Error\Debug\NodeInterface $value The property value node.
      */
-    public function __construct(private readonly string $name, private readonly ?string $visibility, private readonly NodeInterface $value)
+    public function __construct(private readonly string $name, private readonly ?string $visibility, private readonly Node_Interface $value)
     {
     }
-
     /**
      * Get the value
      */
-    public function getValue(): NodeInterface
+    public function get_value(): Node_Interface
     {
         return $this->value;
     }
-
     /**
      * Get the property visibility
      */
-    public function getVisibility(): ?string
+    public function get_visibility(): ?string
     {
         return $this->visibility;
     }
-
     /**
      * Get the property name
      */
-    public function getName(): string
+    public function get_name(): string
     {
         return $this->name;
     }
-
     /**
      * @inheritDoc
      */
-    public function getChildren(): array
+    public function get_children(): array
     {
         return [$this->value];
     }

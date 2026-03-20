@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,13 +14,11 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Datasource;
 
 use ArrayAccess;
 use JsonSerializable;
 use Stringable;
-
 /**
  * Describes the methods that any class representing a data storage should
  * comply with.
@@ -31,7 +28,7 @@ use Stringable;
  * @method bool hasValue(string $field)
  * @method static patch(array<string, mixed> $values, array<string, mixed> $options = [])
  */
-interface EntityInterface extends ArrayAccess, JsonSerializable, Stringable
+interface Entity_Interface extends ArrayAccess, JsonSerializable, Stringable
 {
     /**
      * Sets hidden fields.
@@ -40,15 +37,13 @@ interface EntityInterface extends ArrayAccess, JsonSerializable, Stringable
      * @param bool $merge Merge the new fields with the existing. By default false.
      * @return $this
      */
-    public function setHidden(array $fields, bool $merge = false);
-
+    public function set_hidden(array $fields, bool $merge = false);
     /**
      * Gets the hidden fields.
      *
      * @return array<string>
      */
-    public function getHidden(): array;
-
+    public function get_hidden(): array;
     /**
      * Sets the virtual fields on this entity.
      *
@@ -56,31 +51,27 @@ interface EntityInterface extends ArrayAccess, JsonSerializable, Stringable
      * @param bool $merge Merge the new fields with the existing. By default false.
      * @return $this
      */
-    public function setVirtual(array $fields, bool $merge = false);
-
+    public function set_virtual(array $fields, bool $merge = false);
     /**
      * Gets the virtual fields on this entity.
      *
      * @return array<string>
      */
-    public function getVirtual(): array;
-
+    public function get_virtual(): array;
     /**
      * Returns whether a field is an original one.
      * Original fields are those that an entity was instantiated with.
      *
      * @param string $name Name
      */
-    public function isOriginalField(string $name): bool;
-
+    public function is_original_field(string $name): bool;
     /**
      * Returns an array of original fields.
      * Original fields are those that an entity was initialized with.
      *
      * @return array<string>
      */
-    public function getOriginalFields(): array;
-
+    public function get_original_fields(): array;
     /**
      * Sets the dirty status of a single field.
      *
@@ -89,42 +80,36 @@ interface EntityInterface extends ArrayAccess, JsonSerializable, Stringable
      * it was not changed. Default true.
      * @return $this
      */
-    public function setDirty(string $field, bool $isDirty = true);
-
+    public function set_dirty(string $field, bool $is_dirty = true);
     /**
      * Checks if the entity is dirty or if a single field of it is dirty.
      *
      * @param string|null $field The field to check the status for. Null for the whole entity.
      * @return bool Whether the field was changed or not
      */
-    public function isDirty(?string $field = null): bool;
-
+    public function is_dirty(?string $field = null): bool;
     /**
      * Gets the dirty fields.
      *
      * @return array<string>
      */
-    public function getDirty(): array;
-
+    public function get_dirty(): array;
     /**
      * Returns whether this entity has errors.
      *
      * @param bool $includeNested true will check nested entities for hasErrors()
      */
-    public function hasErrors(bool $includeNested = true): bool;
-
+    public function has_errors(bool $include_nested = true): bool;
     /**
      * Returns all validation errors.
      */
-    public function getErrors(): array;
-
+    public function get_errors(): array;
     /**
      * Returns validation errors of a field
      *
      * @param string $field Field name to get the errors from
      */
-    public function getError(string $field): array;
-
+    public function get_error(string $field): array;
     /**
      * Sets error messages to the entity
      *
@@ -132,8 +117,7 @@ interface EntityInterface extends ArrayAccess, JsonSerializable, Stringable
      * @param bool $overwrite Whether to overwrite pre-existing errors for $fields
      * @return $this
      */
-    public function setErrors(array $errors, bool $overwrite = false);
-
+    public function set_errors(array $errors, bool $overwrite = false);
     /**
      * Sets errors for a single field
      *
@@ -142,8 +126,7 @@ interface EntityInterface extends ArrayAccess, JsonSerializable, Stringable
      * @param bool $overwrite Whether to overwrite pre-existing errors for $field
      * @return $this
      */
-    public function setError(string $field, array|string $errors, bool $overwrite = false);
-
+    public function set_error(string $field, array|string $errors, bool $overwrite = false);
     /**
      * Stores whether a field value can be changed or set in this entity.
      *
@@ -152,35 +135,30 @@ interface EntityInterface extends ArrayAccess, JsonSerializable, Stringable
      * mark it as protected.
      * @return $this
      */
-    public function setAccess(array|string $field, bool $set);
-
+    public function set_access(array|string $field, bool $set);
     /**
      * Accessible configuration for this entity.
      *
      * @return array<bool>
      */
-    public function getAccessible(): array;
-
+    public function get_accessible(): array;
     /**
      * Checks if a field is accessible
      *
      * @param string $field Field name to check
      */
-    public function isAccessible(string $field): bool;
-
+    public function is_accessible(string $field): bool;
     /**
      * Sets the source alias
      *
      * @param string $alias the alias of the repository
      * @return $this
      */
-    public function setSource(string $alias);
-
+    public function set_source(string $alias);
     /**
      * Returns the alias of the repository from which this entity came from.
      */
-    public function getSource(): string;
-
+    public function get_source(): string;
     /**
      * Returns an array with the requested original fields
      * stored in this entity, indexed by field name.
@@ -188,8 +166,7 @@ interface EntityInterface extends ArrayAccess, JsonSerializable, Stringable
      * @param array<string> $fields List of fields to be returned
      * @return array<string, mixed>
      */
-    public function extractOriginal(array $fields): array;
-
+    public function extract_original(array $fields): array;
     /**
      * Returns an array with only the original fields
      * stored in this entity, indexed by field name.
@@ -197,8 +174,7 @@ interface EntityInterface extends ArrayAccess, JsonSerializable, Stringable
      * @param array<string> $fields List of fields to be returned
      * @return array<string, mixed>
      */
-    public function extractOriginalChanged(array $fields): array;
-
+    public function extract_original_changed(array $fields): array;
     /**
      * Sets one or multiple fields to the specified value
      *
@@ -211,14 +187,12 @@ interface EntityInterface extends ArrayAccess, JsonSerializable, Stringable
      * @return $this
      */
     public function set(array|string $field, mixed $value = null, array $options = []);
-
     /**
      * Returns the value of a field by name
      *
      * @param string $field the name of the field to retrieve
      */
     public function &get(string $field): mixed;
-
     /**
      * Enable/disable field presence check when accessing a property.
      *
@@ -226,26 +200,22 @@ interface EntityInterface extends ArrayAccess, JsonSerializable, Stringable
      *
      * @param bool $value `true` to enable, `false` to disable.
      */
-    public function requireFieldPresence(bool $value = true): void;
-
+    public function require_field_presence(bool $value = true): void;
     /**
      * Returns whether a field has an original value
      */
-    public function hasOriginal(string $field): bool;
-
+    public function has_original(string $field): bool;
     /**
      * Returns the original value of a field.
      *
      * @param string $field The name of the field.
      * @param bool $allowFallback whether to allow falling back to the current field value if no original exists
      */
-    public function getOriginal(string $field, bool $allowFallback = true): mixed;
-
+    public function get_original(string $field, bool $allow_fallback = true): mixed;
     /**
      * Gets all original values of the entity.
      */
-    public function getOriginalValues(): array;
-
+    public function get_original_values(): array;
     /**
      * Returns whether this entity contains a field named $field.
      *
@@ -254,7 +224,6 @@ interface EntityInterface extends ArrayAccess, JsonSerializable, Stringable
      * @param array<string>|string $field The field to check.
      */
     public function has(array|string $field): bool;
-
     /**
      * Removes a field or list of fields from this entity
      *
@@ -262,14 +231,12 @@ interface EntityInterface extends ArrayAccess, JsonSerializable, Stringable
      * @return $this
      */
     public function unset(array|string $field);
-
     /**
      * Get the list of visible fields.
      *
      * @return array<string> A list of fields that are 'visible' in all representations.
      */
-    public function getVisible(): array;
-
+    public function get_visible(): array;
     /**
      * Returns an array with all the visible fields set in this entity.
      *
@@ -278,8 +245,7 @@ interface EntityInterface extends ArrayAccess, JsonSerializable, Stringable
      *
      * @return array<string, mixed>
      */
-    public function toArray(): array;
-
+    public function to_array(): array;
     /**
      * Returns an array with the requested fields
      * stored in this entity, indexed by field name
@@ -288,15 +254,13 @@ interface EntityInterface extends ArrayAccess, JsonSerializable, Stringable
      * @param bool $onlyDirty Return the requested field only if it is dirty
      * @return array<string, mixed>
      */
-    public function extract(array $fields, bool $onlyDirty = false): array;
-
+    public function extract(array $fields, bool $only_dirty = false): array;
     /**
      * Sets the entire entity as clean, which means that it will appear as
      * no fields being modified or added at all. This is an useful call
      * for an initial object hydration
      */
     public function clean(): void;
-
     /**
      * Set the status of this entity.
      *
@@ -306,15 +270,13 @@ interface EntityInterface extends ArrayAccess, JsonSerializable, Stringable
      * @param bool $new Indicate whether this entity has been persisted.
      * @return $this
      */
-    public function setNew(bool $new);
-
+    public function set_new(bool $new);
     /**
      * Returns whether this entity has already been persisted.
      *
      * @return bool Whether the entity has been persisted.
      */
-    public function isNew(): bool;
-
+    public function is_new(): bool;
     /**
      * Returns a string representation of this object.
      *

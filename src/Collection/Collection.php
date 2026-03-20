@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,13 +14,11 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Collection;
 
 use ArrayIterator;
-use IteratorIterator;
+use Iterator_Iterator;
 use SplFixedArray;
-
 /**
  * A collection is an immutable list of elements with a handful of functions to
  * iterate, group, transform and extract information from it.
@@ -31,16 +28,14 @@ use SplFixedArray;
  * @extends \IteratorIterator<TKey, TValue, \Traversable<TKey, TValue>>
  * @implements \Cake\Collection\CollectionInterface<TKey, TValue>
  */
-class Collection extends IteratorIterator implements CollectionInterface
+class Collection extends Iterator_Iterator implements Collection_Interface
 {
     /** @use \Cake\Collection\CollectionTrait<TKey, TValue> */
-    use CollectionTrait;
-
+    use Collection_Trait;
     /**
      * Whether or not the items in this collection are an array.
      */
-    protected bool $innerIsArray = false;
-
+    protected bool $inner_is_array = false;
     /**
      * Constructor. You can provide an array or any traversable object
      *
@@ -52,20 +47,16 @@ class Collection extends IteratorIterator implements CollectionInterface
         if (is_array($items)) {
             $items = new ArrayIterator($items);
         }
-
-        $this->innerIsArray = $items instanceof ArrayIterator || $items instanceof SplFixedArray;
-
+        $this->inner_is_array = $items instanceof ArrayIterator || $items instanceof SplFixedArray;
         parent::__construct($items);
     }
-
     /**
      * Returns an array for serializing this object.
      */
     public function __serialize(): array
     {
-        return $this->buffered()->toArray();
+        return $this->buffered()->to_array();
     }
-
     /**
      * Rebuilds the Collection instance.
      *
@@ -76,7 +67,6 @@ class Collection extends IteratorIterator implements CollectionInterface
         /** @phpstan-ignore argument.type (unserialize rebuilds from array) */
         $this->__construct($data);
     }
-
     /**
      * Returns an array that can be used to describe the internal state of this
      * object.
@@ -85,23 +75,15 @@ class Collection extends IteratorIterator implements CollectionInterface
      */
     public function __debugInfo(): array
     {
-        if ($this->innerIsArray) {
+        if ($this->inner_is_array) {
             $index = $this->key();
-            $items = $this->toArray();
-
+            $items = $this->to_array();
             $this->rewind();
             while ($this->key() !== $index) {
                 $this->next();
             }
-
-            return [
-                'count' => count($items),
-                'items' => $items,
-            ];
+            return ['count' => count($items), 'items' => $items];
         }
-
-        return [
-            'innerIterator' => $this->unwrap(),
-        ];
+        return ['innerIterator' => $this->unwrap()];
     }
 }

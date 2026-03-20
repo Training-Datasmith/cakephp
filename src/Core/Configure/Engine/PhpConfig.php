@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,13 +14,11 @@ declare(strict_types=1);
  * @since         2.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Core\Configure\Engine;
 
-use Cake\Core\Configure\ConfigEngineInterface;
-use Cake\Core\Configure\FileConfigTrait;
-use Cake\Core\Exception\CakeException;
-
+use Cake\Core\Configure\Config_Engine_Interface;
+use Cake\Core\Configure\File_Config_Trait;
+use Cake\Core\Exception\Cake_Exception;
 /**
  * PHP engine allows Configure to load configuration values from
  * files containing simple PHP arrays.
@@ -46,15 +43,13 @@ use Cake\Core\Exception\CakeException;
  *
  * @see \Cake\Core\Configure::load() for how to load custom configuration files.
  */
-class PhpConfig implements ConfigEngineInterface
+class Php_Config implements Config_Engine_Interface
 {
-    use FileConfigTrait;
-
+    use File_Config_Trait;
     /**
      * File extension.
      */
     protected string $_extension = '.php';
-
     /**
      * Constructor for PHP Config file reading.
      *
@@ -64,7 +59,6 @@ class PhpConfig implements ConfigEngineInterface
     {
         $this->_path = $path ?? CONFIG;
     }
-
     /**
      * Read a config file and return its contents.
      *
@@ -79,16 +73,13 @@ class PhpConfig implements ConfigEngineInterface
      */
     public function read(string $key): array
     {
-        $file = $this->_getFilePath($key, true);
-
+        $file = $this->_get_file_path($key, true);
         $return = include $file;
         if (is_array($return)) {
             return $return;
         }
-
-        throw new CakeException(sprintf('Config file `%s` did not return an array', $key . '.php.'));
+        throw new Cake_Exception(sprintf('Config file `%s` did not return an array', $key . '.php.'));
     }
-
     /**
      * Converts the provided $data into a string of PHP code that can
      * be used saved into a file and loaded later.
@@ -101,9 +92,7 @@ class PhpConfig implements ConfigEngineInterface
     public function dump(string $key, array $data): bool
     {
         $contents = '<?php' . "\n" . 'return ' . var_export($data, true) . ';';
-
-        $filename = $this->_getFilePath($key);
-
+        $filename = $this->_get_file_path($key);
         return file_put_contents($filename, $contents) > 0;
     }
 }

@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,51 +14,43 @@ declare(strict_types=1);
  * @since         3.1.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Datasource;
 
-use Psr\SimpleCache\CacheInterface;
-
+use Psr\Simple_Cache\Cache_Interface;
 /**
  * This interface defines the methods you can depend on in a connection.
  */
-interface ConnectionInterface
+interface Connection_Interface
 {
     /**
      * @var string
      */
     public const ROLE_WRITE = 'write';
-
     /**
      * @var string
      */
     public const ROLE_READ = 'read';
-
     /**
      * Gets the driver instance.
      */
-    public function getDriver(string $role = self::ROLE_WRITE): object;
-
+    public function get_driver(string $role = self::ROLE_WRITE): object;
     /**
      * Set a cacher.
      *
      * @param \Psr\SimpleCache\CacheInterface $cacher Cacher object
      * @return $this
      */
-    public function setCacher(CacheInterface $cacher);
-
+    public function set_cacher(Cache_Interface $cacher);
     /**
      * Get a cacher.
      *
      * @return \Psr\SimpleCache\CacheInterface $cacher Cacher object
      */
-    public function getCacher(): CacheInterface;
-
+    public function get_cacher(): Cache_Interface;
     /**
      * Get the configuration name for this connection.
      */
-    public function configName(): string;
-
+    public function config_name(): string;
     /**
      * Get the configuration data used to create the connection.
      *

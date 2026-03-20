@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,12 +14,10 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Cache\Engine;
 
-use Cake\Cache\CacheEngine;
+use Cake\Cache\Cache_Engine;
 use DateInterval;
-
 /**
  * Null cache engine, all operations appear to work, but do nothing.
  *
@@ -28,7 +25,7 @@ use DateInterval;
  *
  * @extends \Cake\Cache\CacheEngine<\Cake\Cache\Engine\NullEngine>
  */
-class NullEngine extends CacheEngine
+class Null_Engine extends Cache_Engine
 {
     /**
      * @inheritDoc
@@ -37,7 +34,6 @@ class NullEngine extends CacheEngine
     {
         return true;
     }
-
     /**
      * @inheritDoc
      */
@@ -45,15 +41,13 @@ class NullEngine extends CacheEngine
     {
         return true;
     }
-
     /**
      * @inheritDoc
      */
-    public function setMultiple(iterable $values, DateInterval|int|null $ttl = null): bool
+    public function set_multiple(iterable $values, DateInterval|int|null $ttl = null): bool
     {
         return true;
     }
-
     /**
      * @inheritDoc
      */
@@ -61,21 +55,17 @@ class NullEngine extends CacheEngine
     {
         return $default;
     }
-
     /**
      * @inheritDoc
      */
-    public function getMultiple(iterable $keys, mixed $default = null): iterable
+    public function get_multiple(iterable $keys, mixed $default = null): iterable
     {
         $result = [];
-
         foreach ($keys as $key) {
             $result[$key] = $default;
         }
-
         return $result;
     }
-
     /**
      * @inheritDoc
      */
@@ -83,7 +73,6 @@ class NullEngine extends CacheEngine
     {
         return 1;
     }
-
     /**
      * @inheritDoc
      */
@@ -91,7 +80,6 @@ class NullEngine extends CacheEngine
     {
         return 0;
     }
-
     /**
      * @inheritDoc
      */
@@ -99,15 +87,13 @@ class NullEngine extends CacheEngine
     {
         return true;
     }
-
     /**
      * @inheritDoc
      */
-    public function deleteMultiple(iterable $keys): bool
+    public function delete_multiple(iterable $keys): bool
     {
         return true;
     }
-
     /**
      * @inheritDoc
      */
@@ -115,11 +101,10 @@ class NullEngine extends CacheEngine
     {
         return true;
     }
-
     /**
      * @inheritDoc
      */
-    public function clearGroup(string $group): bool
+    public function clear_group(string $group): bool
     {
         return true;
     }

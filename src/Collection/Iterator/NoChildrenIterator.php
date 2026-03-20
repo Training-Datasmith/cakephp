@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,12 +14,10 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Collection\Iterator;
 
 use Cake\Collection\Collection;
-use RecursiveIterator;
-
+use Recursive_Iterator;
 /**
  * An iterator that can be used as an argument for other iterators that require
  * a RecursiveIterator but do not want children. This iterator will
@@ -31,22 +28,21 @@ use RecursiveIterator;
  * @extends \Cake\Collection\Collection<TKey, TValue>
  * @implements \RecursiveIterator<TKey, TValue>
  */
-class NoChildrenIterator extends Collection implements RecursiveIterator
+class No_Children_Iterator extends Collection implements Recursive_Iterator
 {
     /**
      * Returns false as there are no children iterators in this collection
      */
-    public function hasChildren(): bool
+    public function has_children(): bool
     {
         return false;
     }
-
     /**
      * Returns a self instance without any elements.
      *
      * @return \RecursiveIterator<mixed, mixed>
      */
-    public function getChildren(): RecursiveIterator
+    public function get_children(): Recursive_Iterator
     {
         return new static([]);
     }

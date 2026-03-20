@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,37 +14,24 @@ declare(strict_types=1);
  * @since         4.2.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Http;
 
-use Cake\Core\InstanceConfigTrait;
-
-use function Cake\Core\pluginSplit;
-
+use Cake\Core\Instance_Config_Trait;
+use function Cake\Core\Plugin_Split;
 use Throwable;
-
 /**
  * The FlashMessage class provides a way for you to write a flash variable
  * to the session, to be rendered in a view with the FlashHelper.
  */
-class FlashMessage
+class Flash_Message
 {
-    use InstanceConfigTrait;
-
+    use Instance_Config_Trait;
     /**
      * Default configuration
      *
      * @var array<string, mixed>
      */
-    protected array $_defaultConfig = [
-        'key' => 'flash',
-        'element' => 'default',
-        'plugin' => null,
-        'params' => [],
-        'clear' => false,
-        'duplicate' => true,
-    ];
-
+    protected array $_default_config = ['key' => 'flash', 'element' => 'default', 'plugin' => null, 'params' => [], 'clear' => false, 'duplicate' => true];
     /**
      * Constructor
      *
@@ -55,9 +41,8 @@ class FlashMessage
      */
     public function __construct(protected Session $session, array $config = [])
     {
-        $this->setConfig($config);
+        $this->set_config($config);
     }
-
     /**
      * Store flash messages that can be output in the view.
      *
@@ -80,46 +65,33 @@ class FlashMessage
      */
     public function set(string $message, array $options = []): void
     {
-        $options += (array)$this->getConfig();
-
+        $options += (array) $this->get_config();
         if (isset($options['escape']) && !isset($options['params']['escape'])) {
             $options['params']['escape'] = $options['escape'];
         }
-
-        [$plugin, $element] = pluginSplit($options['element']);
+        [$plugin, $element] = plugin_split($options['element']);
         if ($options['plugin']) {
             $plugin = $options['plugin'];
         }
-
         if ($plugin) {
             $options['element'] = $plugin . '.flash/' . $element;
         } else {
             $options['element'] = 'flash/' . $element;
         }
-
         $messages = [];
         if (!$options['clear']) {
-            $messages = (array)$this->session->read('Flash.' . $options['key']);
+            $messages = (array) $this->session->read('Flash.' . $options['key']);
         }
-
         if (!$options['duplicate']) {
-            foreach ($messages as $existingMessage) {
-                if ($existingMessage['message'] === $message) {
+            foreach ($messages as $existing_message) {
+                if ($existing_message['message'] === $message) {
                     return;
                 }
             }
         }
-
-        $messages[] = [
-            'message' => $message,
-            'key' => $options['key'],
-            'element' => $options['element'],
-            'params' => $options['params'],
-        ];
-
+        $messages[] = ['message' => $message, 'key' => $options['key'], 'element' => $options['element'], 'params' => $options['params']];
         $this->session->write('Flash.' . $options['key'], $messages);
     }
-
     /**
      * Set an exception's message as flash message.
      *
@@ -133,15 +105,13 @@ class FlashMessage
      * @param array<string, mixed> $options An array of options.
      * @see FlashMessage::set() For list of valid options
      */
-    public function setExceptionMessage(Throwable $exception, array $options = []): void
+    public function set_exception_message(Throwable $exception, array $options = []): void
     {
         $options['element'] ??= 'error';
-        $options['params']['code'] ??= $exception->getCode();
-
-        $message = $exception->getMessage();
+        $options['params']['code'] ??= $exception->get_code();
+        $message = $exception->get_message();
         $this->set($message, $options);
     }
-
     /**
      * Get the messages for given key and remove from session.
      *
@@ -151,7 +121,6 @@ class FlashMessage
     {
         return $this->session->consume("Flash.{$key}");
     }
-
     /**
      * Set a success message.
      *
@@ -166,7 +135,6 @@ class FlashMessage
         $options['element'] = 'success';
         $this->set($message, $options);
     }
-
     /**
      * Set a success message.
      *
@@ -181,7 +149,6 @@ class FlashMessage
         $options['element'] = 'error';
         $this->set($message, $options);
     }
-
     /**
      * Set a warning message.
      *
@@ -196,7 +163,6 @@ class FlashMessage
         $options['element'] = 'warning';
         $this->set($message, $options);
     }
-
     /**
      * Set an info message.
      *

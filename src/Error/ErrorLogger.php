@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,27 +14,24 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Error;
 
 use Cake\Core\Configure;
-use Cake\Core\Exception\CakeException;
-use Cake\Core\InstanceConfigTrait;
-use Cake\Http\ServerRequest;
+use Cake\Core\Exception\Cake_Exception;
+use Cake\Core\Instance_Config_Trait;
+use Cake\Http\Server_Request;
 use Cake\Log\Log;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Log\LoggerTrait;
+use Psr\Http\Message\Server_Request_Interface;
+use Psr\Log\Logger_Trait;
 use Stringable;
 use Throwable;
-
 /**
  * Log errors and unhandled exceptions to `Cake\Log\Log`
  */
-class ErrorLogger implements ErrorLoggerInterface
+class Error_Logger implements Error_Logger_Interface
 {
-    use InstanceConfigTrait;
-    use LoggerTrait;
-
+    use Instance_Config_Trait;
+    use Logger_Trait;
     /**
      * Default configuration values.
      *
@@ -43,10 +39,7 @@ class ErrorLogger implements ErrorLoggerInterface
      *
      * @var array<string, mixed>
      */
-    protected array $_defaultConfig = [
-        'trace' => false,
-    ];
-
+    protected array $_default_config = ['trace' => false];
     /**
      * Constructor
      *
@@ -54,9 +47,8 @@ class ErrorLogger implements ErrorLoggerInterface
      */
     public function __construct(array $config = [])
     {
-        $this->setConfig($config);
+        $this->set_config($config);
     }
-
     /**
      * @inheritDoc
      */
@@ -64,28 +56,23 @@ class ErrorLogger implements ErrorLoggerInterface
     {
         Log::write($level, $message, $context);
     }
-
     /**
      * @inheritDoc
      */
-    public function logError(PhpError $error, ?ServerRequestInterface $request = null, bool $includeTrace = false): void
+    public function log_error(Php_Error $error, ?Server_Request_Interface $request = null, bool $include_trace = false): void
     {
-        $message = $this->getErrorMessage($error, $includeTrace);
-
-        if ($request instanceof ServerRequestInterface) {
-            $message .= $this->getRequestContext($request);
+        $message = $this->get_error_message($error, $include_trace);
+        if ($request instanceof Server_Request_Interface) {
+            $message .= $this->get_request_context($request);
         }
-
-        $label = $error->getLabel();
+        $label = $error->get_label();
         $level = match ($label) {
             'strict' => LOG_NOTICE,
             'deprecated' => LOG_DEBUG,
             default => $label,
         };
-
         $this->log($level, $message);
     }
-
     /**
      * Generate the message for the error
      *
@@ -93,38 +80,25 @@ class ErrorLogger implements ErrorLoggerInterface
      * @param bool $includeTrace Whether to include a stack trace.
      * @return string Error message
      */
-    protected function getErrorMessage(PhpError $error, bool $includeTrace = false): string
+    protected function get_error_message(Php_Error $error, bool $include_trace = false): string
     {
-        $message = sprintf(
-            '%s in %s on line %s',
-            $error->getMessage(),
-            $error->getFile(),
-            $error->getLine(),
-        );
-
-        if (!$includeTrace) {
+        $message = sprintf('%s in %s on line %s', $error->get_message(), $error->get_file(), $error->get_line());
+        if (!$include_trace) {
             return $message;
         }
-
-        return $message . ("\nTrace:\n" . $error->getTraceAsString() . "\n");
+        return $message . ("\nTrace:\n" . $error->get_trace_as_string() . "\n");
     }
-
     /**
      * @inheritDoc
      */
-    public function logException(
-        Throwable $exception,
-        ?ServerRequestInterface $request = null,
-        bool $includeTrace = false,
-    ): void {
-        $message = $this->getMessage($exception, false, $includeTrace);
-
+    public function log_exception(Throwable $exception, ?Server_Request_Interface $request = null, bool $include_trace = false): void
+    {
+        $message = $this->get_message($exception, false, $include_trace);
         if ($request !== null) {
-            $message .= $this->getRequestContext($request);
+            $message .= $this->get_request_context($request);
         }
         $this->error($message);
     }
-
     /**
      * Generate the message for the exception
      *
@@ -133,30 +107,18 @@ class ErrorLogger implements ErrorLoggerInterface
      * @param bool $includeTrace Whether to include a stack trace.
      * @return string Error message
      */
-    protected function getMessage(Throwable $exception, bool $isPrevious = false, bool $includeTrace = false): string
+    protected function get_message(Throwable $exception, bool $is_previous = false, bool $include_trace = false): string
     {
-        $message = sprintf(
-            '%s[%s] %s in %s on line %s',
-            $isPrevious ? "\nCaused by: " : '',
-            $exception::class,
-            $exception->getMessage(),
-            $exception->getFile(),
-            $exception->getLine(),
-        );
+        $message = sprintf('%s[%s] %s in %s on line %s', $is_previous ? "\nCaused by: " : '', $exception::class, $exception->get_message(), $exception->get_file(), $exception->get_line());
         $debug = Configure::read('debug');
-
-        if ($debug && $exception instanceof CakeException) {
-            $attributes = $exception->getAttributes();
+        if ($debug && $exception instanceof Cake_Exception) {
+            $attributes = $exception->get_attributes();
             if ($attributes) {
-                $message .= "\nException Attributes: " . var_export($exception->getAttributes(), true);
+                $message .= "\nException Attributes: " . var_export($exception->get_attributes(), true);
             }
         }
-
-        if ($includeTrace) {
-            $trace = Debugger::formatTrace(
-                $exception,
-                ['format' => Configure::read('Error.traceFormat', 'shortPoints')],
-            );
+        if ($include_trace) {
+            $trace = Debugger::format_trace($exception, ['format' => Configure::read('Error.traceFormat', 'shortPoints')]);
             assert(is_array($trace));
             $message .= "\nStack Trace:\n";
             foreach ($trace as $line) {
@@ -167,36 +129,30 @@ class ErrorLogger implements ErrorLoggerInterface
                 }
             }
         }
-
-        $previous = $exception->getPrevious();
+        $previous = $exception->get_previous();
         if ($previous) {
-            $message .= $this->getMessage($previous, true, $includeTrace);
+            $message .= $this->get_message($previous, true, $include_trace);
         }
-
         return $message;
     }
-
     /**
      * Get the request context for an error/exception trace.
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request to read from.
      */
-    public function getRequestContext(ServerRequestInterface $request): string
+    public function get_request_context(Server_Request_Interface $request): string
     {
-        $message = "\nRequest URL: " . $request->getRequestTarget();
-
-        $referer = $request->getHeaderLine('Referer');
+        $message = "\nRequest URL: " . $request->get_request_target();
+        $referer = $request->get_header_line('Referer');
         if ($referer) {
             $message .= "\nReferer URL: " . $referer;
         }
-
-        if ($request instanceof ServerRequest) {
-            $clientIp = $request->clientIp();
-            if ($clientIp && $clientIp !== '::1') {
-                $message .= "\nClient IP: " . $clientIp;
+        if ($request instanceof Server_Request) {
+            $client_ip = $request->client_ip();
+            if ($client_ip && $client_ip !== '::1') {
+                $message .= "\nClient IP: " . $client_ip;
             }
         }
-
         return $message;
     }
 }

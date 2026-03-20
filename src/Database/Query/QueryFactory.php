@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,28 +14,24 @@ declare(strict_types=1);
  * @since         5.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Database\Query;
 
 use Cake\Database\Connection;
-use Cake\Database\ExpressionInterface;
+use Cake\Database\Expression_Interface;
 use Closure;
-
 /**
  * Factory class for generating instances of Select, Insert, Update, Delete queries.
  */
-class QueryFactory
+class Query_Factory
 {
     /**
      * Constructor/
      *
      * @param \Cake\Database\Connection $connection Connection instance.
      */
-    public function __construct(
-        protected Connection $connection,
-    ) {
+    public function __construct(protected Connection $connection)
+    {
     }
-
     /**
      * Create a new SelectQuery instance.
      *
@@ -45,21 +40,12 @@ class QueryFactory
      * @param array<string, string> $types Associative array containing the types to be used for casting.
      * @return \Cake\Database\Query\SelectQuery<mixed>
      */
-    public function select(
-        ExpressionInterface|Closure|array|string|float|int $fields = [],
-        array|string $table = [],
-        array $types = [],
-    ): SelectQuery {
-        $query = new SelectQuery($this->connection);
-
-        $query
-            ->select($fields)
-            ->from($table)
-            ->setDefaultTypes($types);
-
+    public function select(Expression_Interface|Closure|array|string|float|int $fields = [], array|string $table = [], array $types = []): Select_Query
+    {
+        $query = new Select_Query($this->connection);
+        $query->select($fields)->from($table)->set_default_types($types);
         return $query;
     }
-
     /**
      * Create a new InsertQuery instance.
      *
@@ -67,24 +53,18 @@ class QueryFactory
      * @param array $values Associative array of column => value to be inserted.
      * @param array<int|string, string> $types Associative array containing the types to be used for casting.
      */
-    public function insert(?string $table = null, array $values = [], array $types = []): InsertQuery
+    public function insert(?string $table = null, array $values = [], array $types = []): Insert_Query
     {
-        $query = new InsertQuery($this->connection);
-
+        $query = new Insert_Query($this->connection);
         if ($table) {
             $query->into($table);
         }
-
         if ($values) {
             $columns = array_keys($values);
-            $query
-                ->insert($columns, $types)
-                ->values($values);
+            $query->insert($columns, $types)->values($values);
         }
-
         return $query;
     }
-
     /**
      * Create a new UpdateQuery instance.
      *
@@ -93,14 +73,9 @@ class QueryFactory
      * @param array $conditions Conditions to be set for the update statement.
      * @param array<string, string> $types Associative array containing the types to be used for casting.
      */
-    public function update(
-        ExpressionInterface|string|null $table = null,
-        array $values = [],
-        array $conditions = [],
-        array $types = [],
-    ): UpdateQuery {
-        $query = new UpdateQuery($this->connection);
-
+    public function update(Expression_Interface|string|null $table = null, array $values = [], array $conditions = [], array $types = []): Update_Query
+    {
+        $query = new Update_Query($this->connection);
         if ($table) {
             $query->update($table);
         }
@@ -110,10 +85,8 @@ class QueryFactory
         if ($conditions) {
             $query->where($conditions, $types);
         }
-
         return $query;
     }
-
     /**
      * Create a new DeleteQuery instance.
      *
@@ -121,15 +94,12 @@ class QueryFactory
      * @param array $conditions Conditions to be set for the delete statement.
      * @param array<string, string> $types Associative array containing the types to be used for casting.
      */
-    public function delete(?string $table = null, array $conditions = [], array $types = []): DeleteQuery
+    public function delete(?string $table = null, array $conditions = [], array $types = []): Delete_Query
     {
-        $query = (new DeleteQuery($this->connection))
-            ->delete($table);
-
+        $query = (new Delete_Query($this->connection))->delete($table);
         if ($conditions) {
             $query->where($conditions, $types);
         }
-
         return $query;
     }
 }

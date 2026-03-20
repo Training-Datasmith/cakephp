@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,19 +14,17 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Database\Type;
 
 use Cake\Database\Driver;
 use InvalidArgumentException;
 use PDO;
-
 /**
  * Integer type converter.
  *
  * Use to convert integer data between PHP and the database types.
  */
-class IntegerType extends BaseType implements BatchCastingInterface
+class Integer_Type extends Base_Type implements Batch_Casting_Interface
 {
     /**
      * Checks if the value is not a numeric value
@@ -35,75 +32,60 @@ class IntegerType extends BaseType implements BatchCastingInterface
      * @throws \InvalidArgumentException
      * @param mixed $value Value to check
      */
-    protected function checkNumeric(mixed $value): void
+    protected function check_numeric(mixed $value): void
     {
         if (!is_numeric($value) && !is_bool($value)) {
-            throw new InvalidArgumentException(sprintf(
-                'Cannot convert value `%s` of type `%s` to int',
-                print_r($value, true),
-                get_debug_type($value),
-            ));
+            throw new InvalidArgumentException(sprintf('Cannot convert value `%s` of type `%s` to int', print_r($value, true), get_debug_type($value)));
         }
     }
-
     /**
      * Convert integer data into the database format.
      *
      * @param mixed $value The value to convert.
      * @param \Cake\Database\Driver $driver The driver instance to convert with.
      */
-    public function toDatabase(mixed $value, Driver $driver): ?int
+    public function to_database(mixed $value, Driver $driver): ?int
     {
         if ($value === null || $value === '') {
             return null;
         }
-
-        $this->checkNumeric($value);
-
-        return (int)$value;
+        $this->check_numeric($value);
+        return (int) $value;
     }
-
     /**
      * {@inheritDoc}
      *
      * @param mixed $value The value to convert.
      * @param \Cake\Database\Driver $driver The driver instance to convert with.
      */
-    public function toPHP(mixed $value, Driver $driver): ?int
+    public function to_php(mixed $value, Driver $driver): ?int
     {
         if ($value === null) {
             return null;
         }
-
-        return (int)$value;
+        return (int) $value;
     }
-
     /**
      * @inheritDoc
      */
-    public function manyToPHP(array $values, array $fields, Driver $driver): array
+    public function many_to_php(array $values, array $fields, Driver $driver): array
     {
         foreach ($fields as $field) {
             if (!isset($values[$field])) {
                 continue;
             }
-
-            $this->checkNumeric($values[$field]);
-
-            $values[$field] = (int)$values[$field];
+            $this->check_numeric($values[$field]);
+            $values[$field] = (int) $values[$field];
         }
-
         return $values;
     }
-
     /**
      * @inheritDoc
      */
-    public function toStatement(mixed $value, Driver $driver): int
+    public function to_statement(mixed $value, Driver $driver): int
     {
         return PDO::PARAM_INT;
     }
-
     /**
      * Marshals request data into PHP integers.
      *
@@ -115,7 +97,6 @@ class IntegerType extends BaseType implements BatchCastingInterface
         if ($value === '' || !is_numeric($value)) {
             return null;
         }
-
-        return (int)$value;
+        return (int) $value;
     }
 }

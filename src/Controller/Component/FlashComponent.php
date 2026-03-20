@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,15 +14,13 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Controller\Component;
 
 use Cake\Controller\Component;
-use Cake\Http\Exception\InternalErrorException;
-use Cake\Http\FlashMessage;
+use Cake\Http\Exception\Internal_Error_Exception;
+use Cake\Http\Flash_Message;
 use Cake\Utility\Inflector;
 use Throwable;
-
 /**
  * The CakePHP FlashComponent provides a way for you to write a flash variable
  * to the session from your controllers, to be rendered in a view with the
@@ -34,21 +31,14 @@ use Throwable;
  * @method void warning(string $message, array $options = []) Set a message using "warning" element
  * @method void error(string $message, array $options = []) Set a message using "error" element
  */
-class FlashComponent extends Component
+class Flash_Component extends Component
 {
     /**
      * Default configuration
      *
      * @var array<string, mixed>
      */
-    protected array $_defaultConfig = [
-        'key' => 'flash',
-        'element' => 'default',
-        'params' => [],
-        'clear' => false,
-        'duplicate' => true,
-    ];
-
+    protected array $_default_config = ['key' => 'flash', 'element' => 'default', 'params' => [], 'clear' => false, 'duplicate' => true];
     /**
      * Used to set a session variable that can be used to output messages in the view.
      * If you make consecutive calls to this method, the messages will stack (if they are
@@ -72,20 +62,18 @@ class FlashComponent extends Component
     public function set(Throwable|string $message, array $options = []): void
     {
         if ($message instanceof Throwable) {
-            $this->flash()->setExceptionMessage($message, $options);
+            $this->flash()->set_exception_message($message, $options);
         } else {
             $this->flash()->set($message, $options);
         }
     }
-
     /**
      * Get flash message utility instance.
      */
-    protected function flash(): FlashMessage
+    protected function flash(): Flash_Message
     {
-        return $this->getController()->getRequest()->getFlash();
+        return $this->get_controller()->get_request()->get_flash();
     }
-
     /**
      * Proxy method to FlashMessage instance.
      *
@@ -95,13 +83,11 @@ class FlashComponent extends Component
      * @return $this
      * @throws \Cake\Core\Exception\CakeException When trying to set a key that is invalid.
      */
-    public function setConfig(array|string $key, mixed $value = null, bool $merge = true): static
+    public function set_config(array|string $key, mixed $value = null, bool $merge = true): static
     {
-        $this->flash()->setConfig($key, $value, $merge);
-
+        $this->flash()->set_config($key, $value, $merge);
         return $this;
     }
-
     /**
      * Proxy method to FlashMessage instance.
      *
@@ -109,11 +95,10 @@ class FlashComponent extends Component
      * @param mixed $default The return value when the key does not exist.
      * @return mixed Configuration data at the named key or null if the key does not exist.
      */
-    public function getConfig(?string $key = null, mixed $default = null): mixed
+    public function get_config(?string $key = null, mixed $default = null): mixed
     {
-        return $this->flash()->getConfig($key, $default);
+        return $this->flash()->get_config($key, $default);
     }
-
     /**
      * Proxy method to FlashMessage instance.
      *
@@ -121,11 +106,10 @@ class FlashComponent extends Component
      * @return mixed Configuration data at the named key
      * @throws \InvalidArgumentException
      */
-    public function getConfigOrFail(string $key): mixed
+    public function get_config_or_fail(string $key): mixed
     {
-        return $this->flash()->getConfigOrFail($key);
+        return $this->flash()->get_config_or_fail($key);
     }
-
     /**
      * Proxy method to FlashMessage instance.
      *
@@ -133,13 +117,11 @@ class FlashComponent extends Component
      * @param mixed $value The value to set.
      * @return $this
      */
-    public function configShallow(array|string $key, mixed $value = null): static
+    public function config_shallow(array|string $key, mixed $value = null): static
     {
-        $this->flash()->configShallow($key, $value);
-
+        $this->flash()->config_shallow($key, $value);
         return $this;
     }
-
     /**
      * Magic method for verbose flash methods based on element names.
      *
@@ -164,25 +146,20 @@ class FlashComponent extends Component
     public function __call(string $name, array $args): void
     {
         $element = Inflector::underscore($name);
-
         if (count($args) < 1) {
-            throw new InternalErrorException('Flash message missing.');
+            throw new Internal_Error_Exception('Flash message missing.');
         }
-
         $options = ['element' => $element];
-
         if (isset($args['options'])) {
             $args[1] = $args['options'];
         }
-
         if (!empty($args[1])) {
             if (!empty($args[1]['plugin'])) {
                 $options = ['element' => $args[1]['plugin'] . '.' . $element];
                 unset($args[1]['plugin']);
             }
-            $options += (array)$args[1];
+            $options += (array) $args[1];
         }
-
         $this->set($args[0] ?? $args['message'], $options);
     }
 }

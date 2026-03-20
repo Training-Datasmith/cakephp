@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,7 +14,6 @@ declare(strict_types=1);
  * @since         4.2.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Core;
 
 /**
@@ -25,7 +23,7 @@ namespace Cake\Core;
  * a typehintable way for services to have application
  * configuration injected as arrays cannot be typehinted.
  */
-class ServiceConfig
+class Service_Config
 {
     /**
      * Read a configuration key
@@ -38,7 +36,6 @@ class ServiceConfig
     {
         return Configure::read($path, $default);
     }
-
     /**
      * Check if $path exists and has a non-null value.
      *

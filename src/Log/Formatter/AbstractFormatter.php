@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) :  Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,31 +14,25 @@ declare(strict_types=1);
  * @since         4.3.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Log\Formatter;
 
-use Cake\Core\InstanceConfigTrait;
-
-abstract class AbstractFormatter
+use Cake\Core\Instance_Config_Trait;
+abstract class Abstract_Formatter
 {
-    use InstanceConfigTrait;
-
+    use Instance_Config_Trait;
     /**
      * Default config for this class
      *
      * @var array<string, mixed>
      */
-    protected array $_defaultConfig = [
-    ];
-
+    protected array $_default_config = [];
     /**
      * @param array<string, mixed> $config Config options
      */
     public function __construct(array $config = [])
     {
-        $this->setConfig($config);
+        $this->set_config($config);
     }
-
     /**
      * Formats message.
      *

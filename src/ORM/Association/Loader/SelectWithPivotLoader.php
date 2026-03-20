@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,56 +14,49 @@ declare(strict_types=1);
  * @since         3.4.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\ORM\Association\Loader;
 
-use Cake\Database\Exception\DatabaseException;
-use Cake\Database\ExpressionInterface;
-use Cake\ORM\Association\HasMany;
-use Cake\ORM\Query\SelectQuery;
+use Cake\Database\Exception\Database_Exception;
+use Cake\Database\Expression_Interface;
+use Cake\ORM\Association\Has_Many;
+use Cake\ORM\Query\Select_Query;
 use Closure;
-
 /**
  * Implements the logic for loading an association using a SELECT query and a pivot table
  *
  * @internal
  */
-class SelectWithPivotLoader extends SelectLoader
+class Select_With_Pivot_Loader extends Select_Loader
 {
     /**
      * The name of the junction association
      */
-    protected string $junctionAssociationName;
-
+    protected string $junction_association_name;
     /**
      * The property name for the junction association, where its results should be nested at.
      */
-    protected string $junctionProperty;
-
+    protected string $junction_property;
     /**
      * The junction association instance
      *
      * @var \Cake\ORM\Association\HasMany<\Cake\ORM\Table>
      */
-    protected HasMany $junctionAssoc;
-
+    protected Has_Many $junction_assoc;
     /**
      * Custom conditions for the junction association
      */
-    protected ExpressionInterface|Closure|array|string|null $junctionConditions = null;
-
+    protected Expression_Interface|Closure|array|string|null $junction_conditions = null;
     /**
      * @inheritDoc
      */
     public function __construct(array $options)
     {
         parent::__construct($options);
-        $this->junctionAssociationName = $options['junctionAssociationName'];
-        $this->junctionProperty = $options['junctionProperty'];
-        $this->junctionAssoc = $options['junctionAssoc'];
-        $this->junctionConditions = $options['junctionConditions'];
+        $this->junction_association_name = $options['junctionAssociationName'];
+        $this->junction_property = $options['junctionProperty'];
+        $this->junction_assoc = $options['junctionAssoc'];
+        $this->junction_conditions = $options['junctionConditions'];
     }
-
     /**
      * Auxiliary function to construct a new Query object to return all the records
      * in the target table that are associated to those specified in $options from
@@ -76,70 +68,49 @@ class SelectWithPivotLoader extends SelectLoader
      * @return \Cake\ORM\Query\SelectQuery<\Cake\Datasource\EntityInterface|array>
      * @throws \InvalidArgumentException When a key is required for associations but not selected.
      */
-    protected function _buildQuery(array $options): SelectQuery
+    protected function _build_query(array $options): Select_Query
     {
-        $name = $this->junctionAssociationName;
-        $assoc = $this->junctionAssoc;
-        $queryBuilder = false;
-
+        $name = $this->junction_association_name;
+        $assoc = $this->junction_assoc;
+        $query_builder = false;
         if (!empty($options['queryBuilder'])) {
             assert(is_callable($options['queryBuilder']));
-            $queryBuilder = $options['queryBuilder'];
+            $query_builder = $options['queryBuilder'];
             unset($options['queryBuilder']);
         }
-
-        $query = parent::_buildQuery($options);
-
-        if ($queryBuilder) {
+        $query = parent::_build_query($options);
+        if ($query_builder) {
             /** @var \Cake\ORM\Query\SelectQuery<\Cake\Datasource\EntityInterface|array> $query */
-            $query = $queryBuilder($query);
+            $query = $query_builder($query);
         }
-
-        if ($query->isAutoFieldsEnabled() === null) {
-            $query->enableAutoFields($query->clause('select') === []);
+        if ($query->is_auto_fields_enabled() === null) {
+            $query->enable_auto_fields($query->clause('select') === []);
         }
-
         // Ensure that association conditions are applied
         // and that the required keys are in the selected columns.
-
-        $tempName = $this->alias . '_CJoin';
-        $schema = $assoc->getSchema();
-        $joinFields = [];
+        $temp_name = $this->alias . '_CJoin';
+        $schema = $assoc->get_schema();
+        $join_fields = [];
         $types = [];
-
-        foreach ($schema->typeMap() as $f => $type) {
-            $key = $tempName . '__' . $f;
-            $joinFields[$key] = "{$name}.{$f}";
+        foreach ($schema->type_map() as $f => $type) {
+            $key = $temp_name . '__' . $f;
+            $join_fields[$key] = "{$name}.{$f}";
             $types[$key] = $type;
         }
-
-        $query
-            ->where($this->junctionConditions)
-            ->select($joinFields);
-
-        $query
-            ->getEagerLoader()
-            ->addToJoinsMap($tempName, $assoc, false, $this->junctionProperty);
-
-        $assoc->attachTo($query, [
-            'aliasPath' => $assoc->getAlias(),
-            'includeFields' => false,
-            'propertyPath' => $this->junctionProperty,
-        ]);
-        $query->getTypeMap()->addDefaults($types);
-
+        $query->where($this->junction_conditions)->select($join_fields);
+        $query->get_eager_loader()->add_to_joins_map($temp_name, $assoc, false, $this->junction_property);
+        $assoc->attach_to($query, ['aliasPath' => $assoc->get_alias(), 'includeFields' => false, 'propertyPath' => $this->junction_property]);
+        $query->get_type_map()->add_defaults($types);
         return $query;
     }
-
     /**
      * @param \Cake\ORM\Query\SelectQuery<\Cake\Datasource\EntityInterface|array> $fetchQuery The association fetching query
      * @param array<string> $key The foreign key fields to check
      */
-    protected function _assertFieldsPresent(SelectQuery $fetchQuery, array $key): void
+    protected function _assert_fields_present(Select_Query $fetch_query, array $key): void
     {
         // _buildQuery() manually adds in required fields from junction table
     }
-
     /**
      * Generates a string used as a table field that contains the values upon
      * which the filter should be applied
@@ -147,22 +118,18 @@ class SelectWithPivotLoader extends SelectLoader
      * @param array<string, mixed> $options the options to use for getting the link field.
      * @return array<string>|string
      */
-    protected function _linkField(array $options): array|string
+    protected function _link_field(array $options): array|string
     {
         $links = [];
-        $name = $this->junctionAssociationName;
-
-        foreach ((array)$options['foreignKey'] as $key) {
+        $name = $this->junction_association_name;
+        foreach ((array) $options['foreignKey'] as $key) {
             $links[] = sprintf('%s.%s', $name, $key);
         }
-
         if (count($links) === 1) {
             return array_pop($links);
         }
-
         return $links;
     }
-
     /**
      * Builds an array containing the results from fetchQuery indexed by
      * the foreignKey value corresponding to this association.
@@ -172,33 +139,25 @@ class SelectWithPivotLoader extends SelectLoader
      * @return array<string, mixed>
      * @throws \Cake\Database\Exception\DatabaseException when the association property is not part of the results set.
      */
-    protected function _buildResultMap(SelectQuery $fetchQuery, array $options): array
+    protected function _build_result_map(Select_Query $fetch_query, array $options): array
     {
-        $resultMap = [];
-        $key = (array)$options['foreignKey'];
-        $preserveKeys = $fetchQuery->getOptions()['preserveKeys'] ?? false;
-
-        foreach ($fetchQuery->all() as $i => $result) {
-            if (!isset($result[$this->junctionProperty])) {
-                throw new DatabaseException(sprintf(
-                    '`%s` is missing from the belongsToMany results. Results cannot be created.',
-                    $this->junctionProperty,
-                ));
+        $result_map = [];
+        $key = (array) $options['foreignKey'];
+        $preserve_keys = $fetch_query->get_options()['preserveKeys'] ?? false;
+        foreach ($fetch_query->all() as $i => $result) {
+            if (!isset($result[$this->junction_property])) {
+                throw new Database_Exception(sprintf('`%s` is missing from the belongsToMany results. Results cannot be created.', $this->junction_property));
             }
-
             $values = [];
             foreach ($key as $k) {
-                $values[] = $result[$this->junctionProperty][$k];
+                $values[] = $result[$this->junction_property][$k];
             }
-
-            if ($preserveKeys) {
-                $resultMap[implode(';', $values)][$i] = $result;
+            if ($preserve_keys) {
+                $result_map[implode(';', $values)][$i] = $result;
                 continue;
             }
-
-            $resultMap[implode(';', $values)][] = $result;
+            $result_map[implode(';', $values)][] = $result;
         }
-
-        return $resultMap;
+        return $result_map;
     }
 }

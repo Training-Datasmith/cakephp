@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,16 +14,14 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Database\Type;
 
 use Cake\Database\Driver;
 use Cake\Utility\Text;
-
 /**
  * Provides behavior for the UUID type
  */
-class UuidType extends StringType
+class Uuid_Type extends String_Type
 {
     /**
      * Casts given value from a PHP type to one acceptable by database
@@ -32,25 +29,22 @@ class UuidType extends StringType
      * @param mixed $value value to be converted to database equivalent
      * @param \Cake\Database\Driver $driver object from which database preferences and configuration will be extracted
      */
-    public function toDatabase(mixed $value, Driver $driver): ?string
+    public function to_database(mixed $value, Driver $driver): ?string
     {
         if (in_array($value, [null, '', false], true)) {
             return null;
         }
-
-        return parent::toDatabase($value, $driver);
+        return parent::to_database($value, $driver);
     }
-
     /**
      * Generate a new UUID
      *
      * @return string A new primary key value.
      */
-    public function newId(): string
+    public function new_id(): string
     {
         return Text::uuid();
     }
-
     /**
      * Marshals request data into a PHP string
      *
@@ -62,7 +56,6 @@ class UuidType extends StringType
         if ($value === null || $value === '' || is_array($value)) {
             return null;
         }
-
-        return (string)$value;
+        return (string) $value;
     }
 }

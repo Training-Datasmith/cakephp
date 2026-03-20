@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,18 +14,16 @@ declare(strict_types=1);
  * @since         2.1.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Event;
 
-use Cake\Core\Exception\CakeException;
-
+use Cake\Core\Exception\Cake_Exception;
 /**
  * Class Event
  *
  * @template TSubject of object
  * @implements \Cake\Event\EventInterface<TSubject>
  */
-class Event implements EventInterface
+class Event implements Event_Interface
 {
     /**
      * Property used to retain the result value of the event listeners
@@ -34,12 +31,10 @@ class Event implements EventInterface
      * Use setResult() and getResult() to set and get the result.
      */
     protected mixed $result = null;
-
     /**
      * Flags an event as stopped or not, default is false
      */
     protected bool $_stopped = false;
-
     /**
      * Constructor
      *
@@ -70,17 +65,16 @@ class Event implements EventInterface
          * Custom data for the method that receives the event
          */
         protected array $_data = []
-    ) {
+    )
+    {
     }
-
     /**
      * Returns the name of this event. This is usually used as the event identifier
      */
-    public function getName(): string
+    public function get_name(): string
     {
         return $this->_name;
     }
-
     /**
      * Returns the subject of this event
      *
@@ -89,41 +83,36 @@ class Event implements EventInterface
      * @return TSubject
      * @throws \Cake\Core\Exception\CakeException
      */
-    public function getSubject(): object
+    public function get_subject(): object
     {
         if ($this->_subject === null) {
-            throw new CakeException('No subject set for this event');
+            throw new Cake_Exception('No subject set for this event');
         }
-
         return $this->_subject;
     }
-
     /**
      * Stops the event from being used anymore
      */
-    public function stopPropagation(): void
+    public function stop_propagation(): void
     {
         $this->_stopped = true;
     }
-
     /**
      * Check if the event is stopped
      *
      * @return bool True if the event is stopped
      */
-    public function isStopped(): bool
+    public function is_stopped(): bool
     {
         return $this->_stopped;
     }
-
     /**
      * The result value of the event listeners
      */
-    public function getResult(): mixed
+    public function get_result(): mixed
     {
         return $this->result;
     }
-
     /**
      * Listeners can attach a result value to the event.
      *
@@ -132,36 +121,31 @@ class Event implements EventInterface
      * @param mixed $value The value to set.
      * @return $this
      */
-    public function setResult(mixed $value = null): static
+    public function set_result(mixed $value = null): static
     {
         $this->result = $value;
-
         return $this;
     }
-
     /**
      * @inheritDoc
      */
-    public function getData(?string $key = null): mixed
+    public function get_data(?string $key = null): mixed
     {
         if ($key !== null) {
             return $this->_data[$key] ?? null;
         }
-
         return $this->_data;
     }
-
     /**
      * @inheritDoc
      */
-    public function setData(array|string $key, $value = null): static
+    public function set_data(array|string $key, $value = null): static
     {
         if (is_array($key)) {
             $this->_data = $key;
         } else {
             $this->_data[$key] = $value;
         }
-
         return $this;
     }
 }

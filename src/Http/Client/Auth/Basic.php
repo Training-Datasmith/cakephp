@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -14,11 +13,9 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Http\Client\Auth;
 
 use Cake\Http\Client\Request;
-
 /**
  * Basic authentication adapter for Cake\Http\Client
  *
@@ -38,13 +35,11 @@ class Basic
     public function authentication(Request $request, array $credentials): Request
     {
         if (isset($credentials['username'], $credentials['password'])) {
-            $value = $this->_generateHeader($credentials['username'], $credentials['password']);
-            $request = $request->withHeader('Authorization', $value);
+            $value = $this->_generate_header($credentials['username'], $credentials['password']);
+            $request = $request->with_header('Authorization', $value);
         }
-
         return $request;
     }
-
     /**
      * Proxy Authentication
      *
@@ -53,23 +48,21 @@ class Basic
      * @return \Cake\Http\Client\Request The updated request.
      * @see https://www.ietf.org/rfc/rfc2617.txt
      */
-    public function proxyAuthentication(Request $request, array $credentials): Request
+    public function proxy_authentication(Request $request, array $credentials): Request
     {
         if (isset($credentials['username'], $credentials['password'])) {
-            $value = $this->_generateHeader($credentials['username'], $credentials['password']);
-            $request = $request->withHeader('Proxy-Authorization', $value);
+            $value = $this->_generate_header($credentials['username'], $credentials['password']);
+            $request = $request->with_header('Proxy-Authorization', $value);
         }
-
         return $request;
     }
-
     /**
      * Generate basic [proxy] authentication header
      *
      * @param string $user Username.
      * @param string $pass Password.
      */
-    protected function _generateHeader(string $user, string $pass): string
+    protected function _generate_header(string $user, string $pass): string
     {
         return 'Basic ' . base64_encode($user . ':' . $pass);
     }

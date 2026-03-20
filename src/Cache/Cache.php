@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,17 +14,15 @@ declare(strict_types=1);
  * @since         1.2.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Cache;
 
-use Cake\Cache\Engine\NullEngine;
-use Cake\Cache\Exception\CacheWriteException;
+use Cake\Cache\Engine\Null_Engine;
+use Cake\Cache\Exception\Cache_Write_Exception;
 use Cake\Cache\Exception\InvalidArgumentException;
-use Cake\Core\StaticConfigTrait;
+use Cake\Core\Static_Config_Trait;
 use Closure;
-use Psr\SimpleCache\CacheInterface;
+use Psr\Simple_Cache\Cache_Interface;
 use RuntimeException;
-
 /**
  * Cache provides a consistent interface to Caching in your application. It allows you
  * to use several different Cache engines, without coupling your application to a specific
@@ -68,8 +65,7 @@ use RuntimeException;
  */
 class Cache
 {
-    use StaticConfigTrait;
-
+    use Static_Config_Trait;
     /**
      * An array mapping URL schemes to fully qualified caching engine
      * class names.
@@ -77,44 +73,32 @@ class Cache
      * @var array<string, string>
      * @phpstan-var array<string, class-string>
      */
-    protected static array $_dsnClassMap = [
-        'array' => Engine\ArrayEngine::class,
-        'apcu' => Engine\ApcuEngine::class,
-        'file' => Engine\FileEngine::class,
-        'memcached' => Engine\MemcachedEngine::class,
-        'null' => Engine\NullEngine::class,
-        'redis' => Engine\RedisEngine::class,
-    ];
-
+    protected static array $_dsn_class_map = ['array' => Engine\Array_Engine::class, 'apcu' => Engine\Apcu_Engine::class, 'file' => Engine\File_Engine::class, 'memcached' => Engine\Memcached_Engine::class, 'null' => Engine\Null_Engine::class, 'redis' => Engine\Redis_Engine::class];
     /**
      * Flag for tracking whether caching is enabled.
      */
     protected static bool $_enabled = true;
-
     /**
      * Group to Config mapping
      *
      * @var array<string, array>
      */
     protected static array $_groups = [];
-
     /**
      * Cache Registry used for creating and using cache adapters.
      *
      * @var \Cake\Cache\CacheRegistry<\Cake\Cache\CacheEngine<object>>
      */
-    protected static CacheRegistry $_registry;
-
+    protected static Cache_Registry $_registry;
     /**
      * Returns the Cache Registry instance used for creating and using cache adapters.
      *
      * @return \Cake\Cache\CacheRegistry<\Cake\Cache\CacheEngine<object>>
      */
-    public static function getRegistry(): CacheRegistry
+    public static function get_registry(): Cache_Registry
     {
-        return static::$_registry ??= new CacheRegistry();
+        return static::$_registry ??= new Cache_Registry();
     }
-
     /**
      * Sets the Cache Registry instance used for creating and using cache adapters.
      *
@@ -122,11 +106,10 @@ class Cache
      *
      * @param \Cake\Cache\CacheRegistry<\Cake\Cache\CacheEngine<object>> $registry Injectable registry object.
      */
-    public static function setRegistry(CacheRegistry $registry): void
+    public static function set_registry(Cache_Registry $registry): void
     {
         static::$_registry = $registry;
     }
-
     /**
      * Finds and builds the instance of the required engine class.
      *
@@ -134,55 +117,40 @@ class Cache
      * @throws \Cake\Cache\Exception\InvalidArgumentException When a cache engine cannot be created.
      * @throws \RuntimeException If loading of the engine failed.
      */
-    protected static function _buildEngine(string $name): void
+    protected static function _build_engine(string $name): void
     {
-        $registry = static::getRegistry();
-
+        $registry = static::get_registry();
         if (empty(static::$_config[$name]['className'])) {
-            throw new InvalidArgumentException(
-                sprintf('The `%s` cache configuration does not exist.', $name),
-            );
+            throw new InvalidArgumentException(sprintf('The `%s` cache configuration does not exist.', $name));
         }
-
         $config = static::$_config[$name];
-
         try {
             $registry->load($name, $config);
         } catch (RuntimeException $e) {
             if (!array_key_exists('fallback', $config)) {
                 // @phpstan-ignore argument.type (NullEngine is valid fallback)
-                $registry->set($name, new NullEngine());
-                trigger_error($e->getMessage(), E_USER_WARNING);
-
+                $registry->set($name, new Null_Engine());
+                trigger_error($e->get_message(), E_USER_WARNING);
                 return;
             }
-
             if ($config['fallback'] === false) {
                 throw $e;
             }
-
             if ($config['fallback'] === $name) {
-                throw new InvalidArgumentException(sprintf(
-                    '`%s` cache configuration cannot fallback to itself.',
-                    $name,
-                ), 0, $e);
+                throw new InvalidArgumentException(sprintf('`%s` cache configuration cannot fallback to itself.', $name), 0, $e);
             }
-
-            $fallbackEngine = clone static::pool($config['fallback']);
-            assert($fallbackEngine instanceof CacheEngine);
-
-            $newConfig = $config + ['groups' => [], 'prefix' => null];
-            $fallbackEngine->setConfig('groups', $newConfig['groups'], false);
-            if ($newConfig['prefix']) {
-                $fallbackEngine->setConfig('prefix', $newConfig['prefix'], false);
+            $fallback_engine = clone static::pool($config['fallback']);
+            assert($fallback_engine instanceof Cache_Engine);
+            $new_config = $config + ['groups' => [], 'prefix' => null];
+            $fallback_engine->set_config('groups', $new_config['groups'], false);
+            if ($new_config['prefix']) {
+                $fallback_engine->set_config('prefix', $new_config['prefix'], false);
             }
-            $registry->set($name, $fallbackEngine);
+            $registry->set($name, $fallback_engine);
         }
-
-        if ($config['className'] instanceof CacheEngine) {
-            $config = $config['className']->getConfig();
+        if ($config['className'] instanceof Cache_Engine) {
+            $config = $config['className']->get_config();
         }
-
         if (!empty($config['groups'])) {
             /** @var string $group */
             foreach ($config['groups'] as $group) {
@@ -192,29 +160,23 @@ class Cache
             }
         }
     }
-
     /**
      * Get a SimpleCacheEngine object for the named cache pool.
      *
      * @param string $config The name of the configured cache backend.
      */
-    public static function pool(string $config): CacheInterface&CacheEngineInterface
+    public static function pool(string $config): Cache_Interface&Cache_Engine_Interface
     {
         if (!static::$_enabled) {
-            return new NullEngine();
+            return new Null_Engine();
         }
-
-        $registry = static::getRegistry();
-
+        $registry = static::get_registry();
         if ($registry->has($config)) {
             return $registry->get($config);
         }
-
-        static::_buildEngine($config);
-
+        static::_build_engine($config);
         return $registry->get($config);
     }
-
     /**
      * Write data for key into cache.
      *
@@ -242,21 +204,13 @@ class Cache
         if (is_resource($value)) {
             return false;
         }
-
         $backend = static::pool($config);
         $success = $backend->set($key, $value);
         if ($success === false && $value !== '') {
-            throw new CacheWriteException(sprintf(
-                "%s cache was unable to write '%s' to %s cache",
-                $config,
-                $key,
-                $backend::class,
-            ));
+            throw new Cache_Write_Exception(sprintf("%s cache was unable to write '%s' to %s cache", $config, $key, $backend::class));
         }
-
         return $success;
     }
-
     /**
      *  Write data for many keys into cache.
      *
@@ -279,11 +233,10 @@ class Cache
      * @return bool True on success, false on failure
      * @throws \Cake\Cache\Exception\InvalidArgumentException
      */
-    public static function writeMany(iterable $data, string $config = 'default'): bool
+    public static function write_many(iterable $data, string $config = 'default'): bool
     {
-        return static::pool($config)->setMultiple($data);
+        return static::pool($config)->set_multiple($data);
     }
-
     /**
      * Read a key from the cache.
      *
@@ -310,7 +263,6 @@ class Cache
     {
         return static::pool($config)->get($key);
     }
-
     /**
      * Read multiple keys from the cache.
      *
@@ -334,11 +286,10 @@ class Cache
      *   the cached data or false if cached data could not be retrieved.
      * @throws \Cake\Cache\Exception\InvalidArgumentException
      */
-    public static function readMany(iterable $keys, string $config = 'default'): iterable
+    public static function read_many(iterable $keys, string $config = 'default'): iterable
     {
-        return static::pool($config)->getMultiple($keys);
+        return static::pool($config)->get_multiple($keys);
     }
-
     /**
      * Increment a number under the key and return incremented value.
      *
@@ -354,10 +305,8 @@ class Cache
         if ($offset < 0) {
             throw new InvalidArgumentException('Offset cannot be less than `0`.');
         }
-
         return static::pool($config)->increment($key, $offset);
     }
-
     /**
      * Decrement a number under the key and return decremented value.
      *
@@ -373,10 +322,8 @@ class Cache
         if ($offset < 0) {
             throw new InvalidArgumentException('Offset cannot be less than `0`.');
         }
-
         return static::pool($config)->decrement($key, $offset);
     }
-
     /**
      * Delete a key from the cache.
      *
@@ -402,7 +349,6 @@ class Cache
     {
         return static::pool($config)->delete($key);
     }
-
     /**
      * Delete many keys from the cache.
      *
@@ -425,11 +371,10 @@ class Cache
      * @return bool True on success, false on failure.
      * @throws \Cake\Cache\Exception\InvalidArgumentException
      */
-    public static function deleteMany(iterable $keys, string $config = 'default'): bool
+    public static function delete_many(iterable $keys, string $config = 'default'): bool
     {
-        return static::pool($config)->deleteMultiple($keys);
+        return static::pool($config)->delete_multiple($keys);
     }
-
     /**
      * Delete all keys from the cache.
      *
@@ -440,23 +385,19 @@ class Cache
     {
         return static::pool($config)->clear();
     }
-
     /**
      * Delete all keys from the cache from all configurations.
      *
      * @return array<string, bool> Status code. For each configuration, it reports the status of the operation
      */
-    public static function clearAll(): array
+    public static function clear_all(): array
     {
         $status = [];
-
         foreach (self::configured() as $config) {
             $status[$config] = self::clear($config);
         }
-
         return $status;
     }
-
     /**
      * Delete all keys from the cache belonging to the same group.
      *
@@ -464,11 +405,10 @@ class Cache
      * @param string $config name of the configuration to use. Defaults to 'default'
      * @return bool True if the cache group was successfully cleared, false otherwise
      */
-    public static function clearGroup(string $group, string $config = 'default'): bool
+    public static function clear_group(string $group, string $config = 'default'): bool
     {
-        return static::pool($config)->clearGroup($group);
+        return static::pool($config)->clear_group($group);
     }
-
     /**
      * Retrieve group names to config mapping.
      *
@@ -485,7 +425,7 @@ class Cache
      * @return array<string, array> Map of group and all configuration that has the same group
      * @throws \Cake\Cache\Exception\InvalidArgumentException
      */
-    public static function groupConfigs(?string $group = null): array
+    public static function group_configs(?string $group = null): array
     {
         foreach (static::configured() as $config) {
             static::pool($config);
@@ -493,14 +433,11 @@ class Cache
         if ($group === null) {
             return static::$_groups;
         }
-
         if (isset(self::$_groups[$group])) {
             return [$group => self::$_groups[$group]];
         }
-
         throw new InvalidArgumentException(sprintf('Invalid cache group `%s`.', $group));
     }
-
     /**
      * Re-enable caching.
      *
@@ -510,7 +447,6 @@ class Cache
     {
         static::$_enabled = true;
     }
-
     /**
      * Disable caching.
      *
@@ -520,7 +456,6 @@ class Cache
     {
         static::$_enabled = false;
     }
-
     /**
      * Check whether caching is enabled.
      */
@@ -528,7 +463,6 @@ class Cache
     {
         return static::$_enabled;
     }
-
     /**
      * Provides the ability to easily do read-through caching.
      *
@@ -562,10 +496,8 @@ class Cache
         }
         $results = $default();
         self::write($key, $results, $config);
-
         return $results;
     }
-
     /**
      * Write data for key into a cache engine if it doesn't exist already.
      *
@@ -594,7 +526,6 @@ class Cache
         if (is_resource($value)) {
             return false;
         }
-
         return static::pool($config)->add($key, $value);
     }
 }

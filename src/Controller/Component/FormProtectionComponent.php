@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,18 +14,16 @@ declare(strict_types=1);
  * @since         4.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Controller\Component;
 
 use Cake\Controller\Component;
-use Cake\Controller\Exception\FormProtectionException;
+use Cake\Controller\Exception\Form_Protection_Exception;
 use Cake\Core\Configure;
-use Cake\Event\EventInterface;
-use Cake\Form\FormProtector;
+use Cake\Event\Event_Interface;
+use Cake\Form\Form_Protector;
 use Cake\Http\Response;
 use Cake\Routing\Router;
 use Closure;
-
 /**
  * Protects against form tampering. It ensures that:
  *
@@ -37,7 +34,7 @@ use Closure;
  *
  * @phpstan-property array{validate:bool, unlockedFields:array, unlockedActions:array, validationFailureCallback:?\Closure} $_config
  */
-class FormProtectionComponent extends Component
+class Form_Protection_Component extends Component
 {
     /**
      * Default message used for exceptions thrown.
@@ -45,7 +42,6 @@ class FormProtectionComponent extends Component
      * @var string
      */
     public const DEFAULT_EXCEPTION_MESSAGE = 'Form tampering protection token validation failed.';
-
     /**
      * Default config
      *
@@ -62,25 +58,17 @@ class FormProtectionComponent extends Component
      *
      * @var array<string, mixed>
      */
-    protected array $_defaultConfig = [
-        'validate' => true,
-        'unlockedFields' => [],
-        'unlockedActions' => [],
-        'validationFailureCallback' => null,
-    ];
-
+    protected array $_default_config = ['validate' => true, 'unlockedFields' => [], 'unlockedActions' => [], 'validationFailureCallback' => null];
     /**
      * Get Session id for FormProtector
      * Must be the same as in FormHelper
      */
-    protected function _getSessionId(): string
+    protected function _get_session_id(): string
     {
-        $session = $this->getController()->getRequest()->getSession();
+        $session = $this->get_controller()->get_request()->get_session();
         $session->start();
-
         return $session->id();
     }
-
     /**
      * Component startup.
      *
@@ -88,59 +76,39 @@ class FormProtectionComponent extends Component
      *
      * @param \Cake\Event\EventInterface<\Cake\Controller\Controller> $event An Event instance
      */
-    public function startup(EventInterface $event): ?Response
+    public function startup(Event_Interface $event): ?Response
     {
-        $request = $this->getController()->getRequest();
-        $data = $request->getParsedBody();
-        $hasData = ($data || $request->is(['put', 'post', 'delete', 'patch']));
-
-        if (
-            !in_array($request->getParam('action'), $this->_config['unlockedActions'], true)
-            && $hasData
-            && $this->_config['validate']
-        ) {
-            $sessionId = $this->_getSessionId();
-            $url = Router::url($request->getRequestTarget());
-
-            $formProtector = new FormProtector($this->_config);
-            $isValid = $formProtector->validate($data, $url, $sessionId);
-
-            if (!$isValid) {
-                $event->setResult($this->validationFailure($formProtector));
-
+        $request = $this->get_controller()->get_request();
+        $data = $request->get_parsed_body();
+        $has_data = $data || $request->is(['put', 'post', 'delete', 'patch']);
+        if (!in_array($request->get_param('action'), $this->_config['unlockedActions'], true) && $has_data && $this->_config['validate']) {
+            $session_id = $this->_get_session_id();
+            $url = Router::url($request->get_request_target());
+            $form_protector = new Form_Protector($this->_config);
+            $is_valid = $form_protector->validate($data, $url, $session_id);
+            if (!$is_valid) {
+                $event->set_result($this->validation_failure($form_protector));
                 return null;
             }
         }
-
-        $token = [
-            'unlockedFields' => $this->_config['unlockedFields'],
-        ];
-        $request = $request->withAttribute('formTokenData', [
-            'unlockedFields' => $token['unlockedFields'],
-        ]);
-
+        $token = ['unlockedFields' => $this->_config['unlockedFields']];
+        $request = $request->with_attribute('formTokenData', ['unlockedFields' => $token['unlockedFields']]);
         if (is_array($data)) {
             unset($data['_Token']);
-            $request = $request->withParsedBody($data);
+            $request = $request->with_parsed_body($data);
         }
-
-        $this->getController()->setRequest($request);
-
+        $this->get_controller()->set_request($request);
         return null;
     }
-
     /**
      * Events supported by this component.
      *
      * @return array<string, mixed>
      */
-    public function implementedEvents(): array
+    public function implemented_events(): array
     {
-        return [
-            'Controller.startup' => 'startup',
-        ];
+        return ['Controller.startup' => 'startup'];
     }
-
     /**
      * Throws a 400 - Bad request exception or calls custom callback.
      *
@@ -151,28 +119,25 @@ class FormProtectionComponent extends Component
      * @return \Cake\Http\Response|null If specified, validationFailureCallback's response, or no return otherwise.
      * @throws \Cake\Controller\Exception\FormProtectionException
      */
-    protected function validationFailure(FormProtector $formProtector): ?Response
+    protected function validation_failure(Form_Protector $form_protector): ?Response
     {
         if (Configure::read('debug')) {
-            $exception = new FormProtectionException($formProtector->getError());
+            $exception = new Form_Protection_Exception($form_protector->get_error());
         } else {
-            $exception = new FormProtectionException(static::DEFAULT_EXCEPTION_MESSAGE);
+            $exception = new Form_Protection_Exception(static::DEFAULT_EXCEPTION_MESSAGE);
         }
-
         if ($this->_config['validationFailureCallback']) {
-            return $this->executeCallback($this->_config['validationFailureCallback'], $exception);
+            return $this->execute_callback($this->_config['validationFailureCallback'], $exception);
         }
-
         throw $exception;
     }
-
     /**
      * Execute callback.
      *
      * @param \Closure $callback Callback
      * @param \Cake\Controller\Exception\FormProtectionException $exception Exception instance.
      */
-    protected function executeCallback(Closure $callback, FormProtectionException $exception): ?Response
+    protected function execute_callback(Closure $callback, Form_Protection_Exception $exception): ?Response
     {
         return $callback($exception);
     }

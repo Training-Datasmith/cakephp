@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,23 +14,21 @@ declare(strict_types=1);
  * @since         4.0.0
  * @license       https://www.opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Http\Middleware;
 
 use Cake\Core\Configure;
-use Cake\Http\Exception\BadRequestException;
-use Cake\Http\ServerRequest;
-use Laminas\Diactoros\Response\RedirectResponse;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\MiddlewareInterface;
-use Psr\Http\Server\RequestHandlerInterface;
+use Cake\Http\Exception\Bad_Request_Exception;
+use Cake\Http\Server_Request;
+use Laminas\Diactoros\Response\Redirect_Response;
+use Psr\Http\Message\Response_Interface;
+use Psr\Http\Message\Server_Request_Interface;
+use Psr\Http\Server\Middleware_Interface;
+use Psr\Http\Server\Request_Handler_Interface;
 use UnexpectedValueException;
-
 /**
  * Enforces use of HTTPS (SSL) for requests.
  */
-class HttpsEnforcerMiddleware implements MiddlewareInterface
+class Https_Enforcer_Middleware implements Middleware_Interface
 {
     /**
      * Configuration.
@@ -52,15 +49,7 @@ class HttpsEnforcerMiddleware implements MiddlewareInterface
      *
      * @var array<string, mixed>
      */
-    protected array $config = [
-        'redirect' => true,
-        'statusCode' => 301,
-        'headers' => [],
-        'disableOnDebug' => true,
-        'trustedProxies' => null,
-        'hsts' => null,
-    ];
-
+    protected array $config = ['redirect' => true, 'statusCode' => 301, 'headers' => [], 'disableOnDebug' => true, 'trustedProxies' => null, 'hsts' => null];
     /**
      * Constructor
      *
@@ -71,7 +60,6 @@ class HttpsEnforcerMiddleware implements MiddlewareInterface
     {
         $this->config = $config + $this->config;
     }
-
     /**
      * Check whether request has been made using HTTPS.
      *
@@ -83,56 +71,39 @@ class HttpsEnforcerMiddleware implements MiddlewareInterface
      * @return \Psr\Http\Message\ResponseInterface A response.
      * @throws \Cake\Http\Exception\BadRequestException
      */
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
+    public function process(Server_Request_Interface $request, Request_Handler_Interface $handler): Response_Interface
     {
-        if ($request instanceof ServerRequest && is_array($this->config['trustedProxies'])) {
-            $request->setTrustedProxies($this->config['trustedProxies']);
+        if ($request instanceof Server_Request && is_array($this->config['trustedProxies'])) {
+            $request->set_trusted_proxies($this->config['trustedProxies']);
         }
-
-        if (
-            $request->getUri()->getScheme() === 'https'
-            || ($this->config['disableOnDebug']
-                && Configure::read('debug'))
-        ) {
+        if ($request->get_uri()->get_scheme() === 'https' || $this->config['disableOnDebug'] && Configure::read('debug')) {
             $response = $handler->handle($request);
             if ($this->config['hsts']) {
-                return $this->addHsts($response);
+                return $this->add_hsts($response);
             }
-
             return $response;
         }
-
-        if ($this->config['redirect'] && $request->getMethod() === 'GET') {
-            $uri = $request->getUri()->withScheme('https');
-            $base = $request->getAttribute('base');
+        if ($this->config['redirect'] && $request->get_method() === 'GET') {
+            $uri = $request->get_uri()->with_scheme('https');
+            $base = $request->get_attribute('base');
             if ($base) {
-                $uri = $uri->withPath($base . $uri->getPath());
+                $uri = $uri->with_path($base . $uri->get_path());
             }
-
-            return new RedirectResponse(
-                $uri,
-                $this->config['statusCode'],
-                $this->config['headers'],
-            );
+            return new Redirect_Response($uri, $this->config['statusCode'], $this->config['headers']);
         }
-
-        throw new BadRequestException(
-            'Requests to this URL must be made with HTTPS.',
-        );
+        throw new Bad_Request_Exception('Requests to this URL must be made with HTTPS.');
     }
-
     /**
      * Adds Strict-Transport-Security header to response.
      *
      * @param \Psr\Http\Message\ResponseInterface $response Response
      */
-    protected function addHsts(ResponseInterface $response): ResponseInterface
+    protected function add_hsts(Response_Interface $response): Response_Interface
     {
         $config = $this->config['hsts'];
         if (!is_array($config)) {
             throw new UnexpectedValueException('The `hsts` config must be an array.');
         }
-
         $value = 'max-age=' . $config['maxAge'];
         if ($config['includeSubDomains'] ?? false) {
             $value .= '; includeSubDomains';
@@ -140,7 +111,6 @@ class HttpsEnforcerMiddleware implements MiddlewareInterface
         if ($config['preload'] ?? false) {
             $value .= '; preload';
         }
-
-        return $response->withHeader('strict-transport-security', $value);
+        return $response->with_header('strict-transport-security', $value);
     }
 }

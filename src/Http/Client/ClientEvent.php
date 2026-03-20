@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,20 +14,18 @@ declare(strict_types=1);
  * @since         5.1.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Http\Client;
 
 use Cake\Event\Event;
 use Cake\Http\Client;
 use InvalidArgumentException;
-use Psr\Http\Message\RequestInterface;
-
+use Psr\Http\Message\Request_Interface;
 /**
  * Class Client Event
  *
  * @extends \Cake\Event\Event<\Cake\Http\Client>
  */
-class ClientEvent extends Event
+class Client_Event extends Event
 {
     /**
      * Constructor
@@ -44,71 +41,59 @@ class ClientEvent extends Event
             $this->result = $data['response'];
             unset($data['response']);
         }
-
         parent::__construct($name, $subject, $data);
     }
-
     /**
      * The result value of the event listeners
      */
-    public function getResult(): ?Response
+    public function get_result(): ?Response
     {
         return $this->result;
     }
-
     /**
      * Listeners can attach a result value to the event.
      *
      * @param mixed $value The value to set.
      * @return $this
      */
-    public function setResult(mixed $value = null)
+    public function set_result(mixed $value = null)
     {
         if ($value !== null && !$value instanceof Response) {
-            throw new InvalidArgumentException(
-                'The result for Http Client events must be a `Cake\Http\Client\Response` instance.',
-            );
+            throw new InvalidArgumentException('The result for Http Client events must be a `Cake\Http\Client\Response` instance.');
         }
-
-        return parent::setResult($value);
+        return parent::set_result($value);
     }
-
     /**
      * Set request instance.
      *
      * @return $this
      */
-    public function setRequest(RequestInterface $request): static
+    public function set_request(Request_Interface $request): static
     {
         $this->_data['request'] = $request;
-
         return $this;
     }
-
     /**
      * Get the request instance.
      */
-    public function getRequest(): RequestInterface
+    public function get_request(): Request_Interface
     {
         return $this->_data['request'];
     }
-
     /**
      * Set the adapter options.
      *
      * @return $this
      */
-    public function setAdapterOptions(array $options = []): static
+    public function set_adapter_options(array $options = []): static
     {
         $this->_data['adapterOptions'] = $options;
-
         return $this;
     }
-
     /**
      * Get the adapter options.
      */
-    public function getAdapterOptions(): array
+    public function get_adapter_options(): array
     {
         return $this->_data['adapterOptions'];
     }

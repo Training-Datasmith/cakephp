@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,35 +14,31 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Command;
 
 use Cake\Console\Arguments;
-use Cake\Console\ConsoleIo;
-use Cake\Console\ConsoleOptionParser;
+use Cake\Console\Console_Io;
+use Cake\Console\Console_Option_Parser;
 use Cake\Core\Plugin;
-
 /**
  * Displays all currently loaded plugins.
  */
-class PluginLoadedCommand extends Command
+class Plugin_Loaded_Command extends Command
 {
     /**
      * @inheritDoc
      */
-    public static function defaultName(): string
+    public static function default_name(): string
     {
         return 'plugin loaded';
     }
-
     /**
      * @inheritDoc
      */
-    public static function getDescription(): string
+    public static function get_description(): string
     {
         return 'Displays all currently loaded plugins.';
     }
-
     /**
      * Displays all currently loaded plugins.
      *
@@ -51,23 +46,20 @@ class PluginLoadedCommand extends Command
      * @param \Cake\Console\ConsoleIo $io The console io
      * @return int|null The exit code or null for success
      */
-    public function execute(Arguments $args, ConsoleIo $io): ?int
+    public function execute(Arguments $args, Console_Io $io): ?int
     {
         $loaded = Plugin::loaded();
         $io->out($loaded);
-
         return static::CODE_SUCCESS;
     }
-
     /**
      * Get the option parser.
      *
      * @param \Cake\Console\ConsoleOptionParser $parser The option parser to update
      */
-    public function buildOptionParser(ConsoleOptionParser $parser): ConsoleOptionParser
+    public function build_option_parser(Console_Option_Parser $parser): Console_Option_Parser
     {
-        $parser->setDescription(static::getDescription());
-
+        $parser->set_description(static::get_description());
         return $parser;
     }
 }

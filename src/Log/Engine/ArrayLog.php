@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) :  Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,12 +14,10 @@ declare(strict_types=1);
  * @since         4.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Log\Engine;
 
-use Cake\Log\Formatter\DefaultFormatter;
+use Cake\Log\Formatter\Default_Formatter;
 use Stringable;
-
 /**
  * Array logger.
  *
@@ -28,29 +25,20 @@ use Stringable;
  * in testing where using mocks would be complicated. But can also
  * be used in scenarios where you need to capture logs in application code.
  */
-class ArrayLog extends BaseLog
+class Array_Log extends Base_Log
 {
     /**
      * Default config for this class
      *
      * @var array<string, mixed>
      */
-    protected array $_defaultConfig = [
-        'levels' => [],
-        'scopes' => [],
-        'formatter' => [
-            'className' => DefaultFormatter::class,
-            'includeDate' => false,
-        ],
-    ];
-
+    protected array $_default_config = ['levels' => [], 'scopes' => [], 'formatter' => ['className' => Default_Formatter::class, 'includeDate' => false]];
     /**
      * Captured messages
      *
      * @var array<string>
      */
     protected array $content = [];
-
     /**
      * Implements writing to the internal storage.
      *
@@ -65,7 +53,6 @@ class ArrayLog extends BaseLog
         $message = $this->interpolate($message, $context);
         $this->content[] = $this->formatter->format($level, $message, $context);
     }
-
     /**
      * Read the internal storage
      *
@@ -75,7 +62,6 @@ class ArrayLog extends BaseLog
     {
         return $this->content;
     }
-
     /**
      * Reset internal storage.
      */

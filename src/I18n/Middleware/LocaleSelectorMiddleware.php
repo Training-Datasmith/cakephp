@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -14,22 +13,20 @@ declare(strict_types=1);
  * @since         3.3.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\I18n\Middleware;
 
 use Cake\I18n\I18n;
 use Locale;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\MiddlewareInterface;
-use Psr\Http\Server\RequestHandlerInterface;
-
+use Psr\Http\Message\Response_Interface;
+use Psr\Http\Message\Server_Request_Interface;
+use Psr\Http\Server\Middleware_Interface;
+use Psr\Http\Server\Request_Handler_Interface;
 /**
  * Sets the runtime default locale for the request based on the
  * Accept-Language header. The default will only be set if it
  * matches the list of passed valid locales.
  */
-class LocaleSelectorMiddleware implements MiddlewareInterface
+class Locale_Selector_Middleware implements Middleware_Interface
 {
     /**
      * Constructor.
@@ -42,9 +39,9 @@ class LocaleSelectorMiddleware implements MiddlewareInterface
          * List of valid locales for the request
          */
         protected array $locales = []
-    ) {
+    )
+    {
     }
-
     /**
      * Set locale based on request headers.
      *
@@ -52,9 +49,9 @@ class LocaleSelectorMiddleware implements MiddlewareInterface
      * @param \Psr\Http\Server\RequestHandlerInterface $handler The request handler.
      * @return \Psr\Http\Message\ResponseInterface A response.
      */
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
+    public function process(Server_Request_Interface $request, Request_Handler_Interface $handler): Response_Interface
     {
-        $locale = Locale::acceptFromHttp($request->getHeaderLine('Accept-Language'));
+        $locale = Locale::accept_from_http($request->get_header_line('Accept-Language'));
         if (!$locale) {
             return $handler->handle($request);
         }
@@ -62,9 +59,8 @@ class LocaleSelectorMiddleware implements MiddlewareInterface
             $locale = Locale::lookup($this->locales, $locale, true);
         }
         if ($locale) {
-            I18n::setLocale($locale);
+            I18n::set_locale($locale);
         }
-
         return $handler->handle($request);
     }
 }

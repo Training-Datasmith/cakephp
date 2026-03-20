@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,12 +14,10 @@ declare(strict_types=1);
  * @since         4.2.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Core;
 
-use League\Container\DefinitionContainerInterface;
-use Psr\Container\ContainerInterface as PsrContainerInterface;
-
+use League\Container\Definition_Container_Interface;
+use Psr\Container\Container_Interface as PsrContainerInterface;
 /**
  * Interface for the Dependency Injection Container in CakePHP applications
  *
@@ -30,10 +27,10 @@ use Psr\Container\ContainerInterface as PsrContainerInterface;
  * The methods defined in this interface use the conventions provided
  * by league/container as that is the library that CakePHP uses.
  */
-interface ContainerInterface extends DefinitionContainerInterface
+interface Container_Interface extends Definition_Container_Interface
 {
     /**
      * @param \Psr\Container\ContainerInterface $container The container instance to use as delegation
      */
-    public function delegate(PsrContainerInterface $container): PsrContainerInterface;
+    public function delegate(Psr_Container_Interface $container): Psr_Container_Interface;
 }

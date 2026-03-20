@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,14 +14,12 @@ declare(strict_types=1);
  * @since         3.6.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Core;
 
-use Cake\Console\CommandCollection;
-use Cake\Event\EventDispatcherInterface;
-use Cake\Http\MiddlewareQueue;
-use Cake\Routing\RouteBuilder;
-
+use Cake\Console\Command_Collection;
+use Cake\Event\Event_Dispatcher_Interface;
+use Cake\Http\Middleware_Queue;
+use Cake\Routing\Route_Builder;
 /**
  * Interface for Applications that leverage plugins & events.
  *
@@ -32,7 +29,7 @@ use Cake\Routing\RouteBuilder;
  * @template TSubject
  * @extends \Cake\Event\EventDispatcherInterface<\Cake\Http\BaseApplication>
  */
-interface PluginApplicationInterface extends EventDispatcherInterface
+interface Plugin_Application_Interface extends Event_Dispatcher_Interface
 {
     /**
      * Add a plugin to the loaded plugin set.
@@ -45,31 +42,27 @@ interface PluginApplicationInterface extends EventDispatcherInterface
      * @param array<string, mixed> $config The configuration data for the plugin if using a string for $name
      * @return $this
      */
-    public function addPlugin(PluginInterface|string $name, array $config = []);
-
+    public function add_plugin(Plugin_Interface|string $name, array $config = []);
     /**
      * Run bootstrap logic for loaded plugins.
      */
-    public function pluginBootstrap(): void;
-
+    public function plugin_bootstrap(): void;
     /**
      * Run routes hooks for loaded plugins
      *
      * @param \Cake\Routing\RouteBuilder $routes The route builder to use.
      */
-    public function pluginRoutes(RouteBuilder $routes): RouteBuilder;
-
+    public function plugin_routes(Route_Builder $routes): Route_Builder;
     /**
      * Run middleware hooks for plugins
      *
      * @param \Cake\Http\MiddlewareQueue $middleware The MiddlewareQueue to use.
      */
-    public function pluginMiddleware(MiddlewareQueue $middleware): MiddlewareQueue;
-
+    public function plugin_middleware(Middleware_Queue $middleware): Middleware_Queue;
     /**
      * Run console hooks for plugins
      *
      * @param \Cake\Console\CommandCollection $commands The CommandCollection to use.
      */
-    public function pluginConsole(CommandCollection $commands): CommandCollection;
+    public function plugin_console(Command_Collection $commands): Command_Collection;
 }

@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,20 +14,16 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\I18n;
 
-use Cake\Cache\CacheEngineInterface;
-
-use function Cake\Core\deprecationWarning;
-
-use Psr\SimpleCache\CacheInterface;
-
+use Cake\Cache\Cache_Engine_Interface;
+use function Cake\Core\Deprecation_Warning;
+use Psr\Simple_Cache\Cache_Interface;
 /**
  * Constructs and stores instances of translators that can be
  * retrieved by name and locale.
  */
-class TranslatorRegistry
+class Translator_Registry
 {
     /**
      * Fallback loader name.
@@ -36,19 +31,16 @@ class TranslatorRegistry
      * @var string
      */
     public const FALLBACK_LOADER = '_fallback';
-
     /**
      * A registry to retain translator objects.
      *
      * @var array<string, array<string, \Cake\I18n\Translator>>
      */
     protected array $registry = [];
-
     /**
      * The current locale code.
      */
     protected string $locale;
-
     /**
      * A list of loader functions indexed by domain name. Loaders are
      * callables that are invoked as a default for building translation
@@ -58,18 +50,15 @@ class TranslatorRegistry
      * @var array<callable>
      */
     protected array $_loaders = [];
-
     /**
      * The name of the default formatter to use for newly created
      * translators from the fallback loader
      */
-    protected string $_defaultFormatter = 'default';
-
+    protected string $_default_formatter = 'default';
     /**
      * Use fallback-domain for translation loaders.
      */
-    protected bool $_useFallback = true;
-
+    protected bool $_use_fallback = true;
     /**
      * A CacheEngine object that is used to remember translator across
      * requests.
@@ -77,7 +66,6 @@ class TranslatorRegistry
      * @var (\Psr\SimpleCache\CacheInterface&\Cake\Cache\CacheEngineInterface)|null
      */
     protected $_cacher;
-
     /**
      * Constructor.
      *
@@ -89,74 +77,63 @@ class TranslatorRegistry
         /**
          * A package locator.
          */
-        protected PackageLocator $packages,
+        protected Package_Locator $packages,
         /**
          * A formatter locator.
          */
-        protected FormatterLocator $formatters,
-        string $locale,
-    ) {
-        $this->setLocale($locale);
-
-        $this->registerLoader(static::FALLBACK_LOADER, function ($name, $locale): \Cake\I18n\Package {
-            $loader = new ChainMessagesLoader([
-                new MessagesFileLoader($name, $locale, 'mo'),
-                new MessagesFileLoader($name, $locale, 'po'),
-            ]);
-
-            $formatter = $name === 'cake' ? 'default' : $this->_defaultFormatter;
+        protected Formatter_Locator $formatters,
+        string $locale
+    )
+    {
+        $this->set_locale($locale);
+        $this->register_loader(static::FALLBACK_LOADER, function ($name, $locale): \Cake\I18n\Package {
+            $loader = new Chain_Messages_Loader([new Messages_File_Loader($name, $locale, 'mo'), new Messages_File_Loader($name, $locale, 'po')]);
+            $formatter = $name === 'cake' ? 'default' : $this->_default_formatter;
             $package = $loader();
-            $package->setFormatter($formatter);
-
+            $package->set_formatter($formatter);
             return $package;
         });
     }
-
     /**
      * Sets the default locale code.
      *
      * @param string $locale The new locale code.
      */
-    public function setLocale(string $locale): void
+    public function set_locale(string $locale): void
     {
         $this->locale = $locale;
     }
-
     /**
      * Returns the default locale code.
      */
-    public function getLocale(): string
+    public function get_locale(): string
     {
         return $this->locale;
     }
-
     /**
      * Returns the translator packages
      */
-    public function getPackages(): PackageLocator
+    public function get_packages(): Package_Locator
     {
         return $this->packages;
     }
-
     /**
      * An object of type FormatterLocator
      */
-    public function getFormatters(): FormatterLocator
+    public function get_formatters(): Formatter_Locator
     {
         return $this->formatters;
     }
-
     /**
      * Sets the CacheEngine instance used to remember translators across
      * requests.
      *
      * @param \Psr\SimpleCache\CacheInterface&\Cake\Cache\CacheEngineInterface $cacher The cacher instance.
      */
-    public function setCacher(CacheInterface&CacheEngineInterface $cacher): void
+    public function set_cacher(Cache_Interface&Cache_Engine_Interface $cacher): void
     {
         $this->_cacher = $cacher;
     }
-
     /**
      * Gets a translator from the registry by package for a locale.
      *
@@ -169,30 +146,24 @@ class TranslatorRegistry
      */
     public function get(string $name, ?string $locale = null): ?Translator
     {
-        $locale ??= $this->getLocale();
-
+        $locale ??= $this->get_locale();
         if (isset($this->registry[$name][$locale])) {
             return $this->registry[$name][$locale];
         }
-
         if ($this->_cacher === null) {
-            return $this->registry[$name][$locale] = $this->_getTranslator($name, $locale);
+            return $this->registry[$name][$locale] = $this->_get_translator($name, $locale);
         }
-
         // Cache keys cannot contain / if they go to file engine.
-        $keyName = str_replace('/', '.', $name);
-        $key = "translations.{$keyName}.{$locale}";
+        $key_name = str_replace('/', '.', $name);
+        $key = "translations.{$key_name}.{$locale}";
         /** @var \Cake\I18n\Translator|null $translator */
         $translator = $this->_cacher->get($key);
-
         if (!$translator) {
-            $translator = $this->_getTranslator($name, $locale);
+            $translator = $this->_get_translator($name, $locale);
             $this->_cacher->set($key, $translator);
         }
-
         return $this->registry[$name][$locale] = $translator;
     }
-
     /**
      * Gets a translator from the registry by package for a locale.
      *
@@ -201,35 +172,25 @@ class TranslatorRegistry
      * locale.
      * @return \Cake\I18n\Translator A translator object.
      */
-    protected function _getTranslator(string $name, string $locale): Translator
+    protected function _get_translator(string $name, string $locale): Translator
     {
         if ($this->packages->has($name, $locale)) {
-            return $this->createInstance($name, $locale);
+            return $this->create_instance($name, $locale);
         }
-
         if (isset($this->_loaders[$name])) {
             $package = $this->_loaders[$name]($name, $locale);
         } else {
             $package = $this->_loaders[static::FALLBACK_LOADER]($name, $locale);
         }
-
         // Support __invoke() wrapper classes
         if (!$package instanceof Package && is_callable($package)) {
-            deprecationWarning(
-                '5.3.0',
-                'Using a callable as a package loader is deprecated. ' .
-                'Please return an instance of \Cake\I18n\Package instead.',
-            );
-
+            deprecation_warning('5.3.0', 'Using a callable as a package loader is deprecated. ' . 'Please return an instance of \Cake\I18n\Package instead.');
             $package = $package();
         }
-
-        $package = $this->setFallbackPackage($name, $package);
+        $package = $this->set_fallback_package($name, $package);
         $this->packages->set($name, $locale, $package);
-
-        return $this->createInstance($name, $locale);
+        return $this->create_instance($name, $locale);
     }
-
     /**
      * Create translator instance.
      *
@@ -237,18 +198,16 @@ class TranslatorRegistry
      * @param string $locale The locale to use; if empty, uses the default locale.
      * @return \Cake\I18n\Translator A translator object.
      */
-    protected function createInstance(string $name, string $locale): Translator
+    protected function create_instance(string $name, string $locale): Translator
     {
         $package = $this->packages->get($name, $locale);
-        $fallback = $package->getFallback();
+        $fallback = $package->get_fallback();
         if ($fallback !== null) {
             $fallback = $this->get($fallback, $locale);
         }
-        $formatter = $this->formatters->get($package->getFormatter());
-
+        $formatter = $this->formatters->get($package->get_formatter());
         return new Translator($locale, $package, $formatter, $fallback);
     }
-
     /**
      * Registers a loader function for a package name that will be used as a fallback
      * in case no package with that name can be found.
@@ -259,11 +218,10 @@ class TranslatorRegistry
      * @param string $name The name of the translator package to register a loader for
      * @param callable $loader A callable object that should return a Package
      */
-    public function registerLoader(string $name, callable $loader): void
+    public function register_loader(string $name, callable $loader): void
     {
         $this->_loaders[$name] = $loader;
     }
-
     /**
      * Sets the name of the default messages formatter to use for future
      * translator instances.
@@ -273,47 +231,40 @@ class TranslatorRegistry
      * @param string|null $name The name of the formatter to use.
      * @return string The name of the formatter.
      */
-    public function defaultFormatter(?string $name = null): string
+    public function default_formatter(?string $name = null): string
     {
         if ($name === null) {
-            return $this->_defaultFormatter;
+            return $this->_default_formatter;
         }
-
-        return $this->_defaultFormatter = $name;
+        return $this->_default_formatter = $name;
     }
-
     /**
      * Set if the default domain fallback is used.
      *
      * @param bool $enable flag to enable or disable fallback
      */
-    public function useFallback(bool $enable = true): void
+    public function use_fallback(bool $enable = true): void
     {
-        $this->_useFallback = $enable;
+        $this->_use_fallback = $enable;
     }
-
     /**
      * Set fallback domain for package.
      *
      * @param string $name The name of the package.
      * @param \Cake\I18n\Package $package Package instance
      */
-    public function setFallbackPackage(string $name, Package $package): Package
+    public function set_fallback_package(string $name, Package $package): Package
     {
-        if ($package->getFallback()) {
+        if ($package->get_fallback()) {
             return $package;
         }
-
-        $fallbackDomain = null;
-        if ($this->_useFallback && $name !== 'default') {
-            $fallbackDomain = 'default';
+        $fallback_domain = null;
+        if ($this->_use_fallback && $name !== 'default') {
+            $fallback_domain = 'default';
         }
-
-        $package->setFallback($fallbackDomain);
-
+        $package->set_fallback($fallback_domain);
         return $package;
     }
-
     /**
      * Set domain fallback for loader.
      *
@@ -321,20 +272,18 @@ class TranslatorRegistry
      * @param callable $loader invokable loader
      * @return callable loader
      */
-    public function setLoaderFallback(string $name, callable $loader): callable
+    public function set_loader_fallback(string $name, callable $loader): callable
     {
-        $fallbackDomain = 'default';
-        if (!$this->_useFallback || $name === $fallbackDomain) {
+        $fallback_domain = 'default';
+        if (!$this->_use_fallback || $name === $fallback_domain) {
             return $loader;
         }
-
-        return function () use ($loader, $fallbackDomain) {
+        return function () use ($loader, $fallback_domain) {
             /** @var \Cake\I18n\Package $package */
             $package = $loader();
-            if (!$package->getFallback()) {
-                $package->setFallback($fallbackDomain);
+            if (!$package->get_fallback()) {
+                $package->set_fallback($fallback_domain);
             }
-
             return $package;
         };
     }

@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,11 +14,9 @@ declare(strict_types=1);
  * @since         1.2.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Core;
 
-use Cake\Core\Exception\CakeException;
-
+use Cake\Core\Exception\Cake_Exception;
 /**
  * App is responsible for resource location, and path management.
  *
@@ -55,31 +52,25 @@ class App
      * @param string $suffix Class name suffix
      * @return class-string|null Namespaced class name, null if the class is not found.
      */
-    public static function className(string $class, string $type = '', string $suffix = ''): ?string
+    public static function class_name(string $class, string $type = '', string $suffix = ''): ?string
     {
         if (str_contains($class, '\\')) {
             return class_exists($class) ? $class : null;
         }
-
-        [$plugin, $name] = pluginSplit($class);
+        [$plugin, $name] = plugin_split($class);
         $fullname = '\\' . str_replace('/', '\\', $type . '\\' . $name) . $suffix;
-
         $base = $plugin ?: Configure::read('App.namespace');
         if ($base !== null) {
             $base = str_replace('/', '\\', rtrim($base, '\\'));
-
-            if (static::_classExistsInBase($fullname, $base)) {
+            if (static::_class_exists_in_base($fullname, $base)) {
                 return $base . $fullname;
             }
         }
-
-        if ($plugin || !static::_classExistsInBase($fullname, 'Cake')) {
+        if ($plugin || !static::_class_exists_in_base($fullname, 'Cake')) {
             return null;
         }
-
         return 'Cake' . $fullname;
     }
-
     /**
      * Returns the plugin split name of a class
      *
@@ -120,34 +111,25 @@ class App
      * @param string $suffix Class name suffix
      * @return string Plugin split name of class
      */
-    public static function shortName(string $class, string $type, string $suffix = ''): string
+    public static function short_name(string $class, string $type, string $suffix = ''): string
     {
         $class = str_replace('\\', '/', $class);
         $type = '/' . $type . '/';
-
         $pos = strrpos($class, $type);
         if ($pos === false) {
             return $class;
         }
-
-        $pluginName = substr($class, 0, $pos);
+        $plugin_name = substr($class, 0, $pos);
         $name = substr($class, $pos + strlen($type));
-
         if ($suffix) {
             $name = substr($name, 0, -strlen($suffix));
         }
-
-        $nonPluginNamespaces = [
-            'Cake',
-            str_replace('\\', '/', (string)Configure::read('App.namespace')),
-        ];
-        if (in_array($pluginName, $nonPluginNamespaces, true)) {
+        $non_plugin_namespaces = ['Cake', str_replace('\\', '/', (string) Configure::read('App.namespace'))];
+        if (in_array($plugin_name, $non_plugin_namespaces, true)) {
             return $name;
         }
-
-        return $pluginName . '.' . $name;
+        return $plugin_name . '.' . $name;
     }
-
     /**
      * _classExistsInBase
      *
@@ -156,11 +138,10 @@ class App
      * @param string $name Class name.
      * @param string $namespace Namespace.
      */
-    protected static function _classExistsInBase(string $name, string $namespace): bool
+    protected static function _class_exists_in_base(string $name, string $namespace): bool
     {
         return class_exists($namespace . $name);
     }
-
     /**
      * Used to read information of stored path.
      *
@@ -189,19 +170,14 @@ class App
     public static function path(string $type, ?string $plugin = null): array
     {
         if ($plugin === null) {
-            return (array)Configure::read('App.paths.' . $type);
+            return (array) Configure::read('App.paths.' . $type);
         }
-
         return match ($type) {
-            'templates' => [Plugin::templatePath($plugin)],
+            'templates' => [Plugin::template_path($plugin)],
             'locales' => [Plugin::path($plugin) . 'resources' . DIRECTORY_SEPARATOR . 'locales' . DIRECTORY_SEPARATOR],
-            default => throw new CakeException(sprintf(
-                'Invalid type `%s`. Only path types `templates` and `locales` are supported for plugins.',
-                $type,
-            ))
+            default => throw new Cake_Exception(sprintf('Invalid type `%s`. Only path types `templates` and `locales` are supported for plugins.', $type)),
         };
     }
-
     /**
      * Gets the path to a class type in the application or a plugin.
      *
@@ -223,17 +199,13 @@ class App
      * @param string|null $plugin Plugin name.
      * @return array<string>
      */
-    public static function classPath(string $type, ?string $plugin = null): array
+    public static function class_path(string $type, ?string $plugin = null): array
     {
         if ($plugin !== null) {
-            return [
-                Plugin::classPath($plugin) . $type . DIRECTORY_SEPARATOR,
-            ];
+            return [Plugin::class_path($plugin) . $type . DIRECTORY_SEPARATOR];
         }
-
         return [APP . $type . DIRECTORY_SEPARATOR];
     }
-
     /**
      * Returns the full path to a package inside the CakePHP core
      *
@@ -253,7 +225,6 @@ class App
         if ($type === 'templates') {
             return [CORE_PATH . 'templates' . DIRECTORY_SEPARATOR];
         }
-
         return [CAKE . str_replace('/', DIRECTORY_SEPARATOR, $type) . DIRECTORY_SEPARATOR];
     }
 }

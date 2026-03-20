@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,11 +14,9 @@ declare(strict_types=1);
  * @since         3.2.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Http;
 
-use Psr\Http\Message\ResponseInterface;
-
+use Psr\Http\Message\Response_Interface;
 /**
  * A builder object that assists in defining Cross Origin Request related
  * headers.
@@ -32,20 +29,18 @@ use Psr\Http\Message\ResponseInterface;
  *
  * @see \Cake\Http\Response::cors()
  */
-class CorsBuilder
+class Cors_Builder
 {
     /**
      * The response object this builder is attached to.
      */
-    protected ResponseInterface $_response;
-
+    protected Response_Interface $_response;
     /**
      * The headers that have been queued so far.
      *
      * @var array<string, mixed>
      */
     protected array $_headers = [];
-
     /**
      * Constructor.
      *
@@ -53,17 +48,20 @@ class CorsBuilder
      * @param string $_origin The request's Origin header.
      * @param bool $_isSsl Whether the request was over SSL.
      */
-    public function __construct(ResponseInterface $response, /**
-     * The request's Origin header value
-     */
-        protected string $_origin, /**
-     * Whether the request was over SSL.
-     */
-        protected bool $_isSsl = false)
+    public function __construct(
+        Response_Interface $response,
+        /**
+         * The request's Origin header value
+         */
+        protected string $_origin,
+        /**
+         * Whether the request was over SSL.
+         */
+        protected bool $_is_ssl = false
+    )
     {
         $this->_response = $response;
     }
-
     /**
      * Apply the queued headers to the response.
      *
@@ -72,22 +70,19 @@ class CorsBuilder
      *
      * @return \Psr\Http\Message\ResponseInterface A new instance of the response with new headers.
      */
-    public function build(): ResponseInterface
+    public function build(): Response_Interface
     {
         $response = $this->_response;
         if (empty($this->_origin)) {
             return $response;
         }
-
         if (isset($this->_headers['Access-Control-Allow-Origin'])) {
             foreach ($this->_headers as $key => $value) {
-                $response = $response->withHeader($key, $value);
+                $response = $response->with_header($key, $value);
             }
         }
-
         return $response;
     }
-
     /**
      * Set the list of allowed domains.
      *
@@ -97,9 +92,9 @@ class CorsBuilder
      * @param array<string>|string $domains The allowed domains
      * @return $this
      */
-    public function allowOrigin(array|string $domains): static
+    public function allow_origin(array|string $domains): static
     {
-        $allowed = $this->_normalizeDomains((array)$domains);
+        $allowed = $this->_normalize_domains((array) $domains);
         foreach ($allowed as $domain) {
             if (!preg_match($domain['preg'], $this->_origin)) {
                 continue;
@@ -108,17 +103,15 @@ class CorsBuilder
             $this->_headers['Access-Control-Allow-Origin'] = $value;
             break;
         }
-
         return $this;
     }
-
     /**
      * Normalize the origin to regular expressions and put in an array format
      *
      * @param array<string> $domains Domain names to normalize.
      * @return array<array<string, string>>
      */
-    protected function _normalizeDomains(array $domains): array
+    protected function _normalize_domains(array $domains): array
     {
         $result = [];
         foreach ($domains as $domain) {
@@ -129,76 +122,65 @@ class CorsBuilder
             $original = $domain;
             $preg = $domain;
             if (!str_contains($domain, '://')) {
-                $preg = ($this->_isSsl ? 'https://' : 'http://') . $domain;
+                $preg = ($this->_is_ssl ? 'https://' : 'http://') . $domain;
             }
             $preg = '@^' . str_replace('\*', '.*', preg_quote($preg, '@')) . '$@';
             $result[] = compact('original', 'preg');
         }
-
         return $result;
     }
-
     /**
      * Set the list of allowed HTTP Methods.
      *
      * @param array<string> $methods The allowed HTTP methods
      * @return $this
      */
-    public function allowMethods(array $methods): static
+    public function allow_methods(array $methods): static
     {
         $this->_headers['Access-Control-Allow-Methods'] = implode(', ', $methods);
-
         return $this;
     }
-
     /**
      * Enable cookies to be sent in CORS requests.
      *
      * @return $this
      */
-    public function allowCredentials(): static
+    public function allow_credentials(): static
     {
         $this->_headers['Access-Control-Allow-Credentials'] = 'true';
-
         return $this;
     }
-
     /**
      * Allowed headers that can be sent in CORS requests.
      *
      * @param array<string> $headers The list of headers to accept in CORS requests.
      * @return $this
      */
-    public function allowHeaders(array $headers): static
+    public function allow_headers(array $headers): static
     {
         $this->_headers['Access-Control-Allow-Headers'] = implode(', ', $headers);
-
         return $this;
     }
-
     /**
      * Define the headers a client library/browser can expose to scripting
      *
      * @param array<string> $headers The list of headers to expose CORS responses
      * @return $this
      */
-    public function exposeHeaders(array $headers): static
+    public function expose_headers(array $headers): static
     {
         $this->_headers['Access-Control-Expose-Headers'] = implode(', ', $headers);
-
         return $this;
     }
-
     /**
      * Define the max-age preflight OPTIONS requests are valid for.
      *
      * @param string|int $age The max-age for OPTIONS requests in seconds
      * @return $this
      */
-    public function maxAge(string|int $age): static
+    public function max_age(string|int $age): static
     {
         $this->_headers['Access-Control-Max-Age'] = $age;
-
         return $this;
     }
 }

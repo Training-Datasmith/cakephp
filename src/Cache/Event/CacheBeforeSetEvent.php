@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,29 +14,23 @@ declare(strict_types=1);
  * @since         5.3.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Cache\Event;
 
-use Cake\Cache\CacheEngine;
+use Cake\Cache\Cache_Engine;
 use Cake\Event\Event;
 use DateInterval;
-
 /**
  * Class Cache BeforeSet Event
  *
  * @template TEngine of \Cake\Cache\CacheEngine
  * @extends \Cake\Event\Event<TEngine>
  */
-class CacheBeforeSetEvent extends Event
+class Cache_Before_Set_Event extends Event
 {
     public const NAME = 'Cache.beforeSet';
-
     protected string $key;
-
     protected mixed $value = null;
-
     protected DateInterval|int|null $ttl = null;
-
     /**
      * Constructor
      *
@@ -45,7 +38,7 @@ class CacheBeforeSetEvent extends Event
      * @param TEngine $subject The Cache engine instance this event applies to.
      * @param array $data Any value you wish to be transported with this event to it can be read by listeners.
      */
-    public function __construct(string $name, CacheEngine $subject, array $data = [])
+    public function __construct(string $name, Cache_Engine $subject, array $data = [])
     {
         if (isset($data['key'])) {
             $this->key = $data['key'];
@@ -59,21 +52,17 @@ class CacheBeforeSetEvent extends Event
             $this->ttl = $data['ttl'];
             unset($data['ttl']);
         }
-
         parent::__construct($name, $subject, $data);
     }
-
-    public function getKey(): string
+    public function get_key(): string
     {
         return $this->key;
     }
-
-    public function getValue(): mixed
+    public function get_value(): mixed
     {
         return $this->value;
     }
-
-    public function getTtl(): DateInterval|int|null
+    public function get_ttl(): DateInterval|int|null
     {
         return $this->ttl;
     }

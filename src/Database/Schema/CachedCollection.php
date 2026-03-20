@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,21 +14,18 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Database\Schema;
 
-use Psr\SimpleCache\CacheInterface;
-
+use Psr\Simple_Cache\Cache_Interface;
 /**
  * Decorates a schema collection and adds caching
  */
-class CachedCollection implements CollectionInterface
+class Cached_Collection implements Collection_Interface
 {
     /**
      * Cacher instance.
      */
-    protected CacheInterface $cacher;
-
+    protected Cache_Interface $cacher;
     /**
      * Constructor.
      *
@@ -37,34 +33,34 @@ class CachedCollection implements CollectionInterface
      * @param string $prefix The cache key prefix to use. Typically the connection name.
      * @param \Psr\SimpleCache\CacheInterface $cacher Cacher instance.
      */
-    public function __construct(/**
-     * The decorated schema collection
-     */
-        protected CollectionInterface $collection, /**
-     * The cache key prefix
-     */
+    public function __construct(
+        /**
+         * The decorated schema collection
+         */
+        protected Collection_Interface $collection,
+        /**
+         * The cache key prefix
+         */
         protected string $prefix,
-        CacheInterface $cacher
-    ) {
+        Cache_Interface $cacher
+    )
+    {
         $this->cacher = $cacher;
     }
-
     /**
      * @inheritDoc
      */
-    public function listTablesWithoutViews(): array
+    public function list_tables_without_views(): array
     {
-        return $this->collection->listTablesWithoutViews();
+        return $this->collection->list_tables_without_views();
     }
-
     /**
      * @inheritDoc
      */
-    public function listTables(): array
+    public function list_tables(): array
     {
-        return $this->collection->listTables();
+        return $this->collection->list_tables();
     }
-
     /**
      * Get the column metadata for a table.
      *
@@ -83,54 +79,47 @@ class CachedCollection implements CollectionInterface
      * @return \Cake\Database\Schema\TableSchemaInterface Object with column metadata.
      * @throws \Cake\Database\Exception\DatabaseException when table cannot be described.
      */
-    public function describe(string $name, array $options = []): TableSchemaInterface
+    public function describe(string $name, array $options = []): Table_Schema_Interface
     {
         $options += ['forceRefresh' => false];
-        $cacheKey = $this->cacheKey($name);
-
+        $cache_key = $this->cache_key($name);
         if (!$options['forceRefresh']) {
-            $cached = $this->cacher->get($cacheKey);
+            $cached = $this->cacher->get($cache_key);
             if ($cached !== null) {
                 return $cached;
             }
         }
-
         $table = $this->collection->describe($name, $options);
-        $this->cacher->set($cacheKey, $table);
-
+        $this->cacher->set($cache_key, $table);
         return $table;
     }
-
     /**
      * Get the cache key for a given name.
      *
      * @param string $name The name to get a cache key for.
      * @return string The cache key.
      */
-    public function cacheKey(string $name): string
+    public function cache_key(string $name): string
     {
         return $this->prefix . '_' . $name;
     }
-
     /**
      * Set a cacher.
      *
      * @param \Psr\SimpleCache\CacheInterface $cacher Cacher object
      * @return $this
      */
-    public function setCacher(CacheInterface $cacher): static
+    public function set_cacher(Cache_Interface $cacher): static
     {
         $this->cacher = $cacher;
-
         return $this;
     }
-
     /**
      * Get a cacher.
      *
      * @return \Psr\SimpleCache\CacheInterface $cacher Cacher object
      */
-    public function getCacher(): CacheInterface
+    public function get_cacher(): Cache_Interface
     {
         return $this->cacher;
     }

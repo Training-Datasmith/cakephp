@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,24 +14,22 @@ declare(strict_types=1);
  * @since         3.2.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Database;
 
 /**
  * Represents an expression that is known to return a specific type
  */
-interface TypedResultInterface
+interface Typed_Result_Interface
 {
     /**
      * Return the abstract type this expression will return
      */
-    public function getReturnType(): string;
-
+    public function get_return_type(): string;
     /**
      * Set the return type of the expression
      *
      * @param string $type The type name to use.
      * @return $this
      */
-    public function setReturnType(string $type);
+    public function set_return_type(string $type);
 }

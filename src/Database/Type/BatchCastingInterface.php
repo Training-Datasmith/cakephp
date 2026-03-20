@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,16 +14,14 @@ declare(strict_types=1);
  * @since         3.6.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Database\Type;
 
 use Cake\Database\Driver;
-
 /**
  * Denotes type objects capable of converting many values from their original
  * database representation to php values.
  */
-interface BatchCastingInterface
+interface Batch_Casting_Interface
 {
     /**
      * Returns an array of the values converted to the PHP representation of
@@ -35,5 +32,5 @@ interface BatchCastingInterface
      * @param \Cake\Database\Driver $driver Object from which database preferences and configuration will be extracted.
      * @return array<string, mixed>
      */
-    public function manyToPHP(array $values, array $fields, Driver $driver): array;
+    public function many_to_php(array $values, array $fields, Driver $driver): array;
 }

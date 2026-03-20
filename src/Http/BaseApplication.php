@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,33 +14,31 @@ declare(strict_types=1);
  * @since         3.3.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Http;
 
-use Cake\Console\CommandCollection;
-use Cake\Controller\ControllerFactory;
-use Cake\Core\ConsoleApplicationInterface;
+use Cake\Console\Command_Collection;
+use Cake\Controller\Controller_Factory;
+use Cake\Core\Console_Application_Interface;
 use Cake\Core\Container;
-use Cake\Core\ContainerApplicationInterface;
-use Cake\Core\ContainerInterface;
-use Cake\Core\EventAwareApplicationInterface;
-use Cake\Core\Exception\MissingPluginException;
-use Cake\Core\HttpApplicationInterface;
+use Cake\Core\Container_Application_Interface;
+use Cake\Core\Container_Interface;
+use Cake\Core\Event_Aware_Application_Interface;
+use Cake\Core\Exception\Missing_Plugin_Exception;
+use Cake\Core\Http_Application_Interface;
 use Cake\Core\Plugin;
-use Cake\Core\PluginApplicationInterface;
-use Cake\Core\PluginCollection;
-use Cake\Core\PluginInterface;
-use Cake\Event\EventDispatcherInterface;
-use Cake\Event\EventDispatcherTrait;
-use Cake\Event\EventManager;
-use Cake\Event\EventManagerInterface;
-use Cake\Routing\RouteBuilder;
+use Cake\Core\Plugin_Application_Interface;
+use Cake\Core\Plugin_Collection;
+use Cake\Core\Plugin_Interface;
+use Cake\Event\Event_Dispatcher_Interface;
+use Cake\Event\Event_Dispatcher_Trait;
+use Cake\Event\Event_Manager;
+use Cake\Event\Event_Manager_Interface;
+use Cake\Routing\Route_Builder;
 use Cake\Routing\Router;
-use Cake\Routing\RoutingApplicationInterface;
+use Cake\Routing\Routing_Application_Interface;
 use Closure;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-
+use Psr\Http\Message\Response_Interface;
+use Psr\Http\Message\Server_Request_Interface;
 /**
  * Base class for full-stack applications
  *
@@ -57,35 +54,24 @@ use Psr\Http\Message\ServerRequestInterface;
  * @implements \Cake\Event\EventDispatcherInterface<TSubject>
  * @implements \Cake\Core\PluginApplicationInterface<TSubject>
  */
-abstract class BaseApplication implements
-    ConsoleApplicationInterface,
-    ContainerApplicationInterface,
-    EventAwareApplicationInterface,
-    EventDispatcherInterface,
-    HttpApplicationInterface,
-    PluginApplicationInterface,
-    RoutingApplicationInterface
+abstract class Base_Application implements Console_Application_Interface, Container_Application_Interface, Event_Aware_Application_Interface, Event_Dispatcher_Interface, Http_Application_Interface, Plugin_Application_Interface, Routing_Application_Interface
 {
     /**
      * @use \Cake\Event\EventDispatcherTrait<TSubject>
      */
-    use EventDispatcherTrait;
-
+    use Event_Dispatcher_Trait;
     /**
      * @var string Contains the path of the config directory
      */
-    protected string $configDir;
-
+    protected string $config_dir;
     /**
      * Plugin Collection
      */
-    protected PluginCollection $plugins;
-
+    protected Plugin_Collection $plugins;
     /**
      * Container
      */
-    protected ?ContainerInterface $container = null;
-
+    protected ?Container_Interface $container = null;
     /**
      * Constructor
      *
@@ -94,40 +80,37 @@ abstract class BaseApplication implements
      * @param \Cake\Http\ControllerFactoryInterface<\Cake\Controller\Controller>|null $controllerFactory Controller factory.
      */
     public function __construct(
-        string $configDir,
-        ?EventManagerInterface $eventManager = null,
+        string $config_dir,
+        ?Event_Manager_Interface $event_manager = null,
         /**
          * Controller factory
          */
-        protected ?ControllerFactoryInterface $controllerFactory = null,
-    ) {
-        $this->configDir = rtrim($configDir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
-        $this->plugins = new PluginCollection();
-        $this->_eventManager = $eventManager ?: EventManager::instance();
-        Plugin::setCollection($this->plugins);
+        protected ?Controller_Factory_Interface $controller_factory = null
+    )
+    {
+        $this->config_dir = rtrim($config_dir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+        $this->plugins = new Plugin_Collection();
+        $this->_event_manager = $event_manager ?: Event_Manager::instance();
+        Plugin::set_collection($this->plugins);
     }
-
     /**
      * @param \Cake\Http\MiddlewareQueue $middlewareQueue The middleware queue to set in your App Class
      */
-    abstract public function middleware(MiddlewareQueue $middlewareQueue): MiddlewareQueue;
-
+    abstract public function middleware(Middleware_Queue $middleware_queue): Middleware_Queue;
     /**
      * @inheritDoc
      */
-    public function pluginMiddleware(MiddlewareQueue $middleware): MiddlewareQueue
+    public function plugin_middleware(Middleware_Queue $middleware): Middleware_Queue
     {
         foreach ($this->plugins->with('middleware') as $plugin) {
             $middleware = $plugin->middleware($middleware);
         }
-
         return $middleware;
     }
-
     /**
      * @inheritDoc
      */
-    public function addPlugin($name, array $config = [])
+    public function add_plugin($name, array $config = [])
     {
         if (is_string($name)) {
             $plugin = $this->plugins->create($name, $config);
@@ -135,10 +118,8 @@ abstract class BaseApplication implements
             $plugin = $name;
         }
         $this->plugins->add($plugin);
-
         return $this;
     }
-
     /**
      * Add an optional plugin
      *
@@ -148,49 +129,43 @@ abstract class BaseApplication implements
      * @param array<string, mixed> $config The configuration data for the plugin if using a string for $name
      * @return $this
      */
-    public function addOptionalPlugin(PluginInterface|string $name, array $config = [])
+    public function add_optional_plugin(Plugin_Interface|string $name, array $config = [])
     {
         try {
-            $this->addPlugin($name, $config);
-        } catch (MissingPluginException) {
+            $this->add_plugin($name, $config);
+        } catch (Missing_Plugin_Exception) {
             // Do not halt if the plugin is missing
         }
-
         return $this;
     }
-
     /**
      * Get the plugin collection in use.
      */
-    public function getPlugins(): PluginCollection
+    public function get_plugins(): Plugin_Collection
     {
         return $this->plugins;
     }
-
     /**
      * @inheritDoc
      */
     public function bootstrap(): void
     {
-        require_once $this->configDir . 'bootstrap.php';
-
+        require_once $this->config_dir . 'bootstrap.php';
         // phpcs:ignore
-        $plugins = @include $this->configDir . 'plugins.php';
+        $plugins = @include $this->config_dir . 'plugins.php';
         if (is_array($plugins)) {
-            $this->plugins->addFromConfig($plugins);
+            $this->plugins->add_from_config($plugins);
         }
     }
-
     /**
      * @inheritDoc
      */
-    public function pluginBootstrap(): void
+    public function plugin_bootstrap(): void
     {
         foreach ($this->plugins->with('bootstrap') as $plugin) {
             $plugin->bootstrap($this);
         }
     }
-
     /**
      * {@inheritDoc}
      *
@@ -198,29 +173,26 @@ abstract class BaseApplication implements
      *
      * @param \Cake\Routing\RouteBuilder $routes A route builder to add routes into.
      */
-    public function routes(RouteBuilder $routes): void
+    public function routes(Route_Builder $routes): void
     {
         // Only load routes if the router is empty
         if (!Router::routes()) {
-            $return = require $this->configDir . 'routes.php';
+            $return = require $this->config_dir . 'routes.php';
             if ($return instanceof Closure) {
                 $return($routes);
             }
         }
     }
-
     /**
      * @inheritDoc
      */
-    public function pluginRoutes(RouteBuilder $routes): RouteBuilder
+    public function plugin_routes(Route_Builder $routes): Route_Builder
     {
         foreach ($this->plugins->with('routes') as $plugin) {
             $plugin->routes($routes);
         }
-
         return $routes;
     }
-
     /**
      * Define the console commands for an application.
      *
@@ -230,87 +202,76 @@ abstract class BaseApplication implements
      * @param \Cake\Console\CommandCollection $commands The CommandCollection to add commands into.
      * @return \Cake\Console\CommandCollection The updated collection.
      */
-    public function console(CommandCollection $commands): CommandCollection
+    public function console(Command_Collection $commands): Command_Collection
     {
-        return $commands->addMany($commands->autoDiscover());
+        return $commands->add_many($commands->auto_discover());
     }
-
     /**
      * @inheritDoc
      */
-    public function pluginConsole(CommandCollection $commands): CommandCollection
+    public function plugin_console(Command_Collection $commands): Command_Collection
     {
         foreach ($this->plugins->with('console') as $plugin) {
             $commands = $plugin->console($commands);
         }
-
         return $commands;
     }
-
     /**
      * @param \Cake\Event\EventManagerInterface $eventManager The global event manager to register listeners on
      */
-    public function pluginEvents(EventManagerInterface $eventManager): EventManagerInterface
+    public function plugin_events(Event_Manager_Interface $event_manager): Event_Manager_Interface
     {
         foreach ($this->plugins->with('events') as $plugin) {
-            $eventManager = $plugin->events($eventManager);
+            $event_manager = $plugin->events($event_manager);
         }
-
-        return $eventManager;
+        return $event_manager;
     }
-
     /**
      * Get the dependency injection container for the application.
      *
      * The first time the container is fetched it will be constructed
      * and stored for future calls.
      */
-    public function getContainer(): ContainerInterface
+    public function get_container(): Container_Interface
     {
-        return $this->container ??= $this->buildContainer();
+        return $this->container ??= $this->build_container();
     }
-
     /**
      * Build the service container
      *
      * Override this method if you need to use a custom container or
      * want to change how the container is built.
      */
-    protected function buildContainer(): ContainerInterface
+    protected function build_container(): Container_Interface
     {
         $container = new Container();
         $this->services($container);
         foreach ($this->plugins->with('services') as $plugin) {
             $plugin->services($container);
         }
-
-        $event = $this->dispatchEvent('Application.buildContainer', ['container' => $container]);
-        if ($event->getResult() instanceof ContainerInterface) {
-            return $event->getResult();
+        $event = $this->dispatch_event('Application.buildContainer', ['container' => $container]);
+        if ($event->get_result() instanceof Container_Interface) {
+            return $event->get_result();
         }
-
         return $container;
     }
-
     /**
      * Register application container services.
      *
      * @param \Cake\Core\ContainerInterface $container The Container to update.
      */
-    public function services(ContainerInterface $container): void
+    public function services(Container_Interface $container): void
     {
     }
-
     /**
      * Register application events.
      *
      * @param \Cake\Event\EventManagerInterface $eventManager The global event manager to register listeners on
      */
-    public function events(EventManagerInterface $eventManager): EventManagerInterface
+    public function events(Event_Manager_Interface $event_manager): Event_Manager_Interface
     {
-        return $eventManager;
+        return $event_manager;
     }
-
     /**
      * Invoke the application.
      *
@@ -320,25 +281,19 @@ abstract class BaseApplication implements
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request The request
      */
-    public function handle(
-        ServerRequestInterface $request,
-    ): ResponseInterface {
-        $container = $this->getContainer();
-        $container->add(ServerRequest::class, $request);
-        $container->add(ContainerInterface::class, $container);
-
-        $eventManager = $this->events($this->getEventManager());
-        $this->setEventManager($this->pluginEvents($eventManager));
-
-        $this->controllerFactory ??= new ControllerFactory($container);
-
-        if (Router::getRequest() !== $request) {
-            assert($request instanceof ServerRequest);
-            Router::setRequest($request);
+    public function handle(Server_Request_Interface $request): Response_Interface
+    {
+        $container = $this->get_container();
+        $container->add(Server_Request::class, $request);
+        $container->add(Container_Interface::class, $container);
+        $event_manager = $this->events($this->get_event_manager());
+        $this->set_event_manager($this->plugin_events($event_manager));
+        $this->controller_factory ??= new Controller_Factory($container);
+        if (Router::get_request() !== $request) {
+            assert($request instanceof Server_Request);
+            Router::set_request($request);
         }
-
-        $controller = $this->controllerFactory->create($request);
-
-        return $this->controllerFactory->invoke($controller);
+        $controller = $this->controller_factory->create($request);
+        return $this->controller_factory->invoke($controller);
     }
 }

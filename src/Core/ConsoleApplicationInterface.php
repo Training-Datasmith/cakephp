@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright 2005-2011, Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -14,16 +13,14 @@ declare(strict_types=1);
  * @since         3.5.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Core;
 
-use Cake\Console\CommandCollection;
-
+use Cake\Console\Command_Collection;
 /**
  * An interface defining the methods that the
  * console runner depend on.
  */
-interface ConsoleApplicationInterface
+interface Console_Application_Interface
 {
     /**
      * Load all the application configuration and bootstrap logic.
@@ -31,12 +28,11 @@ interface ConsoleApplicationInterface
      * Override this method to add additional bootstrap logic for your application.
      */
     public function bootstrap(): void;
-
     /**
      * Define the console commands for an application.
      *
      * @param \Cake\Console\CommandCollection $commands The CommandCollection to add commands into.
      * @return \Cake\Console\CommandCollection The updated collection.
      */
-    public function console(CommandCollection $commands): CommandCollection;
+    public function console(Command_Collection $commands): Command_Collection;
 }

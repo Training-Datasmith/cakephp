@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,13 +14,12 @@ declare(strict_types=1);
  * @since         4.1.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Error\Debug;
 
 /**
  * Dump node for Array Items.
  */
-class ArrayItemNode implements NodeInterface
+class Array_Item_Node implements Node_Interface
 {
     /**
      * Constructor
@@ -29,30 +27,27 @@ class ArrayItemNode implements NodeInterface
      * @param \Cake\Error\Debug\NodeInterface $key The node for the item key
      * @param \Cake\Error\Debug\NodeInterface $value The node for the array value
      */
-    public function __construct(private readonly NodeInterface $key, private readonly NodeInterface $value)
+    public function __construct(private readonly Node_Interface $key, private readonly Node_Interface $value)
     {
     }
-
     /**
      * Get the value
      */
-    public function getValue(): NodeInterface
+    public function get_value(): Node_Interface
     {
         return $this->value;
     }
-
     /**
      * Get the key
      */
-    public function getKey(): NodeInterface
+    public function get_key(): Node_Interface
     {
         return $this->key;
     }
-
     /**
      * @inheritDoc
      */
-    public function getChildren(): array
+    public function get_children(): array
     {
         return [$this->value];
     }

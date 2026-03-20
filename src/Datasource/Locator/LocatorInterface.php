@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,17 +14,15 @@ declare(strict_types=1);
  * @since         4.1.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Datasource\Locator;
 
-use Cake\Datasource\RepositoryInterface;
-
+use Cake\Datasource\Repository_Interface;
 /**
  * Registries for repository objects should implement this interface.
  *
  * @template TRepo of \Cake\Datasource\RepositoryInterface
  */
-interface LocatorInterface
+interface Locator_Interface
 {
     /**
      * Get a repository instance from the registry.
@@ -36,8 +33,7 @@ interface LocatorInterface
      * @throws \RuntimeException When trying to get alias for which instance
      *   has already been created with different options.
      */
-    public function get(string $alias, array $options = []): RepositoryInterface;
-
+    public function get(string $alias, array $options = []): Repository_Interface;
     /**
      * Set a repository instance.
      *
@@ -45,22 +41,19 @@ interface LocatorInterface
      * @param TRepo $repository The repository to set.
      * @return TRepo
      */
-    public function set(string $alias, RepositoryInterface $repository): RepositoryInterface;
-
+    public function set(string $alias, Repository_Interface $repository): Repository_Interface;
     /**
      * Check to see if an instance exists in the registry.
      *
      * @param string $alias The alias to check for.
      */
     public function exists(string $alias): bool;
-
     /**
      * Removes a repository instance from the registry.
      *
      * @param string $alias The alias to remove.
      */
     public function remove(string $alias): void;
-
     /**
      * Clears the registry of configuration and instances.
      */

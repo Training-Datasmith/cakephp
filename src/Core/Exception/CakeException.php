@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -13,33 +12,28 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Core\Exception;
 
 use RuntimeException;
 use Throwable;
-
 /**
  * Base class that all CakePHP Exceptions extend.
  */
-class CakeException extends RuntimeException
+class Cake_Exception extends RuntimeException
 {
     /**
      * Array of attributes that are passed in from the constructor, and
      * made available in the view when a development error is displayed.
      */
     protected array $_attributes = [];
-
     /**
      * Template string that has attributes sprintf()'ed into it.
      */
-    protected string $_messageTemplate = '';
-
+    protected string $_message_template = '';
     /**
      * Default exception code
      */
-    protected int $_defaultCode = 0;
-
+    protected int $_default_code = 0;
     /**
      * Constructor.
      *
@@ -55,15 +49,14 @@ class CakeException extends RuntimeException
     {
         if (is_array($message)) {
             $this->_attributes = $message;
-            $message = vsprintf($this->_messageTemplate, $message);
+            $message = vsprintf($this->_message_template, $message);
         }
-        parent::__construct($message, $code ?? $this->_defaultCode, $previous);
+        parent::__construct($message, $code ?? $this->_default_code, $previous);
     }
-
     /**
      * Get the passed in attributes
      */
-    public function getAttributes(): array
+    public function get_attributes(): array
     {
         return $this->_attributes;
     }

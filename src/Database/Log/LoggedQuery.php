@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,7 +14,6 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Database\Log;
 
 use Cake\Database\Driver;
@@ -23,45 +21,38 @@ use Cake\Database\Driver\Sqlserver;
 use Exception;
 use JsonSerializable;
 use Stringable;
-
 /**
  * Contains a query string, the params used to executed it, time taken to do it
  * and the number of rows found or affected by its execution.
  *
  * @internal
  */
-class LoggedQuery implements JsonSerializable, Stringable
+class Logged_Query implements JsonSerializable, Stringable
 {
     /**
      * Driver executing the query
      */
     protected ?Driver $driver = null;
-
     /**
      * Query string that was executed
      */
     protected string $query = '';
-
     /**
      * Number of milliseconds this query took to complete
      */
     protected float $took = 0;
-
     /**
      * Associative array with the params bound to the query string
      */
     protected array $params = [];
-
     /**
      * Number of rows affected or returned by the query execution
      */
-    protected int $numRows = 0;
-
+    protected int $num_rows = 0;
     /**
      * The exception that was thrown by the execution of this query
      */
     protected ?Exception $error = null;
-
     /**
      * Helper function used to replace query placeholders by the real
      * params used to execute the query
@@ -72,85 +63,61 @@ class LoggedQuery implements JsonSerializable, Stringable
             if ($p === null) {
                 return 'NULL';
             }
-
             if (is_bool($p)) {
                 if ($this->driver instanceof Sqlserver) {
                     return $p ? '1' : '0';
                 }
-
                 return $p ? 'TRUE' : 'FALSE';
             }
-
             if (is_string($p)) {
                 // Likely binary data like a blob or binary uuid.
                 // pattern matches ascii control chars.
                 if (preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/u', '', $p) !== $p) {
                     $p = bin2hex($p);
                 }
-
-                $replacements = [
-                    '$' => '\\$',
-                    '\\' => '\\\\\\\\',
-                    "'" => "''",
-                ];
-
+                $replacements = ['$' => '\$', '\\' => '\\\\\\\\', "'" => "''"];
                 $p = strtr($p, $replacements);
-
                 return "'{$p}'";
             }
-
             return $p;
         }, $this->params);
-
         $keys = [];
         $limit = is_int(key($params)) ? 1 : -1;
         foreach ($params as $key => $param) {
-            $keys[] = is_string($key) ? "/:{$key}\b/" : '/[?]/';
+            $keys[] = is_string($key) ? "/:{$key}\\b/" : '/[?]/';
         }
-
-        return (string)preg_replace($keys, $params, $this->query, $limit);
+        return (string) preg_replace($keys, $params, $this->query, $limit);
     }
-
     /**
      * Get the logging context data for a query.
      *
      * @return array<string, mixed>
      */
-    public function getContext(): array
+    public function get_context(): array
     {
-        $context = [
-            'query' => $this->query,
-            'numRows' => $this->numRows,
-            'took' => $this->took,
-            'role' => $this->driver ? $this->driver->getRole() : '',
-        ];
-
-        $connectionName = $this->getConnectionName();
-        if ($connectionName !== '') {
-            $context['connection'] = $connectionName;
+        $context = ['query' => $this->query, 'numRows' => $this->num_rows, 'took' => $this->took, 'role' => $this->driver ? $this->driver->get_role() : ''];
+        $connection_name = $this->get_connection_name();
+        if ($connection_name !== '') {
+            $context['connection'] = $connection_name;
         }
-
         return $context;
     }
-
     /**
      * Get the connection name from the driver config.
      */
-    public function getConnectionName(): string
+    public function get_connection_name(): string
     {
         if ($this->driver === null) {
             return '';
         }
-
         return $this->driver->config()['name'] ?? '';
     }
-
     /**
      * Set logging context for this query.
      *
      * @param array<string, mixed> $context Context data.
      */
-    public function setContext(array $context): void
+    public function set_context(array $context): void
     {
         foreach ($context as $key => $val) {
             if (property_exists($this, $key)) {
@@ -158,7 +125,6 @@ class LoggedQuery implements JsonSerializable, Stringable
             }
         }
     }
-
     /**
      * Returns data that will be serialized as JSON
      *
@@ -168,22 +134,10 @@ class LoggedQuery implements JsonSerializable, Stringable
     {
         $error = $this->error;
         if ($error !== null) {
-            $error = [
-                'class' => $error::class,
-                'message' => $error->getMessage(),
-                'code' => $error->getCode(),
-            ];
+            $error = ['class' => $error::class, 'message' => $error->get_message(), 'code' => $error->get_code()];
         }
-
-        return [
-            'query' => $this->query,
-            'numRows' => $this->numRows,
-            'params' => $this->params,
-            'took' => $this->took,
-            'error' => $error,
-        ];
+        return ['query' => $this->query, 'numRows' => $this->num_rows, 'params' => $this->params, 'took' => $this->took, 'error' => $error];
     }
-
     /**
      * Returns the string representation of this logged query
      */
@@ -192,7 +146,6 @@ class LoggedQuery implements JsonSerializable, Stringable
         if ($this->params) {
             return $this->interpolate();
         }
-
         return $this->query;
     }
 }

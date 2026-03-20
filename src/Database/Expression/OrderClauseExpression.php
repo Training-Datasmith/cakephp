@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,73 +14,64 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Database\Expression;
 
-use Cake\Database\ExpressionInterface;
+use Cake\Database\Expression_Interface;
 use Cake\Database\Query;
-use Cake\Database\ValueBinder;
+use Cake\Database\Value_Binder;
 use Closure;
-
 /**
  * An expression object for complex ORDER BY clauses
  */
-class OrderClauseExpression implements ExpressionInterface, FieldInterface
+class Order_Clause_Expression implements Expression_Interface, Field_Interface
 {
-    use FieldTrait;
-
+    use Field_Trait;
     /**
      * The direction of sorting.
      */
     protected string $_direction;
-
     /**
      * Constructor
      *
      * @param \Cake\Database\ExpressionInterface|string $field The field to order on.
      * @param string $direction The direction to sort on.
      */
-    public function __construct(ExpressionInterface|string $field, string $direction)
+    public function __construct(Expression_Interface|string $field, string $direction)
     {
         $this->_field = $field;
         $this->_direction = strtolower($direction) === 'asc' ? 'ASC' : 'DESC';
     }
-
     /**
      * @inheritDoc
      */
-    public function sql(ValueBinder $binder): string
+    public function sql(Value_Binder $binder): string
     {
         $field = $this->_field;
         if ($field instanceof Query) {
             $field = sprintf('(%s)', $field->sql($binder));
-        } elseif ($field instanceof ExpressionInterface) {
+        } elseif ($field instanceof Expression_Interface) {
             $field = $field->sql($binder);
         }
         assert(is_string($field));
-
         return sprintf('%s %s', $field, $this->_direction);
     }
-
     /**
      * @inheritDoc
      */
     public function traverse(Closure $callback): static
     {
-        if ($this->_field instanceof ExpressionInterface) {
+        if ($this->_field instanceof Expression_Interface) {
             $callback($this->_field);
             $this->_field->traverse($callback);
         }
-
         return $this;
     }
-
     /**
      * Create a deep clone of the order clause.
      */
     public function __clone()
     {
-        if ($this->_field instanceof ExpressionInterface) {
+        if ($this->_field instanceof Expression_Interface) {
             $this->_field = clone $this->_field;
         }
     }

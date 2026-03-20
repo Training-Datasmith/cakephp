@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,13 +14,12 @@ declare(strict_types=1);
  * @since         1.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Core\Configure;
 
 /**
  * An interface for creating objects compatible with Configure::load()
  */
-interface ConfigEngineInterface
+interface Config_Engine_Interface
 {
     /**
      * Read a configuration file/storage key
@@ -34,7 +32,6 @@ interface ConfigEngineInterface
      * @return array An array of data to merge into the runtime configuration
      */
     public function read(string $key): array;
-
     /**
      * Dumps the configure data into the storage key/file of the given `$key`.
      *

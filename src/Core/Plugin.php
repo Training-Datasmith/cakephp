@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,7 +14,6 @@ declare(strict_types=1);
  * @since         2.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Core;
 
 /**
@@ -30,8 +28,7 @@ class Plugin
     /**
      * Holds a list of all loaded plugins and their configuration
      */
-    protected static ?PluginCollection $plugins = null;
-
+    protected static ?Plugin_Collection $plugins = null;
     /**
      * Returns the filesystem path for a plugin
      *
@@ -42,11 +39,9 @@ class Plugin
      */
     public static function path(string $name): string
     {
-        $plugin = static::getCollection()->get($name);
-
-        return $plugin->getPath();
+        $plugin = static::get_collection()->get($name);
+        return $plugin->get_path();
     }
-
     /**
      * Returns the filesystem path for plugin's folder containing class files.
      *
@@ -54,13 +49,11 @@ class Plugin
      * @return string Path to the plugin folder containing class files.
      * @throws \Cake\Core\Exception\MissingPluginException If plugin has not been loaded.
      */
-    public static function classPath(string $name): string
+    public static function class_path(string $name): string
     {
-        $plugin = static::getCollection()->get($name);
-
-        return $plugin->getClassPath();
+        $plugin = static::get_collection()->get($name);
+        return $plugin->get_class_path();
     }
-
     /**
      * Returns the filesystem path for plugin's folder containing config files.
      *
@@ -68,13 +61,11 @@ class Plugin
      * @return string Path to the plugin folder containing config files.
      * @throws \Cake\Core\Exception\MissingPluginException If plugin has not been loaded.
      */
-    public static function configPath(string $name): string
+    public static function config_path(string $name): string
     {
-        $plugin = static::getCollection()->get($name);
-
-        return $plugin->getConfigPath();
+        $plugin = static::get_collection()->get($name);
+        return $plugin->get_config_path();
     }
-
     /**
      * Returns the filesystem path for plugin's folder containing template files.
      *
@@ -82,24 +73,21 @@ class Plugin
      * @return string Path to the plugin folder containing template files.
      * @throws \Cake\Core\Exception\MissingPluginException If plugin has not been loaded.
      */
-    public static function templatePath(string $name): string
+    public static function template_path(string $name): string
     {
-        $plugin = static::getCollection()->get($name);
-
-        return $plugin->getTemplatePath();
+        $plugin = static::get_collection()->get($name);
+        return $plugin->get_template_path();
     }
-
     /**
      * Returns true if the plugin $plugin is already loaded.
      *
      * @param string $plugin Plugin name.
      * @since 3.7.0
      */
-    public static function isLoaded(string $plugin): bool
+    public static function is_loaded(string $plugin): bool
     {
-        return static::getCollection()->has($plugin);
+        return static::get_collection()->has($plugin);
     }
-
     /**
      * Return a list of loaded plugins.
      *
@@ -108,29 +96,26 @@ class Plugin
     public static function loaded(): array
     {
         $names = [];
-        foreach (static::getCollection() as $plugin) {
-            $names[] = $plugin->getName();
+        foreach (static::get_collection() as $plugin) {
+            $names[] = $plugin->get_name();
         }
         sort($names);
-
         return $names;
     }
-
     /**
      * Get the shared plugin collection.
      *
      * This method should generally not be used during application
      * runtime as plugins should be set during Application startup.
      */
-    public static function getCollection(): PluginCollection
+    public static function get_collection(): Plugin_Collection
     {
-        return static::$plugins ??= new PluginCollection();
+        return static::$plugins ??= new Plugin_Collection();
     }
-
     /**
      * Set the shared plugin collection.
      */
-    public static function setCollection(PluginCollection $collection): void
+    public static function set_collection(Plugin_Collection $collection): void
     {
         static::$plugins = $collection;
     }

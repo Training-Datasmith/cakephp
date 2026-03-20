@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,7 +14,6 @@ declare(strict_types=1);
  * @since         3.0.10
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Event;
 
 /**
@@ -23,30 +21,27 @@ namespace Cake\Event;
  *
  * @template TSubject of object
  */
-trait EventDispatcherTrait
+trait Event_Dispatcher_Trait
 {
     /**
      * Instance of the Cake\Event\EventManager this object is using
      * to dispatch inner events.
      */
-    protected EventManagerInterface $_eventManager;
-
+    protected Event_Manager_Interface $_event_manager;
     /**
      * Default class name for new event objects.
      */
-    protected string $_eventClass = Event::class;
-
+    protected string $_event_class = Event::class;
     /**
      * Returns the Cake\Event\EventManager manager instance for this object.
      *
      * You can use this instance to register any new listeners or callbacks to the
      * object events, or create your own events and trigger them at will.
      */
-    public function getEventManager(): EventManagerInterface
+    public function get_event_manager(): Event_Manager_Interface
     {
-        return $this->_eventManager ??= new EventManager();
+        return $this->_event_manager ??= new Event_Manager();
     }
-
     /**
      * Returns the Cake\Event\EventManagerInterface instance for this object.
      *
@@ -56,13 +51,11 @@ trait EventDispatcherTrait
      * @param \Cake\Event\EventManagerInterface $eventManager the eventManager to set
      * @return $this
      */
-    public function setEventManager(EventManagerInterface $eventManager)
+    public function set_event_manager(Event_Manager_Interface $event_manager)
     {
-        $this->_eventManager = $eventManager;
-
+        $this->_event_manager = $event_manager;
         return $this;
     }
-
     /**
      * Wrapper for creating and dispatching events.
      *
@@ -76,17 +69,15 @@ trait EventDispatcherTrait
      * @return \Cake\Event\EventInterface<TSubject>
      * @phpstan-ignore missingType.generics
      */
-    public function dispatchEvent(string $name, array $data = [], ?object $subject = null): EventInterface // @phpstan-ignore missingType.generics
+    public function dispatch_event(string $name, array $data = [], ?object $subject = null): Event_Interface
     {
         $subject ??= $this;
-
         /**
          * @var \Cake\Event\EventInterface<TSubject> $event Coerce for psalm/phpstan
          * @phpstan-ignore missingType.generics (TSubject may itself be generic)
          */
-        $event = new $this->_eventClass($name, $subject, $data);
-        $this->getEventManager()->dispatch($event);
-
+        $event = new $this->_event_class($name, $subject, $data);
+        $this->get_event_manager()->dispatch($event);
         return $event;
     }
 }

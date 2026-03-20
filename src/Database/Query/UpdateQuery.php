@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,44 +14,28 @@ declare(strict_types=1);
  * @since         4.5.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Database\Query;
 
-use Cake\Database\Expression\ComparisonExpression;
-use Cake\Database\Expression\QueryExpression;
-use Cake\Database\ExpressionInterface;
+use Cake\Database\Expression\Comparison_Expression;
+use Cake\Database\Expression\Query_Expression;
+use Cake\Database\Expression_Interface;
 use Cake\Database\Query;
 use Closure;
-
 /**
  * This class is used to generate UPDATE queries for the relational database.
  */
-class UpdateQuery extends Query
+class Update_Query extends Query
 {
     /**
      * Type of this query.
      */
     protected string $_type = self::TYPE_UPDATE;
-
     /**
      * List of SQL parts that will be used to build this query.
      *
      * @var array<string, mixed>
      */
-    protected array $_parts = [
-        'comment' => null,
-        'with' => [],
-        'update' => [],
-        'optimizerHint' => [],
-        'modifier' => [],
-        'join' => [],
-        'set' => [],
-        'where' => null,
-        'order' => null,
-        'limit' => null,
-        'epilog' => null,
-    ];
-
+    protected array $_parts = ['comment' => null, 'with' => [], 'update' => [], 'optimizerHint' => [], 'modifier' => [], 'join' => [], 'set' => [], 'where' => null, 'order' => null, 'limit' => null, 'epilog' => null];
     /**
      * Create an update query.
      *
@@ -61,14 +44,12 @@ class UpdateQuery extends Query
      * @param \Cake\Database\ExpressionInterface|string $table The table you want to update.
      * @return $this
      */
-    public function update(ExpressionInterface|string $table): static
+    public function update(Expression_Interface|string $table): static
     {
         $this->_dirty();
         $this->_parts['update'][0] = $table;
-
         return $this;
     }
-
     /**
      * Set one or many fields to update.
      *
@@ -103,48 +84,40 @@ class UpdateQuery extends Query
      * @param array<string, string>|string $types The column types to treat data as.
      * @return $this
      */
-    public function set(QueryExpression|Closure|array|string $key, mixed $value = null, array|string $types = []): static
+    public function set(Query_Expression|Closure|array|string $key, mixed $value = null, array|string $types = []): static
     {
         if (empty($this->_parts['set'])) {
-            $this->_parts['set'] = $this->expr()->setConjunction(',');
+            $this->_parts['set'] = $this->expr()->set_conjunction(',');
         }
-
         if ($key instanceof Closure) {
-            $exp = $this->expr()->setConjunction(',');
+            $exp = $this->expr()->set_conjunction(',');
             /** @var \Cake\Database\Expression\QueryExpression $setExpr */
-            $setExpr = $this->_parts['set'];
-            $setExpr->add($key($exp));
-
+            $set_expr = $this->_parts['set'];
+            $set_expr->add($key($exp));
             return $this;
         }
-
         if (is_array($key) && !isset($key[0])) {
-            $typeMap = $this->getTypeMap()->setTypes($value ?? []);
+            $type_map = $this->get_type_map()->set_types($value ?? []);
             /** @var \Cake\Database\Expression\QueryExpression $setExpr */
-            $setExpr = $this->_parts['set'];
+            $set_expr = $this->_parts['set'];
             foreach ($key as $k => $v) {
-                $setExpr->add(new ComparisonExpression($k, $v, $typeMap->type($k)));
+                $set_expr->add(new Comparison_Expression($k, $v, $type_map->type($k)));
             }
-
             return $this;
         }
-
-        if (is_array($key) || $key instanceof ExpressionInterface) {
-            $types = (array)$value;
+        if (is_array($key) || $key instanceof Expression_Interface) {
+            $types = (array) $value;
             /** @var \Cake\Database\Expression\QueryExpression $setExpr */
-            $setExpr = $this->_parts['set'];
-            $setExpr->add($key, $types);
-
+            $set_expr = $this->_parts['set'];
+            $set_expr->add($key, $types);
             return $this;
         }
-
         if (!is_string($types)) {
             $types = null;
         }
         /** @var \Cake\Database\Expression\QueryExpression $setExpr */
-        $setExpr = $this->_parts['set'];
-        $setExpr->eq($key, $value, $types);
-
+        $set_expr = $this->_parts['set'];
+        $set_expr->eq($key, $value, $types);
         return $this;
     }
 }

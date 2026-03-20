@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -14,17 +13,15 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Log;
 
-use Psr\Log\LogLevel;
+use Psr\Log\Log_Level;
 use Stringable;
-
 /**
  * A trait providing an object short-cut method
  * to logging.
  */
-trait LogTrait
+trait Log_Trait
 {
     /**
      * Convenience method to write a message to Log. See Log::write()
@@ -35,11 +32,8 @@ trait LogTrait
      * @param array|string $context Additional log data relevant to this message.
      * @return bool Success of log write.
      */
-    public function log(
-        Stringable|string $message,
-        string|int $level = LogLevel::ERROR,
-        array|string $context = [],
-    ): bool {
+    public function log(Stringable|string $message, string|int $level = Log_Level::ERROR, array|string $context = []): bool
+    {
         return Log::write($level, $message, $context);
     }
 }

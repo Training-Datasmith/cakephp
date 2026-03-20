@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,25 +14,23 @@ declare(strict_types=1);
  * @since         3.6.0
  * @license       https://www.opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Http\Middleware;
 
-use Cake\Http\Exception\BadRequestException;
-use Cake\Utility\Exception\XmlException;
+use Cake\Http\Exception\Bad_Request_Exception;
+use Cake\Utility\Exception\Xml_Exception;
 use Cake\Utility\Xml;
 use Closure;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Server\MiddlewareInterface;
-use Psr\Http\Server\RequestHandlerInterface;
-
+use Psr\Http\Message\Response_Interface;
+use Psr\Http\Message\Server_Request_Interface;
+use Psr\Http\Server\Middleware_Interface;
+use Psr\Http\Server\Request_Handler_Interface;
 /**
  * Parse encoded request body data.
  *
  * Enables JSON and XML request payloads to be parsed into the request's body.
  * You can also add your own request body parsers using the `addParser()` method.
  */
-class BodyParserMiddleware implements MiddlewareInterface
+class Body_Parser_Middleware implements Middleware_Interface
 {
     /**
      * Registered Parsers
@@ -41,14 +38,12 @@ class BodyParserMiddleware implements MiddlewareInterface
      * @var array<\Closure>
      */
     protected array $parsers = [];
-
     /**
      * The HTTP methods to parse data on.
      *
      * @var array<string>
      */
     protected array $methods = ['PUT', 'POST', 'PATCH', 'DELETE'];
-
     /**
      * Constructor
      *
@@ -65,45 +60,35 @@ class BodyParserMiddleware implements MiddlewareInterface
     {
         $options += ['json' => true, 'xml' => false, 'methods' => null];
         if ($options['json']) {
-            $this->addParser(
-                ['application/json', 'text/json'],
-                $this->decodeJson(...),
-            );
+            $this->add_parser(['application/json', 'text/json'], $this->decode_json(...));
         }
         if ($options['xml']) {
-            $this->addParser(
-                ['application/xml', 'text/xml'],
-                $this->decodeXml(...),
-            );
+            $this->add_parser(['application/xml', 'text/xml'], $this->decode_xml(...));
         }
         if ($options['methods']) {
-            $this->setMethods($options['methods']);
+            $this->set_methods($options['methods']);
         }
     }
-
     /**
      * Set the HTTP methods to parse request bodies on.
      *
      * @param array<string> $methods The methods to parse data on.
      * @return $this
      */
-    public function setMethods(array $methods): static
+    public function set_methods(array $methods): static
     {
         $this->methods = $methods;
-
         return $this;
     }
-
     /**
      * Get the HTTP methods to parse request bodies on.
      *
      * @return array<string>
      */
-    public function getMethods(): array
+    public function get_methods(): array
     {
         return $this->methods;
     }
-
     /**
      * Add a parser.
      *
@@ -124,26 +109,23 @@ class BodyParserMiddleware implements MiddlewareInterface
      *   into the request.
      * @return $this
      */
-    public function addParser(array $types, Closure $parser): static
+    public function add_parser(array $types, Closure $parser): static
     {
         foreach ($types as $type) {
             $type = strtolower($type);
             $this->parsers[$type] = $parser;
         }
-
         return $this;
     }
-
     /**
      * Get the current parsers
      *
      * @return array<\Closure>
      */
-    public function getParsers(): array
+    public function get_parsers(): array
     {
         return $this->parsers;
     }
-
     /**
      * Apply the middleware.
      *
@@ -153,33 +135,30 @@ class BodyParserMiddleware implements MiddlewareInterface
      * @param \Psr\Http\Server\RequestHandlerInterface $handler The request handler.
      * @return \Psr\Http\Message\ResponseInterface A response.
      */
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
+    public function process(Server_Request_Interface $request, Request_Handler_Interface $handler): Response_Interface
     {
-        if (!in_array($request->getMethod(), $this->methods, true)) {
+        if (!in_array($request->get_method(), $this->methods, true)) {
             return $handler->handle($request);
         }
-        [$type] = explode(';', $request->getHeaderLine('Content-Type'));
+        [$type] = explode(';', $request->get_header_line('Content-Type'));
         $type = strtolower($type);
         if (!isset($this->parsers[$type])) {
             return $handler->handle($request);
         }
-
         $parser = $this->parsers[$type];
-        $result = $parser($request->getBody()->getContents());
+        $result = $parser($request->get_body()->get_contents());
         if (!is_array($result)) {
-            throw new BadRequestException();
+            throw new Bad_Request_Exception();
         }
-        $request = $request->withParsedBody($result);
-
+        $request = $request->with_parsed_body($result);
         return $handler->handle($request);
     }
-
     /**
      * Decode JSON into an array.
      *
      * @param string $body The request body to decode
      */
-    protected function decodeJson(string $body): ?array
+    protected function decode_json(string $body): ?array
     {
         if ($body === '') {
             return [];
@@ -188,28 +167,25 @@ class BodyParserMiddleware implements MiddlewareInterface
         if (json_last_error() !== JSON_ERROR_NONE) {
             return null;
         }
-
-        return (array)$decoded;
+        return (array) $decoded;
     }
-
     /**
      * Decode XML into an array.
      *
      * @param string $body The request body to decode
      */
-    protected function decodeXml(string $body): array
+    protected function decode_xml(string $body): array
     {
         try {
             $xml = Xml::build($body, ['return' => 'domdocument', 'readFile' => false]);
             // We might not get child nodes if there are nested inline entities.
             /** @var \DOMNodeList<\DOMNode> $domNodeList */
-            $domNodeList = $xml->childNodes;
-            if ((int)$domNodeList->length > 0) {
-                return Xml::toArray($xml);
+            $dom_node_list = $xml->child_nodes;
+            if ((int) $dom_node_list->length > 0) {
+                return Xml::to_array($xml);
             }
-
             return [];
-        } catch (XmlException) {
+        } catch (Xml_Exception) {
             return [];
         }
     }

@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,35 +14,31 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Database\Expression;
 
-use Cake\Database\ExpressionInterface;
-
+use Cake\Database\Expression_Interface;
 /**
  * Contains the field property with a getter and a setter for it
  */
-trait FieldTrait
+trait Field_Trait
 {
     /**
      * The field name or expression to be used in the left hand side of the operator
      */
-    protected ExpressionInterface|array|string $_field;
-
+    protected Expression_Interface|array|string $_field;
     /**
      * Sets the field name
      *
      * @param \Cake\Database\ExpressionInterface|array|string $field The field to compare with.
      */
-    public function setField(ExpressionInterface|array|string $field): void
+    public function set_field(Expression_Interface|array|string $field): void
     {
         $this->_field = $field;
     }
-
     /**
      * Returns the field name
      */
-    public function getField(): ExpressionInterface|array|string
+    public function get_field(): Expression_Interface|array|string
     {
         return $this->_field;
     }

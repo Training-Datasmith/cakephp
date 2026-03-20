@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,17 +14,15 @@ declare(strict_types=1);
  * @since         5.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Http;
 
 use Cake\Http\Client\Request;
-use Psr\Http\Message\RequestFactoryInterface;
-use Psr\Http\Message\RequestInterface;
-
+use Psr\Http\Message\Request_Factory_Interface;
+use Psr\Http\Message\Request_Interface;
 /**
  * Factory for creating request instances.
  */
-class RequestFactory implements RequestFactoryInterface
+class Request_Factory implements Request_Factory_Interface
 {
     /**
      * Create a new request.
@@ -34,7 +31,7 @@ class RequestFactory implements RequestFactoryInterface
      * @param \Psr\Http\Message\UriInterface|string $uri The URI associated with the request.
      * @phpcsSuppress SlevomatCodingStandard.TypeHints.ParameterTypeHint.MissingNativeTypeHint
      */
-    public function createRequest(string $method, $uri): RequestInterface
+    public function create_request(string $method, $uri): Request_Interface
     {
         return new Request($uri, $method);
     }

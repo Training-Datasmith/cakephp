@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -17,7 +16,6 @@ declare(strict_types=1);
  * @since         5.3.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Database\Schema;
 
 /**
@@ -30,23 +28,19 @@ class Constraint
     /**
      * @var string
      */
-    public const PRIMARY = TableSchema::CONSTRAINT_PRIMARY;
-
+    public const PRIMARY = Table_Schema::CONSTRAINT_PRIMARY;
     /**
      * @var string
      */
-    public const UNIQUE = TableSchema::CONSTRAINT_UNIQUE;
-
+    public const UNIQUE = Table_Schema::CONSTRAINT_UNIQUE;
     /**
      * @var string
      */
-    public const FOREIGN = TableSchema::CONSTRAINT_FOREIGN;
-
+    public const FOREIGN = Table_Schema::CONSTRAINT_FOREIGN;
     /**
      * @var string
      */
-    public const CHECK = TableSchema::CONSTRAINT_CHECK;
-
+    public const CHECK = Table_Schema::CONSTRAINT_CHECK;
     /**
      * Constructor
      *
@@ -54,90 +48,73 @@ class Constraint
      * @param array<string> $columns The columns to constraint.
      * @param string $type The type of constraint, e.g. 'unique', 'primary'.
      */
-    public function __construct(
-        protected string $name,
-        protected array $columns,
-        protected string $type,
-    ) {
+    public function __construct(protected string $name, protected array $columns, protected string $type)
+    {
     }
-
     /**
      * Sets the constraint columns.
      *
      * @param array<string>|string $columns Columns
      * @return $this
      */
-    public function setColumns(string|array $columns): static
+    public function set_columns(string|array $columns): static
     {
-        $this->columns = (array)$columns;
-
+        $this->columns = (array) $columns;
         return $this;
     }
-
     /**
      * Gets the constraint columns.
      *
      * @return ?array<string>
      */
-    public function getColumns(): ?array
+    public function get_columns(): ?array
     {
         return $this->columns;
     }
-
     /**
      * Sets the constraint type.
      *
      * @param string $type Type
      * @return $this
      */
-    public function setType(string $type): static
+    public function set_type(string $type): static
     {
         $this->type = $type;
-
         return $this;
     }
-
     /**
      * Gets the constraint type.
      */
-    public function getType(): string
+    public function get_type(): string
     {
         return $this->type;
     }
-
     /**
      * Sets the constraint name.
      *
      * @param string $name Name
      * @return $this
      */
-    public function setName(string $name): static
+    public function set_name(string $name): static
     {
         $this->name = $name;
-
         return $this;
     }
-
     /**
      * Gets the constraint name.
      */
-    public function getName(): ?string
+    public function get_name(): ?string
     {
         return $this->name;
     }
-
     /**
      * Converts a constraint to an array that is compatible
      * with the constructor.
      *
      * @return array<string, mixed>
      */
-    public function toArray(): array
+    public function to_array(): array
     {
-        return [
-            'name' => $this->name,
-            'type' => $this->type,
-            'columns' => $this->columns,
-        ];
+        return ['name' => $this->name, 'type' => $this->type, 'columns' => $this->columns];
     }
 }

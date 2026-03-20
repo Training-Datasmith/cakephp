@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,15 +14,13 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Datasource;
 
 use Cake\Cache\Cache;
-use Cake\Core\Exception\CakeException;
+use Cake\Core\Exception\Cake_Exception;
 use Closure;
-use Psr\SimpleCache\CacheInterface;
+use Psr\Simple_Cache\Cache_Interface;
 use Traversable;
-
 /**
  * Handles caching queries and loading results from the cache.
  *
@@ -32,7 +29,7 @@ use Traversable;
  * @internal
  * @see \Cake\Datasource\QueryTrait::cache() for the public interface.
  */
-class QueryCacher
+class Query_Cacher
 {
     /**
      * Constructor.
@@ -48,10 +45,10 @@ class QueryCacher
         /**
          * Config for cache engine.
          */
-        protected CacheInterface|string $_config
-    ) {
+        protected Cache_Interface|string $_config
+    )
+    {
     }
-
     /**
      * Load the cached results from the cache or run the query.
      *
@@ -60,16 +57,14 @@ class QueryCacher
      */
     public function fetch(object $query): mixed
     {
-        $key = $this->_resolveKey($query);
-        $storage = $this->_resolveCacher();
+        $key = $this->_resolve_key($query);
+        $storage = $this->_resolve_cacher();
         $result = $storage->get($key);
         if (!$result) {
             return null;
         }
-
         return $result;
     }
-
     /**
      * Store the result set into the cache.
      *
@@ -79,19 +74,17 @@ class QueryCacher
      */
     public function store(object $query, Traversable $results): bool
     {
-        $key = $this->_resolveKey($query);
-        $storage = $this->_resolveCacher();
-
+        $key = $this->_resolve_key($query);
+        $storage = $this->_resolve_cacher();
         return $storage->set($key, $results);
     }
-
     /**
      * Get/generate the cache key.
      *
      * @param object $query The query to generate a key for.
      * @throws \Cake\Core\Exception\CakeException
      */
-    protected function _resolveKey(object $query): string
+    protected function _resolve_key(object $query): string
     {
         if (is_string($this->_key)) {
             return $this->_key;
@@ -100,21 +93,18 @@ class QueryCacher
         $key = $func($query);
         if (!is_string($key)) {
             $msg = sprintf('Cache key functions must return a string. Got %s.', var_export($key, true));
-            throw new CakeException($msg);
+            throw new Cake_Exception($msg);
         }
-
         return $key;
     }
-
     /**
      * Get the cache engine.
      */
-    protected function _resolveCacher(): CacheInterface
+    protected function _resolve_cacher(): Cache_Interface
     {
         if (is_string($this->_config)) {
             return Cache::pool($this->_config);
         }
-
         return $this->_config;
     }
 }

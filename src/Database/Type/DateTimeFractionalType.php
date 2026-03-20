@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,13 +14,12 @@ declare(strict_types=1);
  * @since         4.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Database\Type;
 
 /**
  * Extends DateTimeType with support for fractional seconds up to microseconds.
  */
-class DateTimeFractionalType extends DateTimeType
+class Date_Time_Fractional_Type extends Date_Time_Type
 {
     /**
      * @inheritDoc

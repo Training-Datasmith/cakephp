@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,14 +14,12 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Datasource\Exception;
 
-use Cake\Core\Exception\CakeException;
-
+use Cake\Core\Exception\Cake_Exception;
 /**
  * Exception raised when the provided primary key does not match the table primary key
  */
-class InvalidPrimaryKeyException extends CakeException
+class Invalid_Primary_Key_Exception extends Cake_Exception
 {
 }

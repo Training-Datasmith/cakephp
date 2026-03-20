@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,7 +14,6 @@ declare(strict_types=1);
  * @since         3.6.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Event;
 
 /**
@@ -25,45 +23,39 @@ namespace Cake\Event;
  *
  * @template-covariant TSubject of object
  */
-interface EventInterface
+interface Event_Interface
 {
     /**
      * Returns the name of this event. This is usually used as the event identifier.
      */
-    public function getName(): string;
-
+    public function get_name(): string;
     /**
      * Returns the subject of this event.
      *
      * @return TSubject
      */
-    public function getSubject(): object;
-
+    public function get_subject(): object;
     /**
      * Stops the event from being used anymore.
      */
-    public function stopPropagation(): void;
-
+    public function stop_propagation(): void;
     /**
      * Checks if the event is stopped.
      *
      * @return bool True if the event is stopped
      */
-    public function isStopped(): bool;
-
+    public function is_stopped(): bool;
     /**
      * The result value of the event listeners.
      */
-    public function getResult(): mixed;
-
+    public function get_result(): mixed;
     /**
      * Listeners can attach a result value to the event.
      *
      * @param mixed $value The value to set.
      * @return $this
      */
-    public function setResult(mixed $value = null);
-
+    public function set_result(mixed $value = null);
     /**
      * Accesses the event data/payload.
      *
@@ -71,8 +63,7 @@ interface EventInterface
      * @return mixed The data payload if $key is null, or the data value for the given $key.
      *   If the $key does not exist a null value is returned.
      */
-    public function getData(?string $key = null): mixed;
-
+    public function get_data(?string $key = null): mixed;
     /**
      * Assigns a value to the data/payload of this event.
      *
@@ -80,5 +71,5 @@ interface EventInterface
      * @param mixed $value The value to set.
      * @return $this
      */
-    public function setData(array|string $key, mixed $value = null);
+    public function set_data(array|string $key, mixed $value = null);
 }

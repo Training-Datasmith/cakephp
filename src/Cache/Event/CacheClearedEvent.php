@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,18 +14,16 @@ declare(strict_types=1);
  * @since         5.3.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Cache\Event;
 
 use Cake\Event\Event;
-
 /**
  * Class Cleared Event
  *
  * @template TEngine of \Cake\Cache\CacheEngine
  * @extends \Cake\Event\Event<TEngine>
  */
-class CacheClearedEvent extends Event
+class Cache_Cleared_Event extends Event
 {
     public const NAME = 'Cache.cleared';
 }

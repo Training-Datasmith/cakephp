@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,20 +14,18 @@ declare(strict_types=1);
  * @since         3.1.2
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Database\Type;
 
 use Cake\Database\Driver;
 use InvalidArgumentException;
 use PDO;
 use Stringable;
-
 /**
  * String type converter.
  *
  * Use to convert string data between PHP and the database types.
  */
-class StringType extends BaseType implements OptionalConvertInterface
+class String_Type extends Base_Type implements Optional_Convert_Interface
 {
     /**
      * Convert string data into the database format.
@@ -36,50 +33,39 @@ class StringType extends BaseType implements OptionalConvertInterface
      * @param mixed $value The value to convert.
      * @param \Cake\Database\Driver $driver The driver instance to convert with.
      */
-    public function toDatabase(mixed $value, Driver $driver): ?string
+    public function to_database(mixed $value, Driver $driver): ?string
     {
         if ($value === null || is_string($value)) {
             return $value;
         }
-
         if ($value instanceof Stringable) {
-            return (string)$value;
+            return (string) $value;
         }
-
         if (is_scalar($value)) {
-            return (string)$value;
+            return (string) $value;
         }
-
-        throw new InvalidArgumentException(sprintf(
-            'Cannot convert value `%s` of type `%s` to string',
-            print_r($value, true),
-            get_debug_type($value),
-        ));
+        throw new InvalidArgumentException(sprintf('Cannot convert value `%s` of type `%s` to string', print_r($value, true), get_debug_type($value)));
     }
-
     /**
      * Convert string values to PHP strings.
      *
      * @param mixed $value The value to convert.
      * @param \Cake\Database\Driver $driver The driver instance to convert with.
      */
-    public function toPHP(mixed $value, Driver $driver): ?string
+    public function to_php(mixed $value, Driver $driver): ?string
     {
         if ($value === null) {
             return null;
         }
-
-        return (string)$value;
+        return (string) $value;
     }
-
     /**
      * @inheritDoc
      */
-    public function toStatement(mixed $value, Driver $driver): int
+    public function to_statement(mixed $value, Driver $driver): int
     {
         return PDO::PARAM_STR;
     }
-
     /**
      * Marshals request data into PHP strings.
      *
@@ -91,16 +77,14 @@ class StringType extends BaseType implements OptionalConvertInterface
         if ($value === null || is_array($value)) {
             return null;
         }
-
-        return (string)$value;
+        return (string) $value;
     }
-
     /**
      * {@inheritDoc}
      *
      * @return bool False as database results are returned already as strings
      */
-    public function requiresToPhpCast(): bool
+    public function requires_to_php_cast(): bool
     {
         return false;
     }

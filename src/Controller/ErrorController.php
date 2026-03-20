@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,18 +14,16 @@ declare(strict_types=1);
  * @since         2.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Controller;
 
-use Cake\Event\EventInterface;
-use Cake\View\JsonView;
-
+use Cake\Event\Event_Interface;
+use Cake\View\Json_View;
 /**
  * Error Handling Controller
  *
  * Controller used by ErrorHandler to render error views.
  */
-class ErrorController extends Controller
+class Error_Controller extends Controller
 {
     /**
      * Get alternate view classes that can be used in
@@ -34,29 +31,23 @@ class ErrorController extends Controller
      *
      * @return array<string>
      */
-    public function viewClasses(): array
+    public function view_classes(): array
     {
-        return [JsonView::class];
+        return [Json_View::class];
     }
-
     /**
      * beforeRender callback.
      *
      * @param \Cake\Event\EventInterface<\Cake\Controller\Controller> $event Event.
      */
-    public function beforeRender(EventInterface $event): void
+    public function before_render(Event_Interface $event): void
     {
-        $builder = $this->viewBuilder();
-        $templatePath = 'Error';
-
-        if (
-            $this->request->getParam('prefix') &&
-            in_array($builder->getTemplate(), ['error400', 'error500'], true)
-        ) {
-            $parts = explode(DIRECTORY_SEPARATOR, (string)$builder->getTemplatePath(), -1);
-            $templatePath = implode(DIRECTORY_SEPARATOR, $parts) . DIRECTORY_SEPARATOR . 'Error';
+        $builder = $this->view_builder();
+        $template_path = 'Error';
+        if ($this->request->get_param('prefix') && in_array($builder->get_template(), ['error400', 'error500'], true)) {
+            $parts = explode(DIRECTORY_SEPARATOR, (string) $builder->get_template_path(), -1);
+            $template_path = implode(DIRECTORY_SEPARATOR, $parts) . DIRECTORY_SEPARATOR . 'Error';
         }
-
-        $builder->setTemplatePath($templatePath);
+        $builder->set_template_path($template_path);
     }
 }

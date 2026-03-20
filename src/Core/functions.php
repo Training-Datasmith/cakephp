@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,23 +14,19 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Core;
 
-use JsonException;
+use Json_Exception;
 use Stringable;
-
 if (!defined('DS')) {
     /**
      * Defines DS as short form of DIRECTORY_SEPARATOR.
      */
     define('DS', DIRECTORY_SEPARATOR);
 }
-
 if (!defined('CAKE_DATE_RFC7231')) {
     define('CAKE_DATE_RFC7231', 'D, d M Y H:i:s \G\M\T');
 }
-
 if (!function_exists('Cake\Core\pathCombine')) {
     /**
      * Combines parts with a forward-slash `/`.
@@ -44,24 +39,21 @@ if (!function_exists('Cake\Core\pathCombine')) {
      *  - If false, ensures any trailing slash is removed
      *  - if null, ignores trailing slashes
      */
-    function pathCombine(array $parts, ?bool $trailing = null): string
+    function path_combine(array $parts, ?bool $trailing = null): string
     {
-        $numParts = count($parts);
-        if ($numParts === 0) {
+        $num_parts = count($parts);
+        if ($num_parts === 0) {
             if ($trailing === true) {
                 return '/';
             }
-
             return '';
         }
-
         $path = $parts[0];
-        for ($i = 1; $i < $numParts; ++$i) {
+        for ($i = 1; $i < $num_parts; ++$i) {
             $part = $parts[$i];
             if ($part === '') {
                 continue;
             }
-
             if ($path[-1] === '/' || $path[-1] === '\\') {
                 if ($part[0] === '/' || $part[0] === '\\') {
                     $path .= substr($part, 1);
@@ -74,9 +66,8 @@ if (!function_exists('Cake\Core\pathCombine')) {
                 $path .= '/' . $part;
             }
         }
-
         if ($trailing === true) {
-            if ($path === '' || ($path[-1] !== '/' && $path[-1] !== '\\')) {
+            if ($path === '' || $path[-1] !== '/' && $path[-1] !== '\\') {
                 $path .= '/';
             }
         } elseif ($trailing === false) {
@@ -84,11 +75,9 @@ if (!function_exists('Cake\Core\pathCombine')) {
                 $path = substr($path, 0, -1);
             }
         }
-
         return $path;
     }
 }
-
 if (!function_exists('Cake\Core\h')) {
     /**
      * Convenience method for htmlspecialchars.
@@ -112,27 +101,23 @@ if (!function_exists('Cake\Core\h')) {
             foreach ($text as $k => $t) {
                 $texts[$k] = h($t, $double, $charset);
             }
-
             return $texts;
         } elseif (is_object($text)) {
             if ($text instanceof Stringable) {
-                $text = (string)$text;
+                $text = (string) $text;
             } else {
                 $text = '(object)' . $text::class;
             }
         } elseif ($text === null || is_scalar($text)) {
             return $text;
         }
-
-        static $defaultCharset = false;
-        if ($defaultCharset === false) {
-            $defaultCharset = mb_internal_encoding() ?: 'UTF-8';
+        static $default_charset = false;
+        if ($default_charset === false) {
+            $default_charset = mb_internal_encoding() ?: 'UTF-8';
         }
-
-        return htmlspecialchars((string) $text, ENT_QUOTES | ENT_SUBSTITUTE, $charset ?: $defaultCharset, $double);
+        return htmlspecialchars((string) $text, ENT_QUOTES | ENT_SUBSTITUTE, $charset ?: $default_charset, $double);
     }
 }
-
 if (!function_exists('Cake\Core\pluginSplit')) {
     /**
      * Splits a dot syntax plugin name into its plugin and class name.
@@ -150,22 +135,19 @@ if (!function_exists('Cake\Core\pluginSplit')) {
      * @link https://book.cakephp.org/5/en/core-libraries/global-constants-and-functions.html#pluginsplit
      * @phpstan-return array{string|null, string}
      */
-    function pluginSplit(string $name, bool $dotAppend = false, ?string $plugin = null): array
+    function plugin_split(string $name, bool $dot_append = false, ?string $plugin = null): array
     {
         if (str_contains($name, '.')) {
             $parts = explode('.', $name, 2);
-            if ($dotAppend) {
+            if ($dot_append) {
                 $parts[0] .= '.';
             }
-
             /** @phpstan-var array{string, string} */
             return $parts;
         }
-
         return [$plugin, $name];
     }
 }
-
 if (!function_exists('Cake\Core\namespaceSplit')) {
     /**
      * Split the namespace from the classname.
@@ -175,17 +157,15 @@ if (!function_exists('Cake\Core\namespaceSplit')) {
      * @param string $class The full class name, ie `Cake\Core\App`.
      * @return array{0: string, 1: string} Array with 2 indexes. 0 => namespace, 1 => classname.
      */
-    function namespaceSplit(string $class): array
+    function namespace_split(string $class): array
     {
         $pos = strrpos($class, '\\');
         if ($pos === false) {
             return ['', $class];
         }
-
         return [substr($class, 0, $pos), substr($class, $pos + 1)];
     }
 }
-
 if (!function_exists('Cake\Core\pr')) {
     /**
      * print_r() convenience function.
@@ -205,14 +185,11 @@ if (!function_exists('Cake\Core\pr')) {
         if (!Configure::read('debug')) {
             return $var;
         }
-
         $template = PHP_SAPI !== 'cli' && PHP_SAPI !== 'phpdbg' ? '<pre class="pr">%s</pre>' : "\n%s\n\n";
         printf($template, trim(print_r($var, true)));
-
         return $var;
     }
 }
-
 if (!function_exists('Cake\Core\pj')) {
     /**
      * JSON pretty print convenience function.
@@ -232,15 +209,12 @@ if (!function_exists('Cake\Core\pj')) {
         if (!Configure::read('debug')) {
             return $var;
         }
-
         $template = PHP_SAPI !== 'cli' && PHP_SAPI !== 'phpdbg' ? '<pre class="pj">%s</pre>' : "\n%s\n\n";
         $flags = JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES;
-        printf($template, trim((string)json_encode($var, $flags)));
-
+        printf($template, trim((string) json_encode($var, $flags)));
         return $var;
     }
 }
-
 if (!function_exists('Cake\Core\env')) {
     /**
      * Gets an environment variable from available sources, and provides emulation
@@ -259,63 +233,53 @@ if (!function_exists('Cake\Core\env')) {
             if (isset($_SERVER['HTTPS'])) {
                 return !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
             }
-
-            return str_starts_with((string)env('SCRIPT_URI'), 'https://');
+            return str_starts_with((string) env('SCRIPT_URI'), 'https://');
         }
-
         if ($key === 'SCRIPT_NAME' && env('CGI_MODE') && isset($_ENV['SCRIPT_URL'])) {
             $key = 'SCRIPT_URL';
         }
-
         $val = $_SERVER[$key] ?? $_ENV[$key] ?? null;
         assert($val === null || is_scalar($val));
         if ($val == null && getenv($key) !== false) {
-            $val = (string)getenv($key);
+            $val = (string) getenv($key);
         }
-
         if ($key === 'REMOTE_ADDR' && $val === env('SERVER_ADDR')) {
             $addr = env('HTTP_PC_REMOTE_ADDR');
             if ($addr !== null) {
                 $val = $addr;
             }
         }
-
         if ($val !== null) {
             return $val;
         }
-
         switch ($key) {
             case 'DOCUMENT_ROOT':
-                $name = (string)env('SCRIPT_NAME');
-                $filename = (string)env('SCRIPT_FILENAME');
+                $name = (string) env('SCRIPT_NAME');
+                $filename = (string) env('SCRIPT_FILENAME');
                 $offset = 0;
                 if (!str_ends_with($name, '.php')) {
                     $offset = 4;
                 }
-
                 return substr($filename, 0, -(strlen($name) + $offset));
             case 'PHP_SELF':
-                return str_replace((string)env('DOCUMENT_ROOT'), '', (string)env('SCRIPT_FILENAME'));
+                return str_replace((string) env('DOCUMENT_ROOT'), '', (string) env('SCRIPT_FILENAME'));
             case 'CGI_MODE':
                 return PHP_SAPI === 'cgi';
         }
-
         return $default;
     }
 }
-
 if (!function_exists('Cake\Core\triggerWarning')) {
     /**
      * Triggers an E_USER_WARNING.
      *
      * @param string $message The warning message.
      */
-    function triggerWarning(string $message): void
+    function trigger_warning(string $message): void
     {
         trigger_error($message, E_USER_WARNING);
     }
 }
-
 if (!function_exists('Cake\Core\deprecationWarning')) {
     /**
      * Helper method for outputting deprecation warnings
@@ -325,58 +289,42 @@ if (!function_exists('Cake\Core\deprecationWarning')) {
      * @param int $stackFrame The stack frame to include in the error. Defaults to 1
      *   as that should point to application/plugin code.
      */
-    function deprecationWarning(string $version, string $message, int $stackFrame = 1): void
+    function deprecation_warning(string $version, string $message, int $stack_frame = 1): void
     {
         if (!(error_reporting() & E_USER_DEPRECATED)) {
             return;
         }
-
         $trace = debug_backtrace();
-        if (isset($trace[$stackFrame])) {
-            $frame = $trace[$stackFrame];
+        if (isset($trace[$stack_frame])) {
+            $frame = $trace[$stack_frame];
             $frame += ['file' => '[internal]', 'line' => '??'];
-
             // Assuming we're installed in vendor/cakephp/cakephp/src/Core/functions.php
             $root = dirname(__DIR__, 5);
             if (defined('ROOT')) {
                 $root = ROOT;
             }
             $relative = str_replace(DIRECTORY_SEPARATOR, '/', substr($frame['file'], strlen((string) $root) + 1));
-            $patterns = (array)Configure::read('Error.ignoredDeprecationPaths');
+            $patterns = (array) Configure::read('Error.ignoredDeprecationPaths');
             foreach ($patterns as $pattern) {
                 $pattern = str_replace(DIRECTORY_SEPARATOR, '/', $pattern);
                 if (fnmatch($pattern, $relative)) {
                     return;
                 }
             }
-
-            $message = sprintf(
-                "Since %s: %s\n%s, line: %s\n" .
-                'You can disable all deprecation warnings by setting `Error.errorLevel` to ' .
-                '`E_ALL & ~E_USER_DEPRECATED`. Adding `%s` to `Error.ignoredDeprecationPaths` ' .
-                'in your `config/app.php` config will mute deprecations from that file only.',
-                $version,
-                $message,
-                $frame['file'],
-                $frame['line'],
-                $relative,
-            );
+            $message = sprintf("Since %s: %s\n%s, line: %s\n" . 'You can disable all deprecation warnings by setting `Error.errorLevel` to ' . '`E_ALL & ~E_USER_DEPRECATED`. Adding `%s` to `Error.ignoredDeprecationPaths` ' . 'in your `config/app.php` config will mute deprecations from that file only.', $version, $message, $frame['file'], $frame['line'], $relative);
         }
-
         static $errors = [];
         $checksum = hash('xxh128', $message);
-        $duplicate = (bool)Configure::read('Error.allowDuplicateDeprecations', false);
+        $duplicate = (bool) Configure::read('Error.allowDuplicateDeprecations', false);
         if (isset($errors[$checksum]) && !$duplicate) {
             return;
         }
         if (!$duplicate) {
             $errors[$checksum] = true;
         }
-
         trigger_error($message, E_USER_DEPRECATED);
     }
 }
-
 if (!function_exists('Cake\Core\toString')) {
     /**
      * Converts the given value to a string.
@@ -389,13 +337,13 @@ if (!function_exists('Cake\Core\toString')) {
      * @return ?string Returns the string representation of the value, or null if the value is not a string.
      * @since 5.1.0
      */
-    function toString(mixed $value): ?string
+    function to_string(mixed $value): ?string
     {
         if (is_string($value)) {
             return $value;
         }
         if (is_int($value)) {
-            return (string)$value;
+            return (string) $value;
         }
         if (is_bool($value)) {
             return $value ? '1' : '0';
@@ -406,24 +354,20 @@ if (!function_exists('Cake\Core\toString')) {
             }
             try {
                 $return = json_encode($value, JSON_THROW_ON_ERROR);
-            } catch (JsonException) {
+            } catch (Json_Exception) {
                 $return = null;
             }
-
             if ($return === null || str_contains($return, 'e')) {
                 return rtrim(sprintf('%.' . (PHP_FLOAT_DIG + 3) . 'F', $value), '.0');
             }
-
             return $return;
         }
         if ($value instanceof Stringable) {
-            return (string)$value;
+            return (string) $value;
         }
-
         return null;
     }
 }
-
 if (!function_exists('Cake\Core\toInt')) {
     /**
      * Converts a value to an integer.
@@ -438,7 +382,7 @@ if (!function_exists('Cake\Core\toInt')) {
      * @return int|null Returns the converted integer value or null if the conversion fails.
      * @since 5.1.0
      */
-    function toInt(mixed $value): ?int
+    function to_int(mixed $value): ?int
     {
         if (is_int($value)) {
             return $value;
@@ -448,26 +392,21 @@ if (!function_exists('Cake\Core\toInt')) {
             if (preg_match('/^0+[^0]{1}/', $value)) {
                 $value = ltrim($value, '0');
             }
-
             $value = filter_var($value, FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
-
             return $value === PHP_INT_MIN ? null : $value;
         }
         if (is_float($value)) {
             if (is_nan($value) || is_infinite($value)) {
                 return null;
             }
-
-            return (int)$value;
+            return (int) $value;
         }
         if (is_bool($value)) {
-            return (int)$value;
+            return (int) $value;
         }
-
         return null;
     }
 }
-
 if (!function_exists('Cake\Core\toFloat')) {
     /**
      * Converts a value to a float.
@@ -482,36 +421,31 @@ if (!function_exists('Cake\Core\toFloat')) {
      * @return float|null Returns the converted float value or null if the conversion fails.
      * @since 5.1.0
      */
-    function toFloat(mixed $value): ?float
+    function to_float(mixed $value): ?float
     {
         if (is_string($value)) {
             $value = trim($value);
             if (preg_match('/^0+[^0]{1}/', $value)) {
                 $value = ltrim($value, '0');
             }
-
             $value = filter_var($value, FILTER_VALIDATE_FLOAT, FILTER_NULL_ON_FAILURE);
-
             return $value === PHP_FLOAT_MIN ? null : $value;
         }
         if (is_float($value)) {
             if (is_nan($value) || is_infinite($value)) {
                 return null;
             }
-
             return $value;
         }
         if (is_int($value)) {
-            return (float)$value;
+            return (float) $value;
         }
         if (is_bool($value)) {
-            return (float)$value;
+            return (float) $value;
         }
-
         return null;
     }
 }
-
 if (!function_exists('Cake\Core\toBool')) {
     /**
      * Converts a value to boolean.
@@ -524,7 +458,7 @@ if (!function_exists('Cake\Core\toBool')) {
      * @return bool|null Returns true if the value is truthy, false if it's falsy, or NULL otherwise.
      * @since 5.1.0
      */
-    function toBool(mixed $value): ?bool
+    function to_bool(mixed $value): ?bool
     {
         if (in_array($value, ['1', 1, 1.0, true], true)) {
             return true;
@@ -532,7 +466,6 @@ if (!function_exists('Cake\Core\toBool')) {
         if (in_array($value, ['0', 0, 0.0, false], true)) {
             return false;
         }
-
         return null;
     }
 }

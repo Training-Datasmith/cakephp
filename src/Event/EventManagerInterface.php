@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -14,13 +13,12 @@ declare(strict_types=1);
  * @since         3.6.0
  * @license       https://www.opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Event;
 
 /**
  * Interface EventManagerInterface
  */
-interface EventManagerInterface
+interface Event_Manager_Interface
 {
     /**
      * Adds a new listener to an event.
@@ -59,12 +57,7 @@ interface EventManagerInterface
      * @throws \InvalidArgumentException When event key is missing or callable is not an
      *   instance of Cake\Event\EventListenerInterface.
      */
-    public function on(
-        EventListenerInterface|string $eventKey,
-        callable|array $options = [],
-        ?callable $callable = null,
-    );
-
+    public function on(Event_Listener_Interface|string $event_key, callable|array $options = [], ?callable $callable = null);
     /**
      * Remove a listener from the active listeners.
      *
@@ -97,11 +90,7 @@ interface EventManagerInterface
      * @param \Cake\Event\EventListenerInterface|callable|null $callable The callback you want to detach.
      * @return $this
      */
-    public function off(
-        EventListenerInterface|callable|string $eventKey,
-        EventListenerInterface|callable|null $callable = null,
-    );
-
+    public function off(Event_Listener_Interface|callable|string $event_key, Event_Listener_Interface|callable|null $callable = null);
     /**
      * Dispatches a new event to all configured listeners
      *
@@ -110,12 +99,11 @@ interface EventManagerInterface
      * @return \Cake\Event\EventInterface<TSubject>
      * @triggers $event
      */
-    public function dispatch(EventInterface|string $event): EventInterface;
-
+    public function dispatch(Event_Interface|string $event): Event_Interface;
     /**
      * Returns a list of all listeners for an eventKey in the order they should be called
      *
      * @param string $eventKey Event key.
      */
-    public function listeners(string $eventKey): array;
+    public function listeners(string $event_key): array;
 }

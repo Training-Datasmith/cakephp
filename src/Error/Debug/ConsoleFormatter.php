@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,19 +14,16 @@ declare(strict_types=1);
  * @since         4.1.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Error\Debug;
 
 use function Cake\Core\env;
-
 use InvalidArgumentException;
-
 /**
  * A Debugger formatter for generating output with ANSI escape codes
  *
  * @internal
  */
-class ConsoleFormatter implements FormatterInterface
+class Console_Formatter implements Formatter_Interface
 {
     /**
      * text colors used in colored output.
@@ -52,11 +48,10 @@ class ConsoleFormatter implements FormatterInterface
         // red
         'special' => '0;31',
     ];
-
     /**
      * Check if the current environment supports ANSI output.
      */
-    public static function environmentMatches(): bool
+    public static function environment_matches(): bool
     {
         if (PHP_SAPI !== 'cli') {
             return false;
@@ -66,81 +61,61 @@ class ConsoleFormatter implements FormatterInterface
             return false;
         }
         // Windows environment checks
-        if (
-            DIRECTORY_SEPARATOR === '\\' &&
-            !str_contains(strtolower(php_uname('v')), 'windows 10') &&
-            !str_contains(strtolower((string)env('SHELL')), 'bash.exe') &&
-            !env('ANSICON') &&
-            env('ConEmuANSI') !== 'ON'
-        ) {
+        if (DIRECTORY_SEPARATOR === '\\' && !str_contains(strtolower(php_uname('v')), 'windows 10') && !str_contains(strtolower((string) env('SHELL')), 'bash.exe') && !env('ANSICON') && env('ConEmuANSI') !== 'ON') {
             return false;
         }
-
         return true;
     }
-
     /**
      * @inheritDoc
      */
-    public function formatWrapper(string $contents, array $location): string
+    public function format_wrapper(string $contents, array $location): string
     {
-        $lineInfo = '';
+        $line_info = '';
         if (isset($location['file'], $location['line'])) {
-            $lineInfo = sprintf('%s (line %s)', $location['file'], $location['line']);
+            $line_info = sprintf('%s (line %s)', $location['file'], $location['line']);
         }
-        $parts = [
-            $this->style('const', $lineInfo),
-            $this->style('special', '########## DEBUG ##########'),
-            $contents,
-            $this->style('special', '###########################'),
-            '',
-        ];
-
+        $parts = [$this->style('const', $line_info), $this->style('special', '########## DEBUG ##########'), $contents, $this->style('special', '###########################'), ''];
         return implode("\n", $parts);
     }
-
     /**
      * Convert a tree of NodeInterface objects into a plain text string.
      *
      * @param \Cake\Error\Debug\NodeInterface $node The node tree to dump.
      */
-    public function dump(NodeInterface $node): string
+    public function dump(Node_Interface $node): string
     {
         $indent = 0;
-
         return $this->export($node, $indent);
     }
-
     /**
      * Convert a tree of NodeInterface objects into a plain text string.
      *
      * @param \Cake\Error\Debug\NodeInterface $var The node tree to dump.
      * @param int $indent The current indentation level.
      */
-    protected function export(NodeInterface $var, int $indent): string
+    protected function export(Node_Interface $var, int $indent): string
     {
-        if ($var instanceof ScalarNode) {
-            return match ($var->getType()) {
-                'bool' => $this->style('const', $var->getValue() ? 'true' : 'false'),
+        if ($var instanceof Scalar_Node) {
+            return match ($var->get_type()) {
+                'bool' => $this->style('const', $var->get_value() ? 'true' : 'false'),
                 'null' => $this->style('const', 'null'),
-                'string' => $this->style('string', "'" . $var->getValue() . "'"),
-                'int', 'float' => $this->style('visibility', "({$var->getType()})") .
-                        ' ' . $this->style('number', "{$var->getValue()}"),
-                default => "({$var->getType()}) {$var->getValue()}",
+                'string' => $this->style('string', "'" . $var->get_value() . "'"),
+                'int', 'float' => $this->style('visibility', "({$var->get_type()})") . ' ' . $this->style('number', "{$var->get_value()}"),
+                default => "({$var->get_type()}) {$var->get_value()}",
             };
         }
-        if ($var instanceof ArrayNode) {
-            return $this->exportArray($var, $indent + 1);
+        if ($var instanceof Array_Node) {
+            return $this->export_array($var, $indent + 1);
         }
-        if ($var instanceof ClassNode || $var instanceof ReferenceNode) {
-            return $this->exportObject($var, $indent + 1);
+        if ($var instanceof Class_Node || $var instanceof Reference_Node) {
+            return $this->export_object($var, $indent + 1);
         }
-        if ($var instanceof SpecialNode) {
-            return $this->style('special', $var->getValue());
+        if ($var instanceof Special_Node) {
+            return $this->style('special', $var->get_value());
         }
         throw new InvalidArgumentException('Unknown node received ' . $var::class);
     }
-
     /**
      * Export an array type object
      *
@@ -148,27 +123,23 @@ class ConsoleFormatter implements FormatterInterface
      * @param int $indent The current indentation level.
      * @return string Exported array.
      */
-    protected function exportArray(ArrayNode $var, int $indent): string
+    protected function export_array(Array_Node $var, int $indent): string
     {
         $out = $this->style('punct', '[');
         $break = "\n" . str_repeat('  ', $indent);
         $end = "\n" . str_repeat('  ', $indent - 1);
         $vars = [];
-
         $arrow = $this->style('punct', ' => ');
-        foreach ($var->getChildren() as $item) {
-            $val = $item->getValue();
-            $vars[] = $break . $this->export($item->getKey(), $indent) . $arrow . $this->export($val, $indent);
+        foreach ($var->get_children() as $item) {
+            $val = $item->get_value();
+            $vars[] = $break . $this->export($item->get_key(), $indent) . $arrow . $this->export($val, $indent);
         }
-
         $close = $this->style('punct', ']');
         if ($vars !== []) {
             return $out . implode($this->style('punct', ','), $vars) . $end . $close;
         }
-
         return $out . $close;
     }
-
     /**
      * Handles object to string conversion.
      *
@@ -176,50 +147,30 @@ class ConsoleFormatter implements FormatterInterface
      * @param int $indent Current indentation level.
      * @see \Cake\Error\Debugger::exportVar()
      */
-    protected function exportObject(ClassNode|ReferenceNode $var, int $indent): string
+    protected function export_object(Class_Node|Reference_Node $var, int $indent): string
     {
         $props = [];
-
-        if ($var instanceof ReferenceNode) {
-            return $this->style('punct', 'object(') .
-                $this->style('class', $var->getValue()) .
-                $this->style('punct', ') id:') .
-                $this->style('number', (string)$var->getId()) .
-                $this->style('punct', ' {}');
+        if ($var instanceof Reference_Node) {
+            return $this->style('punct', 'object(') . $this->style('class', $var->get_value()) . $this->style('punct', ') id:') . $this->style('number', (string) $var->get_id()) . $this->style('punct', ' {}');
         }
-
-        $out = $this->style('punct', 'object(') .
-            $this->style('class', $var->getValue()) .
-            $this->style('punct', ') id:') .
-            $this->style('number', (string)$var->getId()) .
-            $this->style('punct', ' {');
-
+        $out = $this->style('punct', 'object(') . $this->style('class', $var->get_value()) . $this->style('punct', ') id:') . $this->style('number', (string) $var->get_id()) . $this->style('punct', ' {');
         $break = "\n" . str_repeat('  ', $indent);
         $end = "\n" . str_repeat('  ', $indent - 1) . $this->style('punct', '}');
-
         $arrow = $this->style('punct', ' => ');
-        foreach ($var->getChildren() as $property) {
-            $visibility = $property->getVisibility();
-            $name = $property->getName();
+        foreach ($var->get_children() as $property) {
+            $visibility = $property->get_visibility();
+            $name = $property->get_name();
             if ($visibility && $visibility !== 'public') {
-                $props[] = $this->style('visibility', $visibility) .
-                    ' ' .
-                    $this->style('property', $name) .
-                    $arrow .
-                    $this->export($property->getValue(), $indent);
+                $props[] = $this->style('visibility', $visibility) . ' ' . $this->style('property', $name) . $arrow . $this->export($property->get_value(), $indent);
             } else {
-                $props[] = $this->style('property', $name) .
-                    $arrow .
-                    $this->export($property->getValue(), $indent);
+                $props[] = $this->style('property', $name) . $arrow . $this->export($property->get_value(), $indent);
             }
         }
         if ($props !== []) {
             return $out . $break . implode($break, $props) . $end;
         }
-
         return $out . $this->style('punct', '}');
     }
-
     /**
      * Style text with ANSI escape codes.
      *
@@ -230,7 +181,6 @@ class ConsoleFormatter implements FormatterInterface
     protected function style(string $style, string $text): string
     {
         $code = $this->styles[$style];
-
-        return "\033[{$code}m{$text}\033[0m";
+        return "\x1b[{$code}m{$text}\x1b[0m";
     }
 }

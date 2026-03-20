@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,16 +14,14 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\I18n;
 
-use Cake\Core\Exception\CakeException;
-
+use Cake\Core\Exception\Cake_Exception;
 /**
  * Wraps multiple message loaders calling them one after another until
  * one of them returns a non-empty package.
  */
-class ChainMessagesLoader
+class Chain_Messages_Loader
 {
     /**
      * Receives a list of callable functions or objects that will be executed
@@ -37,9 +34,9 @@ class ChainMessagesLoader
          * The list of callables to execute one after another for loading messages
          */
         protected array $_loaders
-    ) {
+    )
+    {
     }
-
     /**
      * Executes this object returning the translations package as configured in
      * the chain.
@@ -50,27 +47,17 @@ class ChainMessagesLoader
     {
         foreach ($this->_loaders as $k => $loader) {
             if (!is_callable($loader)) {
-                throw new CakeException(sprintf(
-                    'Loader `%s` in the chain is not a valid callable.',
-                    $k,
-                ));
+                throw new Cake_Exception(sprintf('Loader `%s` in the chain is not a valid callable.', $k));
             }
-
             $package = $loader();
             if (!$package) {
                 continue;
             }
-
-            if (!($package instanceof Package)) {
-                throw new CakeException(sprintf(
-                    'Loader `%s` in the chain did not return a valid Package object.',
-                    $k,
-                ));
+            if (!$package instanceof Package) {
+                throw new Cake_Exception(sprintf('Loader `%s` in the chain did not return a valid Package object.', $k));
             }
-
             return $package;
         }
-
         return new Package();
     }
 }

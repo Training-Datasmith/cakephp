@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,7 +14,6 @@ declare(strict_types=1);
  * @since         4.4.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Error;
 
 /**
@@ -24,7 +22,7 @@ namespace Cake\Error;
  * The core provided implementations of this interface are used
  * by Debugger and ErrorTrap to render PHP errors.
  */
-interface ErrorRendererInterface
+interface Error_Renderer_Interface
 {
     /**
      * Render output for the provided error.
@@ -33,8 +31,7 @@ interface ErrorRendererInterface
      * @param bool $debug Whether the application is in debug mode.
      * @return string The output to be echoed.
      */
-    public function render(PhpError $error, bool $debug): string;
-
+    public function render(Php_Error $error, bool $debug): string;
     /**
      * Write output to the renderer's output stream
      *

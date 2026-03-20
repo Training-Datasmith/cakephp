@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,12 +14,10 @@ declare(strict_types=1);
  * @since         4.4.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Controller\Component;
 
 use Cake\Controller\Component;
-use Cake\Event\EventInterface;
-
+use Cake\Event\Event_Interface;
 /**
  * Use HTTP caching headers to see if rendering can be skipped.
  *
@@ -33,23 +30,22 @@ use Cake\Event\EventInterface;
  * or `Etag` header. Without one of these headers being set this component
  * will have no effect.
  */
-class CheckHttpCacheComponent extends Component
+class Check_Http_Cache_Component extends Component
 {
     /**
      * Before Render hook
      *
      * @param \Cake\Event\EventInterface<\Cake\Controller\Controller> $event The Controller.beforeRender event.
      */
-    public function beforeRender(EventInterface $event): void
+    public function before_render(Event_Interface $event): void
     {
-        $controller = $this->getController();
-        $response = $controller->getResponse();
-        $request = $controller->getRequest();
-        if (!$response->isNotModified($request)) {
+        $controller = $this->get_controller();
+        $response = $controller->get_response();
+        $request = $controller->get_request();
+        if (!$response->is_not_modified($request)) {
             return;
         }
-
-        $controller->setResponse($response->withNotModified());
-        $event->stopPropagation();
+        $controller->set_response($response->with_not_modified());
+        $event->stop_propagation();
     }
 }

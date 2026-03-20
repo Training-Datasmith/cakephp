@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,16 +14,14 @@ declare(strict_types=1);
  * @since         3.6.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Core\Retry;
 
 use Exception;
-
 /**
  * Used to instruct a CommandRetry object on whether a retry
  * for an action should be performed
  */
-interface RetryStrategyInterface
+interface Retry_Strategy_Interface
 {
     /**
      * Returns true if the action can be retried, false otherwise.
@@ -33,5 +30,5 @@ interface RetryStrategyInterface
      * @param int $retryCount The number of times action has been retried
      * @return bool Whether it is OK to retry the action
      */
-    public function shouldRetry(Exception $exception, int $retryCount): bool;
+    public function should_retry(Exception $exception, int $retry_count): bool;
 }

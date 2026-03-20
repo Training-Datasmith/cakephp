@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,21 +14,19 @@ declare(strict_types=1);
  * @since         3.2.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\I18n;
 
-use Cake\Core\Exception\CakeException;
+use Cake\Core\Exception\Cake_Exception;
 use DateTimeImmutable;
 use DateTimeInterface;
 use DateTimeZone;
-use IntlDateFormatter;
-
+use Intl_Date_Formatter;
 /**
  * Trait for date formatting methods shared by both Time & Date.
  *
  * This trait expects that the implementing class define static::$_toStringFormat.
  */
-trait DateFormatTrait
+trait Date_Format_Trait
 {
     /**
      * In-memory cache of date formatters
@@ -37,7 +34,6 @@ trait DateFormatTrait
      * @var array<string, \IntlDateFormatter>
      */
     protected static array $formatters = [];
-
     /**
      * Returns a translated and localized date string.
      * Implements what IntlDateFormatter::formatObject() is in PHP 5.5+
@@ -46,66 +42,38 @@ trait DateFormatTrait
      * @param array<int>|string $format Format.
      * @param string|null $locale The locale name in which the date should be displayed.
      */
-    protected function _formatObject(
-        DateTimeInterface $date,
-        array|string $format,
-        ?string $locale,
-    ): string {
+    protected function _format_object(DateTimeInterface $date, array|string $format, ?string $locale): string
+    {
         $pattern = '';
-
         if (is_array($format)) {
-            [$dateFormat, $timeFormat] = $format;
+            [$date_format, $time_format] = $format;
         } else {
-            $dateFormat = IntlDateFormatter::FULL;
-            $timeFormat = IntlDateFormatter::FULL;
+            $date_format = Intl_Date_Formatter::FULL;
+            $time_format = Intl_Date_Formatter::FULL;
             $pattern = $format;
         }
-
-        $locale ??= I18n::getLocale();
-
-        if (
-            preg_match(
-                '/@calendar=(japanese|buddhist|chinese|persian|indian|islamic|hebrew|coptic|ethiopic)/',
-                $locale,
-            )
-        ) {
-            $calendar = IntlDateFormatter::TRADITIONAL;
+        $locale ??= I18n::get_locale();
+        if (preg_match('/@calendar=(japanese|buddhist|chinese|persian|indian|islamic|hebrew|coptic|ethiopic)/', $locale)) {
+            $calendar = Intl_Date_Formatter::TRADITIONAL;
         } else {
-            $calendar = IntlDateFormatter::GREGORIAN;
+            $calendar = Intl_Date_Formatter::GREGORIAN;
         }
-
-        $timezone = $date->getTimezone()->getName();
-        $key = "{$locale}.{$dateFormat}.{$timeFormat}.{$timezone}.{$calendar}.{$pattern}";
-
+        $timezone = $date->get_timezone()->get_name();
+        $key = "{$locale}.{$date_format}.{$time_format}.{$timezone}.{$calendar}.{$pattern}";
         if (!isset(static::$formatters[$key])) {
             if ($timezone === '+00:00' || $timezone === 'Z') {
                 $timezone = 'UTC';
             } elseif (str_starts_with($timezone, '+') || str_starts_with($timezone, '-')) {
                 $timezone = 'GMT' . $timezone;
             }
-
-            $formatter = datefmt_create(
-                $locale,
-                $dateFormat,
-                $timeFormat,
-                $timezone,
-                $calendar,
-                $pattern,
-            );
-
+            $formatter = datefmt_create($locale, $date_format, $time_format, $timezone, $calendar, $pattern);
             if (!$formatter) {
-                throw new CakeException(
-                    'Your version of icu does not support creating a date formatter for ' .
-                    "`{$key}`. You should try to upgrade libicu and the intl extension.",
-                );
+                throw new Cake_Exception('Your version of icu does not support creating a date formatter for ' . "`{$key}`. You should try to upgrade libicu and the intl extension.");
             }
-
             static::$formatters[$key] = $formatter;
         }
-
-        return (string)static::$formatters[$key]->format($date);
+        return (string) static::$formatters[$key]->format($date);
     }
-
     /**
      * Returns a new Time object after parsing the provided time string based on
      * the passed or configured date time format. This method is locale dependent,
@@ -130,47 +98,31 @@ trait DateFormatTrait
      * @param array<int>|string $format Any format accepted by IntlDateFormatter.
      * @param \DateTimeZone|string|null $tz The timezone for the instance
      */
-    protected static function _parseDateTime(
-        string $time,
-        array|string $format,
-        DateTimeZone|string|null $tz = null,
-    ): ?static {
+    protected static function _parse_date_time(string $time, array|string $format, DateTimeZone|string|null $tz = null): ?static
+    {
         $pattern = '';
-
         if (is_array($format)) {
-            [$dateFormat, $timeFormat] = $format;
+            [$date_format, $time_format] = $format;
         } else {
-            $dateFormat = IntlDateFormatter::FULL;
-            $timeFormat = IntlDateFormatter::FULL;
+            $date_format = Intl_Date_Formatter::FULL;
+            $time_format = Intl_Date_Formatter::FULL;
             $pattern = $format;
         }
-
-        $locale = DateTime::getDefaultLocale() ?? I18n::getLocale();
-        $formatter = datefmt_create(
-            $locale,
-            $dateFormat,
-            $timeFormat,
-            $tz,
-            null,
-            $pattern,
-        );
+        $locale = DateTime::get_default_locale() ?? I18n::get_locale();
+        $formatter = datefmt_create($locale, $date_format, $time_format, $tz, null, $pattern);
         if (!$formatter) {
-            throw new CakeException('Unable to create IntlDateFormatter instance');
+            throw new Cake_Exception('Unable to create IntlDateFormatter instance');
         }
-        $formatter->setLenient(DateTime::lenientParsingEnabled());
-
+        $formatter->set_lenient(DateTime::lenient_parsing_enabled());
         $time = $formatter->parse($time);
         if ($time === false) {
             return null;
         }
-
-        $dateTime = new DateTimeImmutable('@' . $time);
-
-        if (!($tz instanceof DateTimeZone)) {
+        $date_time = new DateTimeImmutable('@' . $time);
+        if (!$tz instanceof DateTimeZone) {
             $tz = new DateTimeZone($tz ?? date_default_timezone_get());
         }
-        $dateTime = $dateTime->setTimezone($tz);
-
-        return new static($dateTime);
+        $date_time = $date_time->set_timezone($tz);
+        return new static($date_time);
     }
 }

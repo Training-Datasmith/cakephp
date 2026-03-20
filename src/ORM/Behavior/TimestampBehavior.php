@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,22 +14,20 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\ORM\Behavior;
 
-use Cake\Database\Type\DateTimeType;
-use Cake\Database\TypeFactory;
-use Cake\Datasource\EntityInterface;
-use Cake\Event\EventInterface;
+use Cake\Database\Type\Date_Time_Type;
+use Cake\Database\Type_Factory;
+use Cake\Datasource\Entity_Interface;
+use Cake\Event\Event_Interface;
 use Cake\I18n\DateTime;
 use Cake\ORM\Behavior;
 use DateTimeInterface;
 use UnexpectedValueException;
-
 /**
  * Class TimestampBehavior
  */
-class TimestampBehavior extends Behavior
+class Timestamp_Behavior extends Behavior
 {
     /**
      * Default config
@@ -47,26 +44,11 @@ class TimestampBehavior extends Behavior
      *
      * @var array<string, mixed>
      */
-    protected array $_defaultConfig = [
-        'implementedFinders' => [],
-        'implementedMethods' => [
-            'timestamp' => 'timestamp',
-            'touch' => 'touch',
-        ],
-        'events' => [
-            'Model.beforeSave' => [
-                'created' => 'new',
-                'modified' => 'always',
-            ],
-        ],
-        'refreshTimestamp' => true,
-    ];
-
+    protected array $_default_config = ['implementedFinders' => [], 'implementedMethods' => ['timestamp' => 'timestamp', 'touch' => 'touch'], 'events' => ['Model.beforeSave' => ['created' => 'new', 'modified' => 'always']], 'refreshTimestamp' => true];
     /**
      * Current timestamp
      */
     protected ?DateTime $_ts = null;
-
     /**
      * Initialize hook
      *
@@ -78,10 +60,9 @@ class TimestampBehavior extends Behavior
     public function initialize(array $config): void
     {
         if (isset($config['events'])) {
-            $this->setConfig('events', $config['events'], false);
+            $this->set_config('events', $config['events'], false);
         }
     }
-
     /**
      * There is only one event handler, it can be configured to be called for any event
      *
@@ -90,37 +71,21 @@ class TimestampBehavior extends Behavior
      * @throws \UnexpectedValueException If a field's value is misdefined.
      * @throws \UnexpectedValueException When the value for an event is not 'always', 'new' or 'existing'.
      */
-    public function handleEvent(EventInterface $event, EntityInterface $entity): void
+    public function handle_event(Event_Interface $event, Entity_Interface $entity): void
     {
-        $eventName = $event->getName();
+        $event_name = $event->get_name();
         $events = $this->_config['events'];
-
-        $new = $entity->isNew();
+        $new = $entity->is_new();
         $refresh = $this->_config['refreshTimestamp'];
-
-        foreach ($events[$eventName] as $field => $when) {
+        foreach ($events[$event_name] as $field => $when) {
             if (!in_array($when, ['always', 'new', 'existing'], true)) {
-                throw new UnexpectedValueException(sprintf(
-                    'When should be one of "always", "new" or "existing". The passed value `%s` is invalid.',
-                    $when,
-                ));
+                throw new UnexpectedValueException(sprintf('When should be one of "always", "new" or "existing". The passed value `%s` is invalid.', $when));
             }
-            if (
-                $when === 'always' ||
-                (
-                    $when === 'new' &&
-                    $new
-                ) ||
-                (
-                    $when === 'existing' &&
-                    !$new
-                )
-            ) {
-                $this->_updateField($entity, $field, $refresh);
+            if ($when === 'always' || $when === 'new' && $new || $when === 'existing' && !$new) {
+                $this->_update_field($entity, $field, $refresh);
             }
         }
     }
-
     /**
      * implementedEvents
      *
@@ -128,12 +93,11 @@ class TimestampBehavior extends Behavior
      *
      * @return array<string, mixed>
      */
-    public function implementedEvents(): array
+    public function implemented_events(): array
     {
         /** @var array<string, mixed> */
         return array_fill_keys(array_keys($this->_config['events']), 'handleEvent');
     }
-
     /**
      * Get or set the timestamp to be used
      *
@@ -144,20 +108,18 @@ class TimestampBehavior extends Behavior
      * @param \DateTimeInterface|null $ts Timestamp
      * @param bool $refreshTimestamp If true timestamp is refreshed.
      */
-    public function timestamp(?DateTimeInterface $ts = null, bool $refreshTimestamp = false): DateTime
+    public function timestamp(?DateTimeInterface $ts = null, bool $refresh_timestamp = false): DateTime
     {
         if ($ts) {
             if ($this->_config['refreshTimestamp']) {
                 $this->_config['refreshTimestamp'] = false;
             }
             $this->_ts = new DateTime($ts);
-        } elseif ($this->_ts === null || $refreshTimestamp) {
+        } elseif ($this->_ts === null || $refresh_timestamp) {
             $this->_ts = new DateTime();
         }
-
         return $this->_ts;
     }
-
     /**
      * Touch an entity
      *
@@ -169,27 +131,23 @@ class TimestampBehavior extends Behavior
      * @param string $eventName Event name.
      * @return bool true if a field is updated, false if no action performed
      */
-    public function touch(EntityInterface $entity, string $eventName = 'Model.beforeSave'): bool
+    public function touch(Entity_Interface $entity, string $event_name = 'Model.beforeSave'): bool
     {
         $events = $this->_config['events'];
-        if (empty($events[$eventName])) {
+        if (empty($events[$event_name])) {
             return false;
         }
-
         $return = false;
         $refresh = $this->_config['refreshTimestamp'];
-
-        foreach ($events[$eventName] as $field => $when) {
+        foreach ($events[$event_name] as $field => $when) {
             if (in_array($when, ['always', 'existing'], true)) {
                 $return = true;
-                $entity->setDirty($field, false);
-                $this->_updateField($entity, $field, $refresh);
+                $entity->set_dirty($field, false);
+                $this->_update_field($entity, $field, $refresh);
             }
         }
-
         return $return;
     }
-
     /**
      * Update a field, if it hasn't been updated already
      *
@@ -197,28 +155,20 @@ class TimestampBehavior extends Behavior
      * @param string $field Field name
      * @param bool $refreshTimestamp Whether to refresh timestamp.
      */
-    protected function _updateField(EntityInterface $entity, string $field, bool $refreshTimestamp): void
+    protected function _update_field(Entity_Interface $entity, string $field, bool $refresh_timestamp): void
     {
-        if ($entity->isDirty($field)) {
+        if ($entity->is_dirty($field)) {
             return;
         }
-
-        $ts = $this->timestamp(null, $refreshTimestamp);
-
-        $columnType = $this->table()->getSchema()->getColumnType($field);
-        if (!$columnType) {
+        $ts = $this->timestamp(null, $refresh_timestamp);
+        $column_type = $this->table()->get_schema()->get_column_type($field);
+        if (!$column_type) {
             return;
         }
-
-        $type = TypeFactory::build($columnType);
-        assert(
-            $type instanceof DateTimeType,
-            sprintf('TimestampBehavior only supports columns of type `%s`.', DateTimeType::class),
-        );
-
+        $type = Type_Factory::build($column_type);
+        assert($type instanceof Date_Time_Type, sprintf('TimestampBehavior only supports columns of type `%s`.', Date_Time_Type::class));
         /** @var class-string<\Cake\I18n\DateTime> $class */
-        $class = $type->getDateTimeClassName();
-
+        $class = $type->get_date_time_class_name();
         $entity->set($field, new $class($ts));
     }
 }

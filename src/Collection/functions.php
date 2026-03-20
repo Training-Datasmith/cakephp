@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 // phpcs:disable PSR1.Files.SideEffects
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
@@ -16,7 +15,6 @@ declare(strict_types=1);
  * @since         2.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Collection;
 
 /**
@@ -27,7 +25,7 @@ namespace Cake\Collection;
  * @param iterable<TKey, TValue> $items The items from which the collection will be built.
  * @return \Cake\Collection\Collection<TKey, TValue>
  */
-function collection(iterable $items): CollectionInterface
+function collection(iterable $items): Collection_Interface
 {
     return new Collection($items);
 }

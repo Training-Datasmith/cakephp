@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,18 +14,16 @@ declare(strict_types=1);
  * @since         0.10.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Datasource;
 
-use Cake\Core\StaticConfigTrait;
+use Cake\Core\Static_Config_Trait;
 use Cake\Database\Connection;
 use Cake\Database\Driver\Mysql;
 use Cake\Database\Driver\Postgres;
 use Cake\Database\Driver\Sqlite;
 use Cake\Database\Driver\Sqlserver;
-use Cake\Datasource\Exception\MissingDatasourceConfigException;
+use Cake\Datasource\Exception\Missing_Datasource_Config_Exception;
 use Closure;
-
 /**
  * Manages and loads instances of Connection
  *
@@ -36,38 +33,29 @@ use Closure;
  * Provides an interface for loading and enumerating connections defined in
  * config/app.php
  */
-class ConnectionManager
+class Connection_Manager
 {
-    use StaticConfigTrait {
+    use Static_Config_Trait {
         setConfig as protected _setConfig;
         parseDsn as protected _parseDsn;
     }
-
     /**
      * A map of connection aliases.
      *
      * @var array<string, string>
      */
-    protected static array $_aliasMap = [];
-
+    protected static array $_alias_map = [];
     /**
      * An array mapping url schemes to fully qualified driver class names
      *
      * @var array<string, string>
      * @phpstan-var array<string, class-string>
      */
-    protected static array $_dsnClassMap = [
-        'mysql' => Mysql::class,
-        'postgres' => Postgres::class,
-        'sqlite' => Sqlite::class,
-        'sqlserver' => Sqlserver::class,
-    ];
-
+    protected static array $_dsn_class_map = ['mysql' => Mysql::class, 'postgres' => Postgres::class, 'sqlite' => Sqlite::class, 'sqlserver' => Sqlserver::class];
     /**
      * The ConnectionRegistry used by the manager.
      */
-    protected static ConnectionRegistry $_registry;
-
+    protected static Connection_Registry $_registry;
     /**
      * Configure a new connection object.
      *
@@ -78,15 +66,13 @@ class ConnectionManager
      * @throws \Cake\Core\Exception\CakeException When trying to modify an existing config.
      * @see \Cake\Core\StaticConfigTrait::config()
      */
-    public static function setConfig(array|string $key, ConnectionInterface|Closure|array|null $config = null): void
+    public static function set_config(array|string $key, Connection_Interface|Closure|array|null $config = null): void
     {
         if (is_array($config)) {
             $config['name'] = $key;
         }
-
-        static::_setConfig($key, $config);
+        static::_set_config($key, $config);
     }
-
     /**
      * Parses a DSN into a valid connection configuration
      *
@@ -112,24 +98,19 @@ class ConnectionManager
      * @param string $dsn The DSN string to convert to a configuration array
      * @return array<int|string, array|bool|string|null> The configuration array to be stored after parsing the DSN
      */
-    public static function parseDsn(string $dsn): array
+    public static function parse_dsn(string $dsn): array
     {
-        $config = static::_parseDsn($dsn);
-
+        $config = static::_parse_dsn($dsn);
         if (isset($config['path']) && empty($config['database']) && is_string($config['path'])) {
             $config['database'] = substr($config['path'], 1);
         }
-
         if (empty($config['driver'])) {
             $config['driver'] = $config['className'] ?? null;
             $config['className'] = Connection::class;
         }
-
         unset($config['path']);
-
         return $config;
     }
-
     /**
      * Set one or more connection aliases.
      *
@@ -155,9 +136,8 @@ class ConnectionManager
      */
     public static function alias(string $source, string $alias): void
     {
-        static::$_aliasMap[$alias] = $source;
+        static::$_alias_map[$alias] = $source;
     }
-
     /**
      * Drop an alias.
      *
@@ -166,11 +146,10 @@ class ConnectionManager
      *
      * @param string $alias The connection alias to drop
      */
-    public static function dropAlias(string $alias): void
+    public static function drop_alias(string $alias): void
     {
-        unset(static::$_aliasMap[$alias]);
+        unset(static::$_alias_map[$alias]);
     }
-
     /**
      * Returns the current connection aliases and what they alias.
      *
@@ -178,9 +157,8 @@ class ConnectionManager
      */
     public static function aliases(): array
     {
-        return static::$_aliasMap;
+        return static::$_alias_map;
     }
-
     /**
      * Get a connection.
      *
@@ -194,17 +172,15 @@ class ConnectionManager
      * @throws \Cake\Datasource\Exception\MissingDatasourceConfigException When config
      * data is missing.
      */
-    public static function get(string $name, bool $useAliases = true): ConnectionInterface
+    public static function get(string $name, bool $use_aliases = true): Connection_Interface
     {
-        if ($useAliases && isset(static::$_aliasMap[$name])) {
-            $name = static::$_aliasMap[$name];
+        if ($use_aliases && isset(static::$_alias_map[$name])) {
+            $name = static::$_alias_map[$name];
         }
-
         if (!isset(static::$_config[$name])) {
-            throw new MissingDatasourceConfigException(['name' => $name]);
+            throw new Missing_Datasource_Config_Exception(['name' => $name]);
         }
-        static::$_registry ??= new ConnectionRegistry();
-
+        static::$_registry ??= new Connection_Registry();
         return static::$_registry->{$name} ?? static::$_registry->load($name, static::$_config[$name]);
     }
 }

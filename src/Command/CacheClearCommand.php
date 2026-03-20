@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,37 +14,33 @@ declare(strict_types=1);
  * @since         4.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Command;
 
 use Cake\Cache\Cache;
-use Cake\Cache\Engine\ApcuEngine;
+use Cake\Cache\Engine\Apcu_Engine;
 use Cake\Cache\Exception\InvalidArgumentException;
 use Cake\Console\Arguments;
-use Cake\Console\ConsoleIo;
-use Cake\Console\ConsoleOptionParser;
-
+use Cake\Console\Console_Io;
+use Cake\Console\Console_Option_Parser;
 /**
  * CacheClear command.
  */
-class CacheClearCommand extends Command
+class Cache_Clear_Command extends Command
 {
     /**
      * @inheritDoc
      */
-    public static function defaultName(): string
+    public static function default_name(): string
     {
         return 'cache clear';
     }
-
     /**
      * @inheritDoc
      */
-    public static function getDescription(): string
+    public static function get_description(): string
     {
         return 'Clear all data in a single cache engine.';
     }
-
     /**
      * Hook method for defining this command's option parser.
      *
@@ -53,21 +48,12 @@ class CacheClearCommand extends Command
      * @param \Cake\Console\ConsoleOptionParser $parser The parser to be defined
      * @return \Cake\Console\ConsoleOptionParser The built parser.
      */
-    public function buildOptionParser(ConsoleOptionParser $parser): ConsoleOptionParser
+    public function build_option_parser(Console_Option_Parser $parser): Console_Option_Parser
     {
-        $parser = parent::buildOptionParser($parser);
-        $parser
-            ->setDescription(static::getDescription())
-            ->addArgument('engine', [
-                'help' => 'The cache engine to clear.' .
-                    'For example, `cake cache clear _cake_model_` will clear the model cache.' .
-                    ' Use `cake cache list` to list available engines.',
-                'required' => true,
-            ]);
-
+        $parser = parent::build_option_parser($parser);
+        $parser->set_description(static::get_description())->add_argument('engine', ['help' => 'The cache engine to clear.' . 'For example, `cake cache clear _cake_model_` will clear the model cache.' . ' Use `cake cache list` to list available engines.', 'required' => true]);
         return $parser;
     }
-
     /**
      * Implement this method with your command's logic.
      *
@@ -75,25 +61,22 @@ class CacheClearCommand extends Command
      * @param \Cake\Console\ConsoleIo $io The console io
      * @return int|null The exit code or null for success
      */
-    public function execute(Arguments $args, ConsoleIo $io): ?int
+    public function execute(Arguments $args, Console_Io $io): ?int
     {
-        $name = (string)$args->getArgument('engine');
+        $name = (string) $args->get_argument('engine');
         try {
             $io->out("Clearing {$name}");
-
             $engine = Cache::pool($name);
             Cache::clear($name);
-            if ($engine instanceof ApcuEngine) {
-                $io->warning("ApcuEngine detected: Cleared {$name} CLI cache successfully " .
-                    "but {$name} web cache must be cleared separately.");
+            if ($engine instanceof Apcu_Engine) {
+                $io->warning("ApcuEngine detected: Cleared {$name} CLI cache successfully " . "but {$name} web cache must be cleared separately.");
             } else {
                 $io->out("<success>Cleared {$name} cache</success>");
             }
         } catch (InvalidArgumentException $e) {
-            $io->error($e->getMessage());
+            $io->error($e->get_message());
             $this->abort();
         }
-
         return static::CODE_SUCCESS;
     }
 }

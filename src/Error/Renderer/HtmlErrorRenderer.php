@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,21 +14,18 @@ declare(strict_types=1);
  * @since         4.4.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Error\Renderer;
 
 use function Cake\Core\h;
-
 use Cake\Error\Debugger;
-use Cake\Error\ErrorRendererInterface;
-use Cake\Error\PhpError;
-
+use Cake\Error\Error_Renderer_Interface;
+use Cake\Error\Php_Error;
 /**
  * Interactive HTML error rendering with a stack trace.
  *
  * Default output renderer for non CLI SAPI.
  */
-class HtmlErrorRenderer implements ErrorRendererInterface
+class Html_Error_Renderer implements Error_Renderer_Interface
 {
     /**
      * @inheritDoc
@@ -39,50 +35,40 @@ class HtmlErrorRenderer implements ErrorRendererInterface
         // Output to stdout which is the server response.
         echo $out;
     }
-
     /**
      * @inheritDoc
      */
-    public function render(PhpError $error, bool $debug): string
+    public function render(Php_Error $error, bool $debug): string
     {
         if (!$debug) {
             return '';
         }
         $id = 'cakeErr' . uniqid();
-        $file = $error->getFile();
-
+        $file = $error->get_file();
         // Some of the error data is not HTML safe so we escape everything.
-        $description = h($error->getMessage());
+        $description = h($error->get_message());
         $path = h($file);
-        $trace = h($error->getTraceAsString());
-        $line = $error->getLine();
-
-        $errorMessage = sprintf(
-            '<b>%s</b> (%s)',
-            h(ucfirst($error->getLabel())),
-            h($error->getCode()),
-        );
-        $toggle = $this->renderToggle($errorMessage, $id, 'trace');
-        $codeToggle = $this->renderToggle('Code', $id, 'code');
-
+        $trace = h($error->get_trace_as_string());
+        $line = $error->get_line();
+        $error_message = sprintf('<b>%s</b> (%s)', h(ucfirst($error->get_label())), h($error->get_code()));
+        $toggle = $this->render_toggle($error_message, $id, 'trace');
+        $code_toggle = $this->render_toggle('Code', $id, 'code');
         $excerpt = [];
         if ($file && $line) {
             $excerpt = Debugger::excerpt($file, $line, 1);
         }
         $code = implode("\n", $excerpt);
-
         return <<<HTML
-<div class="cake-error">
-    {$toggle}: {$description} [in <b>{$path}</b>, line <b>{$line}</b>]
-    <div id="{$id}-trace" class="cake-stack-trace" style="display: none;">
-        {$codeToggle}
-        <pre id="{$id}-code" class="cake-code-dump" style="display: none;">{$code}</pre>
-        <pre class="cake-trace">{$trace}</pre>
-    </div>
-</div>
-HTML;
+        <div class="cake-error">
+            {$toggle}: {$description} [in <b>{$path}</b>, line <b>{$line}</b>]
+            <div id="{$id}-trace" class="cake-stack-trace" style="display: none;">
+                {$code_toggle}
+                <pre id="{$id}-code" class="cake-code-dump" style="display: none;">{$code}</pre>
+                <pre class="cake-trace">{$trace}</pre>
+            </div>
+        </div>
+        HTML;
     }
-
     /**
      * Render a toggle link in the error content.
      *
@@ -90,18 +76,17 @@ HTML;
      * @param string $id The error id scope.
      * @param string $suffix The element selector.
      */
-    private function renderToggle(string $text, string $id, string $suffix): string
+    private function render_toggle(string $text, string $id, string $suffix): string
     {
         $selector = $id . '-' . $suffix;
-
         // phpcs:disable
         return <<<HTML
-<a href="javascript:void(0);"
-  onclick="document.getElementById('{$selector}').style.display = (document.getElementById('{$selector}').style.display == 'none' ? '' : 'none')"
->
-    {$text}
-</a>
-HTML;
+        <a href="javascript:void(0);"
+          onclick="document.getElementById('{$selector}').style.display = (document.getElementById('{$selector}').style.display == 'none' ? '' : 'none')"
+        >
+            {$text}
+        </a>
+        HTML;
         // phpcs:enable
     }
 }

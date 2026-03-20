@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,45 +14,36 @@ declare(strict_types=1);
  * @since         5.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Database\Statement;
 
 use Cake\Database\Driver;
-use Cake\Database\StatementInterface;
-use Cake\Database\TypeFactory;
-use Cake\Database\TypeInterface;
+use Cake\Database\Statement_Interface;
+use Cake\Database\Type_Factory;
+use Cake\Database\Type_Interface;
 use Generator;
 use InvalidArgumentException;
 use PDO;
 use PDOStatement;
-
-class Statement implements StatementInterface
+class Statement implements Statement_Interface
 {
     /**
      * @var array<string, int>
      */
-    protected const MODE_NAME_MAP = [
-        self::FETCH_TYPE_ASSOC => PDO::FETCH_ASSOC,
-        self::FETCH_TYPE_NUM => PDO::FETCH_NUM,
-        self::FETCH_TYPE_OBJ => PDO::FETCH_OBJ,
-    ];
-
+    protected const MODE_NAME_MAP = [self::FETCH_TYPE_ASSOC => PDO::FETCH_ASSOC, self::FETCH_TYPE_NUM => PDO::FETCH_NUM, self::FETCH_TYPE_OBJ => PDO::FETCH_OBJ];
     /**
      * Cached bound parameters used for logging
      *
      * @var array<mixed>
      */
     protected array $params = [];
-
     /**
      * @param \PDOStatement $statement PDO statement
      * @param \Cake\Database\Driver $_driver Database driver
      * @param array<\Closure> $resultDecorators Results decorators
      */
-    public function __construct(protected PDOStatement $statement, protected Driver $_driver, protected array $resultDecorators = [])
+    public function __construct(protected PDOStatement $statement, protected Driver $_driver, protected array $result_decorators = [])
     {
     }
-
     /**
      * @inheritDoc
      */
@@ -62,32 +52,28 @@ class Statement implements StatementInterface
         if (!$params) {
             return;
         }
-
-        $anonymousParams = is_int(key($params));
+        $anonymous_params = is_int(key($params));
         $offset = 1;
         foreach ($params as $index => $value) {
             $type = $types[$index] ?? null;
-            if ($anonymousParams) {
+            if ($anonymous_params) {
                 $index += $offset;
             }
-            $this->bindValue($index, $value, $type);
+            $this->bind_value($index, $value, $type);
         }
     }
-
     /**
      * @inheritDoc
      */
-    public function bindValue(string|int $column, mixed $value, string|int|null $type = 'string'): void
+    public function bind_value(string|int $column, mixed $value, string|int|null $type = 'string'): void
     {
         $type ??= 'string';
         if (!is_int($type)) {
             [$value, $type] = $this->cast($value, $type);
         }
-
         $this->params[$column] = $value;
-        $this->performBind($column, $value, $type);
+        $this->perform_bind($column, $value, $type);
     }
-
     /**
      * Converts a given value to a suitable database value based on type and
      * return relevant internal statement type.
@@ -97,32 +83,28 @@ class Statement implements StatementInterface
      * @return array List containing converted value and internal type.
      * @phpstan-return array{0:mixed, 1:int}
      */
-    protected function cast(mixed $value, TypeInterface|string|int $type = 'string'): array
+    protected function cast(mixed $value, Type_Interface|string|int $type = 'string'): array
     {
         if (is_string($type)) {
-            $type = TypeFactory::build($type);
+            $type = Type_Factory::build($type);
         }
-        if ($type instanceof TypeInterface) {
-            $value = $type->toDatabase($value, $this->_driver);
-            $type = $type->toStatement($value, $this->_driver);
+        if ($type instanceof Type_Interface) {
+            $value = $type->to_database($value, $this->_driver);
+            $type = $type->to_statement($value, $this->_driver);
         }
-
         return [$value, $type];
     }
-
     /**
      * @inheritDoc
      */
-    public function getBoundParams(): array
+    public function get_bound_params(): array
     {
         return $this->params;
     }
-
-    protected function performBind(string|int $column, mixed $value, int $type): void
+    protected function perform_bind(string|int $column, mixed $value, int $type): void
     {
-        $this->statement->bindValue($column, $value, $type);
+        $this->statement->bind_value($column, $value, $type);
     }
-
     /**
      * @inheritDoc
      */
@@ -130,158 +112,132 @@ class Statement implements StatementInterface
     {
         return $this->statement->execute($params);
     }
-
     /**
      * @inheritDoc
      */
     public function fetch(string|int $mode = PDO::FETCH_NUM): mixed
     {
-        $mode = $this->convertMode($mode);
+        $mode = $this->convert_mode($mode);
         $row = $this->statement->fetch($mode);
         if ($row === false) {
             return false;
         }
-
-        foreach ($this->resultDecorators as $decorator) {
+        foreach ($this->result_decorators as $decorator) {
             $row = $decorator($row);
         }
-
         return $row;
     }
-
     /**
      * @inheritDoc
      */
-    public function fetchAssoc(): array
+    public function fetch_assoc(): array
     {
         return $this->fetch(PDO::FETCH_ASSOC) ?: [];
     }
-
     /**
      * @inheritDoc
      */
-    public function fetchColumn(int $position): mixed
+    public function fetch_column(int $position): mixed
     {
         $row = $this->fetch(PDO::FETCH_NUM);
         if ($row && isset($row[$position])) {
             return $row[$position];
         }
-
         return false;
     }
-
     /**
      * @inheritDoc
      */
-    public function fetchAll(string|int $mode = PDO::FETCH_NUM): array
+    public function fetch_all(string|int $mode = PDO::FETCH_NUM): array
     {
-        $mode = $this->convertMode($mode);
-        $rows = $this->statement->fetchAll($mode);
-
-        foreach ($this->resultDecorators as $decorator) {
+        $mode = $this->convert_mode($mode);
+        $rows = $this->statement->fetch_all($mode);
+        foreach ($this->result_decorators as $decorator) {
             $rows = array_map($decorator, $rows);
         }
-
         return $rows;
     }
-
     /**
      * Converts mode name to PDO constant.
      *
      * @param string|int $mode Mode name or PDO constant
      * @throws \InvalidArgumentException
      */
-    protected function convertMode(string|int $mode): int
+    protected function convert_mode(string|int $mode): int
     {
         if (is_int($mode)) {
             // We don't try to validate the PDO constants
             return $mode;
         }
-
-        return static::MODE_NAME_MAP[$mode]
-            ??
-            throw new InvalidArgumentException("Invalid fetch mode requested. Expected 'assoc', 'num' or 'obj'.");
+        return static::MODE_NAME_MAP[$mode] ?? throw new InvalidArgumentException("Invalid fetch mode requested. Expected 'assoc', 'num' or 'obj'.");
     }
-
     /**
      * @inheritDoc
      */
-    public function closeCursor(): void
+    public function close_cursor(): void
     {
-        $this->statement->closeCursor();
+        $this->statement->close_cursor();
     }
-
     /**
      * @inheritDoc
      */
-    public function rowCount(): int
+    public function row_count(): int
     {
-        return $this->statement->rowCount();
+        return $this->statement->row_count();
     }
-
     /**
      * @inheritDoc
      */
-    public function columnCount(): int
+    public function column_count(): int
     {
-        return $this->statement->columnCount();
+        return $this->statement->column_count();
     }
-
     /**
      * @inheritDoc
      */
-    public function errorCode(): string
+    public function error_code(): string
     {
-        return $this->statement->errorCode() ?: '';
+        return $this->statement->error_code() ?: '';
     }
-
     /**
      * @inheritDoc
      */
-    public function errorInfo(): array
+    public function error_info(): array
     {
-        return $this->statement->errorInfo();
+        return $this->statement->error_info();
     }
-
     /**
      * @inheritDoc
      */
-    public function lastInsertId(?string $table = null, ?string $column = null): string|int
+    public function last_insert_id(?string $table = null, ?string $column = null): string|int
     {
-        if ($column && $this->columnCount()) {
+        if ($column && $this->column_count()) {
             $row = $this->fetch(static::FETCH_TYPE_ASSOC);
-
             if ($row && isset($row[$column])) {
                 return $row[$column];
             }
         }
-
-        return $this->_driver->lastInsertId($table);
+        return $this->_driver->last_insert_id($table);
     }
-
     /**
      * Returns prepared query string stored in PDOStatement.
      */
-    public function queryString(): string
+    public function query_string(): string
     {
-        return $this->statement->queryString;
+        return $this->statement->query_string;
     }
-
     /**
      * Get the inner iterator
      */
     public function getIterator(): Generator
     {
-        $this->statement->setFetchMode(PDO::FETCH_ASSOC);
-
+        $this->statement->set_fetch_mode(PDO::FETCH_ASSOC);
         foreach ($this->statement as $row) {
-            foreach ($this->resultDecorators as $decorator) {
+            foreach ($this->result_decorators as $decorator) {
                 $row = $decorator($row);
             }
-
             yield $row;
         }
-
-        $this->closeCursor();
+        $this->close_cursor();
     }
 }

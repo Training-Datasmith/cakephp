@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,26 +14,21 @@ declare(strict_types=1);
  * @since         5.3.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Cache\Event;
 
-use Cake\Cache\CacheEngine;
+use Cake\Cache\Cache_Engine;
 use Cake\Event\Event;
-
 /**
  * Class Cache BeforeIncrement Event
  *
  * @template TEngine of \Cake\Cache\CacheEngine
  * @extends \Cake\Event\Event<TEngine>
  */
-class CacheBeforeIncrementEvent extends Event
+class Cache_Before_Increment_Event extends Event
 {
     public const NAME = 'Cache.beforeIncrement';
-
     protected string $key;
-
     protected int $offset;
-
     /**
      * Constructor
      *
@@ -42,7 +36,7 @@ class CacheBeforeIncrementEvent extends Event
      * @param TEngine $subject The Cache engine instance this event applies to.
      * @param array $data Any value you wish to be transported with this event to it can be read by listeners.
      */
-    public function __construct(string $name, CacheEngine $subject, array $data = [])
+    public function __construct(string $name, Cache_Engine $subject, array $data = [])
     {
         if (isset($data['key'])) {
             $this->key = $data['key'];
@@ -52,22 +46,19 @@ class CacheBeforeIncrementEvent extends Event
             $this->offset = $data['offset'];
             unset($data['offset']);
         }
-
         parent::__construct($name, $subject, $data);
     }
-
     /**
      * Get the cache key.
      */
-    public function getKey(): string
+    public function get_key(): string
     {
         return $this->key;
     }
-
     /**
      * Get the increment offset.
      */
-    public function getOffset(): int
+    public function get_offset(): int
     {
         return $this->offset;
     }

@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,15 +14,13 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Collection\Iterator;
 
 use ArrayIterator;
 use Cake\Collection\Collection;
-use Cake\Collection\CollectionInterface;
-use CallbackFilterIterator;
+use Cake\Collection\Collection_Interface;
+use Callback_Filter_Iterator;
 use Iterator;
-
 /**
  * Creates a filtered iterator from another iterator. The filtering is done by
  * passing a callback function to each of the elements and taking them out if
@@ -33,7 +30,7 @@ use Iterator;
  * @template TValue
  * @extends \Cake\Collection\Collection<TKey, TValue>
  */
-class FilterIterator extends Collection
+class Filter_Iterator extends Collection
 {
     /**
      * The callback used to filter the elements in this collection
@@ -41,7 +38,6 @@ class FilterIterator extends Collection
      * @var callable
      */
     protected $_callback;
-
     /**
      * Creates a filtered iterator using the callback to determine which items are
      * accepted or rejected.
@@ -58,40 +54,33 @@ class FilterIterator extends Collection
         if (!$items instanceof Iterator) {
             $items = new Collection($items);
         }
-
         $this->_callback = $callback;
-        $wrapper = new CallbackFilterIterator($items, $callback);
+        $wrapper = new Callback_Filter_Iterator($items, $callback);
         parent::__construct($wrapper);
     }
-
     /**
      * @inheritDoc
      */
     public function unwrap(): Iterator
     {
         /** @var \IteratorIterator<TKey, TValue, \Traversable<TKey, TValue>> $filter */
-        $filter = $this->getInnerIterator();
-        $iterator = $filter->getInnerIterator();
-
-        if ($iterator instanceof CollectionInterface) {
+        $filter = $this->get_inner_iterator();
+        $iterator = $filter->get_inner_iterator();
+        if ($iterator instanceof Collection_Interface) {
             $iterator = $iterator->unwrap();
         }
-
         if ($iterator::class !== ArrayIterator::class) {
             return $filter;
         }
-
         // ArrayIterator can be traversed strictly.
         // Let's do that for performance gains
         $callback = $this->_callback;
         $res = [];
-
         foreach ($iterator as $k => $v) {
             if ($callback($v, $k, $iterator)) {
                 $res[$k] = $v;
             }
         }
-
         return new ArrayIterator($res);
     }
 }

@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -13,13 +12,12 @@ declare(strict_types=1);
  * @since         3.1.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Console\Exception;
 
 /**
  * Used when a Helper cannot be found.
  */
-class MissingHelperException extends ConsoleException
+class Missing_Helper_Exception extends Console_Exception
 {
-    protected string $_messageTemplate = 'Helper class `%s` could not be found.';
+    protected string $_message_template = 'Helper class `%s` could not be found.';
 }

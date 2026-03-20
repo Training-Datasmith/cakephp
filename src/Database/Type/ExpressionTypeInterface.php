@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,17 +14,15 @@ declare(strict_types=1);
  * @since         3.3.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Database\Type;
 
-use Cake\Database\ExpressionInterface;
-
+use Cake\Database\Expression_Interface;
 /**
  * An interface used by Type objects to signal whether the value should
  * be converted to an ExpressionInterface instead of a string when sent
  * to the database.
  */
-interface ExpressionTypeInterface
+interface Expression_Type_Interface
 {
     /**
      * Returns an ExpressionInterface object for the given value that can
@@ -33,5 +30,5 @@ interface ExpressionTypeInterface
      *
      * @param mixed $value The value to be converted to an expression
      */
-    public function toExpression(mixed $value): ExpressionInterface;
+    public function to_expression(mixed $value): Expression_Interface;
 }

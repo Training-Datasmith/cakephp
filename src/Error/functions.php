@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -16,11 +15,9 @@ declare(strict_types=1);
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
 // phpcs:disable PSR1.Files.SideEffects
-
 namespace Cake\Error;
 
 use Cake\Core\Configure;
-
 /**
  * Prints out debug information about given variable and returns the
  * variable that was passed.
@@ -34,28 +31,21 @@ use Cake\Core\Configure;
  * @link https://book.cakephp.org/5/en/development/debugging.html#basic-debugging
  * @link https://book.cakephp.org/5/en/core-libraries/global-constants-and-functions.html#debug
  */
-function debug(mixed $var, ?bool $showHtml = null, bool $showFrom = true): mixed
+function debug(mixed $var, ?bool $show_html = null, bool $show_from = true): mixed
 {
     if (!Configure::read('debug')) {
         return $var;
     }
-
     $location = [];
-    if ($showFrom) {
+    if ($show_from) {
         $trace = Debugger::trace(['start' => 0, 'depth' => 1, 'format' => 'array']);
         if (isset($trace[0]['line']) && isset($trace[0]['file'])) {
-            $location = [
-                'line' => $trace[0]['line'],
-                'file' => $trace[0]['file'],
-            ];
+            $location = ['line' => $trace[0]['line'], 'file' => $trace[0]['file']];
         }
     }
-
-    Debugger::printVar($var, $location, $showHtml);
-
+    Debugger::print_var($var, $location, $show_html);
     return $var;
 }
-
 /**
  * Outputs a stack trace based on the supplied options.
  *
@@ -68,20 +58,17 @@ function debug(mixed $var, ?bool $showHtml = null, bool $showFrom = true): mixed
  *
  * @param array<string, mixed> $options Format for outputting stack trace
  */
-function stackTrace(array $options = []): void
+function stack_trace(array $options = []): void
 {
     if (!Configure::read('debug')) {
         return;
     }
-
     $options += ['start' => 0];
     $options['start']++;
-
     /** @var string $trace */
     $trace = Debugger::trace($options);
     echo $trace;
 }
-
 /**
  * Prints out debug information about given variable and dies.
  *
@@ -92,22 +79,16 @@ function stackTrace(array $options = []): void
  * @param bool|null $showHtml If set to true, the method prints the debug data in a browser-friendly way.
  * @link https://book.cakephp.org/5/en/development/debugging.html#basic-debugging
  */
-function dd(mixed $var, ?bool $showHtml = null): void
+function dd(mixed $var, ?bool $show_html = null): void
 {
     if (!Configure::read('debug')) {
         return;
     }
-
     $trace = Debugger::trace(['start' => 0, 'depth' => 2, 'format' => 'array']);
-    $location = [
-        'line' => $trace[0]['line'],
-        'file' => $trace[0]['file'],
-    ];
-
-    Debugger::printVar($var, $location, $showHtml);
+    $location = ['line' => $trace[0]['line'], 'file' => $trace[0]['file']];
+    Debugger::print_var($var, $location, $show_html);
     die(1);
 }
-
 /**
  * Include global functions.
  */

@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,21 +14,19 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Datasource;
 
 use Cake\Core\App;
-use Cake\Core\ObjectRegistry;
-use Cake\Datasource\Exception\MissingDatasourceException;
+use Cake\Core\Object_Registry;
+use Cake\Datasource\Exception\Missing_Datasource_Exception;
 use Closure;
-
 /**
  * A registry object for connection instances.
  *
  * @see \Cake\Datasource\ConnectionManager
  * @extends \Cake\Core\ObjectRegistry<\Cake\Datasource\ConnectionInterface>
  */
-class ConnectionRegistry extends ObjectRegistry
+class Connection_Registry extends Object_Registry
 {
     /**
      * Resolve a datasource classname.
@@ -39,12 +36,11 @@ class ConnectionRegistry extends ObjectRegistry
      * @param string $class Partial classname to resolve.
      * @return class-string<\Cake\Datasource\ConnectionInterface>|null Either the correct class name or null.
      */
-    protected function _resolveClassName(string $class): ?string
+    protected function _resolve_class_name(string $class): ?string
     {
         /** @var class-string<\Cake\Datasource\ConnectionInterface>|null */
-        return App::className($class, 'Datasource');
+        return App::class_name($class, 'Datasource');
     }
-
     /**
      * Throws an exception when a datasource is missing
      *
@@ -54,14 +50,10 @@ class ConnectionRegistry extends ObjectRegistry
      * @param string|null $plugin The plugin the datasource is missing in.
      * @throws \Cake\Datasource\Exception\MissingDatasourceException
      */
-    protected function _throwMissingClassError(string $class, ?string $plugin): void
+    protected function _throw_missing_class_error(string $class, ?string $plugin): void
     {
-        throw new MissingDatasourceException([
-            'class' => $class,
-            'plugin' => $plugin,
-        ]);
+        throw new Missing_Datasource_Exception(['class' => $class, 'plugin' => $plugin]);
     }
-
     /**
      * Create the connection object with the correct settings.
      *
@@ -75,21 +67,17 @@ class ConnectionRegistry extends ObjectRegistry
      * @param array<string, mixed> $config An array of settings to use for the datasource.
      * @return \Cake\Datasource\ConnectionInterface A connection with the correct settings.
      */
-    protected function _create(object|string $class, string $alias, array $config): ConnectionInterface
+    protected function _create(object|string $class, string $alias, array $config): Connection_Interface
     {
         if (is_string($class)) {
             unset($config['className']);
-
             return new $class($config);
         }
-
         if ($class instanceof Closure) {
             return $class($alias);
         }
-
         return $class;
     }
-
     /**
      * Remove a single adapter from the registry.
      *
@@ -99,7 +87,6 @@ class ConnectionRegistry extends ObjectRegistry
     public function unload(string $name): static
     {
         unset($this->_loaded[$name]);
-
         return $this;
     }
 }

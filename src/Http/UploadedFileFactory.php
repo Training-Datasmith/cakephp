@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,18 +14,16 @@ declare(strict_types=1);
  * @since         5.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Http;
 
-use Laminas\Diactoros\UploadedFile;
-use Psr\Http\Message\StreamInterface;
-use Psr\Http\Message\UploadedFileFactoryInterface;
-use Psr\Http\Message\UploadedFileInterface;
-
+use Laminas\Diactoros\Uploaded_File;
+use Psr\Http\Message\Stream_Interface;
+use Psr\Http\Message\Uploaded_File_Factory_Interface;
+use Psr\Http\Message\Uploaded_File_Interface;
 /**
  * Factory class for creating uploaded file instances.
  */
-class UploadedFileFactory implements UploadedFileFactoryInterface
+class Uploaded_File_Factory implements Uploaded_File_Factory_Interface
 {
     /**
      * Create a new uploaded file.
@@ -44,15 +41,9 @@ class UploadedFileFactory implements UploadedFileFactoryInterface
      * @param string|null $clientMediaType The media type as provided by the client, if any.
      * @throws \InvalidArgumentException If the file resource is not readable.
      */
-    public function createUploadedFile(
-        StreamInterface $stream,
-        ?int $size = null,
-        int $error = UPLOAD_ERR_OK,
-        ?string $clientFilename = null,
-        ?string $clientMediaType = null,
-    ): UploadedFileInterface {
-        $size ??= $stream->getSize() ?? 0;
-
-        return new UploadedFile($stream, $size, $error, $clientFilename, $clientMediaType);
+    public function create_uploaded_file(Stream_Interface $stream, ?int $size = null, int $error = UPLOAD_ERR_OK, ?string $client_filename = null, ?string $client_media_type = null): Uploaded_File_Interface
+    {
+        $size ??= $stream->get_size() ?? 0;
+        return new Uploaded_File($stream, $size, $error, $client_filename, $client_media_type);
     }
 }

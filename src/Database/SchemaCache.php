@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,11 +14,9 @@ declare(strict_types=1);
  * @since         3.6.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Database;
 
-use Cake\Database\Schema\CachedCollection;
-
+use Cake\Database\Schema\Cached_Collection;
 /**
  * Schema Cache.
  *
@@ -30,13 +27,12 @@ use Cake\Database\Schema\CachedCollection;
  *
  * @link https://en.wikipedia.org/wiki/Thundering_herd_problem About the thundering herd problem
  */
-class SchemaCache
+class Schema_Cache
 {
     /**
      * Schema
      */
-    protected CachedCollection $_schema;
-
+    protected Cached_Collection $_schema;
     /**
      * Constructor
      *
@@ -44,9 +40,8 @@ class SchemaCache
      */
     public function __construct(Connection $connection)
     {
-        $this->_schema = $this->getSchema($connection);
+        $this->_schema = $this->get_schema($connection);
     }
-
     /**
      * Build metadata.
      *
@@ -58,16 +53,13 @@ class SchemaCache
         if ($name) {
             $tables = [$name];
         } else {
-            $tables = $this->_schema->listTables();
+            $tables = $this->_schema->list_tables();
         }
-
         foreach ($tables as $table) {
             $this->_schema->describe($table, ['forceRefresh' => true]);
         }
-
         return $tables;
     }
-
     /**
      * Clear metadata.
      *
@@ -79,33 +71,28 @@ class SchemaCache
         if ($name) {
             $tables = [$name];
         } else {
-            $tables = $this->_schema->listTables();
+            $tables = $this->_schema->list_tables();
         }
-
-        $cacher = $this->_schema->getCacher();
-
+        $cacher = $this->_schema->get_cacher();
         foreach ($tables as $table) {
-            $key = $this->_schema->cacheKey($table);
+            $key = $this->_schema->cache_key($table);
             $cacher->delete($key);
         }
-
         return $tables;
     }
-
     /**
      * Helper method to get the schema collection.
      *
      * @param \Cake\Database\Connection $connection Connection object
      * @throws \RuntimeException If given connection object is not compatible with schema caching
      */
-    public function getSchema(Connection $connection): CachedCollection
+    public function get_schema(Connection $connection): Cached_Collection
     {
         $config = $connection->config();
         if (empty($config['cacheMetadata'])) {
-            $connection->cacheMetadata(true);
+            $connection->cache_metadata(true);
         }
-
         /** @var \Cake\Database\Schema\CachedCollection */
-        return $connection->getSchemaCollection();
+        return $connection->get_schema_collection();
     }
 }

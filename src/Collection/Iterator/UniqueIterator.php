@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,11 +14,9 @@ declare(strict_types=1);
  * @since         5.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Collection\Iterator;
 
 use Cake\Collection\Collection;
-
 /**
  * Creates a filtered iterator from another iterator. The filtering is done by
  * passing a callback function to each of the elements and taking them out if
@@ -29,7 +26,7 @@ use Cake\Collection\Collection;
  * @template TValue
  * @extends \Cake\Collection\Collection<TKey, TValue>
  */
-class UniqueIterator extends Collection
+class Unique_Iterator extends Collection
 {
     /**
      * Creates a filtered iterator using the callback to determine which items are
@@ -44,15 +41,14 @@ class UniqueIterator extends Collection
     public function __construct(iterable $items, callable $callback)
     {
         $unique = [];
-        $uniqueValues = [];
+        $unique_values = [];
         foreach ($items as $k => $v) {
-            $compareValue = $callback($v, $k);
-            if (!in_array($compareValue, $uniqueValues, true)) {
+            $compare_value = $callback($v, $k);
+            if (!in_array($compare_value, $unique_values, true)) {
                 $unique[$k] = $v;
-                $uniqueValues[] = $compareValue;
+                $unique_values[] = $compare_value;
             }
         }
-
         parent::__construct($unique);
     }
 }

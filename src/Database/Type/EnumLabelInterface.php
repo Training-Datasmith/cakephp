@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,14 +14,13 @@ declare(strict_types=1);
  * @since         5.0.3
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Database\Type;
 
 /**
  * An interface used to clarify that an enum has a label() method instead of having to use
  * `name` property.
  */
-interface EnumLabelInterface
+interface Enum_Label_Interface
 {
     /**
      * Label to return as string.

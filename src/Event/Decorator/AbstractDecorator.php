@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,13 +14,12 @@ declare(strict_types=1);
  * @since         3.3.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Event\Decorator;
 
 /**
  * Common base class for event decorator subclasses.
  */
-abstract class AbstractDecorator
+abstract class Abstract_Decorator
 {
     /**
      * Callable
@@ -29,21 +27,22 @@ abstract class AbstractDecorator
      * @var callable
      */
     protected mixed $_callable;
-
     /**
      * Constructor.
      *
      * @param callable $callable Callable.
      * @param array<string, mixed> $_options Decorator options.
      */
-    public function __construct(callable $callable, /**
-     * Decorator options
-     */
-        protected array $_options = [])
+    public function __construct(
+        callable $callable,
+        /**
+         * Decorator options
+         */
+        protected array $_options = []
+    )
     {
         $this->_callable = $callable;
     }
-
     /**
      * Invoke
      *
@@ -54,7 +53,6 @@ abstract class AbstractDecorator
     {
         return $this->_call($args);
     }
-
     /**
      * Calls the decorated callable with the passed arguments.
      *
@@ -63,7 +61,6 @@ abstract class AbstractDecorator
     protected function _call(array $args): mixed
     {
         $callable = $this->_callable;
-
         return $callable(...$args);
     }
 }

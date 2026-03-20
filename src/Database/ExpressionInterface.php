@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,23 +14,20 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Database;
 
 use Closure;
-
 /**
  * An interface used by Expression objects.
  */
-interface ExpressionInterface
+interface Expression_Interface
 {
     /**
      * Converts the Node into a SQL string fragment.
      *
      * @param \Cake\Database\ValueBinder $binder Parameter binder
      */
-    public function sql(ValueBinder $binder): string;
-
+    public function sql(Value_Binder $binder): string;
     /**
      * Iterates over each part of the expression recursively for every
      * level of the expressions tree and executes the callback,

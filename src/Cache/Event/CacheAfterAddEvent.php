@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,30 +14,24 @@ declare(strict_types=1);
  * @since         5.3.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Cache\Event;
 
-use Cake\Cache\CacheEngine;
+use Cake\Cache\Cache_Engine;
 use Cake\Cache\Exception\InvalidArgumentException;
 use Cake\Event\Event;
 use DateInterval;
-
 /**
  * Class Cache AfterAdd Event
  *
  * @template TEngine of \Cake\Cache\CacheEngine
  * @extends \Cake\Event\Event<TEngine>
  */
-class CacheAfterAddEvent extends Event
+class Cache_After_Add_Event extends Event
 {
     public const NAME = 'Cache.afterAdd';
-
     protected string $key;
-
     protected mixed $value = null;
-
     protected DateInterval|int|null $ttl = null;
-
     /**
      * Constructor
      *
@@ -46,7 +39,7 @@ class CacheAfterAddEvent extends Event
      * @param TEngine $subject The Cache engine instance this event applies to.
      * @param array $data Any value you wish to be transported with this event to it can be read by listeners.
      */
-    public function __construct(string $name, CacheEngine $subject, array $data = [])
+    public function __construct(string $name, Cache_Engine $subject, array $data = [])
     {
         if (isset($data['key'])) {
             $this->key = $data['key'];
@@ -64,46 +57,37 @@ class CacheAfterAddEvent extends Event
             $this->ttl = $data['ttl'];
             unset($data['ttl']);
         }
-
         parent::__construct($name, $subject, $data);
     }
-
     /**
      * The result value of the event listeners
      */
-    public function getResult(): ?bool
+    public function get_result(): ?bool
     {
         return $this->result;
     }
-
     /**
      * Listeners can attach a result value to the event.
      *
      * @param mixed $value The value to set.
      * @return $this
      */
-    public function setResult(mixed $value = null)
+    public function set_result(mixed $value = null)
     {
         if ($value !== null && !is_bool($value)) {
-            throw new InvalidArgumentException(
-                'The result for CacheEngine events must be a `bool`.',
-            );
+            throw new InvalidArgumentException('The result for CacheEngine events must be a `bool`.');
         }
-
-        return parent::setResult($value);
+        return parent::set_result($value);
     }
-
-    public function getKey(): string
+    public function get_key(): string
     {
         return $this->key;
     }
-
-    public function getValue(): mixed
+    public function get_value(): mixed
     {
         return $this->value;
     }
-
-    public function getTtl(): DateInterval|int|null
+    public function get_ttl(): DateInterval|int|null
     {
         return $this->ttl;
     }

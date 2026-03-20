@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,21 +14,17 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\ORM;
 
 use BadMethodCallException;
 use Cake\Core\App;
-
-use function Cake\Core\deprecationWarning;
-
-use Cake\Core\ObjectRegistry;
-use Cake\Event\EventDispatcherInterface;
-use Cake\Event\EventDispatcherTrait;
-use Cake\ORM\Exception\MissingBehaviorException;
-use Cake\ORM\Query\SelectQuery;
+use function Cake\Core\Deprecation_Warning;
+use Cake\Core\Object_Registry;
+use Cake\Event\Event_Dispatcher_Interface;
+use Cake\Event\Event_Dispatcher_Trait;
+use Cake\ORM\Exception\Missing_Behavior_Exception;
+use Cake\ORM\Query\Select_Query;
 use LogicException;
-
 /**
  * BehaviorRegistry is used as a registry for loaded behaviors and handles loading
  * and constructing behavior objects.
@@ -39,32 +34,28 @@ use LogicException;
  * @extends \Cake\Core\ObjectRegistry<\Cake\ORM\Behavior>
  * @implements \Cake\Event\EventDispatcherInterface<\Cake\ORM\Table>
  */
-class BehaviorRegistry extends ObjectRegistry implements EventDispatcherInterface
+class Behavior_Registry extends Object_Registry implements Event_Dispatcher_Interface
 {
     /**
      * @use \Cake\Event\EventDispatcherTrait<\Cake\ORM\Table>
      */
-    use EventDispatcherTrait;
-
+    use Event_Dispatcher_Trait;
     /**
      * The table using this registry.
      */
     protected Table $_table;
-
     /**
      * Method mappings.
      *
      * @var array<string, array>
      */
-    protected array $_methodMap = [];
-
+    protected array $_method_map = [];
     /**
      * Finder method mappings.
      *
      * @var array<string, array>
      */
-    protected array $_finderMap = [];
-
+    protected array $_finder_map = [];
     /**
      * Constructor
      *
@@ -73,21 +64,19 @@ class BehaviorRegistry extends ObjectRegistry implements EventDispatcherInterfac
     public function __construct(?Table $table = null)
     {
         if ($table !== null) {
-            $this->setTable($table);
+            $this->set_table($table);
         }
     }
-
     /**
      * Attaches a table instance to this registry.
      *
      * @param \Cake\ORM\Table $table The table this registry is attached to.
      */
-    public function setTable(Table $table): void
+    public function set_table(Table $table): void
     {
         $this->_table = $table;
-        $this->setEventManager($table->getEventManager());
+        $this->set_event_manager($table->get_event_manager());
     }
-
     /**
      * Resolve a behavior classname.
      *
@@ -95,12 +84,10 @@ class BehaviorRegistry extends ObjectRegistry implements EventDispatcherInterfac
      * @return string|null Either the correct classname or null.
      * @phpstan-return class-string|null
      */
-    public static function className(string $class): ?string
+    public static function class_name(string $class): ?string
     {
-        return App::className($class, 'Model/Behavior', 'Behavior')
-            ?: App::className($class, 'ORM/Behavior', 'Behavior');
+        return App::class_name($class, 'Model/Behavior', 'Behavior') ?: App::class_name($class, 'ORM/Behavior', 'Behavior');
     }
-
     /**
      * Resolve a behavior classname.
      *
@@ -109,12 +96,11 @@ class BehaviorRegistry extends ObjectRegistry implements EventDispatcherInterfac
      * @param string $class Partial classname to resolve.
      * @return class-string<\Cake\ORM\Behavior>|null Either the correct class name or null.
      */
-    protected function _resolveClassName(string $class): ?string
+    protected function _resolve_class_name(string $class): ?string
     {
         /** @var class-string<\Cake\ORM\Behavior>|null */
-        return static::className($class);
+        return static::class_name($class);
     }
-
     /**
      * Throws an exception when a behavior is missing.
      *
@@ -125,14 +111,10 @@ class BehaviorRegistry extends ObjectRegistry implements EventDispatcherInterfac
      * @param string|null $plugin The plugin the behavior is missing in.
      * @throws \Cake\ORM\Exception\MissingBehaviorException
      */
-    protected function _throwMissingClassError(string $class, ?string $plugin): void
+    protected function _throw_missing_class_error(string $class, ?string $plugin): void
     {
-        throw new MissingBehaviorException([
-            'class' => $class . 'Behavior',
-            'plugin' => $plugin,
-        ]);
+        throw new Missing_Behavior_Exception(['class' => $class . 'Behavior', 'plugin' => $plugin]);
     }
-
     /**
      * Create the behavior instance.
      *
@@ -149,20 +131,16 @@ class BehaviorRegistry extends ObjectRegistry implements EventDispatcherInterfac
         if (is_object($class)) {
             return $class;
         }
-
         $instance = new $class($this->_table, $config);
-
         $enable = $config['enabled'] ?? true;
         if ($enable) {
-            $this->getEventManager()->on($instance);
+            $this->get_event_manager()->on($instance);
         }
-        $methods = $this->_getMethods($instance, $class, $alias);
-        $this->_methodMap += $methods['methods'];
-        $this->_finderMap += $methods['finders'];
-
+        $methods = $this->_get_methods($instance, $class, $alias);
+        $this->_method_map += $methods['methods'];
+        $this->_finder_map += $methods['finders'];
         return $instance;
     }
-
     /**
      * Get the behavior methods and ensure there are no duplicates.
      *
@@ -176,42 +154,28 @@ class BehaviorRegistry extends ObjectRegistry implements EventDispatcherInterfac
      * @return array A list of implemented finders and methods.
      * @throws \LogicException when duplicate methods are connected.
      */
-    protected function _getMethods(Behavior $instance, string $class, string $alias): array
+    protected function _get_methods(Behavior $instance, string $class, string $alias): array
     {
-        $finders = array_change_key_case($instance->implementedFinders());
-        $methods = array_change_key_case($instance->implementedMethods());
-
-        foreach ($finders as $finder => $methodName) {
-            if (isset($this->_finderMap[$finder]) && $this->has($this->_finderMap[$finder][0])) {
-                $duplicate = $this->_finderMap[$finder];
-                $error = sprintf(
-                    '`%s` contains duplicate finder `%s` which is already provided by `%s`.',
-                    $class,
-                    $finder,
-                    $duplicate[0],
-                );
+        $finders = array_change_key_case($instance->implemented_finders());
+        $methods = array_change_key_case($instance->implemented_methods());
+        foreach ($finders as $finder => $method_name) {
+            if (isset($this->_finder_map[$finder]) && $this->has($this->_finder_map[$finder][0])) {
+                $duplicate = $this->_finder_map[$finder];
+                $error = sprintf('`%s` contains duplicate finder `%s` which is already provided by `%s`.', $class, $finder, $duplicate[0]);
                 throw new LogicException($error);
             }
-            $finders[$finder] = [$alias, $methodName];
+            $finders[$finder] = [$alias, $method_name];
         }
-
-        foreach ($methods as $method => $methodName) {
-            if (isset($this->_methodMap[$method]) && $this->has($this->_methodMap[$method][0])) {
-                $duplicate = $this->_methodMap[$method];
-                $error = sprintf(
-                    '`%s` contains duplicate method `%s` which is already provided by `%s`.',
-                    $class,
-                    $method,
-                    $duplicate[0],
-                );
+        foreach ($methods as $method => $method_name) {
+            if (isset($this->_method_map[$method]) && $this->has($this->_method_map[$method][0])) {
+                $duplicate = $this->_method_map[$method];
+                $error = sprintf('`%s` contains duplicate method `%s` which is already provided by `%s`.', $class, $method, $duplicate[0]);
                 throw new LogicException($error);
             }
-            $methods[$method] = [$alias, $methodName];
+            $methods[$method] = [$alias, $method_name];
         }
-
         return compact('methods', 'finders');
     }
-
     /**
      * Set an object directly into the registry by name.
      *
@@ -222,14 +186,11 @@ class BehaviorRegistry extends ObjectRegistry implements EventDispatcherInterfac
     public function set(string $name, object $object): static
     {
         parent::set($name, $object);
-
-        $methods = $this->_getMethods($object, $object::class, $name);
-        $this->_methodMap += $methods['methods'];
-        $this->_finderMap += $methods['finders'];
-
+        $methods = $this->_get_methods($object, $object::class, $name);
+        $this->_method_map += $methods['methods'];
+        $this->_finder_map += $methods['finders'];
         return $this;
     }
-
     /**
      * Remove an object from the registry.
      *
@@ -242,19 +203,16 @@ class BehaviorRegistry extends ObjectRegistry implements EventDispatcherInterfac
     {
         $instance = $this->get($name);
         $result = parent::unload($name);
-
-        $methods = array_map(strtolower(...), array_keys($instance->implementedMethods()));
+        $methods = array_map(strtolower(...), array_keys($instance->implemented_methods()));
         foreach ($methods as $method) {
-            unset($this->_methodMap[$method]);
+            unset($this->_method_map[$method]);
         }
-        $finders = array_map(strtolower(...), array_keys($instance->implementedFinders()));
+        $finders = array_map(strtolower(...), array_keys($instance->implemented_finders()));
         foreach ($finders as $finder) {
-            unset($this->_finderMap[$finder]);
+            unset($this->_finder_map[$finder]);
         }
-
         return $result;
     }
-
     /**
      * Check if any loaded behavior implements a method.
      *
@@ -264,13 +222,11 @@ class BehaviorRegistry extends ObjectRegistry implements EventDispatcherInterfac
      * @param string $method The method to check for.
      * @deprecated 5.3.0 Calling behavior methods on the table instance is deprecated.
      */
-    public function hasMethod(string $method): bool
+    public function has_method(string $method): bool
     {
         $method = strtolower($method);
-
-        return isset($this->_methodMap[$method]);
+        return isset($this->_method_map[$method]);
     }
-
     /**
      * Check if any loaded behavior implements the named finder.
      *
@@ -279,13 +235,11 @@ class BehaviorRegistry extends ObjectRegistry implements EventDispatcherInterfac
      *
      * @param string $method The method to check for.
      */
-    public function hasFinder(string $method): bool
+    public function has_finder(string $method): bool
     {
         $method = strtolower($method);
-
-        return isset($this->_finderMap[$method]);
+        return isset($this->_finder_map[$method]);
     }
-
     /**
      * Invoke a method on a behavior.
      *
@@ -297,27 +251,14 @@ class BehaviorRegistry extends ObjectRegistry implements EventDispatcherInterfac
      */
     public function call(string $method, array $args = []): mixed
     {
-        deprecationWarning(
-            '5.3.0',
-            sprintf(
-                'Calling behavior methods on the table instance is deprecated.'
-                . '  Use `$table->getBehavior(\'YourBehavior\')->%s()` instead.',
-                $method,
-            ),
-        );
-
+        deprecation_warning('5.3.0', sprintf('Calling behavior methods on the table instance is deprecated.' . '  Use `$table->getBehavior(\'YourBehavior\')->%s()` instead.', $method));
         $method = strtolower($method);
-        if ($this->hasMethod($method) && $this->has($this->_methodMap[$method][0])) {
-            [$behavior, $callMethod] = $this->_methodMap[$method];
-
-            return $this->_loaded[$behavior]->{$callMethod}(...$args);
+        if ($this->has_method($method) && $this->has($this->_method_map[$method][0])) {
+            [$behavior, $call_method] = $this->_method_map[$method];
+            return $this->_loaded[$behavior]->{$call_method}(...$args);
         }
-
-        throw new BadMethodCallException(
-            sprintf('Cannot call `%s`, it does not belong to any attached behavior.', $method),
-        );
+        throw new BadMethodCallException(sprintf('Cannot call `%s`, it does not belong to any attached behavior.', $method));
     }
-
     /**
      * Invoke a finder on a behavior.
      *
@@ -329,19 +270,14 @@ class BehaviorRegistry extends ObjectRegistry implements EventDispatcherInterfac
      * @return \Cake\ORM\Query\SelectQuery<TSubject> The return value depends on the underlying behavior method.
      * @throws \BadMethodCallException When the method is unknown.
      */
-    public function callFinder(string $type, SelectQuery $query, mixed ...$args): SelectQuery
+    public function call_finder(string $type, Select_Query $query, mixed ...$args): Select_Query
     {
         $type = strtolower($type);
-
-        if ($this->hasFinder($type)) {
-            [$behavior, $callMethod] = $this->_finderMap[$type];
-            $callable = $this->_loaded[$behavior]->$callMethod(...);
-
-            return $this->_table->invokeFinder($callable, $query, $args);
+        if ($this->has_finder($type)) {
+            [$behavior, $call_method] = $this->_finder_map[$type];
+            $callable = $this->_loaded[$behavior]->{$call_method}(...);
+            return $this->_table->invoke_finder($callable, $query, $args);
         }
-
-        throw new BadMethodCallException(
-            sprintf('Cannot call finder `%s`, it does not belong to any attached behavior.', $type),
-        );
+        throw new BadMethodCallException(sprintf('Cannot call finder `%s`, it does not belong to any attached behavior.', $type));
     }
 }

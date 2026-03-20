@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,13 +14,12 @@ declare(strict_types=1);
  * @since         3.1.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Datasource;
 
 /**
  * Defines the interface that testing fixtures use.
  */
-interface FixtureInterface
+interface Fixture_Interface
 {
     /**
      * Run before each test is executed.
@@ -31,22 +29,19 @@ interface FixtureInterface
      * @param \Cake\Datasource\ConnectionInterface $connection An instance of the connection
      *   into which the records will be inserted.
      */
-    public function insert(ConnectionInterface $connection): bool;
-
+    public function insert(Connection_Interface $connection): bool;
     /**
      * Truncates the current fixture.
      *
      * @param \Cake\Datasource\ConnectionInterface $connection A reference to a db instance
      */
-    public function truncate(ConnectionInterface $connection): bool;
-
+    public function truncate(Connection_Interface $connection): bool;
     /**
      * Get the connection name this fixture should be inserted into.
      */
     public function connection(): string;
-
     /**
      * Get the table/collection name for this fixture.
      */
-    public function sourceName(): string;
+    public function source_name(): string;
 }

@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,11 +14,9 @@ declare(strict_types=1);
  * @since         4.1.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Error\Debug;
 
 use InvalidArgumentException;
-
 /**
  * A Debugger formatter for generating unstyled plain text output.
  *
@@ -28,68 +25,63 @@ use InvalidArgumentException;
  *
  * @internal
  */
-class TextFormatter implements FormatterInterface
+class Text_Formatter implements Formatter_Interface
 {
     /**
      * @inheritDoc
      */
-    public function formatWrapper(string $contents, array $location): string
+    public function format_wrapper(string $contents, array $location): string
     {
         $template = <<<TEXT
-%s
-########## DEBUG ##########
-%s
-###########################
-
-TEXT;
-        $lineInfo = '';
+        %s
+        ########## DEBUG ##########
+        %s
+        ###########################
+        
+        TEXT;
+        $line_info = '';
         if (isset($location['file'], $location['line'])) {
-            $lineInfo = sprintf('%s (line %s)', $location['file'], $location['line']);
+            $line_info = sprintf('%s (line %s)', $location['file'], $location['line']);
         }
-
-        return sprintf($template, $lineInfo, $contents);
+        return sprintf($template, $line_info, $contents);
     }
-
     /**
      * Convert a tree of NodeInterface objects into a plain text string.
      *
      * @param \Cake\Error\Debug\NodeInterface $node The node tree to dump.
      */
-    public function dump(NodeInterface $node): string
+    public function dump(Node_Interface $node): string
     {
         $indent = 0;
-
         return $this->export($node, $indent);
     }
-
     /**
      * Convert a tree of NodeInterface objects into a plain text string.
      *
      * @param \Cake\Error\Debug\NodeInterface $var The node tree to dump.
      * @param int $indent The current indentation level.
      */
-    protected function export(NodeInterface $var, int $indent): string
+    protected function export(Node_Interface $var, int $indent): string
     {
-        if ($var instanceof ScalarNode) {
-            return match ($var->getType()) {
-                'bool' => $var->getValue() ? 'true' : 'false',
+        if ($var instanceof Scalar_Node) {
+            return match ($var->get_type()) {
+                'bool' => $var->get_value() ? 'true' : 'false',
                 'null' => 'null',
-                'string' => "'" . $var->getValue() . "'",
-                default => "({$var->getType()}) {$var->getValue()}",
+                'string' => "'" . $var->get_value() . "'",
+                default => "({$var->get_type()}) {$var->get_value()}",
             };
         }
-        if ($var instanceof ArrayNode) {
-            return $this->exportArray($var, $indent + 1);
+        if ($var instanceof Array_Node) {
+            return $this->export_array($var, $indent + 1);
         }
-        if ($var instanceof ClassNode || $var instanceof ReferenceNode) {
-            return $this->exportObject($var, $indent + 1);
+        if ($var instanceof Class_Node || $var instanceof Reference_Node) {
+            return $this->export_object($var, $indent + 1);
         }
-        if ($var instanceof SpecialNode) {
-            return $var->getValue();
+        if ($var instanceof Special_Node) {
+            return $var->get_value();
         }
         throw new InvalidArgumentException('Unknown node received ' . $var::class);
     }
-
     /**
      * Export an array type object
      *
@@ -97,24 +89,21 @@ TEXT;
      * @param int $indent The current indentation level.
      * @return string Exported array.
      */
-    protected function exportArray(ArrayNode $var, int $indent): string
+    protected function export_array(Array_Node $var, int $indent): string
     {
         $out = '[';
         $break = "\n" . str_repeat('  ', $indent);
         $end = "\n" . str_repeat('  ', $indent - 1);
         $vars = [];
-
-        foreach ($var->getChildren() as $item) {
-            $val = $item->getValue();
-            $vars[] = $break . $this->export($item->getKey(), $indent) . ' => ' . $this->export($val, $indent);
+        foreach ($var->get_children() as $item) {
+            $val = $item->get_value();
+            $vars[] = $break . $this->export($item->get_key(), $indent) . ' => ' . $this->export($val, $indent);
         }
         if ($vars !== []) {
             return $out . implode(',', $vars) . $end . ']';
         }
-
         return $out . ']';
     }
-
     /**
      * Handles object to string conversion.
      *
@@ -122,32 +111,28 @@ TEXT;
      * @param int $indent Current indentation level.
      * @see \Cake\Error\Debugger::exportVar()
      */
-    protected function exportObject(ClassNode|ReferenceNode $var, int $indent): string
+    protected function export_object(Class_Node|Reference_Node $var, int $indent): string
     {
         $out = '';
         $props = [];
-
-        if ($var instanceof ReferenceNode) {
-            return "object({$var->getValue()}) id:{$var->getId()} {}";
+        if ($var instanceof Reference_Node) {
+            return "object({$var->get_value()}) id:{$var->get_id()} {}";
         }
-
-        $out .= "object({$var->getValue()}) id:{$var->getId()} {";
+        $out .= "object({$var->get_value()}) id:{$var->get_id()} {";
         $break = "\n" . str_repeat('  ', $indent);
         $end = "\n" . str_repeat('  ', $indent - 1) . '}';
-
-        foreach ($var->getChildren() as $property) {
-            $visibility = $property->getVisibility();
-            $name = $property->getName();
+        foreach ($var->get_children() as $property) {
+            $visibility = $property->get_visibility();
+            $name = $property->get_name();
             if ($visibility && $visibility !== 'public') {
-                $props[] = "[{$visibility}] {$name} => " . $this->export($property->getValue(), $indent);
+                $props[] = "[{$visibility}] {$name} => " . $this->export($property->get_value(), $indent);
             } else {
-                $props[] = "{$name} => " . $this->export($property->getValue(), $indent);
+                $props[] = "{$name} => " . $this->export($property->get_value(), $indent);
             }
         }
         if ($props !== []) {
             return $out . $break . implode($break, $props) . $end;
         }
-
         return $out . '}';
     }
 }

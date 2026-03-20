@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -14,20 +13,18 @@ declare(strict_types=1);
  * @since         3.7.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Http\Client\Adapter;
 
-use Cake\Http\Client\AdapterInterface;
-use Cake\Http\Client\Exception\ClientException;
-use Cake\Http\Client\Exception\NetworkException;
-use Cake\Http\Client\Exception\RequestException;
+use Cake\Http\Client\Adapter_Interface;
+use Cake\Http\Client\Exception\Client_Exception;
+use Cake\Http\Client\Exception\Network_Exception;
+use Cake\Http\Client\Exception\Request_Exception;
 use Cake\Http\Client\Request;
 use Cake\Http\Client\Response;
-use Cake\Http\Exception\HttpException;
-use Composer\CaBundle\CaBundle;
-use CurlHandle;
-use Psr\Http\Message\RequestInterface;
-
+use Cake\Http\Exception\Http_Exception;
+use Composer\Ca_Bundle\Ca_Bundle;
+use Curl_Handle;
+use Psr\Http\Message\Request_Interface;
 /**
  * Implements sending Cake\Http\Client\Request via ext/curl.
  *
@@ -36,88 +33,67 @@ use Psr\Http\Message\RequestInterface;
  * can be set via the `curl` option key when making requests or configuring
  * a client.
  */
-class Curl implements AdapterInterface
+class Curl implements Adapter_Interface
 {
     /**
      * @inheritDoc
      */
-    public function send(RequestInterface $request, array $options): array
+    public function send(Request_Interface $request, array $options): array
     {
         if (!extension_loaded('curl')) {
-            throw new ClientException('curl extension is not loaded.');
+            throw new Client_Exception('curl extension is not loaded.');
         }
-
         $ch = curl_init();
         if ($ch === false) {
-            throw new ClientException('Could not initialize curl session.');
+            throw new Client_Exception('Could not initialize curl session.');
         }
-
-        $options = $this->buildOptions($request, $options);
+        $options = $this->build_options($request, $options);
         curl_setopt_array($ch, $options);
-
         $body = $this->exec($ch);
         assert($body !== true);
         if ($body === false) {
-            $errorCode = curl_errno($ch);
+            $error_code = curl_errno($ch);
             $error = curl_error($ch);
-
-            $message = "cURL Error ({$errorCode}) {$error}";
-            $errorNumbers = [
-                CURLE_FAILED_INIT,
-                CURLE_URL_MALFORMAT,
-                CURLE_URL_MALFORMAT_USER,
-            ];
-            if (in_array($errorCode, $errorNumbers, true)) {
-                throw new RequestException($message, $request);
+            $message = "cURL Error ({$error_code}) {$error}";
+            $error_numbers = [CURLE_FAILED_INIT, CURLE_URL_MALFORMAT, CURLE_URL_MALFORMAT_USER];
+            if (in_array($error_code, $error_numbers, true)) {
+                throw new Request_Exception($message, $request);
             }
-            throw new NetworkException($message, $request);
+            throw new Network_Exception($message, $request);
         }
-
-        return $this->createResponse($ch, $body);
+        return $this->create_response($ch, $body);
     }
-
     /**
      * Convert client options into curl options.
      *
      * @param \Psr\Http\Message\RequestInterface $request The request.
      * @param array<string, mixed> $options The client options
      */
-    public function buildOptions(RequestInterface $request, array $options): array
+    public function build_options(Request_Interface $request, array $options): array
     {
         $headers = [];
-        foreach ($request->getHeaders() as $key => $values) {
+        foreach ($request->get_headers() as $key => $values) {
             $headers[] = $key . ': ' . implode(', ', $values);
         }
-
-        $out = [
-            CURLOPT_URL => (string)$request->getUri(),
-            CURLOPT_HTTP_VERSION => $this->getProtocolVersion($request),
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_HEADER => true,
-            CURLOPT_HTTPHEADER => $headers,
-        ];
-        switch ($request->getMethod()) {
+        $out = [CURLOPT_URL => (string) $request->get_uri(), CURLOPT_HTTP_VERSION => $this->get_protocol_version($request), CURLOPT_RETURNTRANSFER => true, CURLOPT_HEADER => true, CURLOPT_HTTPHEADER => $headers];
+        switch ($request->get_method()) {
             case Request::METHOD_GET:
                 $out[CURLOPT_HTTPGET] = true;
                 break;
-
             case Request::METHOD_POST:
                 $out[CURLOPT_POST] = true;
                 break;
-
             case Request::METHOD_HEAD:
                 $out[CURLOPT_NOBODY] = true;
                 break;
-
             default:
                 $out[CURLOPT_POST] = true;
-                $out[CURLOPT_CUSTOMREQUEST] = $request->getMethod();
+                $out[CURLOPT_CUSTOMREQUEST] = $request->get_method();
                 break;
         }
-
-        $body = $request->getBody();
+        $body = $request->get_body();
         $body->rewind();
-        $out[CURLOPT_POSTFIELDS] = $body->getContents();
+        $out[CURLOPT_POSTFIELDS] = $body->get_contents();
         // GET requests with bodies require custom request to be used.
         if ($out[CURLOPT_POSTFIELDS] !== '' && isset($out[CURLOPT_HTTPGET])) {
             $out[CURLOPT_CUSTOMREQUEST] = 'GET';
@@ -125,25 +101,17 @@ class Curl implements AdapterInterface
         if ($out[CURLOPT_POSTFIELDS] === '') {
             unset($out[CURLOPT_POSTFIELDS]);
         }
-
         if (empty($options['ssl_cafile'])) {
-            $options['ssl_cafile'] = CaBundle::getBundledCaBundlePath();
+            $options['ssl_cafile'] = Ca_Bundle::get_bundled_ca_bundle_path();
         }
         if (!empty($options['ssl_verify_host'])) {
             // Value of 1 or true is deprecated. Only 2 or 0 should be used now.
             $options['ssl_verify_host'] = 2;
         }
-        $optionMap = [
-            'timeout' => CURLOPT_TIMEOUT,
-            'ssl_verify_peer' => CURLOPT_SSL_VERIFYPEER,
-            'ssl_verify_host' => CURLOPT_SSL_VERIFYHOST,
-            'ssl_cafile' => CURLOPT_CAINFO,
-            'ssl_local_cert' => CURLOPT_SSLCERT,
-            'ssl_passphrase' => CURLOPT_SSLCERTPASSWD,
-        ];
-        foreach ($optionMap as $option => $curlOpt) {
+        $option_map = ['timeout' => CURLOPT_TIMEOUT, 'ssl_verify_peer' => CURLOPT_SSL_VERIFYPEER, 'ssl_verify_host' => CURLOPT_SSL_VERIFYHOST, 'ssl_cafile' => CURLOPT_CAINFO, 'ssl_local_cert' => CURLOPT_SSLCERT, 'ssl_passphrase' => CURLOPT_SSLCERTPASSWD];
+        foreach ($option_map as $option => $curl_opt) {
             if (isset($options[$option])) {
-                $out[$curlOpt] = $options[$option];
+                $out[$curl_opt] = $options[$option];
             }
         }
         if (isset($options['proxy']['proxy'])) {
@@ -159,31 +127,22 @@ class Curl implements AdapterInterface
                 $out[$key] = $value;
             }
         }
-
         return $out;
     }
-
     /**
      * Convert HTTP version number into curl value.
      *
      * @param \Psr\Http\Message\RequestInterface $request The request to get a protocol version for.
      */
-    protected function getProtocolVersion(RequestInterface $request): int
+    protected function get_protocol_version(Request_Interface $request): int
     {
-        return match ($request->getProtocolVersion()) {
+        return match ($request->get_protocol_version()) {
             '1.0' => CURL_HTTP_VERSION_1_0,
             '1.1' => CURL_HTTP_VERSION_1_1,
-            '2', '2.0' => defined('CURL_HTTP_VERSION_2TLS')
-                ? CURL_HTTP_VERSION_2TLS
-                : (
-                    defined('CURL_HTTP_VERSION_2_0')
-                    ? CURL_HTTP_VERSION_2_0
-                    : throw new HttpException('libcurl 7.33 or greater required for HTTP/2 support')
-                ),
+            '2', '2.0' => defined('CURL_HTTP_VERSION_2TLS') ? CURL_HTTP_VERSION_2TLS : (defined('CURL_HTTP_VERSION_2_0') ? CURL_HTTP_VERSION_2_0 : throw new Http_Exception('libcurl 7.33 or greater required for HTTP/2 support')),
             default => CURL_HTTP_VERSION_NONE,
         };
     }
-
     /**
      * Convert the raw curl response into an Http\Client\Response
      *
@@ -191,22 +150,20 @@ class Curl implements AdapterInterface
      * @param string $responseData string The response data from curl_exec
      * @return array<\Cake\Http\Client\Response>
      */
-    protected function createResponse(CurlHandle $handle, string $responseData): array
+    protected function create_response(Curl_Handle $handle, string $response_data): array
     {
-        $headerSize = curl_getinfo($handle, CURLINFO_HEADER_SIZE);
-        $headers = trim(substr($responseData, 0, $headerSize));
-        $body = substr($responseData, $headerSize);
+        $header_size = curl_getinfo($handle, CURLINFO_HEADER_SIZE);
+        $headers = trim(substr($response_data, 0, $header_size));
+        $body = substr($response_data, $header_size);
         $response = new Response(explode("\r\n", $headers), $body);
-
         return [$response];
     }
-
     /**
      * Execute the curl handle.
      *
      * @param \CurlHandle $ch Curl Resource handle
      */
-    protected function exec(CurlHandle $ch): string|bool
+    protected function exec(Curl_Handle $ch): string|bool
     {
         return curl_exec($ch);
     }

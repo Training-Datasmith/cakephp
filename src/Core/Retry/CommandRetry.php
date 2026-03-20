@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,22 +14,19 @@ declare(strict_types=1);
  * @since         3.6.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Core\Retry;
 
 use Closure;
 use Exception;
-
 /**
  * Allows any action to be retried in case of an exception.
  *
  * This class can be parametrized with a strategy, which will be followed
  * to determine whether the action should be retried.
  */
-class CommandRetry
+class Command_Retry
 {
-    protected int $numRetries;
-
+    protected int $num_retries;
     /**
      * Creates the CommandRetry object with the given strategy and retry count
      *
@@ -41,11 +37,11 @@ class CommandRetry
         /**
          * The strategy to follow should the executed action fail.
          */
-        protected RetryStrategyInterface $strategy,
-        protected int $maxRetries = 1
-    ) {
+        protected Retry_Strategy_Interface $strategy,
+        protected int $max_retries = 1
+    )
+    {
     }
-
     /**
      * The number of retries to perform in case of failure
      *
@@ -55,29 +51,24 @@ class CommandRetry
      */
     public function run(Closure $action): mixed
     {
-        $this->numRetries = 0;
+        $this->num_retries = 0;
         while (true) {
             try {
                 return $action();
             } catch (Exception $e) {
-                if (
-                    $this->numRetries < $this->maxRetries &&
-                    $this->strategy->shouldRetry($e, $this->numRetries)
-                ) {
-                    $this->numRetries++;
+                if ($this->num_retries < $this->max_retries && $this->strategy->should_retry($e, $this->num_retries)) {
+                    $this->num_retries++;
                     continue;
                 }
-
                 throw $e;
             }
         }
     }
-
     /**
      * Returns the last number of retry attempts.
      */
-    public function getRetries(): int
+    public function get_retries(): int
     {
-        return $this->numRetries;
+        return $this->num_retries;
     }
 }

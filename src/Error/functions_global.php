@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -17,7 +16,6 @@ declare(strict_types=1);
  */
 use Cake\Core\Configure;
 use Cake\Error\Debugger;
-
 if (!function_exists('debug')) {
     /**
      * Prints out debug information about given variable and returns the
@@ -32,29 +30,22 @@ if (!function_exists('debug')) {
      * @link https://book.cakephp.org/5/en/development/debugging.html#basic-debugging
      * @link https://book.cakephp.org/5/en/core-libraries/global-constants-and-functions.html#debug
      */
-    function debug(mixed $var, ?bool $showHtml = null, bool $showFrom = true): mixed
+    function debug(mixed $var, ?bool $show_html = null, bool $show_from = true): mixed
     {
         if (!Configure::read('debug')) {
             return $var;
         }
-
         $location = [];
-        if ($showFrom) {
+        if ($show_from) {
             $trace = Debugger::trace(['start' => 0, 'depth' => 1, 'format' => 'array']);
             if (isset($trace[0]['line']) && isset($trace[0]['file'])) {
-                $location = [
-                    'line' => $trace[0]['line'],
-                    'file' => $trace[0]['file'],
-                ];
+                $location = ['line' => $trace[0]['line'], 'file' => $trace[0]['file']];
             }
         }
-
-        Debugger::printVar($var, $location, $showHtml);
-
+        Debugger::print_var($var, $location, $show_html);
         return $var;
     }
 }
-
 if (!function_exists('stackTrace')) {
     /**
      * Outputs a stack trace based on the supplied options.
@@ -68,21 +59,18 @@ if (!function_exists('stackTrace')) {
      *
      * @param array{depth?: int, args?: bool, start?: int} $options Format for outputting stack trace
      */
-    function stackTrace(array $options = []): void
+    function stack_trace(array $options = []): void
     {
         if (!Configure::read('debug')) {
             return;
         }
-
         $options += ['start' => 0];
         $options['start']++;
-
         /** @var string $trace */
         $trace = Debugger::trace($options);
         echo $trace;
     }
 }
-
 if (!function_exists('dd')) {
     /**
      * Prints out debug information about given variable and dies.
@@ -94,23 +82,17 @@ if (!function_exists('dd')) {
      * @param bool|null $showHtml If set to true, the method prints the debug data in a browser-friendly way.
      * @link https://book.cakephp.org/5/en/development/debugging.html#basic-debugging
      */
-    function dd(mixed $var, ?bool $showHtml = null): void
+    function dd(mixed $var, ?bool $show_html = null): void
     {
         if (!Configure::read('debug')) {
             return;
         }
-
         $trace = Debugger::trace(['start' => 0, 'depth' => 2, 'format' => 'array']);
-        $location = [
-            'line' => $trace[0]['line'],
-            'file' => $trace[0]['file'],
-        ];
-
-        Debugger::printVar($var, $location, $showHtml);
+        $location = ['line' => $trace[0]['line'], 'file' => $trace[0]['file']];
+        Debugger::print_var($var, $location, $show_html);
         die(1);
     }
 }
-
 if (!function_exists('breakpoint')) {
     /**
      * Command to return the eval-able code to startup PsySH in interactive debugger
@@ -129,11 +111,7 @@ if (!function_exists('breakpoint')) {
         if ((PHP_SAPI === 'cli' || PHP_SAPI === 'phpdbg') && class_exists(\Psy\Shell::class)) {
             return 'extract(\Psy\Shell::debug(get_defined_vars(), isset($this) ? $this : null));';
         }
-        trigger_error(
-            'psy/psysh must be installed and you must be in a CLI environment to use the breakpoint function',
-            E_USER_WARNING,
-        );
-
+        trigger_error('psy/psysh must be installed and you must be in a CLI environment to use the breakpoint function', E_USER_WARNING);
         return null;
     }
 }

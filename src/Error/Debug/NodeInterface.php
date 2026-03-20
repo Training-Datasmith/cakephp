@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,7 +14,6 @@ declare(strict_types=1);
  * @since         4.1.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Error\Debug;
 
 /**
@@ -23,17 +21,16 @@ namespace Cake\Error\Debug;
  *
  * Provides methods to look at contained value and iterate child nodes in the tree.
  */
-interface NodeInterface
+interface Node_Interface
 {
     /**
      * Get the child nodes of this node.
      *
      * @return array<\Cake\Error\Debug\NodeInterface>
      */
-    public function getChildren(): array;
-
+    public function get_children(): array;
     /**
      * Get the contained value.
      */
-    public function getValue(): mixed;
+    public function get_value(): mixed;
 }

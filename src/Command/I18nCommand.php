@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,26 +14,23 @@ declare(strict_types=1);
  * @since         1.2.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Command;
 
 use Cake\Console\Arguments;
-use Cake\Console\ConsoleIo;
-use Cake\Console\ConsoleOptionParser;
-
+use Cake\Console\Console_Io;
+use Cake\Console\Console_Option_Parser;
 /**
  * Command for interactive I18N management.
  */
-class I18nCommand extends Command
+class I18n_Command extends Command
 {
     /**
      * @inheritDoc
      */
-    public static function getDescription(): string
+    public static function get_description(): string
     {
         return 'I18n commands let you generate .pot files to power translations in your application.';
     }
-
     /**
      * Execute interactive mode
      *
@@ -42,7 +38,7 @@ class I18nCommand extends Command
      * @param \Cake\Console\ConsoleIo $io The console io
      * @return int|null The exit code or null for success
      */
-    public function execute(Arguments $args, ConsoleIo $io): ?int
+    public function execute(Arguments $args, Console_Io $io): ?int
     {
         $io->out('<info>I18n Command</info>');
         $io->hr();
@@ -50,46 +46,39 @@ class I18nCommand extends Command
         $io->out('[I]nitialize a language from POT file');
         $io->out('[H]elp');
         $io->out('[Q]uit');
-
         do {
-            $choice = strtolower($io->askChoice('What would you like to do?', ['E', 'I', 'H', 'Q']));
+            $choice = strtolower($io->ask_choice('What would you like to do?', ['E', 'I', 'H', 'Q']));
             $code = null;
             switch ($choice) {
                 case 'e':
-                    $code = $this->executeCommand(I18nExtractCommand::class, [], $io);
+                    $code = $this->execute_command(I18n_Extract_Command::class, [], $io);
                     break;
                 case 'i':
-                    $code = $this->executeCommand(I18nInitCommand::class, [], $io);
+                    $code = $this->execute_command(I18n_Init_Command::class, [], $io);
                     break;
                 case 'h':
-                    $io->out($this->getOptionParser()->help());
+                    $io->out($this->get_option_parser()->help());
                     break;
                 case 'q':
                     // Do nothing
                     break;
                 default:
-                    $io->err(
-                        'You have made an invalid selection. ' .
-                        'Please choose a command to execute by entering E, I, H, or Q.',
-                    );
+                    $io->err('You have made an invalid selection. ' . 'Please choose a command to execute by entering E, I, H, or Q.');
             }
             if ($code === static::CODE_ERROR) {
                 $this->abort();
             }
         } while ($choice !== 'q');
-
         return static::CODE_SUCCESS;
     }
-
     /**
      * Gets the option parser instance and configures it.
      *
      * @param \Cake\Console\ConsoleOptionParser $parser The parser to update
      */
-    public function buildOptionParser(ConsoleOptionParser $parser): ConsoleOptionParser
+    public function build_option_parser(Console_Option_Parser $parser): Console_Option_Parser
     {
-        $parser->setDescription(static::getDescription());
-
+        $parser->set_description(static::get_description());
         return $parser;
     }
 }

@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,17 +14,15 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Database\Expression;
 
-use Cake\Database\ExpressionInterface;
-use Cake\Database\ValueBinder;
+use Cake\Database\Expression_Interface;
+use Cake\Database\Value_Binder;
 use Closure;
-
 /**
  * An expression object that represents an expression with only a single operand.
  */
-class UnaryExpression implements ExpressionInterface
+class Unary_Expression implements Expression_Interface
 {
     /**
      * Indicates that the operation is in pre-order
@@ -33,14 +30,12 @@ class UnaryExpression implements ExpressionInterface
      * @var int
      */
     public const PREFIX = 0;
-
     /**
      * Indicates that the operation is in post-order
      *
      * @var int
      */
     public const POSTFIX = 1;
-
     /**
      * Constructor
      *
@@ -61,45 +56,40 @@ class UnaryExpression implements ExpressionInterface
          * Where to place the operator
          */
         protected int $position = self::PREFIX
-    ) {
+    )
+    {
     }
-
     /**
      * @inheritDoc
      */
-    public function sql(ValueBinder $binder): string
+    public function sql(Value_Binder $binder): string
     {
         $operand = $this->_value;
-        if ($operand instanceof ExpressionInterface) {
+        if ($operand instanceof Expression_Interface) {
             $operand = $operand->sql($binder);
         }
-
         if ($this->position === self::POSTFIX) {
             return '(' . $operand . ') ' . $this->_operator;
         }
-
         return $this->_operator . ' (' . $operand . ')';
     }
-
     /**
      * @inheritDoc
      */
     public function traverse(Closure $callback): static
     {
-        if ($this->_value instanceof ExpressionInterface) {
+        if ($this->_value instanceof Expression_Interface) {
             $callback($this->_value);
             $this->_value->traverse($callback);
         }
-
         return $this;
     }
-
     /**
      * Perform a deep clone of the inner expression.
      */
     public function __clone()
     {
-        if ($this->_value instanceof ExpressionInterface) {
+        if ($this->_value instanceof Expression_Interface) {
             $this->_value = clone $this->_value;
         }
     }

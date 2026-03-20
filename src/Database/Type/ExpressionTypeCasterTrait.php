@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,16 +14,14 @@ declare(strict_types=1);
  * @since         3.3.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Database\Type;
 
-use Cake\Database\TypeFactory;
-
+use Cake\Database\Type_Factory;
 /**
  * Offers a method to convert values to ExpressionInterface objects
  * if the type they should be converted to implements ExpressionTypeInterface
  */
-trait ExpressionTypeCasterTrait
+trait Expression_Type_Caster_Trait
 {
     /**
      * Conditionally converts the passed value to an ExpressionInterface object
@@ -34,29 +31,23 @@ trait ExpressionTypeCasterTrait
      * @param mixed $value The value to convert to ExpressionInterface
      * @param string|null $type The type name
      */
-    protected function _castToExpression(mixed $value, ?string $type = null): mixed
+    protected function _cast_to_expression(mixed $value, ?string $type = null): mixed
     {
         if ($type === null) {
             return $value;
         }
-
-        $baseType = str_replace('[]', '', $type);
-        $converter = TypeFactory::build($baseType);
-
-        if (!$converter instanceof ExpressionTypeInterface) {
+        $base_type = str_replace('[]', '', $type);
+        $converter = Type_Factory::build($base_type);
+        if (!$converter instanceof Expression_Type_Interface) {
             return $value;
         }
-
-        $multi = $type !== $baseType;
-
+        $multi = $type !== $base_type;
         if ($multi) {
             /** @var \Cake\Database\Type\ExpressionTypeInterface&\Cake\Database\TypeInterface $converter */
-            return array_map($converter->toExpression(...), $value);
+            return array_map($converter->to_expression(...), $value);
         }
-
-        return $converter->toExpression($value);
+        return $converter->to_expression($value);
     }
-
     /**
      * Returns an array with the types that require values to
      * be casted to expressions, out of the list of type names
@@ -64,17 +55,16 @@ trait ExpressionTypeCasterTrait
      *
      * @param array $types List of type names
      */
-    protected function _requiresToExpressionCasting(array $types): array
+    protected function _requires_to_expression_casting(array $types): array
     {
         $result = [];
         $types = array_filter($types);
         foreach ($types as $k => $type) {
-            $object = TypeFactory::build($type);
-            if ($object instanceof ExpressionTypeInterface) {
+            $object = Type_Factory::build($type);
+            if ($object instanceof Expression_Type_Interface) {
                 $result[$k] = $object;
             }
         }
-
         return $result;
     }
 }

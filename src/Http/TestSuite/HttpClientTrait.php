@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,27 +14,24 @@ declare(strict_types=1);
  * @since         4.3.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
-namespace Cake\Http\TestSuite;
+namespace Cake\Http\Test_Suite;
 
 use Cake\Http\Client;
 use Cake\Http\Client\Response;
-use PHPUnit\Framework\Attributes\After;
-
+use Php_Unit\Framework\Attributes\After;
 /**
  * Define mock responses and have mocks automatically cleared.
  */
-trait HttpClientTrait
+trait Http_Client_Trait
 {
     /**
      * Resets mocked responses
      */
     #[After]
-    public function cleanupMockResponses(): void
+    public function cleanup_mock_responses(): void
     {
-        Client::clearMockResponses();
+        Client::clear_mock_responses();
     }
-
     /**
      * Create a new response.
      *
@@ -43,13 +39,11 @@ trait HttpClientTrait
      * @param array<string> $headers A list of headers for the response. Example `Content-Type: application/json`
      * @param string $body The body for the response.
      */
-    public function newClientResponse(int $code = 200, array $headers = [], string $body = ''): Response
+    public function new_client_response(int $code = 200, array $headers = [], string $body = ''): Response
     {
         $headers = array_merge(["HTTP/1.1 {$code}"], $headers);
-
         return new Response($headers, $body);
     }
-
     /**
      * Add a mock response for a POST request.
      *
@@ -57,11 +51,10 @@ trait HttpClientTrait
      * @param \Cake\Http\Client\Response $response The response for the mock.
      * @param array<string, mixed> $options Additional options. See Client::addMockResponse()
      */
-    public function mockClientPost(string $url, Response $response, array $options = []): void
+    public function mock_client_post(string $url, Response $response, array $options = []): void
     {
-        Client::addMockResponse('POST', $url, $response, $options);
+        Client::add_mock_response('POST', $url, $response, $options);
     }
-
     /**
      * Add a mock response for a GET request.
      *
@@ -69,11 +62,10 @@ trait HttpClientTrait
      * @param \Cake\Http\Client\Response $response The response for the mock.
      * @param array<string, mixed> $options Additional options. See Client::addMockResponse()
      */
-    public function mockClientGet(string $url, Response $response, array $options = []): void
+    public function mock_client_get(string $url, Response $response, array $options = []): void
     {
-        Client::addMockResponse('GET', $url, $response, $options);
+        Client::add_mock_response('GET', $url, $response, $options);
     }
-
     /**
      * Add a mock response for a PATCH request.
      *
@@ -81,11 +73,10 @@ trait HttpClientTrait
      * @param \Cake\Http\Client\Response $response The response for the mock.
      * @param array<string, mixed> $options Additional options. See Client::addMockResponse()
      */
-    public function mockClientPatch(string $url, Response $response, array $options = []): void
+    public function mock_client_patch(string $url, Response $response, array $options = []): void
     {
-        Client::addMockResponse('PATCH', $url, $response, $options);
+        Client::add_mock_response('PATCH', $url, $response, $options);
     }
-
     /**
      * Add a mock response for a PUT request.
      *
@@ -93,11 +84,10 @@ trait HttpClientTrait
      * @param \Cake\Http\Client\Response $response The response for the mock.
      * @param array<string, mixed> $options Additional options. See Client::addMockResponse()
      */
-    public function mockClientPut(string $url, Response $response, array $options = []): void
+    public function mock_client_put(string $url, Response $response, array $options = []): void
     {
-        Client::addMockResponse('PUT', $url, $response, $options);
+        Client::add_mock_response('PUT', $url, $response, $options);
     }
-
     /**
      * Add a mock response for a DELETE request.
      *
@@ -105,15 +95,11 @@ trait HttpClientTrait
      * @param \Cake\Http\Client\Response $response The response for the mock.
      * @param array<string, mixed> $options Additional options. See Client::addMockResponse()
      */
-    public function mockClientDelete(string $url, Response $response, array $options = []): void
+    public function mock_client_delete(string $url, Response $response, array $options = []): void
     {
-        Client::addMockResponse('DELETE', $url, $response, $options);
+        Client::add_mock_response('DELETE', $url, $response, $options);
     }
 }
-
 // phpcs:disable
-class_alias(
-    \Cake\Http\TestSuite\HttpClientTrait::class,
-    'Cake\TestSuite\HttpClientTrait'
-);
+class_alias(\Cake\Http\Test_Suite\Http_Client_Trait::class, 'Cake\TestSuite\HttpClientTrait');
 // phpcs:enable

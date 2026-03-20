@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -16,7 +15,6 @@ declare(strict_types=1);
  * @since         4.2.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\I18n;
 
 /**
@@ -45,93 +43,85 @@ class Package
          * Message keys and translations in this package.
          */
         protected array $messages = []
-    ) {
+    )
+    {
     }
-
     /**
      * Sets the messages for this package.
      *
      * @param array<array|string> $messages The messages for this package.
      */
-    public function setMessages(array $messages): void
+    public function set_messages(array $messages): void
     {
         $this->messages = $messages;
     }
-
     /**
      * Adds one message for this package.
      *
      * @param string $key the key of the message
      * @param array|string $message the actual message
      */
-    public function addMessage(string $key, array|string $message): void
+    public function add_message(string $key, array|string $message): void
     {
         $this->messages[$key] = $message;
     }
-
     /**
      * Adds new messages for this package.
      *
      * @param array<array|string> $messages The messages to add in this package.
      */
-    public function addMessages(array $messages): void
+    public function add_messages(array $messages): void
     {
         $this->messages = array_merge($this->messages, $messages);
     }
-
     /**
      * Gets the messages for this package.
      *
      * @return array<array|string>
      */
-    public function getMessages(): array
+    public function get_messages(): array
     {
         return $this->messages;
     }
-
     /**
      * Gets the message of the given key for this package.
      *
      * @param string $key the key of the message to return
      * @return array|string|false The message translation, or false if not found.
      */
-    public function getMessage(string $key): array|string|false
+    public function get_message(string $key): array|string|false
     {
         return $this->messages[$key] ?? false;
     }
-
     /**
      * Sets the formatter name for this package.
      *
      * @param string $formatter The formatter name for this package.
      */
-    public function setFormatter(string $formatter): void
+    public function set_formatter(string $formatter): void
     {
         $this->formatter = $formatter;
     }
-
     /**
      * Gets the formatter name for this package.
      */
-    public function getFormatter(): string
+    public function get_formatter(): string
     {
         return $this->formatter;
     }
-
     /**
      * Sets the fallback package name.
      *
      * @param string|null $fallback The fallback package name.
      */
-    public function setFallback(?string $fallback): void
+    public function set_fallback(?string $fallback): void
     {
         $this->fallback = $fallback;
     }
-
     /**
      * Gets the fallback package name.
      */
-    public function getFallback(): ?string
+    public function get_fallback(): ?string
     {
         return $this->fallback;
     }

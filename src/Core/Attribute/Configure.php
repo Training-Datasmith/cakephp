@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,13 +14,11 @@ declare(strict_types=1);
  * @since         5.3.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Core\Attribute;
 
 use Attribute;
 use Cake\Core\Configure as CakeConfigure;
-use League\Container\Attribute\AttributeInterface;
-
+use League\Container\Attribute\Attribute_Interface;
 /**
  * Configure attribute for dependency injection container delegate.
  *
@@ -44,14 +41,13 @@ use League\Container\Attribute\AttributeInterface;
  * ```
  */
 #[Attribute(Attribute::TARGET_PARAMETER)]
-class Configure implements AttributeInterface
+class Configure implements Attribute_Interface
 {
     public function __construct(private readonly string $name)
     {
     }
-
     public function resolve(): mixed
     {
-        return CakeConfigure::read($this->name);
+        return Cake_Configure::read($this->name);
     }
 }

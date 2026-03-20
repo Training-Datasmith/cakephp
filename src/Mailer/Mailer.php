@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -13,21 +12,17 @@ declare(strict_types=1);
  * @since         3.1.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Mailer;
 
 use BadMethodCallException;
-
-use function Cake\Core\deprecationWarning;
-
-use Cake\Core\StaticConfigTrait;
-use Cake\Event\EventListenerInterface;
+use function Cake\Core\Deprecation_Warning;
+use Cake\Core\Static_Config_Trait;
+use Cake\Event\Event_Listener_Interface;
 use Cake\Log\Log;
-use Cake\Mailer\Exception\MissingActionException;
-use Cake\ORM\Locator\LocatorAwareTrait;
-use Cake\View\ViewBuilder;
+use Cake\Mailer\Exception\Missing_Action_Exception;
+use Cake\ORM\Locator\Locator_Aware_Trait;
+use Cake\View\View_Builder;
 use InvalidArgumentException;
-
 /**
  * Mailer base class.
  *
@@ -135,60 +130,47 @@ use InvalidArgumentException;
  * @method array getBody(?string $type = null) Get generated message body as array.
  *   {@see \Cake\Mailer\Message::getBody()}
  */
-class Mailer implements EventListenerInterface
+class Mailer implements Event_Listener_Interface
 {
-    use LocatorAwareTrait;
-    use StaticConfigTrait;
-
+    use Locator_Aware_Trait;
+    use Static_Config_Trait;
     /**
      * Mailer's name.
      */
     public static string $name;
-
     /**
      * The transport instance to use for sending mail.
      */
-    protected ?AbstractTransport $transport = null;
-
+    protected ?Abstract_Transport $transport = null;
     /**
      * Message class name.
      *
      * @phpstan-var class-string<\Cake\Mailer\Message>
      */
-    protected string $messageClass = Message::class;
-
+    protected string $message_class = Message::class;
     /**
      * Message instance.
      */
     protected Message $message;
-
     /**
      * Email Renderer
      */
     protected ?Renderer $renderer = null;
-
     /**
      * Hold message, renderer and transport instance for restoring after running
      * a mailer action.
      *
      * @var array<string, mixed>
      */
-    protected array $clonedInstances = [
-        'message' => null,
-        'renderer' => null,
-        'transport' => null,
-    ];
-
+    protected array $cloned_instances = ['message' => null, 'renderer' => null, 'transport' => null];
     /**
      * Mailer driver class map.
      *
      * @var array<string, string>
      * @phpstan-var array<string, class-string>
      */
-    protected static array $_dsnClassMap = [];
-
-    protected ?array $logConfig = null;
-
+    protected static array $_dsn_class_map = [];
+    protected ?array $log_config = null;
     /**
      * Constructor
      *
@@ -196,52 +178,44 @@ class Mailer implements EventListenerInterface
      */
     public function __construct(array|string|null $config = null)
     {
-        $this->message = new $this->messageClass();
-
-        $config ??= static::getConfig('default');
-
+        $this->message = new $this->message_class();
+        $config ??= static::get_config('default');
         if ($config) {
-            $this->setProfile($config);
+            $this->set_profile($config);
         }
     }
-
     /**
      * Get the view builder.
      */
-    public function viewBuilder(): ViewBuilder
+    public function view_builder(): View_Builder
     {
-        return $this->getRenderer()->viewBuilder();
+        return $this->get_renderer()->view_builder();
     }
-
     /**
      * Get email renderer.
      */
-    public function getRenderer(): Renderer
+    public function get_renderer(): Renderer
     {
         return $this->renderer ??= new Renderer();
     }
-
     /**
      * Set email renderer.
      *
      * @param \Cake\Mailer\Renderer $renderer Renderer instance.
      * @return $this
      */
-    public function setRenderer(Renderer $renderer): static
+    public function set_renderer(Renderer $renderer): static
     {
         $this->renderer = $renderer;
-
         return $this;
     }
-
     /**
      * Get message instance.
      */
-    public function getMessage(): Message
+    public function get_message(): Message
     {
         return $this->message;
     }
-
     /**
      * Set message instance.
      *
@@ -249,17 +223,12 @@ class Mailer implements EventListenerInterface
      * @return $this
      * @deprecated 5.1.0 Configure the mailer according to the documentation instead of manually setting the Message instance.
      */
-    public function setMessage(Message $message): static
+    public function set_message(Message $message): static
     {
-        deprecationWarning(
-            '5.1.0',
-            'Setting the message instance is deprecated. Configure the mailer according to the documentation instead.',
-        );
+        deprecation_warning('5.1.0', 'Setting the message instance is deprecated. Configure the mailer according to the documentation instead.');
         $this->message = $message;
-
         return $this;
     }
-
     /**
      * Magic method to forward method class to Message instance.
      *
@@ -269,14 +238,12 @@ class Mailer implements EventListenerInterface
      */
     public function __call(string $method, array $args)
     {
-        $result = $this->message->$method(...$args);
+        $result = $this->message->{$method}(...$args);
         if (str_starts_with($method, 'get')) {
             return $result;
         }
-
         return $this;
     }
-
     /**
      * Sets email view vars.
      *
@@ -284,13 +251,11 @@ class Mailer implements EventListenerInterface
      * @param mixed $value View variable value.
      * @return $this
      */
-    public function setViewVars(array|string $key, mixed $value = null): static
+    public function set_view_vars(array|string $key, mixed $value = null): static
     {
-        $this->getRenderer()->set($key, $value);
-
+        $this->get_renderer()->set($key, $value);
         return $this;
     }
-
     /**
      * Sends email.
      *
@@ -311,32 +276,22 @@ class Mailer implements EventListenerInterface
         if ($action === null) {
             return $this->deliver();
         }
-
         if (!method_exists($this, $action)) {
-            throw new MissingActionException([
-                'mailer' => static::class,
-                'action' => $action,
-            ]);
+            throw new Missing_Action_Exception(['mailer' => static::class, 'action' => $action]);
         }
-
         $this->backup();
-
-        $this->getMessage()->setHeaders($headers);
-        if (!$this->viewBuilder()->getTemplate()) {
-            $this->viewBuilder()->setTemplate($action);
+        $this->get_message()->set_headers($headers);
+        if (!$this->view_builder()->get_template()) {
+            $this->view_builder()->set_template($action);
         }
-
         try {
-            $this->$action(...$args);
-
+            $this->{$action}(...$args);
             $result = $this->deliver();
         } finally {
             $this->restore();
         }
-
         return $result;
     }
-
     /**
      * Render content and set message body.
      *
@@ -345,16 +300,10 @@ class Mailer implements EventListenerInterface
      */
     public function render(string $content = ''): static
     {
-        $content = $this->getRenderer()->render(
-            $content,
-            $this->message->getBodyTypes(),
-        );
-
-        $this->message->setBody($content);
-
+        $content = $this->get_renderer()->render($content, $this->message->get_body_types());
+        $this->message->set_body($content);
         return $this;
     }
-
     /**
      * Render content and send email using configured transport.
      *
@@ -365,13 +314,10 @@ class Mailer implements EventListenerInterface
     public function deliver(string $content = ''): array
     {
         $this->render($content);
-
-        $result = $this->getTransport()->send($this->message);
-        $this->logDelivery($result);
-
+        $result = $this->get_transport()->send($this->message);
+        $this->log_delivery($result);
         return $result;
     }
-
     /**
      * Sets the configuration profile to use for this instance.
      *
@@ -379,65 +325,54 @@ class Mailer implements EventListenerInterface
      *    an array with config.
      * @return $this
      */
-    public function setProfile(array|string $config): static
+    public function set_profile(array|string $config): static
     {
         if (is_string($config)) {
             $name = $config;
-            $config = static::getConfig($name);
+            $config = static::get_config($name);
             if (!$config) {
                 throw new InvalidArgumentException(sprintf('Unknown email configuration `%s`.', $name));
             }
             unset($name);
         }
-
-        $simpleMethods = [
-            'transport',
-        ];
-        foreach ($simpleMethods as $method) {
+        $simple_methods = ['transport'];
+        foreach ($simple_methods as $method) {
             if (isset($config[$method])) {
                 $this->{'set' . ucfirst($method)}($config[$method]);
                 unset($config[$method]);
             }
         }
-
-        $viewBuilderMethods = [
-            'template', 'layout', 'theme',
-        ];
-        foreach ($viewBuilderMethods as $method) {
+        $view_builder_methods = ['template', 'layout', 'theme'];
+        foreach ($view_builder_methods as $method) {
             if (array_key_exists($method, $config)) {
-                $this->viewBuilder()->{'set' . ucfirst($method)}($config[$method]);
+                $this->view_builder()->{'set' . ucfirst($method)}($config[$method]);
                 unset($config[$method]);
             }
         }
-
         if (array_key_exists('helpers', $config)) {
-            $this->viewBuilder()->setHelpers($config['helpers']);
+            $this->view_builder()->set_helpers($config['helpers']);
             unset($config['helpers']);
         }
         if (array_key_exists('viewRenderer', $config)) {
-            $this->viewBuilder()->setClassName($config['viewRenderer']);
+            $this->view_builder()->set_class_name($config['viewRenderer']);
             unset($config['viewRenderer']);
         }
         if (array_key_exists('viewVars', $config)) {
-            $this->viewBuilder()->setVars($config['viewVars']);
+            $this->view_builder()->set_vars($config['viewVars']);
             unset($config['viewVars']);
         }
         if (isset($config['autoLayout'])) {
             if ($config['autoLayout'] === false) {
-                $this->viewBuilder()->disableAutoLayout();
+                $this->view_builder()->disable_auto_layout();
             }
             unset($config['autoLayout']);
         }
-
         if (isset($config['log'])) {
-            $this->setLogConfig($config['log']);
+            $this->set_log_config($config['log']);
         }
-
-        $this->message->setConfig($config);
-
+        $this->message->set_config($config);
         return $this;
     }
-
     /**
      * Sets the transport.
      *
@@ -449,46 +384,38 @@ class Mailer implements EventListenerInterface
      * @return $this
      * @throws \LogicException When the chosen transport lacks a send method.
      */
-    public function setTransport(AbstractTransport|string $name): static
+    public function set_transport(Abstract_Transport|string $name): static
     {
         if (is_string($name)) {
-            $this->transport = TransportFactory::get($name);
+            $this->transport = Transport_Factory::get($name);
         } else {
             $this->transport = $name;
         }
-
         return $this;
     }
-
     /**
      * Gets the transport.
      */
-    public function getTransport(): AbstractTransport
+    public function get_transport(): Abstract_Transport
     {
         if ($this->transport === null) {
-            throw new BadMethodCallException(
-                'Transport was not defined. '
-                . 'You must set on using setTransport() or set `transport` option in your mailer profile.',
-            );
+            throw new BadMethodCallException('Transport was not defined. ' . 'You must set on using setTransport() or set `transport` option in your mailer profile.');
         }
-
         return $this->transport;
     }
-
     /**
      * Backup message, renderer, transport instances before an action is run.
      */
     protected function backup(): void
     {
-        $this->clonedInstances['message'] = clone $this->message;
+        $this->cloned_instances['message'] = clone $this->message;
         if ($this->renderer !== null) {
-            $this->clonedInstances['renderer'] = clone $this->renderer;
+            $this->cloned_instances['renderer'] = clone $this->renderer;
         }
         if ($this->transport !== null) {
-            $this->clonedInstances['transport'] = clone $this->transport;
+            $this->cloned_instances['transport'] = clone $this->transport;
         }
     }
-
     /**
      * Restore message, renderer, transport instances to state before an action was run.
      *
@@ -496,22 +423,20 @@ class Mailer implements EventListenerInterface
      */
     protected function restore(): static
     {
-        foreach (array_keys($this->clonedInstances) as $key) {
-            if ($this->clonedInstances[$key] === null) {
+        foreach (array_keys($this->cloned_instances) as $key) {
+            if ($this->cloned_instances[$key] === null) {
                 if ($key === 'message') {
                     $this->message->reset();
                 } else {
                     $this->{$key} = null;
                 }
             } else {
-                $this->{$key} = clone $this->clonedInstances[$key];
-                $this->clonedInstances[$key] = null;
+                $this->{$key} = clone $this->cloned_instances[$key];
+                $this->cloned_instances[$key] = null;
             }
         }
-
         return $this;
     }
-
     /**
      * Reset all the internal variables to be able to send out a new email.
      *
@@ -520,57 +445,40 @@ class Mailer implements EventListenerInterface
     public function reset(): static
     {
         $this->message->reset();
-        $this->getRenderer()->reset();
+        $this->get_renderer()->reset();
         $this->transport = null;
-        $this->clonedInstances = [
-            'message' => null,
-            'renderer' => null,
-            'transport' => null,
-        ];
-
+        $this->cloned_instances = ['message' => null, 'renderer' => null, 'transport' => null];
         return $this;
     }
-
     /**
      * Log the email message delivery.
      *
      * @param array<string, mixed> $contents The content with 'headers' and 'message' keys.
      * @phpstan-param array{headers: string, message: string, ...} $contents
      */
-    protected function logDelivery(array $contents): void
+    protected function log_delivery(array $contents): void
     {
-        if (!$this->logConfig) {
+        if (!$this->log_config) {
             return;
         }
-
-        Log::write(
-            $this->logConfig['level'],
-            PHP_EOL . $this->flatten($contents['headers']) . PHP_EOL . PHP_EOL . $this->flatten($contents['message']),
-            $this->logConfig['scope'],
-        );
+        Log::write($this->log_config['level'], PHP_EOL . $this->flatten($contents['headers']) . PHP_EOL . PHP_EOL . $this->flatten($contents['message']), $this->log_config['scope']);
     }
-
     /**
      * Set logging config.
      *
      * @param array<string, mixed>|string|true $log Log config.
      */
-    protected function setLogConfig(array|string|bool $log): void
+    protected function set_log_config(array|string|bool $log): void
     {
-        $config = [
-            'level' => 'debug',
-            'scope' => ['cake.mailer', 'email'],
-        ];
+        $config = ['level' => 'debug', 'scope' => ['cake.mailer', 'email']];
         if ($log !== true) {
             if (!is_array($log)) {
                 $log = ['level' => $log];
             }
             $config = $log + $config;
         }
-
-        $this->logConfig = $config;
+        $this->log_config = $config;
     }
-
     /**
      * Converts given value to string
      *
@@ -580,13 +488,12 @@ class Mailer implements EventListenerInterface
     {
         return is_array($value) ? implode(';', $value) : $value;
     }
-
     /**
      * Implemented events.
      *
      * @return array<string, mixed>
      */
-    public function implementedEvents(): array
+    public function implemented_events(): array
     {
         return [];
     }

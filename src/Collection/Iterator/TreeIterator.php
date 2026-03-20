@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,14 +14,12 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Collection\Iterator;
 
-use Cake\Collection\CollectionInterface;
-use Cake\Collection\CollectionTrait;
-use RecursiveIterator;
-use RecursiveIteratorIterator;
-
+use Cake\Collection\Collection_Interface;
+use Cake\Collection\Collection_Trait;
+use Recursive_Iterator;
+use Recursive_Iterator_Iterator;
 /**
  * A Recursive iterator used to flatten nested structures and also exposes
  * all Collection methods
@@ -32,18 +29,16 @@ use RecursiveIteratorIterator;
  * @template-extends \RecursiveIteratorIterator<\RecursiveIterator<TKey, TValue>>
  * @implements \Cake\Collection\CollectionInterface<TKey, TValue>
  */
-class TreeIterator extends RecursiveIteratorIterator implements CollectionInterface
+class Tree_Iterator extends Recursive_Iterator_Iterator implements Collection_Interface
 {
     /** @use \Cake\Collection\CollectionTrait<TKey, TValue> */
-    use CollectionTrait;
-
+    use Collection_Trait;
     /**
      * The iteration mode
      *
      * @phpstan-var \RecursiveIteratorIterator::LEAVES_ONLY|\RecursiveIteratorIterator::SELF_FIRST|\RecursiveIteratorIterator::CHILD_FIRST
      */
     protected int $_mode;
-
     /**
      * Constructor
      *
@@ -53,15 +48,11 @@ class TreeIterator extends RecursiveIteratorIterator implements CollectionInterf
      * @phpstan-param \RecursiveIteratorIterator::LEAVES_ONLY|\RecursiveIteratorIterator::SELF_FIRST|\RecursiveIteratorIterator::CHILD_FIRST $mode
      * @phpstan-param \RecursiveIteratorIterator::LEAVES_ONLY|\RecursiveIteratorIterator::CATCH_GET_CHILD $flags
      */
-    public function __construct(
-        RecursiveIterator $items,
-        int $mode = RecursiveIteratorIterator::SELF_FIRST,
-        int $flags = 0,
-    ) {
+    public function __construct(Recursive_Iterator $items, int $mode = Recursive_Iterator_Iterator::SELF_FIRST, int $flags = 0)
+    {
         parent::__construct($items, $mode, $flags);
         $this->_mode = $mode;
     }
-
     /**
      * Returns another iterator which will return the values ready to be displayed
      * to a user. It does so by extracting one property from each of the elements
@@ -100,27 +91,16 @@ class TreeIterator extends RecursiveIteratorIterator implements CollectionInterf
      * their depth in the tree
      * @return \Cake\Collection\Iterator\TreePrinter<TKey, TValue>
      */
-    public function printer(
-        callable|string $valuePath,
-        callable|string|null $keyPath = null,
-        string $spacer = '__',
-    ): TreePrinter {
-        if (!$keyPath) {
+    public function printer(callable|string $value_path, callable|string|null $key_path = null, string $spacer = '__'): Tree_Printer
+    {
+        if (!$key_path) {
             $counter = 0;
-            $keyPath = function () use (&$counter): int {
+            $key_path = function () use (&$counter): int {
                 return $counter++;
             };
         }
-
         /** @var \RecursiveIterator<TKey, TValue> $iterator */
-        $iterator = $this->getInnerIterator();
-
-        return new TreePrinter(
-            $iterator,
-            $valuePath,
-            $keyPath,
-            $spacer,
-            $this->_mode,
-        );
+        $iterator = $this->get_inner_iterator();
+        return new Tree_Printer($iterator, $value_path, $key_path, $spacer, $this->_mode);
     }
 }

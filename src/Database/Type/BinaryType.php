@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,19 +14,17 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Database\Type;
 
-use Cake\Core\Exception\CakeException;
+use Cake\Core\Exception\Cake_Exception;
 use Cake\Database\Driver;
 use PDO;
-
 /**
  * Binary type converter.
  *
  * Use to convert binary data between PHP and the database types.
  */
-class BinaryType extends BaseType
+class Binary_Type extends Base_Type
 {
     /**
      * Convert binary data into the database format.
@@ -39,11 +36,10 @@ class BinaryType extends BaseType
      * @param \Cake\Database\Driver $driver The driver instance to convert with.
      * @return resource|string
      */
-    public function toDatabase(mixed $value, Driver $driver): mixed
+    public function to_database(mixed $value, Driver $driver): mixed
     {
         return $value;
     }
-
     /**
      * Convert binary into resource handles
      *
@@ -52,7 +48,7 @@ class BinaryType extends BaseType
      * @return resource|null
      * @throws \Cake\Core\Exception\CakeException
      */
-    public function toPHP(mixed $value, Driver $driver): mixed
+    public function to_php(mixed $value, Driver $driver): mixed
     {
         if ($value === null) {
             return null;
@@ -63,17 +59,15 @@ class BinaryType extends BaseType
         if (is_resource($value)) {
             return $value;
         }
-        throw new CakeException(sprintf('Unable to convert `%s` into binary.', gettype($value)));
+        throw new Cake_Exception(sprintf('Unable to convert `%s` into binary.', gettype($value)));
     }
-
     /**
      * @inheritDoc
      */
-    public function toStatement(mixed $value, Driver $driver): int
+    public function to_statement(mixed $value, Driver $driver): int
     {
         return PDO::PARAM_LOB;
     }
-
     /**
      * Marshals flat data into PHP objects.
      *

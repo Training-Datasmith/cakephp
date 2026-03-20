@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,18 +14,16 @@ declare(strict_types=1);
  * @since         5.1.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Core;
 
-use Cake\Core\Exception\CakeException;
+use Cake\Core\Exception\Cake_Exception;
 use Cake\Utility\Hash;
-
 /**
  * PluginConfig contains all available plugins and their config if/how they should be loaded
  *
  * @internal
  */
-class PluginConfig
+class Plugin_Config
 {
     /**
      * Load the path information stored in vendor/cakephp-plugins.php
@@ -37,146 +34,117 @@ class PluginConfig
      *
      * @internal
      */
-    public static function loadInstallerConfig(): void
+    public static function load_installer_config(): void
     {
         if (Configure::check('plugins')) {
             return;
         }
-        $vendorFile = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . 'cakephp-plugins.php';
-        if (!is_file($vendorFile)) {
-            $vendorFile = dirname(__DIR__, 4) . DIRECTORY_SEPARATOR . 'cakephp-plugins.php';
-            if (!is_file($vendorFile)) {
+        $vendor_file = dirname(__DIR__, 2) . DIRECTORY_SEPARATOR . 'cakephp-plugins.php';
+        if (!is_file($vendor_file)) {
+            $vendor_file = dirname(__DIR__, 4) . DIRECTORY_SEPARATOR . 'cakephp-plugins.php';
+            if (!is_file($vendor_file)) {
                 Configure::write(['plugins' => []]);
-
                 return;
             }
         }
-
-        $config = require $vendorFile;
+        $config = require $vendor_file;
         Configure::write($config);
     }
-
     /**
      * Get the config how plugins should be loaded
      *
      * @param string|null $path The absolute path to the composer.lock file to retrieve the versions from
      */
-    public static function getAppConfig(?string $path = null): array
+    public static function get_app_config(?string $path = null): array
     {
-        self::loadInstallerConfig();
-
+        self::load_installer_config();
         // phpcs:ignore
-        $pluginLoadConfig = @include CONFIG . 'plugins.php';
-        if (is_array($pluginLoadConfig)) {
-            $pluginLoadConfig = Hash::normalize($pluginLoadConfig);
+        $plugin_load_config = @include CONFIG . 'plugins.php';
+        if (is_array($plugin_load_config)) {
+            $plugin_load_config = Hash::normalize($plugin_load_config);
         } else {
-            $pluginLoadConfig = [];
+            $plugin_load_config = [];
         }
-
         try {
-            $composerVersions = self::getVersions($path);
-        } catch (CakeException) {
-            $composerVersions = [];
+            $composer_versions = self::get_versions($path);
+        } catch (Cake_Exception) {
+            $composer_versions = [];
         }
-
         $result = [];
-        $availablePlugins = Configure::read('plugins', []);
-        if ($availablePlugins && is_array($availablePlugins)) {
-            foreach ($availablePlugins as $pluginName => $pluginPath) {
-                if ($pluginLoadConfig && array_key_exists($pluginName, $pluginLoadConfig)) {
-                    $options = $pluginLoadConfig[$pluginName];
-                    $hooks = PluginInterface::VALID_HOOKS;
-                    $mainConfig = [
-                        'isLoaded' => true,
-                        'onlyDebug' => $options['onlyDebug'] ?? false,
-                        'onlyCli' => $options['onlyCli'] ?? false,
-                        'optional' => $options['optional'] ?? false,
-                    ];
+        $available_plugins = Configure::read('plugins', []);
+        if ($available_plugins && is_array($available_plugins)) {
+            foreach ($available_plugins as $plugin_name => $plugin_path) {
+                if ($plugin_load_config && array_key_exists($plugin_name, $plugin_load_config)) {
+                    $options = $plugin_load_config[$plugin_name];
+                    $hooks = Plugin_Interface::VALID_HOOKS;
+                    $main_config = ['isLoaded' => true, 'onlyDebug' => $options['onlyDebug'] ?? false, 'onlyCli' => $options['onlyCli'] ?? false, 'optional' => $options['optional'] ?? false];
                     foreach ($hooks as $hook) {
-                        $mainConfig[$hook] = $options[$hook] ?? true;
+                        $main_config[$hook] = $options[$hook] ?? true;
                     }
-                    $result[$pluginName] = $mainConfig;
+                    $result[$plugin_name] = $main_config;
                 } else {
-                    $result[$pluginName]['isLoaded'] = false;
+                    $result[$plugin_name]['isLoaded'] = false;
                 }
-
                 try {
-                    $packageName = self::getPackageNameFromPath($pluginPath);
-                    $result[$pluginName]['packagePath'] = $pluginPath;
-                    $result[$pluginName]['package'] = $packageName;
-                } catch (CakeException) {
-                    $packageName = null;
+                    $package_name = self::get_package_name_from_path($plugin_path);
+                    $result[$plugin_name]['packagePath'] = $plugin_path;
+                    $result[$plugin_name]['package'] = $package_name;
+                } catch (Cake_Exception) {
+                    $package_name = null;
                 }
-                if ($composerVersions && $packageName) {
-                    if (array_key_exists($packageName, $composerVersions['packages'])) {
-                        $result[$pluginName]['version'] = $composerVersions['packages'][$packageName];
-                        $result[$pluginName]['isDevPackage'] = false;
-                    } elseif (array_key_exists($packageName, $composerVersions['devPackages'])) {
-                        $result[$pluginName]['version'] = $composerVersions['devPackages'][$packageName];
-                        $result[$pluginName]['isDevPackage'] = true;
+                if ($composer_versions && $package_name) {
+                    if (array_key_exists($package_name, $composer_versions['packages'])) {
+                        $result[$plugin_name]['version'] = $composer_versions['packages'][$package_name];
+                        $result[$plugin_name]['isDevPackage'] = false;
+                    } elseif (array_key_exists($package_name, $composer_versions['devPackages'])) {
+                        $result[$plugin_name]['version'] = $composer_versions['devPackages'][$package_name];
+                        $result[$plugin_name]['isDevPackage'] = true;
                     }
                 }
             }
         }
-
-        $diff = array_diff(array_keys($pluginLoadConfig), array_keys($availablePlugins));
-        foreach ($diff as $unknownPlugin) {
-            $result[$unknownPlugin]['isLoaded'] = false;
-            $result[$unknownPlugin]['isUnknown'] = true;
+        $diff = array_diff(array_keys($plugin_load_config), array_keys($available_plugins));
+        foreach ($diff as $unknown_plugin) {
+            $result[$unknown_plugin]['isLoaded'] = false;
+            $result[$unknown_plugin]['isUnknown'] = true;
         }
-
         return $result;
     }
-
     /**
      * @param string|null $path The absolute path to the composer.lock file to retrieve the versions from
      */
-    public static function getVersions(?string $path = null): array
+    public static function get_versions(?string $path = null): array
     {
-        $lockFilePath = $path ?? ROOT . DIRECTORY_SEPARATOR . 'composer.lock';
-        if (!file_exists($lockFilePath)) {
-            throw new CakeException(sprintf('composer.lock does not exist in %s', $lockFilePath));
+        $lock_file_path = $path ?? ROOT . DIRECTORY_SEPARATOR . 'composer.lock';
+        if (!file_exists($lock_file_path)) {
+            throw new Cake_Exception(sprintf('composer.lock does not exist in %s', $lock_file_path));
         }
-        $lockFile = file_get_contents($lockFilePath);
-        if ($lockFile === false) {
-            throw new CakeException(sprintf('Could not read composer.lock: %s', $lockFilePath));
+        $lock_file = file_get_contents($lock_file_path);
+        if ($lock_file === false) {
+            throw new Cake_Exception(sprintf('Could not read composer.lock: %s', $lock_file_path));
         }
-        $lockFileJson = json_decode($lockFile, true);
+        $lock_file_json = json_decode($lock_file, true);
         if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new CakeException(sprintf(
-                'Error parsing composer.lock: %s',
-                json_last_error_msg(),
-            ));
+            throw new Cake_Exception(sprintf('Error parsing composer.lock: %s', json_last_error_msg()));
         }
-
-        $packages = Hash::combine($lockFileJson['packages'], '{n}.name', '{n}.version');
-        $devPackages = Hash::combine($lockFileJson['packages-dev'], '{n}.name', '{n}.version');
-
-        return [
-            'packages' => $packages,
-            'devPackages' => $devPackages,
-        ];
+        $packages = Hash::combine($lock_file_json['packages'], '{n}.name', '{n}.version');
+        $dev_packages = Hash::combine($lock_file_json['packages-dev'], '{n}.name', '{n}.version');
+        return ['packages' => $packages, 'devPackages' => $dev_packages];
     }
-
-    protected static function getPackageNameFromPath(string $path): string
+    protected static function get_package_name_from_path(string $path): string
     {
-        $jsonPath = $path . DS . 'composer.json';
-        if (!file_exists($jsonPath)) {
-            throw new CakeException(sprintf('composer.json does not exist in %s', $jsonPath));
+        $json_path = $path . DS . 'composer.json';
+        if (!file_exists($json_path)) {
+            throw new Cake_Exception(sprintf('composer.json does not exist in %s', $json_path));
         }
-        $jsonString = file_get_contents($jsonPath);
-        if ($jsonString === false) {
-            throw new CakeException(sprintf('Could not read composer.json: %s', $jsonPath));
+        $json_string = file_get_contents($json_path);
+        if ($json_string === false) {
+            throw new Cake_Exception(sprintf('Could not read composer.json: %s', $json_path));
         }
-        $json = json_decode($jsonString, true);
+        $json = json_decode($json_string, true);
         if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new CakeException(sprintf(
-                'Error parsing %s: %s',
-                $jsonPath,
-                json_last_error_msg(),
-            ));
+            throw new Cake_Exception(sprintf('Error parsing %s: %s', $json_path, json_last_error_msg()));
         }
-
         return $json['name'];
     }
 }

@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,28 +14,23 @@ declare(strict_types=1);
  * @since         4.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Mailer;
 
-use function Cake\Core\pluginSplit;
-
+use function Cake\Core\Plugin_Split;
 use Cake\View\View;
-use Cake\View\ViewVarsTrait;
-
+use Cake\View\View_Vars_Trait;
 /**
  * Class for rendering email message.
  */
 class Renderer
 {
-    use ViewVarsTrait;
-
+    use View_Vars_Trait;
     /**
      * Constant for folder name containing email templates.
      *
      * @var string
      */
     public const TEMPLATE_FOLDER = 'email';
-
     /**
      * Constructor
      */
@@ -44,7 +38,6 @@ class Renderer
     {
         $this->reset();
     }
-
     /**
      * Render text/HTML content.
      *
@@ -60,39 +53,31 @@ class Renderer
     public function render(string $content, array $types = []): array
     {
         $rendered = [];
-        $template = $this->viewBuilder()->getTemplate();
+        $template = $this->view_builder()->get_template();
         if (!$template) {
             foreach ($types as $type) {
                 $rendered[$type] = $content;
             }
-
             return $rendered;
         }
-
-        $view = $this->createView();
-
-        [$templatePlugin] = pluginSplit($view->getTemplate());
-        [$layoutPlugin] = pluginSplit($view->getLayout());
-        if ($templatePlugin) {
-            $view->setPlugin($templatePlugin);
-        } elseif ($layoutPlugin) {
-            $view->setPlugin($layoutPlugin);
+        $view = $this->create_view();
+        [$template_plugin] = plugin_split($view->get_template());
+        [$layout_plugin] = plugin_split($view->get_layout());
+        if ($template_plugin) {
+            $view->set_plugin($template_plugin);
+        } elseif ($layout_plugin) {
+            $view->set_plugin($layout_plugin);
         }
-
         if ($view->get('content') === null) {
             $view->set('content', $content);
         }
-
         foreach ($types as $type) {
-            $view->setTemplatePath(static::TEMPLATE_FOLDER . DIRECTORY_SEPARATOR . $type);
-            $view->setLayoutPath(static::TEMPLATE_FOLDER . DIRECTORY_SEPARATOR . $type);
-
+            $view->set_template_path(static::TEMPLATE_FOLDER . DIRECTORY_SEPARATOR . $type);
+            $view->set_layout_path(static::TEMPLATE_FOLDER . DIRECTORY_SEPARATOR . $type);
             $rendered[$type] = $view->render();
         }
-
         return $rendered;
     }
-
     /**
      * Reset view builder to defaults.
      *
@@ -100,23 +85,17 @@ class Renderer
      */
     public function reset(): static
     {
-        $this->_viewBuilder = null;
-
-        $this->viewBuilder()
-            ->setClassName(View::class)
-            ->setLayout('default')
-            ->setHelpers(['Html']);
-
+        $this->_view_builder = null;
+        $this->view_builder()->set_class_name(View::class)->set_layout('default')->set_helpers(['Html']);
         return $this;
     }
-
     /**
      * Clone ViewBuilder instance when renderer is cloned.
      */
     public function __clone()
     {
-        if ($this->_viewBuilder !== null) {
-            $this->_viewBuilder = clone $this->_viewBuilder;
+        if ($this->_view_builder !== null) {
+            $this->_view_builder = clone $this->_view_builder;
         }
     }
 }

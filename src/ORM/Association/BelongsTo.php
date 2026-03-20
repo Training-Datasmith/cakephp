@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,18 +14,15 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\ORM\Association;
 
-use function Cake\Core\pluginSplit;
-
-use Cake\Datasource\EntityInterface;
+use function Cake\Core\Plugin_Split;
+use Cake\Datasource\Entity_Interface;
 use Cake\ORM\Association;
-use Cake\ORM\Association\Loader\SelectLoader;
+use Cake\ORM\Association\Loader\Select_Loader;
 use Cake\ORM\Table;
 use Cake\Utility\Inflector;
 use Closure;
-
 /**
  * Represents an 1 - N relationship where the source side of the relation is
  * related to only one record in the target table.
@@ -36,26 +32,21 @@ use Closure;
  * @template T of \Cake\ORM\Table
  * @mixin T
  */
-class BelongsTo extends Association
+class Belongs_To extends Association
 {
     /**
      * Valid strategies for this type of association
      *
      * @var array<string>
      */
-    protected array $_validStrategies = [
-        self::STRATEGY_JOIN,
-        self::STRATEGY_SELECT,
-    ];
-
+    protected array $_valid_strategies = [self::STRATEGY_JOIN, self::STRATEGY_SELECT];
     /**
      * @inheritDoc
      */
-    public function getForeignKey(): array|string|false
+    public function get_foreign_key(): array|string|false
     {
-        return $this->_foreignKey ??= $this->_modelKey($this->getTarget()->getAlias());
+        return $this->_foreign_key ??= $this->_model_key($this->get_target()->get_alias());
     }
-
     /**
      * Sets the name of the field representing the foreign key to the target table.
      *
@@ -63,13 +54,11 @@ class BelongsTo extends Association
      *  no join conditions will be generated automatically.
      * @return $this
      */
-    public function setForeignKey(array|string|false $key): static
+    public function set_foreign_key(array|string|false $key): static
     {
-        $this->_foreignKey = $key;
-
+        $this->_foreign_key = $key;
         return $this;
     }
-
     /**
      * Handle cascading deletes.
      *
@@ -79,21 +68,18 @@ class BelongsTo extends Association
      * @param array<string, mixed> $options The options for the original delete.
      * @return bool Success.
      */
-    public function cascadeDelete(EntityInterface $entity, array $options = []): bool
+    public function cascade_delete(Entity_Interface $entity, array $options = []): bool
     {
         return true;
     }
-
     /**
      * Returns default property name based on association name.
      */
-    protected function _propertyName(): string
+    protected function _property_name(): string
     {
-        [, $name] = pluginSplit($this->_name);
-
+        [, $name] = plugin_split($this->_name);
         return Inflector::underscore(Inflector::singularize($name));
     }
-
     /**
      * Returns whether the passed table is the owning side for this
      * association. This means that rows in the 'target' table would miss important
@@ -101,11 +87,10 @@ class BelongsTo extends Association
      *
      * @param \Cake\ORM\Table $side The potential Table with ownership
      */
-    public function isOwningSide(Table $side): bool
+    public function is_owning_side(Table $side): bool
     {
-        return $side === $this->getTarget();
+        return $side === $this->get_target();
     }
-
     /**
      * Get the relationship type.
      */
@@ -113,7 +98,6 @@ class BelongsTo extends Association
     {
         return self::MANY_TO_ONE;
     }
-
     /**
      * Takes an entity from the source table and looks if there is a field
      * matching the property name for this association. The found entity will be
@@ -126,52 +110,34 @@ class BelongsTo extends Association
      * the saved entity
      * @see \Cake\ORM\Table::save()
      */
-    public function saveAssociated(EntityInterface $entity, array $options = []): EntityInterface|false
+    public function save_associated(Entity_Interface $entity, array $options = []): Entity_Interface|false
     {
-        $targetEntity = $entity->get($this->getProperty());
-        if (!$targetEntity instanceof EntityInterface) {
+        $target_entity = $entity->get($this->get_property());
+        if (!$target_entity instanceof Entity_Interface) {
             return $entity;
         }
-
-        $table = $this->getTarget();
-        $targetEntity = $table->save($targetEntity, $options);
-        if (!$targetEntity) {
+        $table = $this->get_target();
+        $target_entity = $table->save($target_entity, $options);
+        if (!$target_entity) {
             return false;
         }
-
         /** @var array<string> $foreignKeys */
-        $foreignKeys = (array)$this->getForeignKey();
-        $properties = array_combine(
-            $foreignKeys,
-            $targetEntity->extract((array)$this->getBindingKey()),
-        );
-
+        $foreign_keys = (array) $this->get_foreign_key();
+        $properties = array_combine($foreign_keys, $target_entity->extract((array) $this->get_binding_key()));
         // @phpstan-ignore function.alreadyNarrowedType (patch method available on EntityInterface)
         if (method_exists($entity, 'patch')) {
             $entity = $entity->patch($properties, ['guard' => false]);
         } else {
             $entity->set($properties, ['guard' => false]);
         }
-
         return $entity;
     }
-
     /**
      * @inheritDoc
      */
-    public function eagerLoader(array $options): Closure
+    public function eager_loader(array $options): Closure
     {
-        $loader = new SelectLoader([
-            'alias' => $this->getAlias(),
-            'sourceAlias' => $this->getSource()->getAlias(),
-            'targetAlias' => $this->getTarget()->getAlias(),
-            'foreignKey' => $this->getForeignKey(),
-            'bindingKey' => $this->getBindingKey(),
-            'strategy' => $this->getStrategy(),
-            'associationType' => $this->type(),
-            'finder' => $this->find(...),
-        ]);
-
-        return $loader->buildEagerLoader($options);
+        $loader = new Select_Loader(['alias' => $this->get_alias(), 'sourceAlias' => $this->get_source()->get_alias(), 'targetAlias' => $this->get_target()->get_alias(), 'foreignKey' => $this->get_foreign_key(), 'bindingKey' => $this->get_binding_key(), 'strategy' => $this->get_strategy(), 'associationType' => $this->type(), 'finder' => $this->find(...)]);
+        return $loader->build_eager_loader($options);
     }
 }

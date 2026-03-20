@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 /**
  * CakePHP(tm) : Rapid Development Framework (https://cakephp.org)
  * Copyright (c) Cake Software Foundation, Inc. (https://cakefoundation.org)
@@ -15,7 +14,6 @@ declare(strict_types=1);
  * @since         3.0.0
  * @license       https://opensource.org/licenses/mit-license.php MIT License
  */
-
 namespace Cake\Database;
 
 /**
@@ -23,7 +21,7 @@ namespace Cake\Database;
  *
  * @internal
  */
-class ValueBinder
+class Value_Binder
 {
     /**
      * Array containing a list of bound values to the conditions on this
@@ -31,12 +29,10 @@ class ValueBinder
      * bound value, its type and the placeholder it is bound to.
      */
     protected array $_bindings = [];
-
     /**
      * A counter of parameters bound in this expression object
      */
-    protected int $_bindingsCount = 0;
-
+    protected int $_bindings_count = 0;
     /**
      * Associates a query placeholder to a value and a type
      *
@@ -48,11 +44,8 @@ class ValueBinder
      */
     public function bind(string|int $param, mixed $value, string|int|null $type = null): void
     {
-        $this->_bindings[$param] = compact('value', 'type') + [
-            'placeholder' => is_int($param) ? $param : substr($param, 1),
-        ];
+        $this->_bindings[$param] = compact('value', 'type') + ['placeholder' => is_int($param) ? $param : substr($param, 1)];
     }
-
     /**
      * Creates a unique placeholder name if the token provided does not start with ":"
      * otherwise, it will return the same string and internally increment the number
@@ -64,14 +57,12 @@ class ValueBinder
      */
     public function placeholder(string $token): string
     {
-        $number = $this->_bindingsCount++;
+        $number = $this->_bindings_count++;
         if (!str_starts_with($token, ':') && $token !== '?') {
             return sprintf(':%s%s', $token, $number);
         }
-
         return $token;
     }
-
     /**
      * Creates unique named placeholders for each of the passed values
      * and binds them with the specified type.
@@ -80,22 +71,16 @@ class ValueBinder
      * @param string|int|null $type The type with which all values will be bound
      * @return array with the placeholders to insert in the query
      */
-    public function generateManyNamed(iterable $values, string|int|null $type = null): array
+    public function generate_many_named(iterable $values, string|int|null $type = null): array
     {
         $placeholders = [];
         foreach ($values as $k => $value) {
             $param = $this->placeholder('c');
-            $this->_bindings[$param] = [
-                'value' => $value,
-                'type' => $type,
-                'placeholder' => substr($param, 1),
-            ];
+            $this->_bindings[$param] = ['value' => $value, 'type' => $type, 'placeholder' => substr($param, 1)];
             $placeholders[$k] = $param;
         }
-
         return $placeholders;
     }
-
     /**
      * Returns all values bound to this expression object at this nesting level.
      * Subexpression bound values will not be returned with this function.
@@ -104,48 +89,41 @@ class ValueBinder
     {
         return $this->_bindings;
     }
-
     /**
      * Clears any bindings that were previously registered
      */
     public function reset(): void
     {
         $this->_bindings = [];
-        $this->_bindingsCount = 0;
+        $this->_bindings_count = 0;
     }
-
     /**
      * Resets the bindings count without clearing previously bound values
      */
-    public function resetCount(): void
+    public function reset_count(): void
     {
-        $this->_bindingsCount = 0;
+        $this->_bindings_count = 0;
     }
-
     /**
      * Binds all the stored values in this object to the passed statement.
      *
      * @param \Cake\Database\StatementInterface $statement The statement to add parameters to.
      */
-    public function attachTo(StatementInterface $statement): void
+    public function attach_to(Statement_Interface $statement): void
     {
         $bindings = $this->bindings();
         if (!$bindings) {
             return;
         }
-
         foreach ($bindings as $b) {
-            $statement->bindValue($b['placeholder'], $b['value'], $b['type']);
+            $statement->bind_value($b['placeholder'], $b['value'], $b['type']);
         }
     }
-
     /**
      * Get verbose debugging data.
      */
     public function __debugInfo(): array
     {
-        return [
-            'bindings' => $this->bindings(),
-        ];
+        return ['bindings' => $this->bindings()];
     }
 }
