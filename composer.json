@@ -103,18 +103,18 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Cake\\PHPStan\\": "tests/PHPStan/",
+            "Cake\\PHP_Stan\\": "tests/PHPStan/",
             "Cake\\Test\\": "tests/",
-            "TestApp\\": "tests/test_app/TestApp/",
-            "TestApp\\Test\\": "tests/test_app/TestApp/tests/",
-            "TestPlugin\\": "tests/test_app/Plugin/TestPlugin/src/",
-            "TestPlugin\\Test\\": "tests/test_app/Plugin/TestPlugin/tests/",
-            "TestPluginTwo\\": "tests/test_app/Plugin/TestPluginTwo/src/",
-            "Company\\TestPluginThree\\": "tests/test_app/Plugin/Company/TestPluginThree/src/",
-            "Company\\TestPluginThree\\Test\\": "tests/test_app/Plugin/Company/TestPluginThree/tests/",
+            "Test_App\\": "tests/test_app/TestApp/",
+            "Test_App\\Test\\": "tests/test_app/TestApp/tests/",
+            "Test_Plugin\\": "tests/test_app/Plugin/TestPlugin/src/",
+            "Test_Plugin\\Test\\": "tests/test_app/Plugin/TestPlugin/tests/",
+            "Test_Plugin_Two\\": "tests/test_app/Plugin/TestPluginTwo/src/",
+            "Company\\Test_Plugin_Three\\": "tests/test_app/Plugin/Company/TestPluginThree/src/",
+            "Company\\Test_Plugin_Three\\Test\\": "tests/test_app/Plugin/Company/TestPluginThree/tests/",
             "Named\\": "tests/test_app/Plugin/Named/src/",
-            "TestTheme\\": "tests/test_app/Plugin/TestTheme/src/",
-            "PluginJs\\": "tests/test_app/Plugin/PluginJs/src/"
+            "Test_Theme\\": "tests/test_app/Plugin/TestTheme/src/",
+            "Plugin_Js\\": "tests/test_app/Plugin/PluginJs/src/"
         }
     },
     "scripts": {
