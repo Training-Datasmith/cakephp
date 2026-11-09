@@ -399,7 +399,7 @@ class HasMany extends Association
                 ->toList(),
         ];
 
-        $return = $this->_unlink($foreignKey, $target, $conditions, $options);
+        $return = $this->_unlink($foreignKey, $target, $conditions, $options, $sourceEntity);
         if (!$return) {
             return false;
         }
@@ -528,7 +528,7 @@ class HasMany extends Association
             ];
         }
 
-        return $this->_unlink(array_keys($foreignKeyReference), $target, $conditions, $options);
+        return $this->_unlink(array_keys($foreignKeyReference), $target, $conditions, $options, $entity);
     }
 
     /**
@@ -541,10 +541,16 @@ class HasMany extends Association
      * @param \Cake\ORM\Table $target The associated table
      * @param array $conditions The conditions that specifies what are the objects to be unlinked
      * @param array<string, mixed> $options list of options accepted by `Table::delete()`
+     * @param \Cake\Datasource\EntityInterface $sourceEntity The parent entity.
      * @return bool success
      */
-    protected function _unlink(array $foreignKey, Table $target, array $conditions = [], array $options = []): bool
-    {
+    protected function _unlink(
+        array $foreignKey,
+        Table $target,
+        array $conditions,
+        array $options,
+        EntityInterface $sourceEntity,
+    ): bool {
         $mustBeDependent = (!$this->_foreignKeyAcceptsNull($target, $foreignKey) || $this->getDependent());
 
         if ($mustBeDependent) {
@@ -560,9 +566,13 @@ class HasMany extends Association
                 });
                 $query = $this->find()->where($conditions);
 
+                $entities = $query->all()->toList();
+
                 /** @phpstan-ignore argument.type, argument.templateType (cascade callbacks always have hydration enabled) */
-                $return = $target->deleteMany($query->all(), $options);
+                $return = $target->deleteMany($entities, $options);
                 if ($return === false) {
+                    $this->propagateDeleteErrorsToSource($sourceEntity, $entities);
+
                     return false;
                 }
 

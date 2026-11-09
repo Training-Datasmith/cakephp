@@ -619,10 +619,13 @@ class BelongsToMany extends Association
         $table = $this->junction();
         $hasMany = $this->getSource()->getAssociation($table->getAlias());
         if ($this->_cascadeCallbacks) {
-            foreach ($hasMany->find('all')->where($conditions)->all()->toList() as $related) {
+            $relatedList = $hasMany->find('all')->where($conditions)->all()->toList();
+            foreach ($relatedList as $related) {
                 /** @phpstan-ignore argument.type (cascade callbacks always have hydration enabled) */
                 $success = $table->delete($related, $options);
                 if (!$success) {
+                    $this->propagateDeleteErrorsToSource($entity, $relatedList);
+
                     return false;
                 }
             }
@@ -958,8 +961,11 @@ class BelongsToMany extends Association
         $property = $this->getProperty();
 
         $links = $this->_collectJointEntities($sourceEntity, $targetEntities);
-        $return = $this->_junctionTable->deleteMany($links, $options);
+        $linksList = is_array($links) ? $links : iterator_to_array($links);
+        $return = $this->_junctionTable->deleteMany($linksList, $options);
         if ($return === false) {
+            $this->propagateDeleteErrorsToSource($sourceEntity, $linksList);
+
             return false;
         }
 
@@ -1252,7 +1258,7 @@ class BelongsToMany extends Association
                     );
 
                 $jointEntities = $this->_collectJointEntities($sourceEntity, $targetEntities);
-                $inserts = $this->_diffLinks($existing, $jointEntities, $targetEntities, $options);
+                $inserts = $this->_diffLinks($existing, $jointEntities, $targetEntities, $options, $sourceEntity);
                 if ($inserts === false) {
                     return false;
                 }
@@ -1296,7 +1302,8 @@ class BelongsToMany extends Association
         SelectQuery $existing,
         array $jointEntities,
         array $targetEntities,
-        array $options = [],
+        array $options,
+        EntityInterface $sourceEntity,
     ): array|false {
         $junction = $this->junction();
         $target = $this->getTarget();
@@ -1366,6 +1373,8 @@ class BelongsToMany extends Association
 
         foreach ($deletes as $entity) {
             if (!$junction->delete($entity, $options) && !empty($options['atomic'])) {
+                $this->propagateDeleteErrorsToSource($sourceEntity, $deletes);
+
                 return false;
             }
         }

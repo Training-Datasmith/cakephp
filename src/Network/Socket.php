@@ -511,7 +511,6 @@ class Socket
             }
             $enableCryptoResult = stream_socket_enable_crypto($this->connection, $enable, $method);
         } catch (Exception $e) {
-            restore_error_handler();
             $this->setLastError(null, $e->getMessage());
             throw new SocketException($e->getMessage(), null, $e);
         } finally {

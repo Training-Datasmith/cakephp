@@ -1273,6 +1273,32 @@ abstract class Association
     abstract public function isOwningSide(Table $side): bool;
 
     /**
+     * Copies validation errors from related entities deleted during an association
+     * replace/unlink onto the source entity under this association's property.
+     *
+     * @param \Cake\Datasource\EntityInterface $sourceEntity The parent entity being saved or deleted.
+     * @param iterable<\Cake\Datasource\EntityInterface> $relatedEntities Entities that failed to delete.
+     * @return void
+     */
+    public function propagateDeleteErrorsToSource(EntityInterface $sourceEntity, iterable $relatedEntities): void
+    {
+        foreach ($relatedEntities as $relatedEntity) {
+            if (!$relatedEntity instanceof EntityInterface) {
+                continue;
+            }
+
+            $errors = $relatedEntity->getErrors();
+            if ($errors === []) {
+                continue;
+            }
+
+            $sourceEntity->setError($this->getProperty(), $errors);
+
+            return;
+        }
+    }
+
+    /**
      * Extract the target's association data our from the passed entity and proxies
      * the saving operation to the target table.
      *

@@ -950,6 +950,10 @@ class LinkConstraintTest extends TestCase
             ],
         );
 
+        $Comments = $Articles->getAssociation('Comments')->getTarget();
+        $commentCountBefore = $Comments->find()->where(['article_id' => 2])->count();
+        $newCommentExistsBefore = $Comments->exists(['comment' => 'New Comment', 'article_id' => 2]);
+
         $article = $Articles->get(2);
         $article->set('comments', [
             $Articles->getAssociation('Comments')->newEntity([
@@ -959,12 +963,18 @@ class LinkConstraintTest extends TestCase
         ]);
         $article->setDirty('comments', true);
         $this->assertFalse($Articles->save($article));
-        $this->assertEmpty(
-            $article->getErrors(),
-            'This should not be empty, but currently is because unlink errors are not being returned.',
-        );
 
-        $this->markTestIncomplete('This test is incomplete because currently unlink errors are not being returned.');
+        $expected = [
+            'comments' => [
+                'attachments' => [
+                    '_isNotLinkedTo' => 'invalid',
+                ],
+            ],
+        ];
+        $this->assertSame($expected, $article->getErrors());
+
+        $this->assertSame($commentCountBefore, $Comments->find()->where(['article_id' => 2])->count());
+        $this->assertSame($newCommentExistsBefore, $Comments->exists(['comment' => 'New Comment', 'article_id' => 2]));
     }
 
     /**
@@ -983,6 +993,11 @@ class LinkConstraintTest extends TestCase
             ],
         );
 
+        $Tags = $Articles->getAssociation('Tags')->getTarget();
+        $ArticlesTags = $Articles->getAssociation('Tags')->junction();
+        $tagLinkCountBefore = $ArticlesTags->find()->where(['article_id' => 1])->count();
+        $newTagExistsBefore = $Tags->exists(['name' => 'New Tag']);
+
         $article = $Articles->get(1);
         $article->set('tags', [
             $Articles->getAssociation('Tags')->newEntity([
@@ -992,13 +1007,17 @@ class LinkConstraintTest extends TestCase
         ]);
         $article->setDirty('tags', true);
         $this->assertFalse($Articles->save($article));
-        $this->assertEmpty(
-            $article->getErrors(),
-            'This should not be empty, but currently is because junction delete errors are not being returned.',
-        );
 
-        $this->markTestIncomplete(
-            'This test is incomplete because currently junction delete errors are not returned.',
-        );
+        $expected = [
+            'tags' => [
+                'articles' => [
+                    '_isNotLinkedTo' => 'invalid',
+                ],
+            ],
+        ];
+        $this->assertSame($expected, $article->getErrors());
+
+        $this->assertSame($tagLinkCountBefore, $ArticlesTags->find()->where(['article_id' => 1])->count());
+        $this->assertSame($newTagExistsBefore, $Tags->exists(['name' => 'New Tag']));
     }
 }

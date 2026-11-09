@@ -5,34 +5,12 @@ USE_SUDO_DOCKER="${USE_SUDO_DOCKER:-0}"
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 IMAGE_TAG="cakephp-system-test:8.2"
 LOG_FILE="${ROOT}/.phpunit-system-test.log"
+JUNIT_FILE="${ROOT}/.phpunit-system-test.junit.xml"
+TEAMCITY_FILE="${ROOT}/.phpunit-system-test.teamcity.txt"
 DOCKER_BIN="docker"
 if [ "${USE_SUDO_DOCKER}" = "1" ]; then
     DOCKER_BIN="sudo docker"
 fi
-
-check_phpunit_log() {
-    local logfile="$1"
-    if rg -q '^(Warning|Deprecated):' "${logfile}" || rg -q '^PHP (Warning|Deprecated):' "${logfile}"; then
-        echo "PHPUnit output contains Warning or Deprecated lines." >&2
-        return 1
-    fi
-    if rg -q '^OK, but there were issues!' "${logfile}" \
-        || rg -q '^FAILURES!' "${logfile}" \
-        || rg -q '^ERRORS!' "${logfile}" \
-        || rg -q '^No tests executed!' "${logfile}"; then
-        echo "PHPUnit summary indicates failure." >&2
-        return 1
-    fi
-    if rg -q '^OK \([0-9]+ tests?, [0-9]+ assertions?\)$' "${logfile}"; then
-        return 0
-    fi
-    if rg -q '^OK, but some tests were skipped!' "${logfile}" \
-        && rg -q '^Tests: [0-9]+, Assertions: [0-9]+, Skipped: [0-9]+\.$' "${logfile}"; then
-        return 0
-    fi
-    echo "PHPUnit output missing required success summary line." >&2
-    return 1
-}
 
 echo "Building ${IMAGE_TAG}..."
 ${DOCKER_BIN} build -f "${ROOT}/docker/system-test.Dockerfile" -t "${IMAGE_TAG}" "${ROOT}/docker"
@@ -57,7 +35,10 @@ ${DOCKER_BIN} run --rm \
         mkfifo "${STDIN_FIFO}"
         ( exec 3>"${STDIN_FIFO}"; sleep 86400 ) &
         STDIN_FIFO_HOLDER_PID=$!
-        vendor/bin/phpunit --colors=never <"${STDIN_FIFO}" 2>&1 | tee /workspace/.phpunit-system-test.log
+        vendor/bin/phpunit --colors=never \
+            --log-junit /workspace/.phpunit-system-test.junit.xml \
+            --log-teamcity /workspace/.phpunit-system-test.teamcity.txt \
+            <"${STDIN_FIFO}" 2>&1 | tee /workspace/.phpunit-system-test.log
         PHPUNIT_STATUS="${PIPESTATUS[0]}"
         kill "${STDIN_FIFO_HOLDER_PID}" 2>/dev/null || true
         wait "${STDIN_FIFO_HOLDER_PID}" 2>/dev/null || true
@@ -72,5 +53,10 @@ if [ "${PHPUNIT_EXIT}" -ne 0 ]; then
     exit "${PHPUNIT_EXIT}"
 fi
 
-check_phpunit_log "${LOG_FILE}"
+${DOCKER_BIN} run --rm \
+    -u "$(id -u):$(id -g)" \
+    -v "${ROOT}:/workspace" \
+    -w /workspace \
+    "${IMAGE_TAG}" \
+    php scripts/check-phpunit-gate.php /workspace/.phpunit-system-test.log /workspace/.phpunit-system-test.teamcity.txt /workspace/.phpunit-system-test.junit.xml
 echo "System test passed."

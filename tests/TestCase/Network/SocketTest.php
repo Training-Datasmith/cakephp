@@ -381,6 +381,37 @@ class SocketTest extends TestCase
     }
 
     /**
+     * enableCrypto must restore only the error handler it installed, not a caller's handler.
+     */
+    public function testEnableCryptoRestoresErrorHandlerStackOnException(): void
+    {
+        $sentinelInvoked = false;
+        set_error_handler(
+            static function () use (&$sentinelInvoked): bool {
+                $sentinelInvoked = true;
+
+                return true;
+            },
+            E_USER_NOTICE,
+        );
+
+        try {
+            $this->_connectSocketToSslTls();
+            $this->Socket->enableCrypto('tls', 'client');
+            try {
+                $this->Socket->enableCrypto('tls', 'client');
+                $this->fail('Expected SocketException');
+            } catch (SocketException) {
+            }
+
+            trigger_error('sentinel-check', E_USER_NOTICE);
+            $this->assertTrue($sentinelInvoked, 'Sentinel error handler should still be active.');
+        } finally {
+            restore_error_handler();
+        }
+    }
+
+    /**
      * Repeated enableCrypto must not emit PHP warnings to stdout.
      */
     public function testEnableCryptoSecondEnableDoesNotEmitPhpWarning(): void
