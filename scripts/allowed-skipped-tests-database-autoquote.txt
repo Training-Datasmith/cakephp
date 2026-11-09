@@ -30,8 +30,6 @@ Cake\Test\TestCase\Database\Driver\SqlserverTest::testExceedingMaxParameters
 Cake\Test\TestCase\Database\Driver\SqlserverTest::testPrepare
 Cake\Test\TestCase\Database\Driver\SqlserverTest::testSupports
 Cake\Test\TestCase\Database\QueryTests\TupleComparisonQueryTest::testEqualWithMultiResultSubquery
-Cake\Test\TestCase\Database\Query\SelectQueryTest::testAllNoDuplicateTypeCasting
-Cake\Test\TestCase\Database\Query\SelectQueryTest::testHavingAliasCasingStringExpression
 Cake\Test\TestCase\Database\Query\SelectQueryTest::testIntersectAll
 Cake\Test\TestCase\Database\Query\SelectQueryTest::testIntersectOrderBy
 Cake\Test\TestCase\Database\Query\SelectQueryTest::testSelectRightJoin

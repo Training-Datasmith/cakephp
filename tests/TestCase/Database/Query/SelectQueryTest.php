@@ -2255,7 +2255,6 @@ class SelectQueryTest extends TestCase
      */
     public function testHavingAliasCasingStringExpression(): void
     {
-        $this->skipIf($this->autoQuote, 'Does not work when autoquoting is enabled.');
         $query = new SelectQuery($this->connection);
         $query
             ->select(['id'])
@@ -2266,11 +2265,12 @@ class SelectQueryTest extends TestCase
             ])
             ->having(['COUNT(DISTINCT Authors.id) =' => 1]);
 
-        $this->assertSame(
-            'SELECT id FROM authors Authors WHERE ' .
-            '(FUNC( Authors.id) = :c0 AND (FUNC( Authors.id)) IS NOT NULL) ' .
-            'HAVING COUNT(DISTINCT Authors.id) = :c1',
+        $this->assertQuotedQuery(
+            'SELECT <id> FROM <authors> <Authors> WHERE ' .
+            '\(FUNC\( ?<Authors>\.<id>\) = :c0 AND \(FUNC\( ?<Authors>\.<id>\)\) IS NOT NULL\) ' .
+            'HAVING COUNT\(DISTINCT <Authors>\.<id>\) = :c1',
             trim($query->sql()),
+            !$this->autoQuote,
         );
     }
 
@@ -3976,7 +3976,6 @@ class SelectQueryTest extends TestCase
      */
     public function testAllNoDuplicateTypeCasting(): void
     {
-        $this->skipIf($this->autoQuote, 'Produces bad SQL in postgres with autoQuoting');
         $query = new SelectQuery($this->connection);
         $query
             ->select('1.5 AS a')
@@ -4419,7 +4418,7 @@ class SelectQueryTest extends TestCase
             ->where(['CONCAT(first_name, " ", last_name) in' => ['foo bar', 'baz 42']]);
 
         $this->assertQuotedQuery(
-            'SELECT <id> FROM <profiles> WHERE CONCAT\(first_name, " ", last_name\) IN \(:c0,:c1\)',
+            'SELECT <id> FROM <profiles> WHERE CONCAT\(<first_name>, " ", <last_name>\) IN \(:c0,:c1\)',
             $query->sql(),
             !$this->autoQuote,
         );
@@ -4430,7 +4429,7 @@ class SelectQueryTest extends TestCase
             ->where(['CONCAT(first_name, " ", last_name) IN' => ['foo bar', 'baz 42']]);
 
         $this->assertQuotedQuery(
-            'SELECT <id> FROM <profiles> WHERE CONCAT\(first_name, " ", last_name\) IN \(:c0,:c1\)',
+            'SELECT <id> FROM <profiles> WHERE CONCAT\(<first_name>, " ", <last_name>\) IN \(:c0,:c1\)',
             $query->sql(),
             !$this->autoQuote,
         );
@@ -4441,7 +4440,7 @@ class SelectQueryTest extends TestCase
             ->where(['CONCAT(first_name, " ", last_name) not in' => ['foo bar', 'baz 42']]);
 
         $this->assertQuotedQuery(
-            'SELECT <id> FROM <profiles> WHERE CONCAT\(first_name, " ", last_name\) NOT IN \(:c0,:c1\)',
+            'SELECT <id> FROM <profiles> WHERE CONCAT\(<first_name>, " ", <last_name>\) NOT IN \(:c0,:c1\)',
             $query->sql(),
             !$this->autoQuote,
         );
@@ -4452,7 +4451,7 @@ class SelectQueryTest extends TestCase
             ->where(['CONCAT(first_name, " ", last_name) NOT IN' => ['foo bar', 'baz 42']]);
 
         $this->assertQuotedQuery(
-            'SELECT <id> FROM <profiles> WHERE CONCAT\(first_name, " ", last_name\) NOT IN \(:c0,:c1\)',
+            'SELECT <id> FROM <profiles> WHERE CONCAT\(<first_name>, " ", <last_name>\) NOT IN \(:c0,:c1\)',
             $query->sql(),
             !$this->autoQuote,
         );

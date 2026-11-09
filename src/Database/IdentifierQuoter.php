@@ -59,13 +59,22 @@ class IdentifierQuoter
             return $identifier;
         }
 
+        if (preg_match('/^\d+\.\d+$/', $identifier)) {
+            return $identifier;
+        }
+
+        if (preg_match('/^(\d+(?:\.\d+)?)\s+AS\s+(.+)$/ui', $identifier, $literalAlias)) {
+            return $literalAlias[1] . ' AS ' . $this->quoteIdentifier(trim($literalAlias[2]));
+        }
+
         // string
         if (preg_match('/^[\w-]+$/u', $identifier)) {
             return $this->startQuote . $identifier . $this->endQuote;
         }
 
         // string.string
-        if (preg_match('/^[\w-]+\.[^ \*]*$/u', $identifier)) {
+        if (preg_match('/^[\w-]+\.[^ \*]*$/u', $identifier)
+            && !preg_match('/^\d+(?:\.\d+)?$/', $identifier)) {
             $items = explode('.', $identifier);
 
             return $this->startQuote . implode($this->endQuote . '.' . $this->startQuote, $items) . $this->endQuote;
@@ -77,8 +86,8 @@ class IdentifierQuoter
         }
 
         // Functions
-        if (preg_match('/^([\w-]+)\((.*)\)$/', $identifier, $matches)) {
-            return $matches[1] . '(' . $this->quoteIdentifier($matches[2]) . ')';
+        if (preg_match('/^([\w-]+)\((.*)\)$/s', $identifier, $matches)) {
+            return $matches[1] . '(' . $this->_quoteFunctionArguments($matches[2]) . ')';
         }
 
         // Alias.field AS thing
@@ -302,9 +311,6 @@ class IdentifierQuoter
     {
         $field = $expression->getField();
         if (is_string($field)) {
-            if (str_contains($field, '(')) {
-                return;
-            }
             $expression->setField($this->quoteIdentifier($field));
         } elseif (is_array($field)) {
             $quoted = [];
@@ -353,5 +359,82 @@ class IdentifierQuoter
         $expression->setIdentifier(
             $this->quoteIdentifier($expression->getIdentifier()),
         );
+    }
+
+    /**
+     * Quotes each argument of a SQL function call.
+     *
+     * @param string $arguments Raw argument string inside parentheses.
+     * @return string
+     */
+    protected function _quoteFunctionArguments(string $arguments): string
+    {
+        $parts = $this->_splitFunctionArguments($arguments);
+        $quoted = [];
+        foreach ($parts as $part) {
+            $part = trim($part);
+            if ($part === '') {
+                continue;
+            }
+            if ($this->_isLiteralFunctionArgument($part)) {
+                $quoted[] = $part;
+
+                continue;
+            }
+            if (preg_match('/^DISTINCT\s+(.+)$/i', $part, $distinctMatch)) {
+                $quoted[] = 'DISTINCT ' . $this->quoteIdentifier(trim($distinctMatch[1]));
+
+                continue;
+            }
+            $quoted[] = $this->quoteIdentifier($part);
+        }
+
+        return implode(', ', $quoted);
+    }
+
+    /**
+     * @return list<string>
+     */
+    protected function _splitFunctionArguments(string $arguments): array
+    {
+        $parts = [];
+        $current = '';
+        $length = strlen($arguments);
+        $inQuotes = false;
+
+        for ($i = 0; $i < $length; $i++) {
+            $char = $arguments[$i];
+            if ($char === '"') {
+                $inQuotes = !$inQuotes;
+                $current .= $char;
+
+                continue;
+            }
+
+            if ($char === ',' && !$inQuotes) {
+                $parts[] = $current;
+                $current = '';
+
+                continue;
+            }
+
+            $current .= $char;
+        }
+
+        if ($current !== '') {
+            $parts[] = $current;
+        }
+
+        return $parts;
+    }
+
+    protected function _isLiteralFunctionArgument(string $argument): bool
+    {
+        if (preg_match('/^\d+\.\d+$/', trim($argument))) {
+            return true;
+        }
+
+        return preg_match('/^".*"$/s', $argument) === 1
+            || preg_match("/^'.*'$/s", $argument) === 1;
     }
 }

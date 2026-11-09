@@ -37,11 +37,28 @@ class IdentifierQuoterTest extends TestCase
         return is_string($field) ? $field : '';
     }
 
-    public function testQuoteComparisonLeavesFunctionCallFieldUnquoted(): void
+    public function testQuoteComparisonQuotesFunctionCallWithStringLiteral(): void
     {
-        $expressionField = 'CONCAT(first_name, " ", last_name)';
+        $this->assertSame(
+            'CONCAT("first_name", " ", "last_name")',
+            $this->quoteComparisonField('CONCAT(first_name, " ", last_name)'),
+        );
+    }
 
-        $this->assertSame($expressionField, $this->quoteComparisonField($expressionField));
+    public function testQuoteComparisonQuotesIdentifiersInsideFunctionCall(): void
+    {
+        $this->assertSame(
+            'FUNC("Authors"."id")',
+            $this->quoteComparisonField('FUNC( Authors.id)'),
+        );
+    }
+
+    public function testQuoteIdentifierLeavesNumericLiteral(): void
+    {
+        $quoter = new IdentifierQuoter('"', '"');
+
+        $this->assertSame('1.5', $quoter->quoteIdentifier('1.5'));
+        $this->assertSame('1.5 AS "a"', $quoter->quoteIdentifier('1.5 AS a'));
     }
 
     public function testQuoteComparisonQuotesPlainIdentifierField(): void
