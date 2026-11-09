@@ -396,8 +396,7 @@ class SocketTest extends TestCase
         );
 
         try {
-            $this->_connectSocketToSslTls();
-            $this->Socket->enableCrypto('tls', 'client');
+            $this->Socket = new Socket();
             try {
                 $this->Socket->enableCrypto('tls', 'client');
                 $this->fail('Expected SocketException');

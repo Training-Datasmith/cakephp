@@ -159,7 +159,6 @@ Cake\Test\TestCase\Database\Driver\SqlserverTest::testSupports
 Cake\Test\TestCase\Database\QueryTests\TupleComparisonQueryTest::testEqualWithMultiResultSubquery
 Cake\Test\TestCase\Database\Query\SelectQueryTest::testIntersectAll
 Cake\Test\TestCase\Database\Query\SelectQueryTest::testIntersectOrderBy
-Cake\Test\TestCase\Database\Query\SelectQueryTest::testOperatorsInComplexConditionsAreCaseInsensitive
 Cake\Test\TestCase\Database\Query\SelectQueryTest::testSelectRightJoin
 Cake\Test\TestCase\Database\Query\SelectQueryTest::testUnionOrderBy
 Cake\Test\TestCase\Database\Schema\MysqlSchemaDialectTest::testAddConstraintSql
