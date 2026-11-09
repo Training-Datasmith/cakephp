@@ -5,19 +5,28 @@ declare(strict_types=1);
  * Strict PHPUnit log gate for scripts/system-test.sh.
  *
  * Usage:
- *   php scripts/check-phpunit-gate.php <text-log> <teamcity-log> [<junit-log>]
+ *   php scripts/check-phpunit-gate.php <text-log> <teamcity-log> [<junit-log> [<allowlist-path> [<gate-mode>]]]]
+ *
+ * gate-mode: full (default) or database — database expects zero incompletes and
+ *   "OK, but some tests were skipped!" as the success summary.
  *
  * Exit 0 when the run matches the allowed success shapes; otherwise exit 1 and print reasons.
  */
 
 if ($argc < 3) {
-    fwrite(STDERR, "Usage: php scripts/check-phpunit-gate.php <text-log> <teamcity-log> [<junit-log>]\n");
+    fwrite(STDERR, "Usage: php scripts/check-phpunit-gate.php <text-log> <teamcity-log> [<junit-log> [<allowlist-path> [<gate-mode>]]]]\n");
     exit(2);
 }
 
 $textLog = $argv[1];
 $teamcityLog = $argv[2];
 $junitLog = $argv[3] ?? null;
+$allowlistPath = $argv[4] ?? null;
+$gateMode = $argv[5] ?? 'full';
+if (!in_array($gateMode, ['full', 'database'], true)) {
+    fwrite(STDERR, "Invalid gate-mode: {$gateMode}\n");
+    exit(2);
+}
 
 foreach ([$textLog, $teamcityLog] as $path) {
     if (!is_readable($path)) {
@@ -34,7 +43,9 @@ if ($junitLog !== null && $junitLog !== '' && !is_readable($junitLog)) {
 $allowedIncompleteId = 'Interop\\Http\\Factory\\StreamFactoryTest::testCreateStreamCursorPosition';
 $allowedIncompleteMessage = 'This behaviour has not been specified by PHP-FIG yet.';
 
-$allowlistPath = dirname(__DIR__) . '/scripts/allowed-skipped-tests.txt';
+if ($allowlistPath === null || $allowlistPath === '') {
+    $allowlistPath = dirname(__DIR__) . '/scripts/allowed-skipped-tests.txt';
+}
 $allowedSkips = [];
 if (is_readable($allowlistPath)) {
     $lines = file($allowlistPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) ?: [];
@@ -181,27 +192,38 @@ if (count($parsed['incompletes']) !== ($summaryIncomplete ?? count($parsed['inco
     }
 }
 
-foreach ($parsed['incompletes'] as $incomplete) {
-    if ($incomplete['id'] !== $allowedIncompleteId) {
-        $failures[] = 'Unexpected incomplete test: ' . $incomplete['id'];
-        continue;
+if ($gateMode === 'database') {
+    if (count($parsed['incompletes']) > 0) {
+        foreach ($parsed['incompletes'] as $incomplete) {
+            $failures[] = 'Unexpected incomplete test: ' . $incomplete['id'];
+        }
     }
-    if ($incomplete['message'] !== $allowedIncompleteMessage) {
-        $failures[] = sprintf(
-            'Incomplete allowlisted test has unexpected message: %s',
-            $incomplete['message'],
-        );
+    if ($summaryIncomplete !== null && $summaryIncomplete !== 0) {
+        $failures[] = 'Database gate expects zero incomplete tests.';
     }
-}
+} else {
+    foreach ($parsed['incompletes'] as $incomplete) {
+        if ($incomplete['id'] !== $allowedIncompleteId) {
+            $failures[] = 'Unexpected incomplete test: ' . $incomplete['id'];
+            continue;
+        }
+        if ($incomplete['message'] !== $allowedIncompleteMessage) {
+            $failures[] = sprintf(
+                'Incomplete allowlisted test has unexpected message: %s',
+                $incomplete['message'],
+            );
+        }
+    }
 
-if ($hasIssuesOk) {
-    if ($summaryIncomplete !== 1) {
-        $failures[] = 'Expected exactly one incomplete test when summary is "OK, but there were issues!".';
-    }
-    if (!$hasCleanOk) {
-        $expectedSummaryPattern = '/^Tests: \d+, Assertions: \d+(, Skipped: \d+)?, Incomplete: 1\.$/m';
-        if (!preg_match($expectedSummaryPattern, $text)) {
-            $failures[] = 'Summary line does not match "Tests: N, Assertions: M, Skipped: S, Incomplete: 1.".';
+    if ($hasIssuesOk) {
+        if ($summaryIncomplete !== 1) {
+            $failures[] = 'Expected exactly one incomplete test when summary is "OK, but there were issues!".';
+        }
+        if (!$hasCleanOk) {
+            $expectedSummaryPattern = '/^Tests: \d+, Assertions: \d+(, Skipped: \d+)?, Incomplete: 1\.$/m';
+            if (!preg_match($expectedSummaryPattern, $text)) {
+                $failures[] = 'Summary line does not match "Tests: N, Assertions: M, Skipped: S, Incomplete: 1.".';
+            }
         }
     }
 }
@@ -233,9 +255,19 @@ if ($allowedSkips === []) {
     }
 }
 
+$hasSkippedOk = str_contains($text, 'OK, but some tests were skipped!');
+
 $accepted = false;
 if ($failures === []) {
-    if ($hasCleanOk && ($summaryIncomplete === null || $summaryIncomplete === 0)) {
+    if ($gateMode === 'database') {
+        if ($hasSkippedOk
+            && ($summaryIncomplete === null || $summaryIncomplete === 0)
+            && count($parsed['incompletes']) === 0) {
+            $accepted = true;
+        } else {
+            $failures[] = 'PHPUnit output missing required "OK, but some tests were skipped!" summary.';
+        }
+    } elseif ($hasCleanOk && ($summaryIncomplete === null || $summaryIncomplete === 0)) {
         $accepted = true;
     } elseif ($hasIssuesOk && $summaryIncomplete === 1 && count($parsed['incompletes']) === 1) {
         $accepted = true;

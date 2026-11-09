@@ -302,7 +302,7 @@ class IdentifierQuoter
     {
         $field = $expression->getField();
         if (is_string($field)) {
-            if (str_contains($field, '(') || str_contains($field, ' ')) {
+            if (str_contains($field, '(')) {
                 return;
             }
             $expression->setField($this->quoteIdentifier($field));

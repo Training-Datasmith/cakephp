@@ -53,4 +53,12 @@ class IdentifierQuoterTest extends TestCase
     {
         $this->assertSame('"articles"."id"', $this->quoteComparisonField('articles.id'));
     }
+
+    public function testQuoteComparisonQuotesSpacedIdentifierField(): void
+    {
+        $this->assertSame(
+            '"Column with spaces"',
+            $this->quoteComparisonField('Column with spaces'),
+        );
+    }
 }
