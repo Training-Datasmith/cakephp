@@ -14,6 +14,7 @@ $expected = [
     'psr/http-server-middleware' => '67f6905493ca6bbb639b14d57883baa511d37ec3',
     'psr/log' => 'bde874f9b44efec5901a6783185c050a3855b0f0',
     'psr/simple-cache' => 'd03ac6ca8193e8b800f667a63745f1db7806f412',
+    'cakephp/chronos' => 'd9bca928b0e323f0230d8caa9749decc62f14f48',
 ];
 
 $installedPath = dirname(__DIR__) . '/vendor/composer/installed.json';
@@ -62,5 +63,5 @@ if ($failed) {
     exit(1);
 }
 
-fwrite(STDOUT, "All cluster package pins match expected SHAs.\n");
+fwrite(STDOUT, "All cluster and chronos package pins match expected SHAs.\n");
 exit(0);

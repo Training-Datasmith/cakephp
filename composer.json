@@ -33,7 +33,7 @@
         "ext-intl": "*",
         "ext-json": "*",
         "ext-mbstring": "*",
-        "cakephp/chronos": "^3.3",
+        "cakephp/chronos": "dev-remote-test-2026-11-09 as 3.5.2",
         "composer/ca-bundle": "^1.5",
         "laminas/laminas-diactoros": "^3.8",
         "laminas/laminas-httphandlerrunner": "^2.6",
