@@ -87,11 +87,50 @@ class IdentifierQuoterTest extends TestCase
         );
     }
 
-    public function testQuoteComparisonPreservesSingleQuotedLiteralWithCommaAndParenthesis(): void
+    public function testQuoteComparisonPreservesSingleQuotedLiteralCommaWithoutSpace(): void
     {
         $this->assertSame(
-            'CONCAT("first_name", \', (x)\')',
-            $this->quoteComparisonField("CONCAT(first_name, ', (x)')"),
+            'CONCAT("first_name", \',(x)\')',
+            $this->quoteComparisonField("CONCAT(first_name, ',(x)')"),
         );
+    }
+
+    public function testQuoteComparisonPreservesSingleQuotedLiteralCommaInside(): void
+    {
+        $this->assertSame(
+            'CONCAT("first_name", \'(x), y\')',
+            $this->quoteComparisonField("CONCAT(first_name, '(x), y')"),
+        );
+    }
+
+    public function testQuoteComparisonPreservesDoubleQuotedLiteralWithEscapedQuoteAndComma(): void
+    {
+        $this->assertSame(
+            'CONCAT("first_name", "a\" , (b)")',
+            $this->quoteComparisonField('CONCAT(first_name, "a\" , (b)")'),
+        );
+    }
+
+    public function testQuoteComparisonLeavesIntegerLiteralInFunctionCall(): void
+    {
+        $this->assertSame(
+            'ROUND("price", 2)',
+            $this->quoteComparisonField('ROUND(price, 2)'),
+        );
+    }
+
+    public function testQuoteComparisonLeavesNegativeIntegerLiteralInFunctionCall(): void
+    {
+        $this->assertSame(
+            'ROUND("price", -1)',
+            $this->quoteComparisonField('ROUND(price, -1)'),
+        );
+    }
+
+    public function testQuoteIdentifierQuotesNumericColumnName(): void
+    {
+        $quoter = new IdentifierQuoter('"', '"');
+
+        $this->assertSame('"123"', $quoter->quoteIdentifier('123'));
     }
 }

@@ -475,7 +475,8 @@ class IdentifierQuoter
 
     protected function _isLiteralFunctionArgument(string $argument): bool
     {
-        if (preg_match('/^\d+\.\d+$/', trim($argument))) {
+        $argument = trim($argument);
+        if (preg_match('/^-?\d+\.\d+$/', $argument) || preg_match('/^-?\d+$/', $argument)) {
             return true;
         }
 
