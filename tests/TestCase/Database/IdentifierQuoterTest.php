@@ -78,4 +78,20 @@ class IdentifierQuoterTest extends TestCase
             $this->quoteComparisonField('Column with spaces'),
         );
     }
+
+    public function testQuoteComparisonQuotesNestedFunctionCall(): void
+    {
+        $this->assertSame(
+            'CONCAT(CONCAT("first_name", "last_name"), " ")',
+            $this->quoteComparisonField('CONCAT(CONCAT(first_name, last_name), " ")'),
+        );
+    }
+
+    public function testQuoteComparisonPreservesSingleQuotedLiteralWithCommaAndParenthesis(): void
+    {
+        $this->assertSame(
+            'CONCAT("first_name", \', (x)\')',
+            $this->quoteComparisonField("CONCAT(first_name, ', (x)')"),
+        );
+    }
 }

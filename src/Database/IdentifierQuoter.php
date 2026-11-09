@@ -400,18 +400,63 @@ class IdentifierQuoter
         $parts = [];
         $current = '';
         $length = strlen($arguments);
-        $inQuotes = false;
+        $depth = 0;
+        $quote = null;
+        $escape = false;
 
         for ($i = 0; $i < $length; $i++) {
             $char = $arguments[$i];
-            if ($char === '"') {
-                $inQuotes = !$inQuotes;
+
+            if ($escape) {
+                $current .= $char;
+                $escape = false;
+
+                continue;
+            }
+
+            if ($quote !== null) {
+                $current .= $char;
+                if ($char === '\\') {
+                    $escape = true;
+
+                    continue;
+                }
+                if ($char === $quote) {
+                    $next = $arguments[$i + 1] ?? '';
+                    if ($next === $quote) {
+                        $current .= $next;
+                        $i++;
+
+                        continue;
+                    }
+                    $quote = null;
+                }
+
+                continue;
+            }
+
+            if ($char === "'" || $char === '"') {
+                $quote = $char;
                 $current .= $char;
 
                 continue;
             }
 
-            if ($char === ',' && !$inQuotes) {
+            if ($char === '(') {
+                $depth++;
+                $current .= $char;
+
+                continue;
+            }
+
+            if ($char === ')') {
+                $depth--;
+                $current .= $char;
+
+                continue;
+            }
+
+            if ($char === ',' && $depth === 0) {
                 $parts[] = $current;
                 $current = '';
 
