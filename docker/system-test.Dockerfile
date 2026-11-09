@@ -9,6 +9,7 @@ RUN apt-get update \
         libicu-dev \
         locales \
         ca-certificates \
+        netbase \
     && rm -rf /var/lib/apt/lists/* \
     && sed -i 's/# \(da_DK.UTF-8\|de_DE.UTF-8\|pl_PL.UTF-8\)/\1/' /etc/locale.gen \
     && locale-gen \

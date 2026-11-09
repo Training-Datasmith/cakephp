@@ -385,6 +385,29 @@ class FunctionsTest extends TestCase
         });
     }
 
+    /**
+     * User warnings must not be raised when the warning error level is disabled.
+     */
+    public function testTriggerWarningLevelDisabled(): void
+    {
+        $this->withErrorReporting(E_ALL ^ E_USER_WARNING, function (): void {
+            $warnings = [];
+            set_error_handler(static function (int $code, string $message) use (&$warnings): bool {
+                if ($code === E_USER_WARNING) {
+                    $warnings[] = $message;
+                }
+
+                return true;
+            }, E_USER_WARNING);
+            try {
+                triggerWarning('This was a mistake.');
+                $this->assertSame([], $warnings);
+            } finally {
+                restore_error_handler();
+            }
+        });
+    }
+
     #[DataProvider('toStringProvider')]
     public function testToString(mixed $rawValue, ?string $expected): void
     {

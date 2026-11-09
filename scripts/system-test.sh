@@ -53,8 +53,16 @@ ${DOCKER_BIN} run --rm \
         composer audit
         php scripts/check-cluster-pins.php
         umask 0002
-        vendor/bin/phpunit --colors=never 2>&1 | tee /workspace/.phpunit-system-test.log
-        exit "${PIPESTATUS[0]}"
+        STDIN_FIFO="$(mktemp -u)"
+        mkfifo "${STDIN_FIFO}"
+        ( exec 3>"${STDIN_FIFO}"; sleep 86400 ) &
+        STDIN_FIFO_HOLDER_PID=$!
+        vendor/bin/phpunit --colors=never <"${STDIN_FIFO}" 2>&1 | tee /workspace/.phpunit-system-test.log
+        PHPUNIT_STATUS="${PIPESTATUS[0]}"
+        kill "${STDIN_FIFO_HOLDER_PID}" 2>/dev/null || true
+        wait "${STDIN_FIFO_HOLDER_PID}" 2>/dev/null || true
+        rm -f "${STDIN_FIFO}"
+        exit "${PHPUNIT_STATUS}"
     '
 PHPUNIT_EXIT=$?
 set -e

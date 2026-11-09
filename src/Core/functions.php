@@ -312,6 +312,10 @@ if (!function_exists('Cake\Core\triggerWarning')) {
      */
     function triggerWarning(string $message): void
     {
+        if (!(error_reporting() & E_USER_WARNING)) {
+            return;
+        }
+
         trigger_error($message, E_USER_WARNING);
     }
 }

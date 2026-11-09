@@ -495,14 +495,32 @@ class Socket
             $method |= STREAM_CRYPTO_METHOD_TLSv1_1_SERVER | STREAM_CRYPTO_METHOD_TLSv1_2_SERVER;
         }
 
+        $phpWarning = null;
+        set_error_handler(static function (int $code, string $message) use (&$phpWarning): bool {
+            if ($code === E_WARNING) {
+                $phpWarning = $message;
+
+                return true;
+            }
+
+            return false;
+        });
         try {
             if ($this->connection === null) {
                 throw new CakeException('You must call connect() first.');
             }
             $enableCryptoResult = stream_socket_enable_crypto($this->connection, $enable, $method);
         } catch (Exception $e) {
+            restore_error_handler();
             $this->setLastError(null, $e->getMessage());
             throw new SocketException($e->getMessage(), null, $e);
+        } finally {
+            restore_error_handler();
+        }
+
+        if ($phpWarning !== null) {
+            $this->setLastError(null, $phpWarning);
+            throw new SocketException($phpWarning);
         }
 
         if ($enableCryptoResult === true) {

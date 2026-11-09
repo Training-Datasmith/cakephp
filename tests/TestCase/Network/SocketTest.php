@@ -374,13 +374,31 @@ class SocketTest extends TestCase
      */
     public function testEnableCryptoExceptionEnableTwice(): void
     {
-        $this->expectException(SocketException::class);
-        // testing on tls server
         $this->_connectSocketToSslTls();
         $this->Socket->enableCrypto('tls', 'client');
-        $this->expectWarningMessageMatches('/^Unable to perform enableCrypto operation on the current socket$/', function (): void {
-            $this->Socket->enableCrypto('tls', 'client');
-        });
+        $this->expectException(SocketException::class);
+        $this->Socket->enableCrypto('tls', 'client');
+    }
+
+    /**
+     * Repeated enableCrypto must not emit PHP warnings to stdout.
+     */
+    public function testEnableCryptoSecondEnableDoesNotEmitPhpWarning(): void
+    {
+        $this->_connectSocketToSslTls();
+        $this->Socket->enableCrypto('tls', 'client');
+
+        ob_start();
+        try {
+            try {
+                $this->Socket->enableCrypto('tls', 'client');
+                $this->fail('Expected SocketException');
+            } catch (SocketException) {
+            }
+        } finally {
+            $output = ob_get_clean();
+            $this->assertStringNotContainsString('Warning:', $output);
+        }
     }
 
     /**
